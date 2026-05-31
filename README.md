@@ -1,16 +1,30 @@
 # Tricorder
 
-Tricorder solves the problem that I have dozens of codebases privately,
-and hundreds at work, and for all of them I need to set up a dozen or
-so third-party DevEx tools.
+Tricorder solves the problem that I deal with dozens of codebases privately,
+and hundreds at work, and for all of them I need to set up and configure a dozen
+or more third-party DevEx tools, and keep them up to date.
 
-Setting up these tools is a lot of ongoing work.
+This is a lot of ongoing work.
+It results in many hours and days of toil.
+I would like to automate this work.
+
+I always want the same thing:
+
+- use all the best available tools for the files that exist in my codebase
+- use all of them at the latest available version that is safe
+- use all of them with in the highest setting by default
+- allow me to configure them as needed
+
+Doing all this requires a lot of time.
 One needs to
 
-- know they exist
-- spend time reading up on them
-- add them to internal automation
-- set up their config file
+- do market research at least once a year to know all available tools
+- if there is a new tool,
+  try it out to get a feeling for how useful it is
+  compared to the other available tools
+- add the new tool to all projects
+- copy-and-paste its default config file into the codebase so
+  that the tool works properly
 
 Keeping all these tools up to date,
 even if that is as easy as running a single command to update everything,
@@ -60,6 +74,21 @@ allow-outdated = "6 months"
 ```
 
 ## Tools
+
+Tricorder has different support levels for tools:
+
+- install + configure + run
+  - example: third-party tools
+- configure + run
+  - the user installs the tool (because it is the core for the stack).
+  - we provide standardized configuration to it
+  - examples
+    - Node.js in a TypeScript codebase
+    - Rust formatter settings
+- run only
+  - the user installs and configures the tool
+  - example:
+    - we let the user set up Cargo.toml and don't mess with it
 
 These tools always run, no matter which stack:
 
