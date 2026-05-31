@@ -1,26 +1,39 @@
-# Upkeep / Tricorder / rigor / meticulous
+# Upkeep / Rigor / Tricorder / meticulous
 
-_Automate DevEx toil_
+_Meticulous DevEx tooling_
 
-This solves the problem that I deal with dozens of codebases privately,
+Upkeep provides a cybernetically enhanced DevEx environment
+for high-quality manual and agentic engineering.
+
+- provides all available tooling that helps improve the quality of your code
+- always up to date
+- automated end-to-end with full control and customizability
+
+## Background
+
+Upkeep solves the problem that I deal with dozens of codebases privately,
 and hundreds at work, and for all of them I need to set up and configure a dozen
-or more third-party DevEx tools, and update these tools regularly.
+or more third-party DevEx tools like formatters and linters,
+and then keep these tools updated over time.
+
 This is a lot of ongoing work.
-It results in many hours and days of toil
-that I would rather spend on more important things.
+It costs me many hours and days of toil
+that would be better spent on more important things.
+
 I would like to automate this work.
 
 I always want the same thing:
 
-- use all the best available tools for the files that exist in my codebase
-- use all of them at the latest available version that is safe
-- use all of them with in the highest setting by default
-- allow me to configure them as needed
+- use the best available tools for the file types in my codebase
+- use all tools that make sense together
+- always use the latest available version that is safe
+- run them in the highest setting
+- allow me to configure them as needed if the highest setting is too strict
 
-Doing all this requires a lot of time.
-One needs to
+Doing all this requires a lot of time on things that aren't this exciting.
+It makes me spend all my free time chasing windmills:
 
-- do market research at least once a year to know all available tools
+- do market research regularly to know all available tools
 - if there is a new tool,
   try it out to get a feeling for how useful it is
   compared to the other available tools

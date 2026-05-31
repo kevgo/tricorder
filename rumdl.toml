@@ -34,6 +34,7 @@ tables = false                       # Exclude tables from line length check
 names = [
   # keep-sorted start
   "Evergreen",
+  "Rigor",
   "Tricorder",
   "Upkeep",
   # keep-sorted end
