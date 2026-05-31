@@ -31,7 +31,7 @@ tables = false                       # Exclude tables from line length check
 [MD044]
 names = [
   # keep-sorted start
-  "Tricorder"
+  "Tricorder",
   # keep-sorted end
 ]
 code-blocks = false

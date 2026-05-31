@@ -1,18 +1,20 @@
-# Tricorder / Toil
+# Tricorder
 
 Tricorder solves the problem that I have dozens of codebases privately,
-and hundreds at work,
-and for all of them I need to set up a dozen or so third-party DevEx tools.
+and hundreds at work, and for all of them I need to set up a dozen or
+so third-party DevEx tools.
 
-Setting up these tools is a lot of ongoing work. One needs to
+Setting up these tools is a lot of ongoing work.
+One needs to
 
 - know they exist
 - spend time reading up on them
 - add them to internal automation
 - set up their config file
 
-Keeping all these tools up to date, even if that is as easy as running a single command to update everything,
- is ongoing work.
+Keeping all these tools up to date,
+even if that is as easy as running a single command to update everything,
+is ongoing work.
 
 Requiring so much manual toil is not compatible with AI engineering
 where humans are supposed to be less hands-on with such things.
