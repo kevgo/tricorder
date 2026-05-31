@@ -6,15 +6,13 @@ TAPLO  = $(RTA) taplo
 
 fix: ${RTA}  # runs all linters and auto-fixes
 	$(RUMDL) fmt
-	$(DPRINT) fmt
-	$(TAPLO) fmt
+	$(TAPLO) format
 
 lint: ${RTA}  # lints the main codebase concurrently
 	$(RUMDL) check
 
 update: ${RTA}  # updates all dependencies
 	$(RTA) --update
-	$(DPRINT) config update
 
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
 

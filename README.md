@@ -53,10 +53,12 @@ Always run no matter which stack:
 Stack-specific tools:
 
 Cucumber:
+
 - cucumber-sort if cucumber-sort config file exists
 - ghokin
 
 GitHub Actions:
+
 - actionlint
 
 Go:
@@ -71,6 +73,7 @@ JSON:
 - prettier-standalone
 
 Markdown:
+
 - rumdl
 - markdown-lint
 
