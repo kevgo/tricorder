@@ -1,4 +1,4 @@
-# Upkeep / Rigor / Tricorder / meticulous
+# Upkeep / Tricorder
 
 _meticulous DevEx tooling_
 
