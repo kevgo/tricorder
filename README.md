@@ -1,4 +1,4 @@
-# Tricorder or Toil
+# Tricorder / Toil
 
 Tricorder solves the problem that I have dozens of codebases privately,
 and hundreds at work,
@@ -46,7 +46,7 @@ allow-outdated = "6 months"
 
 ## Tools
 
-Always run no matter which stack:
+These tools always run, no matter which stack:
 
 - delete-empty-folders
 
