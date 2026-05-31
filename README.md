@@ -4,6 +4,19 @@ Tricorder solves the problem that I have dozens of codebases privately,
 and hundreds at work,
 and for all of them I need to set up a dozen or so third-party DevEx tools.
 
+Setting up these tools is a lot of ongoing work. One needs to
+
+- know they exist
+- spend time reading up on them
+- add them to internal automation
+- set up their config file
+
+Keeping all these tools up to date, even if that is as easy as running a single command to update everything,
+ is ongoing work.
+
+Requiring so much manual toil is not compatible with AI engineering
+where humans are supposed to be less hands-on with such things.
+
 This isn't going to scale for thousands of repos at large organizations.
 If we force this, it is too easy to forget to set up some tool for some stack.
 If we do all stacks, it's a lot of unrewarding toil.
@@ -98,3 +111,7 @@ TypeScript:
 YML:
 
 - prettier-standalone
+
+## Staying up to date
+
+A success criteria for Tricorder is to be up to date.
