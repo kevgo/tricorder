@@ -9,6 +9,18 @@ for high-quality manual and agentic engineering.
 - always up to date
 - automated end-to-end with full control and customizability
 
+## Example
+
+- You have a Git repo with a TypeScript frontend and a Python backend.
+- Upkeep runs `biome`, `pyright`, and `ruff`.
+- You don't need to download or install any of these tools.
+  Upkeep does that for you.
+- It has also created config files for these tools in your repo
+  that enable all features.
+  You can customize them for your use case.
+- Later you add some shell scripts somewhere in a subfolder.
+  Now Upkeep also runs `shellcheck` and `shellfmt`.
+
 ## Background
 
 Upkeep solves the problem that I deal with dozens of codebases privately,
