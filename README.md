@@ -9,6 +9,7 @@ for high-quality manual and agentic engineering.
 
 - provides all available tooling that helps improve the quality of your code
 - always up to date
+- in all your codebases
 - automated end-to-end with full control and customizability
 
 ## Example 1
@@ -39,7 +40,18 @@ With Upkeep everybody does this well all of the time.
 
 - You have dozens/hundreds over codebases.
 - Keeping the DevEx tooling up to date on all of them is a Sisyphean task.
-- With Upkeep it's trivial.
+- With Upkeep this happens by itself.
+
+## Q & A
+
+> Does Upkeep lock me into their tooling choices?
+
+No, you can also run other tools,
+either through Upkeep or completeley by yourself.
+
+> I have a new tool that I think makes sense to add to Upkeep.
+
+Send a pull request!
 
 ## Background
 
