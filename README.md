@@ -1,6 +1,8 @@
 # Upkeep / Rigor / Tricorder / meticulous
 
-_Meticulous DevEx tooling_
+_meticulous DevEx tooling_
+
+_always the best DevEx_
 
 Upkeep provides a cybernetically enhanced DevEx environment
 for high-quality manual and agentic engineering.
@@ -9,7 +11,7 @@ for high-quality manual and agentic engineering.
 - always up to date
 - automated end-to-end with full control and customizability
 
-## Example
+## Example 1
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
 - Upkeep runs `biome`, `pyright`, and `ruff`.
@@ -32,6 +34,12 @@ Look at all the things you don't do:
 
 Pretty much no project/team/codebase does all of this well all of the time.
 With Upkeep everybody does this well all of the time.
+
+## Example 2
+
+- You have dozens/hundreds over codebases.
+- Keeping the DevEx tooling up to date on all of them is a Sisyphean task.
+- With Upkeep it's trivial.
 
 ## Background
 
