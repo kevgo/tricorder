@@ -4,6 +4,8 @@ _meticulous DevEx tooling_
 
 _always the best DevEx_
 
+_keep up with Upkeep_
+
 Upkeep provides a cybernetically enhanced DevEx environment
 for high-quality manual and agentic engineering.
 
@@ -103,7 +105,7 @@ Features:
 ## Commands
 
 - `upkeep setup`: set up missing formatters or linters
-- `upkeep fmt`: run all formatters and fixers
+- `upkeep fix`: run all formatters and fixers
 - `upkeep check`: run all checkers and linters that do not change code
 
 ## Config file
@@ -132,7 +134,7 @@ allow-outdated = "6 months"
 
 ## Tools
 
-Tricorder has different support levels for tools:
+There are probably different support levels for tools:
 
 - install + configure + run
   - example: third-party tools
@@ -146,8 +148,6 @@ Tricorder has different support levels for tools:
   - the user installs and configures the tool
   - example:
     - we let the user set up Cargo.toml and don't mess with it
-
-euntoehun
 
 These tools always run, no matter which stack:
 
