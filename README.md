@@ -90,6 +90,8 @@ Tricorder has different support levels for tools:
   - example:
     - we let the user set up Cargo.toml and don't mess with it
 
+euntoehun
+
 These tools always run, no matter which stack:
 
 - delete-empty-folders
