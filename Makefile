@@ -11,6 +11,10 @@ fix: ${RTA}  # runs all linters and auto-fixes
 lint: ${RTA}  # lints the main codebase concurrently
 	$(RUMDL) check
 
+setup: ${RTA}
+
+
+
 update: ${RTA}  # updates all dependencies
 	$(RTA) --update
 
