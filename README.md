@@ -21,6 +21,18 @@ for high-quality manual and agentic engineering.
 - Later you add some shell scripts somewhere in a subfolder.
   Now Upkeep also runs `shellcheck` and `shellfmt`.
 
+Look at all the things you don't do:
+
+- no market research which tools are available
+- no test-runs to figure out which of the available tools is the best one
+- no reading documentation to configure these tools
+- no forgetting to update to newer versions of these tools
+- no forgetting to add missing tools as you add more file types
+- no disagreements with other developers and teams which tool to use
+
+Pretty much no project/team/codebase does all of this well all of the time.
+With Upkeep everybody does this well all of the time.
+
 ## Background
 
 Upkeep solves the problem that I deal with dozens of codebases privately,
