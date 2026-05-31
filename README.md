@@ -1,11 +1,13 @@
-# Tricorder
+# Upkeep / Tricorder / rigor / meticulous
 
-Tricorder solves the problem that I deal with dozens of codebases privately,
+_Automate DevEx toil_
+
+This solves the problem that I deal with dozens of codebases privately,
 and hundreds at work, and for all of them I need to set up and configure a dozen
-or more third-party DevEx tools, and keep them up to date.
-
+or more third-party DevEx tools, and update these tools regularly.
 This is a lot of ongoing work.
-It results in many hours and days of toil.
+It results in many hours and days of toil
+that I would rather spend on more important things.
 I would like to automate this work.
 
 I always want the same thing:

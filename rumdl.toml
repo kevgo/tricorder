@@ -7,7 +7,9 @@ extend-enable = [
 ]
 
 # Additional rules to disable on top of the disable list (additive)
-extend-disable = []
+extend-disable = [
+  "MD036", # convert emphasis to heading
+]
 
 exclude = [".github", "tools", "CHANGELOG.md"]
 
@@ -31,7 +33,9 @@ tables = false                       # Exclude tables from line length check
 [MD044]
 names = [
   # keep-sorted start
+  "Evergreen",
   "Tricorder",
+  "Upkeep",
   # keep-sorted end
 ]
 code-blocks = false
