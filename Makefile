@@ -14,6 +14,7 @@ help:  # prints all available targets
 
 lint: ${RTA}  # lints the main codebase concurrently
 	$(RUMDL) check
+	$(TAPLO) check
 
 setup-githooks: ${RTA}  ## installs a Git pre-commit hook that auto-formats code
 	@$(LEFTHOOK) install

@@ -9,10 +9,11 @@ for high-quality manual and agentic engineering.
 
 - provides all available tooling that helps improve the quality of your code
 - always up to date
+- for all languages used in your codebase
 - in all your codebases
 - automated end-to-end with full control and customizability
 
-## Example 1
+## Example
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
 - Upkeep runs `biome`, `pyright`, and `ruff`.
@@ -39,7 +40,8 @@ With Upkeep everybody does this well all of the time.
 ## Example 2
 
 - You have dozens/hundreds over codebases.
-- Keeping the DevEx tooling up to date on all of them is a Sisyphean task.
+- Setting all the DevEx tooling up and keeping it up to date on each of them
+  is a Sisyphean task.
 - With Upkeep this happens by itself.
 
 ## Q & A
@@ -56,34 +58,28 @@ Send a pull request!
 ## Background
 
 Upkeep solves the problem that I deal with dozens of codebases privately,
-and hundreds at work, and for all of them I need to set up and configure a dozen
-or more third-party DevEx tools like formatters and linters,
+and hundreds at work, and for each one I need to set up
+and configure between 5-10 third-party DevEx tools like formatters and linters
 and then keep these tools updated over time.
 
-This is a lot of ongoing work.
-It costs me many hours and days of toil
-that would be better spent on more important things.
+When I switch from one tool to another I need to make a shotgun refactor across
+dozens of repos.
 
+This is a lot of ongoing work.
+It costs me many hours and days of repetitive, tedious,
+and boring toil that would be better spent on more interesting things.
 I would like to automate this work.
 
 I always want the same thing:
 
-- use the best available tools for the file types in my codebase
+- use the best available tools for all programming languages used in a codebase
 - use all tools that make sense together
-- always use the latest available version that is safe
-- run them in the highest setting
-- allow me to configure them as needed if the highest setting is too strict
+- always use the latest versions
+- activate all features in the tools
+- allow me to configure things as needed
 
 Doing all this requires a lot of time on things that aren't this exciting.
 It makes me spend all my free time chasing windmills:
-
-- do market research regularly to know all available tools
-- if there is a new tool,
-  try it out to get a feeling for how useful it is
-  compared to the other available tools
-- add the new tool to all projects
-- copy-and-paste its default config file into the codebase so
-  that the tool works properly
 
 Keeping all these tools up to date,
 even if that is as easy as running a single command to update everything,
@@ -106,25 +102,27 @@ Features:
 
 ## Commands
 
-- `tricorder setup`: set up missing formatters or linters
-- `tricorder fmt`: run all formatters and fixers
-- `tricorder check`: run all checkers and linters that do not change code
+- `upkeep setup`: set up missing formatters or linters
+- `upkeep fmt`: run all formatters and fixers
+- `upkeep check`: run all checkers and linters that do not change code
 
 ## Config file
 
-File `tricorder.toml`.
+File `upkeep.toml`:
 
 ```toml
-# disable a specific tool
-[[disable-tool]]
-tool = "delete-empty-folders"
+[[stack.disable]]
+name = "go"
+reason = "we check Go using our own tool setup"
+
+[[stack.enable]]
+name = "shell"
+reason = "some hidden shell files that don't get detected"
+
+[[tool.disable]]
+name = "delete-empty-folders"
 reason = "need to keep folder XX for reasons"
 until = "Nov 2027"  # optional expiration for the disabled tool
-
-# disable an entire stack
-[[disable-stack]]
-stack = "Go"
-reason = "we check Go using our own tool setup"
 
 # How old is this tool allowed to be
 # before it fails all tests
