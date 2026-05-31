@@ -1,0 +1,7 @@
+#:schema  ./docs/git-town.schema.json
+
+[branches]
+main = "main"
+
+[ship]
+delete-tracking-branch = false
