@@ -114,18 +114,19 @@ File `multi-tool.toml`:
 ```toml
 setup-interval = "1 week"  # checks every week for new
 
-adapter.type = "run-that-app"
+[adapter]
+type = "run-that-app"
 
 [adapter.run-that-app]
 run-that-app-path = "tools/rta"
 
 # configure languages
 
-[language.python]
+[python]
 extend-checkers = ["pyright"]  # add a tool to the default checker list
 checkers = ["pyright"]         # replace default Python checker list
 
-[language.go]
+[go]
 checkers = [
   "golangci-lint"
 ]
@@ -135,19 +136,19 @@ fixers = [
 
 # configure tools for a particular language
 
-[language.python.tools.pyright]
+[python.pyright]
 executable = "~/pyright"  # optional override if you want to use another version
 prepend-args = ["--verbose"] # additional args before the default args for this tool
 append-args = ["src"]  # additional args after the default args for this tool
 
 # enabled or disable tools
 
-[language.python.tool.pyrefly]
+[python.pyrefly]
 enabled = false
 
 # enable or disable stacks
 
-[language.shellscript]
+[shellscript]
 enabled = true  # our shell files don't get detected
 
 [updates]
