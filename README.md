@@ -1,65 +1,55 @@
-# Upkeep / Tricorder
+# Upkeep / Tricorder / Multi-Tool
 
-_meticulous DevEx tooling_
+_all-in-one DevEx tool_
 
-_always the best DevEx_
+Multi-Tool provides all DevEx tools you need for agentic
+and manual software development.
 
-_keep up with Upkeep_
-
-Upkeep provides a cybernetically enhanced DevEx environment
-for high-quality manual and agentic engineering.
-
-- provides all available tooling that helps improve the quality of your code
+- all the formatters and linters you need
 - always up to date
-- for all languages used in your codebase
+- for all languages in your codebase
 - in all your codebases
-- automated end-to-end with full control and customizability
 
 ## Example
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
-- Upkeep runs `biome`, `pyright`, and `ruff`.
+- running `multi-tool test` runs `biome`, `pyright`, and `ruff`.
 - You don't need to download or install any of these tools.
-  Upkeep does that for you.
+  Multi-Tool does that for you.
 - It has also created config files for these tools in your repo
   that enable all features.
   You can customize them for your use case.
-- Later you add some shell scripts somewhere in a subfolder.
-  Now Upkeep also runs `shellcheck` and `shellfmt`.
+- Later you add shell scripts somewhere in a subfolder.
+  Multi-Tool detects this new language and now also runs `shellcheck`
+  and `shellfmt`.
 
 Look at all the things you don't do:
 
-- no market research which tools are available
-- no test-runs to figure out which of the available tools is the best one
-- no reading documentation to configure these tools
-- no forgetting to update to newer versions of these tools
-- no forgetting to add missing tools as you add more file types
+- no forgetting to add formatters and linters
+- no checking which stacks you need formatters and linters for
+  (there are always more than you think)
+- no market research which tools are available and which one is the best
+- no tedious installation, setup, and configuration
+- no Sisyphean work to keep all these tools up to date
+- no forgetting to add tools when your codebase develops more file types
 - no disagreements with other developers and teams which tool to use
 
 Pretty much no project/team/codebase does all of this well all of the time.
-With Upkeep everybody does this well all of the time.
-
-## Example 2
-
-- You have dozens/hundreds over codebases.
-- Setting all the DevEx tooling up and keeping it up to date on each of them
-  is a Sisyphean task.
-- With Upkeep this happens by itself.
+With Multi-Tool everybody does this well all of the time.
 
 ## Q & A
 
-> Does Upkeep lock me into their tooling choices?
+> Does Multi-Tool lock me into their tooling choices?
 
-No, you can also run other tools,
-either through Upkeep or completeley by yourself.
+No, you can customize the default selection of tools.
 
-> I have a new tool that I think makes sense to add to Upkeep.
+> I am using a linter that isn't supported by Multi-Tool.
 
 Send a pull request!
 
 ## Background
 
-Upkeep solves the problem that I deal with dozens of codebases privately,
+Multi-Tool solves the problem that I deal with dozens of codebases privately,
 and hundreds at work, and for each one I need to set up
 and configure between 5-10 third-party DevEx tools like formatters and linters
 and then keep these tools updated over time.
@@ -104,27 +94,49 @@ Features:
 
 ## Commands
 
-- `upkeep setup`: set up missing formatters or linters
-- `upkeep fix`: run all formatters and fixers
-- `upkeep check`: run all checkers and linters that do not change code
+- `mt setup`: scans the codebase for file typs,
+  sets up missing formatters or linters, updates all existing tool versions
+- `mt fix`: run all formatters and fixers
+- `mt check`: run all checkers and linters that do not change code
+
+CLI flags:
+
+- `mt check --stack python`
+- `mt run pyright`
 
 ## Config file
 
-File `upkeep.toml`:
+File `multi-tool.toml`:
 
 ```toml
-[[stack.disable]]
-name = "go"
-reason = "we check Go using our own tool setup"
+setup-interval = "1 week"  # checks every week for new
 
-[[stack.enable]]
-name = "shell"
-reason = "some hidden shell files that don't get detected"
+# configure tools and their  versions
+[[tool.pyright]]
+version = 1.2.3
+executable = "~/pyright"  # optional override if you want to use another version
+prepend-args = ["--verbose"] # additional args before the default args for this tool
+append-args = [""]  # additional args after the default args for this tool
 
-[[tool.disable]]
-name = "delete-empty-folders"
-reason = "need to keep folder XX for reasons"
-until = "Nov 2027"  # optional expiration for the disabled tool
+
+
+# disable
+
+[[stack.python]]
+extend-checkers = ["pyright"]  # add a tool to the default checker list
+checkers = ["pyright"]         # replace default Python checker list
+
+[[stack.go]]
+enabled = false # we run Go checks separately
+checkers = [
+  "golangci-lint"
+]
+fixers = [
+  "gofumpt"
+]
+
+[[stack.shellscript]]
+enabled = true  # our shell files don't get detected
 
 # How old is this tool allowed to be
 # before it fails all tests
