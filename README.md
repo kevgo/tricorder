@@ -1,9 +1,9 @@
-# Upkeep / Tricorder / Multi-Tool
+# Multi-Tool / Upkeep / Tricorder
 
 _all-in-one DevEx tool_
 
-Multi-Tool provides all DevEx tools you need for agentic
-and manual software development.
+Multi-Tool provides all DevEx tools you need to guide agentic
+and manual software development towards the highest software quality standard.
 
 - all the formatters and linters you need
 - always up to date
@@ -97,7 +97,10 @@ Features:
 - `mt setup`: scans the codebase for file typs,
   sets up missing formatters or linters, updates all existing tool versions
 - `mt fix`: run all formatters and fixers
-- `mt check`: run all checkers and linters that do not change code
+- `mt check`: run all checkers and linters that do not change code,
+  - auto-updates if something is outdated
+- `mt check --ci`: check command to be run on CI
+  - fails if something is outdated
 
 CLI flags:
 
@@ -111,23 +114,18 @@ File `multi-tool.toml`:
 ```toml
 setup-interval = "1 week"  # checks every week for new
 
-# configure tools and their  versions
-[[tool.pyright]]
-version = 1.2.3
-executable = "~/pyright"  # optional override if you want to use another version
-prepend-args = ["--verbose"] # additional args before the default args for this tool
-append-args = [""]  # additional args after the default args for this tool
+adapter.type = "run-that-app"
 
+[adapter.run-that-app]
+run-that-app-path = "tools/rta"
 
+# configure languages
 
-# disable
-
-[[stack.python]]
+[language.python]
 extend-checkers = ["pyright"]  # add a tool to the default checker list
 checkers = ["pyright"]         # replace default Python checker list
 
-[[stack.go]]
-enabled = false # we run Go checks separately
+[language.go]
 checkers = [
   "golangci-lint"
 ]
@@ -135,18 +133,36 @@ fixers = [
   "gofumpt"
 ]
 
-[[stack.shellscript]]
+# configure tools for a particular language
+
+[language.python.tools.pyright]
+executable = "~/pyright"  # optional override if you want to use another version
+prepend-args = ["--verbose"] # additional args before the default args for this tool
+append-args = ["src"]  # additional args after the default args for this tool
+
+# enabled or disable tools
+
+[language.python.tool.pyrefly]
+enabled = false
+
+# enable or disable stacks
+
+[language.shellscript]
 enabled = true  # our shell files don't get detected
+
+[updates]
+
+update-period = "1 week"
 
 # How old is this tool allowed to be
 # before it fails all tests
 # to signal that it needs to be updated?
-allow-outdated = "6 months"
+alert-at-age = "2 months"
 ```
 
 ## Tools
 
-There are probably different support levels for tools:
+There are different support levels for tools:
 
 - install + configure + run
   - example: third-party tools
@@ -214,6 +230,16 @@ YML:
 
 - prettier-standalone
 
+## How it works
+
+- RTA calls Multi-Tool
+- MT is configured to use the RTA adapter to execute DevEx tools
+  - is given the path to RTA in the config file
+  - there might be other adapters in the future,
+    for example to use Mise, asdf, or HomeBrew
+- MT calls `rta --add` as needed to add DevEx tools it wants to run
+- MT runs `rta --update` as needed according to the MT update schedule
+
 ## Staying up to date
 
-A success criteria for Tricorder is to be up to date.
+A success criteria for Tricorder is keep everthing up to date, including itself.
