@@ -251,3 +251,12 @@ When an update is due:
 - it updates all dependencies
 - it runs all fixers
 - it creates a pull request using the configured command
+
+## Enforcing policies
+
+- policies define things like
+  - required tools per stack
+  - whether stacks can be disabled
+- the config file can define the policies
+- if the config file doesn't define the policies, then it can link to an external config file that defines them
+- for closed organizations, this config file can exist on an internal server like Artifactory
