@@ -112,14 +112,15 @@ CLI flags:
 File `multi-tool.toml`:
 
 ```toml
-adapter.type = "run-that-app"
-adapter.run-that-app.path = "tools/rta"
+# configure how MT installs and runs applications
+installer.type = "run-that-app"
+installer.run-that-app.path = "tools/rta"
 
 # configure languages
 
 [lang.python]
-extend-checkers = ["pyright"]  # add a tool to the default checker list
-checkers = ["pyright"]         # replace default Python checker list
+checkers = ["pyright", "pyrefly"]  # requires at least one entry, must contain "pyright" (this is configurable via policy)
+additional-checkers = ["pyright"]  # add a tool to the default checker list
 
 [lang.go]
 checkers = [
@@ -131,8 +132,7 @@ fixers = [
 
 # enable or disable a language
 
-[lang.shellscript]
-enabled = true  # our shell files don't get detected
+lang.shellscript.enabled = true  # our shell files don't get detected
 
 # configure tools for a particular language
 
@@ -141,21 +141,20 @@ executable = "~/pyright"  # optional override if you want to use another version
 prepend-args = ["--verbose"] # additional args before the default args for this tool
 append-args = ["src"]  # additional args after the default args for this tool
 
-# enabled or disable tools
+[setup]
+interval = "1 week"  # how often it runs "mt setup"
+branch = "update-dependencies"  # the branch in which it runs "mt setup"
+alert = "1 month"  # fails all operations if it "mt setup" hasn't run that long
 
-[tool.pyrefly]
-enabled = false
+vcs.type = "git"
 
-[update]
-interval = "1 week"  # automatically runs "setup" every week
-branch = "update-dependencies"  # name of the branch in which the update happens
-alert = "1 month"  # alert if setup hasn't been run for this long
-
-[commands]
-check-open-changes = "git diff"
-commit-existing-changes = "git add . && git commit -m 'open changes'"
-create-branch = "git town hack {{branch}}"
-create-proposal = "git town propose"
+# customize VCS commands
+[vcs.commands]
+diff = "git diff"  # how MT checks for open changes
+commit = "git add . && git commit -m 'open changes'"  # how MT commits open changes
+create-branch = "git town hack {{branch}}"  # how MT creates a new Git branch and switches to it
+propose = "git town propose"  # how MT creates a new pull request for the current branch
+switch-branch = "git checkout {{branch}}"  # how MT switches to a different branch
 ```
 
 ## Tools
