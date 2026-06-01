@@ -112,21 +112,16 @@ CLI flags:
 File `multi-tool.toml`:
 
 ```toml
-setup-interval = "1 week"  # checks every week for new
-
-[adapter]
-type = "run-that-app"
-
-[adapter.run-that-app]
-run-that-app-path = "tools/rta"
+adapter.type = "run-that-app"
+adapter.run-that-app.path = "tools/rta"
 
 # configure languages
 
-[python]
+[lang.python]
 extend-checkers = ["pyright"]  # add a tool to the default checker list
 checkers = ["pyright"]         # replace default Python checker list
 
-[go]
+[lang.go]
 checkers = [
   "golangci-lint"
 ]
@@ -134,31 +129,33 @@ fixers = [
   "gofumpt"
 ]
 
+# enable or disable a language
+
+[lang.shellscript]
+enabled = true  # our shell files don't get detected
+
 # configure tools for a particular language
 
-[python.pyright]
+[tool.pyright]
 executable = "~/pyright"  # optional override if you want to use another version
 prepend-args = ["--verbose"] # additional args before the default args for this tool
 append-args = ["src"]  # additional args after the default args for this tool
 
 # enabled or disable tools
 
-[python.pyrefly]
+[tool.pyrefly]
 enabled = false
 
-# enable or disable stacks
+[update]
+interval = "1 week"  # automatically runs "setup" every week
+branch = "update-dependencies"  # name of the branch in which the update happens
+alert = "1 month"  # alert if setup hasn't been run for this long
 
-[shellscript]
-enabled = true  # our shell files don't get detected
-
-[updates]
-
-update-period = "1 week"
-
-# How old is this tool allowed to be
-# before it fails all tests
-# to signal that it needs to be updated?
-alert-at-age = "2 months"
+[commands]
+check-open-changes = "git diff"
+commit-existing-changes = "git add . && git commit -m 'open changes'"
+create-branch = "git town hack {{branch}}"
+create-proposal = "git town propose"
 ```
 
 ## Tools
@@ -244,3 +241,14 @@ YML:
 ## Staying up to date
 
 A success criteria for Tricorder is keep everthing up to date, including itself.
+
+When an update is due:
+
+- it checks for uncommitted changes
+  - using the configured shell command
+  - exits with an error if there are uncommitted changes
+  - or commits them to the current branch using the configured command
+- it creates a new branch with the configured name using the configured command
+- it updates all dependencies
+- it runs all fixers
+- it creates a pull request using the configured command
