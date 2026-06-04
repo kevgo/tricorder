@@ -1,8 +1,10 @@
 # Developer instructions
 
+## Quickstart
+
 - install Rust via [rustup](https://rustup.rs)
-- set up the development dependencies: run `make setup`
-- run all tests and fixes: `make ps`
+- set up the development dependencies: `make setup`
+- run all tests and fixes: `make ps` (they should all pass)
 
 ## End-to-end tests
 
