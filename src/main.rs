@@ -15,8 +15,12 @@ fn main() -> ExitCode {
 }
 
 fn inner() -> error::Result<ExitCode> {
-    match cli::parse() {
-        cli::Command::Check => commands::check(),
-        cli::Command::Fix => commands::fix(),
+    match cli::parse()? {
+        cli::Parsed::Usage => {
+            cli::print_usage();
+            Ok(ExitCode::SUCCESS)
+        }
+        cli::Parsed::Command(cli::Command::Check) => commands::check(),
+        cli::Parsed::Command(cli::Command::Fix) => commands::fix(),
     }
 }

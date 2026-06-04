@@ -6,7 +6,7 @@ Feature: Testing Cucumber
       """
       The all-in-one DevEx tool.
       
-      Usage: tricorder <COMMAND>
+      Usage: tricorder [COMMAND]
       
       Commands:
         check  Runs all checkers and linters for all stacks
@@ -14,8 +14,10 @@ Feature: Testing Cucumber
         help   Print this message or the help of the given subcommand(s)
       
       Options:
-        -h, --help     Print help
-        -V, --version  Print version
+        -h, --help
+                Print help
+      
+        -V, --version
+                Print version
       """
-    And the exit code is 2
-# TODO: it should return exit code 0 here
+    And the exit code is 0

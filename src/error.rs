@@ -4,10 +4,14 @@ pub(crate) type Result<T> = core::result::Result<T, UserError>;
 /// errors that are the user's fault and should be displayed to them
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
-pub(crate) enum UserError {}
+pub(crate) enum UserError {
+    CLI { msg: String },
+}
 
 impl UserError {
     pub(crate) fn print(self) {
-        match self {}
+        match self {
+            UserError::CLI { msg } => println!("CLI error: {msg}"),
+        }
     }
 }
