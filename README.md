@@ -1,9 +1,10 @@
-# Multi-Tool / Tricorder / Upkeep 
+# Tricorder / Multi-Tool / Upkeep
 
-_all-in-one DevEx tool_
+_The all-in-one DevEx tool._
 
-Multi-Tool provides all DevEx tools you need to guide agentic
-and manual software development towards the highest software quality standard.
+Tricorder helps you write
+or generate the highest software quality by running all the DevEx tools
+that check your software stack.
 
 - all the formatters and linters you need
 - always up to date
@@ -13,7 +14,8 @@ and manual software development towards the highest software quality standard.
 ## Example
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
-- running `multi-tool test` runs `biome`, `pyright`, and `ruff`.
+- running `tricorder test` runs `biome check --error-on-warnings`, `pyright`,
+  and `ruff check --quiet`.
 - You don't need to download or install any of these tools.
   Multi-Tool does that for you.
 - It has also created config files for these tools in your repo
@@ -21,15 +23,16 @@ and manual software development towards the highest software quality standard.
   You can customize them for your use case.
 - Later you add shell scripts somewhere in a subfolder.
   Multi-Tool detects this new language and now also runs `shellcheck`
-  and `shellfmt`.
+  and `shfmt`.
 
 Look at all the things you don't do:
 
-- no forgetting to add formatters and linters
-- no checking which stacks you need formatters and linters for
-  (there are always more than you think)
-- no market research which tools are available and which one is the best
-- no tedious installation, setup, and configuration
+- no need to check which languages your codebase uses that you need formatters
+  and linters for (there are always more than you think)
+- no forgetting to add formatters and linters for new languages
+- no market research which linters and formatters are available and
+  which one is the best
+- no RTFM to install, setup, and configure the dozens of tools needed
 - no Sisyphean work to keep all these tools up to date
 - no forgetting to add tools when your codebase develops more file types
 - no disagreements with other developers and teams which tool to use
@@ -258,5 +261,7 @@ When an update is due:
   - required tools per stack
   - whether stacks can be disabled
 - the config file can define the policies
-- if the config file doesn't define the policies, then it can link to an external config file that defines them
-- for closed organizations, this config file can exist on an internal server like Artifactory
+- if the config file doesn't define the policies,
+  then it can link to an external config file that defines them
+- for closed organizations,
+  this config file can exist on an internal server like Artifactory
