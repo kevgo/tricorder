@@ -1,12 +1,12 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
+use rand::RngExt;
 use std::borrow::Cow;
 use std::path::{Path, PathBuf};
-use std::process::{Output, Stdio};
+use std::process::Output;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::{env, str};
-use tokio::io::AsyncWriteExt;
 use tokio::process::Command;
 use tokio::{fs, io};
 
@@ -71,7 +71,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let mut executable = args.next().unwrap();
     let mut _string = String::new();
-    if executable == "a" {
+    if executable == "tricorder" {
         executable = "../../target/debug/tricorder";
         if env::consts::OS == "windows" {
             _string = format!("{executable}.exe");

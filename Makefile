@@ -6,6 +6,7 @@ RUMDL    = $(RTA) rumdl
 TAPLO    = $(RTA) taplo
 
 build:  # builds the codebase
+	rm -rf tmp
 	cargo build
 
 cuke: build  # runs all end-to-end tests
