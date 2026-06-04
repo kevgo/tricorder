@@ -15,9 +15,8 @@ fn main() -> ExitCode {
 }
 
 fn inner() -> error::Result<ExitCode> {
-    let cli = cli::parse();
-    println!("CAMMOND");
-    match cli.command {
-        cli::Commands::Check => commands::check(),
+    match cli::parse() {
+        cli::Command::Check => commands::check(),
+        cli::Command::Fix => commands::fix(),
     }
 }
