@@ -13,6 +13,9 @@ cuke: build  # runs all end-to-end tests
 	cargo test --test=cucumber
 
 fix: ${RTA}  # runs all linters and auto-fixes
+	cargo +nightly fix --allow-dirty
+	cargo clippy --fix --allow-dirty
+	cargo +nightly fmt
 	$(RUMDL) fmt
 	$(TAPLO) format
 
@@ -20,6 +23,7 @@ help:  # prints all available targets
 	@grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 lint: ${RTA}  # lints the main codebase concurrently
+	cargo clippy --all-targets --all-features -- --deny=warnings
 	$(RUMDL) check
 	$(TAPLO) check
 
