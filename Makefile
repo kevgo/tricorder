@@ -27,11 +27,13 @@ lint: ${RTA}  # lints the main codebase concurrently
 	$(RUMDL) check
 	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
 
-setup:  # install development dependencies on this computer
+setup: setup-ci  # install development dependencies on this computer
+	cargo install cargo-machete --locked
+
+setup-ci:
 	rustup component add clippy
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
-	cargo install cargo-machete --locked
 
 setup-githooks: ${RTA}  ## installs a Git pre-commit hook that auto-formats code
 	@$(LEFTHOOK) install
@@ -41,6 +43,8 @@ ps: test fix  ## pitstop
 test: lint  ## runs all tests
 
 update: ${RTA}  # updates all dependencies
+	cargo install cargo-edit
+	cargo upgrade --incompatible
 	$(RTA) --update
 
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
