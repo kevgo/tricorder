@@ -5,6 +5,12 @@ LEFTHOOK = $(RTA) lefthook
 RUMDL    = $(RTA) rumdl
 TAPLO    = $(RTA) taplo
 
+build:  # builds the codebase
+	cargo build
+
+cuke: build  # runs all end-to-end tests
+	cargo test --test=cucumber
+
 fix: ${RTA}  # runs all linters and auto-fixes
 	$(RUMDL) fmt
 	$(TAPLO) format
