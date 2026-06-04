@@ -17,4 +17,4 @@ Feature: Testing Cucumber
         -h, --help     Print help
         -V, --version  Print version
       """
-    And the exit code is 0
+    And the exit code is 2
