@@ -1,0 +1,34 @@
+#:schema https://www.schemastore.org/cargo.json
+
+[package]
+name = "tricorder"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+
+[dev-dependencies]
+cucumber = "0.23.0"
+itertools = "0.14.0"
+mio = "1.2.1"
+pretty = { package = "pretty_assertions", version = "1.4.1" }
+rand = "0.10.1"
+strip-ansi-escapes = "0.2.1"
+tokio = { version = "1.52.3", features = [
+  "fs",
+  "io-util",
+  "macros",
+  "process",
+  "rt",
+] }
+
+[[test]]
+name = "cucumber" # the filename of the test
+harness = false   # allows Cucumber to print output instead of libtest
+test = false      # don't run this as part of "cargo test"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+
+[lints.rust]
+unsafe_code = "forbid"
