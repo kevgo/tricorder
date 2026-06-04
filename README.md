@@ -74,26 +74,10 @@ I always want the same thing:
 - allow me to configure things as needed
 
 Doing all this requires a lot of time on things that aren't this exciting.
-It makes me spend all my free time chasing windmills:
-
-Keeping all these tools up to date,
-even if that is as easy as running a single command to update everything,
-is ongoing work.
-
-Requiring so much manual toil is not compatible with AI engineering
-where humans are supposed to be less hands-on with such things.
+It makes me spend all my free time chasing windmills.
 
 This isn't going to scale for thousands of repos at large organizations.
-If we force this, it is too easy to forget to set up some tool for some stack.
-If we do all stacks, it's a lot of unrewarding toil.
-And then we need to keep all these tools up to date.
-
 This needs to be automated.
-
-Features:
-
-- checks whether it is outdated concurrently with running the tools
-- fails tests to signal that it is too outdated and needs to be updated
 
 ## Commands
 
@@ -101,9 +85,13 @@ Features:
   sets up missing formatters or linters, updates all existing tool versions
 - `mt fix`: run all formatters and fixers
 - `mt check`: run all checkers and linters that do not change code,
+  - errors if there is a stack in the codebase that isn't configured
+    - this helps add tooling in the same PR that adds the new language
   - auto-updates if something is outdated
 - `mt check --ci`: check command to be run on CI
   - fails if something is outdated
+- checks whether it is outdated concurrently with running the tools
+- fails tests to signal that it is too outdated and needs to be updated
 
 CLI flags:
 
