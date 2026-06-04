@@ -27,6 +27,12 @@ lint: ${RTA}  # lints the main codebase concurrently
 	$(RUMDL) check
 	$(TAPLO) check
 
+setup:  # install development dependencies on this computer
+	rustup component add clippy
+	rustup toolchain add nightly
+	rustup component add rustfmt --toolchain nightly
+	cargo install cargo-machete --locked
+
 setup-githooks: ${RTA}  ## installs a Git pre-commit hook that auto-formats code
 	@$(LEFTHOOK) install
 
