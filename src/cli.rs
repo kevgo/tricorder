@@ -1,10 +1,26 @@
 use crate::error::{Result, UserError};
+use clap::error::ErrorKind;
 use clap::{CommandFactory, Parser, Subcommand};
 use std::io;
 
-pub fn parse() -> Result<Option<Command>> {
+pub enum ParseOutput {
+    Run(Option<Command>),
+    HelpOrVersion,
+}
+
+pub fn parse() -> Result<ParseOutput> {
     match Cli::try_parse() {
-        Ok(cli) => Ok(cli.command),
+        Ok(cli) => Ok(ParseOutput::Run(cli.command)),
+        Err(err)
+            if matches!(
+                err.kind(),
+                ErrorKind::DisplayHelp | ErrorKind::DisplayVersion
+            ) =>
+        {
+            err.print()
+                .map_err(|e| UserError::CLI { msg: e.to_string() })?;
+            Ok(ParseOutput::HelpOrVersion)
+        }
         Err(err) => Err(UserError::CLI {
             msg: err.to_string(),
         }),
