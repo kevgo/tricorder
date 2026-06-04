@@ -1,4 +1,4 @@
-# Tricorder / Multi-Tool / Upkeep
+# Tricorder / Multi-Tool
 
 _The all-in-one DevEx tool._
 
