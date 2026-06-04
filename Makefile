@@ -10,7 +10,7 @@ build:  # builds the codebase
 	cargo build
 
 cuke: build  # runs all end-to-end tests
-	cargo test --test=cucumber
+	cargo test --test=cuke
 
 fix: ${RTA}  # runs all linters and auto-fixes
 	cargo +nightly fix --allow-dirty
