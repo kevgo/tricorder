@@ -1,7 +1,6 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
-use rand::Rng;
 use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::process::{Output, Stdio};

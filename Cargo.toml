@@ -7,6 +7,9 @@ edition = "2024"
 
 [dev-dependencies]
 cucumber = "0.23.0"
+itertools = "0.14.0"
+mio = "1.2.1"
+pretty = { package = "pretty_assertions", version = "1.4.1" }
 tokio = { version = "1.52.3", features = [
   "fs",
   "io-util",
