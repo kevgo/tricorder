@@ -42,11 +42,11 @@ With Multi-Tool everybody does this well all of the time.
 
 ## Q & A
 
-> Does Multi-Tool lock me into their tooling choices?
+> Does Tricorder lock me into their tooling choices?
 
 No, you can customize the default selection of tools.
 
-> I am using a linter that isn't supported by Multi-Tool.
+> I am using a linter that isn't supported by Tricorder.
 
 Send a pull request!
 
