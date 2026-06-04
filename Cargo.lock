@@ -1071,6 +1071,7 @@ dependencies = [
 name = "tricorder"
 version = "0.0.0"
 dependencies = [
+ "clap",
  "cucumber",
  "itertools",
  "mio",
