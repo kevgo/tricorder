@@ -25,9 +25,9 @@ tokio = { version = "1.52.3", features = [
 ] }
 
 [[test]]
-name = "cucumber" # the filename of the test
-harness = false   # allows Cucumber to print output instead of libtest
-test = false      # don't run this as part of "cargo test"
+name = "cuke"   # the filename of the test
+harness = false # allows Cucumber to print output instead of libtest
+test = false    # don't run this as part of "cargo test"
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
