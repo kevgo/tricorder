@@ -25,7 +25,7 @@ help:  # prints all available targets
 lint: ${RTA}  # lints the main codebase concurrently
 	cargo clippy --all-targets --all-features -- --deny=warnings
 	$(RUMDL) check
-	$(TAPLO) check
+	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
 
 setup:  # install development dependencies on this computer
 	rustup component add clippy
