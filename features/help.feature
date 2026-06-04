@@ -18,3 +18,4 @@ Feature: Testing Cucumber
         -V, --version  Print version
       """
     And the exit code is 2
+# TODO: it should return exit code 0 here
