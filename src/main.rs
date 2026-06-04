@@ -1,11 +1,23 @@
-use clap::Parser;
+use std::process::ExitCode;
 
 mod cli;
+mod commands;
+mod error;
 
-fn main() {
-    let cli = cli::Cli::parse();
+fn main() -> ExitCode {
+    match inner() {
+        Ok(exitcode) => exitcode,
+        Err(err) => {
+            err.print();
+            ExitCode::FAILURE
+        }
+    }
+}
+
+fn inner() -> error::Result<ExitCode> {
+    let cli = cli::parse();
+    println!("CAMMOND");
     match cli.command {
-        Some(cli::Commands::Check) => println!("checking"),
-        None => println!("Hello, world!"),
+        cli::Commands::Check => commands::check(),
     }
 }
