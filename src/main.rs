@@ -1,21 +1,11 @@
-use clap::{Parser, Subcommand};
+use clap::Parser;
 
-#[derive(Parser)]
-#[command(name = "tricorder")]
-struct Cli {
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    Check,
-}
+mod cli;
 
 fn main() {
-    let cli = Cli::parse();
+    let cli = cli::Cli::parse();
     match cli.command {
-        Some(Commands::Check) => println!("checking"),
+        Some(cli::Commands::Check) => println!("checking"),
         None => println!("Hello, world!"),
     }
 }
