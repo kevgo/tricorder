@@ -4,6 +4,7 @@
 name = "tricorder"
 version = "0.0.0"
 edition = "2024"
+description = "The all-in-one DevEx tool."
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
