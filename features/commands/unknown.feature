@@ -4,7 +4,7 @@ Feature: wrong CLI command
     When executing "tricorder zonk"
     Then it prints:
       """
-      CLI error: error: unrecognized subcommand 'zonk'
+      error: unrecognized subcommand 'zonk'
       
       Usage: tricorder <COMMAND>
       

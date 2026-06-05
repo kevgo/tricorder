@@ -11,7 +11,7 @@ pub(crate) enum UserError {
 impl UserError {
     pub(crate) fn print(self) {
         match self {
-            UserError::CLI { msg } => println!("CLI error: {msg}"),
+            UserError::CLI { msg } => println!("{msg}"),
         }
     }
 }
