@@ -1,19 +1,18 @@
-use std::process::Output;
+mod python;
 
 use crate::error::Result;
+use std::process::Output;
 
 pub trait Stack {
     fn name(&self) -> &str;
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
-    fn fixers(&self) -> Vec<Box<dyn Fixer>>;
+}
+
+pub trait Tool {
+    fn name(&self) -> &str;
 }
 
 pub trait Checker {
-    fn name(&self) -> &str;
-    fn run(&self) -> Result<Output>;
-}
-
-pub trait Fixer {
     fn name(&self) -> &str;
     fn run(&self) -> Result<Output>;
 }
