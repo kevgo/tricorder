@@ -6,7 +6,7 @@ Feature: Displaying help
       """
       The all-in-one DevEx tool.
       
-      Usage: tricorder [COMMAND]
+      Usage: tricorder <COMMAND>
       
       Commands:
         check  Runs all checkers and linters for all stacks

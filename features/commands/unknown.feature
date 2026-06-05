@@ -6,7 +6,7 @@ Feature: wrong CLI command
       """
       CLI error: error: unrecognized subcommand 'zonk'
       
-      Usage: tricorder [COMMAND]
+      Usage: tricorder <COMMAND>
       
       For more information, try '--help'.
       """

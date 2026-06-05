@@ -30,7 +30,7 @@ pub fn parse() -> Result<Option<Command>> {
 #[command(name = env!("CARGO_PKG_NAME"))]
 #[command(about = env!("CARGO_PKG_DESCRIPTION"))]
 #[command(version = env!("CARGO_PKG_VERSION"))]
-#[command(subcommand_required = false)]
+#[command(subcommand_required = true)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Command>,
