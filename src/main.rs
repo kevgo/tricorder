@@ -17,11 +17,7 @@ fn main() -> ExitCode {
 fn inner() -> error::Result<ExitCode> {
     match cli::parse()? {
         cli::ParseOutput::HelpOrVersion => Ok(ExitCode::SUCCESS),
-        cli::ParseOutput::Run(None) => {
-            cli::print_usage();
-            Ok(ExitCode::SUCCESS)
-        }
-        cli::ParseOutput::Run(Some(command)) => match command {
+        cli::ParseOutput::Run(command) => match command {
             cli::Command::Check => commands::check(),
             cli::Command::Fix => commands::fix(),
         },

@@ -4,13 +4,20 @@ use clap::{CommandFactory, Parser, Subcommand};
 use std::io;
 
 pub enum ParseOutput {
-    Run(Option<Command>),
+    Run(Command),
     HelpOrVersion,
 }
 
 pub fn parse() -> Result<ParseOutput> {
     match Cli::try_parse() {
-        Ok(cli) => Ok(ParseOutput::Run(cli.command)),
+        Ok(cli) => {
+            if let Some(cmd) = cli.command {
+                Ok(ParseOutput::Run(cmd))
+            } else {
+                print_usage();
+                Ok(ParseOutput::HelpOrVersion)
+            }
+        }
         Err(err)
             if matches!(
                 err.kind(),
