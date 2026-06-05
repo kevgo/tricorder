@@ -15,11 +15,11 @@ fn main() -> ExitCode {
 }
 
 fn inner() -> error::Result<ExitCode> {
-    match cli::parse()? {
-        cli::ParseOutput::HelpOrVersion => Ok(ExitCode::SUCCESS),
-        cli::ParseOutput::Run(command) => match command {
-            cli::Command::Check => commands::check(),
-            cli::Command::Fix => commands::fix(),
-        },
+    let Some(cmd) = cli::parse()? else {
+        return Ok(ExitCode::SUCCESS);
+    };
+    match cmd {
+        cli::Command::Check => commands::check(),
+        cli::Command::Fix => commands::fix(),
     }
 }

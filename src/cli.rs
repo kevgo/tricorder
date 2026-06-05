@@ -3,26 +3,21 @@ use clap::error::ErrorKind;
 use clap::{CommandFactory, Parser, Subcommand};
 use std::io;
 
-pub enum ParseOutput {
-    Run(Command),
-    HelpOrVersion,
-}
-
-pub fn parse() -> Result<ParseOutput> {
+pub fn parse() -> Result<Option<Command>> {
     match Cli::try_parse() {
         Ok(cli) => {
             if let Some(cmd) = cli.command {
-                Ok(ParseOutput::Run(cmd))
+                Ok(Some(cmd))
             } else {
+                // no command given
                 print_usage();
-                Ok(ParseOutput::HelpOrVersion)
+                Ok(None)
             }
         }
         Err(err) => match err.kind() {
             ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
-                err.print()
-                    .map_err(|e| UserError::CLI { msg: e.to_string() })?;
-                Ok(ParseOutput::HelpOrVersion)
+                let _ = err.print();
+                Ok(None)
             }
             _ => Err(UserError::CLI {
                 msg: err.to_string(),
