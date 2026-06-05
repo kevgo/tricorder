@@ -18,19 +18,16 @@ pub fn parse() -> Result<ParseOutput> {
                 Ok(ParseOutput::HelpOrVersion)
             }
         }
-        Err(err)
-            if matches!(
-                err.kind(),
-                ErrorKind::DisplayHelp | ErrorKind::DisplayVersion
-            ) =>
-        {
-            err.print()
-                .map_err(|e| UserError::CLI { msg: e.to_string() })?;
-            Ok(ParseOutput::HelpOrVersion)
-        }
-        Err(err) => Err(UserError::CLI {
-            msg: err.to_string(),
-        }),
+        Err(err) => match err.kind() {
+            ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
+                err.print()
+                    .map_err(|e| UserError::CLI { msg: e.to_string() })?;
+                Ok(ParseOutput::HelpOrVersion)
+            }
+            _ => Err(UserError::CLI {
+                msg: err.to_string(),
+            }),
+        },
     }
 }
 
