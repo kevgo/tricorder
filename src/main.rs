@@ -4,6 +4,8 @@ mod cli;
 mod commands;
 mod error;
 
+use cli::Command;
+
 fn main() -> ExitCode {
     match inner() {
         Ok(exitcode) => exitcode,
@@ -15,11 +17,11 @@ fn main() -> ExitCode {
 }
 
 fn inner() -> error::Result<ExitCode> {
-    let Some(cmd) = cli::parse()? else {
+    let Some(command) = cli::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
-    match cmd {
-        cli::Command::Check => commands::check(),
-        cli::Command::Fix => commands::fix(),
+    match command {
+        Command::Check => commands::check(),
+        Command::Fix => commands::fix(),
     }
 }
