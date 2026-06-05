@@ -9,8 +9,8 @@ pub fn parse() -> Result<Option<Command>> {
             if let Some(cmd) = cli.command {
                 Ok(Some(cmd))
             } else {
-                // no command given
-                print_usage();
+                // no command given --> print help
+                let _ = Cli::command().write_help(&mut io::stderr());
                 Ok(None)
             }
         }
@@ -24,10 +24,6 @@ pub fn parse() -> Result<Option<Command>> {
             }),
         },
     }
-}
-
-pub fn print_usage() {
-    let _ = Cli::command().write_help(&mut io::stderr());
 }
 
 #[derive(Parser)]
