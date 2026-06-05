@@ -105,6 +105,12 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(have, want);
 }
 
+#[then("it prints nothing")]
+fn verify_output_nothing(world: &mut TricorderWorld) {
+    let have = world.output_trimmed();
+    pretty::assert_eq!(have, "");
+}
+
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
