@@ -28,7 +28,7 @@ pub fn parse() -> Result<ParseOutput> {
 }
 
 pub fn print_usage() {
-    let _ = Cli::command().write_long_help(&mut io::stderr());
+    let _ = Cli::command().write_help(&mut io::stderr());
 }
 
 #[derive(Parser)]
