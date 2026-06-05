@@ -1,7 +1,6 @@
 use crate::error::{Result, UserError};
 use clap::error::ErrorKind;
-use clap::{CommandFactory, Parser, Subcommand};
-use std::io;
+use clap::{Parser, Subcommand};
 
 pub fn parse() -> Result<Option<Command>> {
     match Cli::try_parse() {
@@ -10,7 +9,6 @@ pub fn parse() -> Result<Option<Command>> {
                 Ok(Some(cmd))
             } else {
                 // no command given --> print help
-                let _ = Cli::command().write_help(&mut io::stderr());
                 Ok(None)
             }
         }
