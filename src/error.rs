@@ -5,13 +5,13 @@ pub(crate) type Result<T> = core::result::Result<T, UserError>;
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
 pub(crate) enum UserError {
-    CLI { msg: String },
+    Cli { msg: String },
 }
 
 impl UserError {
     pub(crate) fn print(self) {
         match self {
-            UserError::CLI { msg } => eprintln!("{msg}"),
+            UserError::Cli { msg } => eprintln!("{msg}"),
         }
     }
 }

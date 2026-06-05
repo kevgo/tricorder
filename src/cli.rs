@@ -36,7 +36,7 @@ pub fn parse() -> Result<Option<Command>> {
                 let _ = err.print();
                 Ok(None)
             }
-            _ => Err(UserError::CLI {
+            _ => Err(UserError::Cli {
                 msg: err.to_string(),
             }),
         },
