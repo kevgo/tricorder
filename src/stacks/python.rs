@@ -1,3 +1,5 @@
+use crate::stacks::{Checker, Stack};
+
 pub struct PythonStack;
 
 impl Stack for PythonStack {

@@ -1,11 +1,21 @@
+use crate::error::Result;
+use crate::stacks::{Checker, Tool};
+use std::process::{ExitStatus, Output};
+
 pub struct Ruff;
 
-impl Checker for Ruff {
+impl Tool for Ruff {
     fn name(&self) -> &str {
         "ruff"
     }
+}
 
-    fn run(&self) -> Result<Output> {
-        Ok(Output::new())
+impl Checker for Ruff {
+    fn check(&self) -> Result<Output> {
+        Ok(Output {
+            status: ExitStatus::default(),
+            stdout: b"".to_vec(),
+            stderr: b"".to_vec(),
+        })
     }
 }

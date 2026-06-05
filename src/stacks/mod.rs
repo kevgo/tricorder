@@ -12,9 +12,8 @@ pub trait Tool {
     fn name(&self) -> &str;
 }
 
-pub trait Checker {
-    fn name(&self) -> &str;
-    fn run(&self) -> Result<Output>;
+pub trait Checker: Tool {
+    fn check(&self) -> Result<Output>;
 }
 
 pub fn discover() -> Vec<Box<dyn Stack>> {
