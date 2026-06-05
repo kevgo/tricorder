@@ -1,1 +1,1 @@
-mod ruff;
+pub mod ruff;
