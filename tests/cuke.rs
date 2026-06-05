@@ -2,7 +2,6 @@ use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
 use rand::RngExt;
-use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::process::Output;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -39,11 +38,13 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
-    fn output(&self) -> Cow<'_, str> {
-        match &self.output {
-            Some(output) => String::from_utf8_lossy(&output.stdout),
-            None => Default::default(),
-        }
+    fn output(&self) -> String {
+        let Some(output) = &self.output else {
+            return String::new();
+        };
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        format!("{stdout}{stderr}")
     }
 
     /// provides the textual output of the Atlanta run with whitespace trimmed from every line
@@ -110,10 +111,10 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
 }
 
 #[then(expr = "the output contains {string}")]
-fn output_contains(world: &mut TricorderWorld, text: String) {
-    let output = str::from_utf8(&world.output.as_ref().unwrap().stdout).unwrap();
-    if !output.contains(&text) {
-        panic!("output does not contain '{text}':\n{output}");
+fn output_contains(world: &mut TricorderWorld, want: String) {
+    let have = world.output();
+    if !have.contains(&want) {
+        panic!("output does not contain '{want}':\n{have}");
     }
 }
 

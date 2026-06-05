@@ -4,8 +4,10 @@
 name = "tricorder"
 version = "0.0.0"
 edition = "2024"
+description = "The all-in-one DevEx tool."
 
 [dependencies]
+clap = { version = "4.6.1", features = ["derive"] }
 
 [dev-dependencies]
 cucumber = "0.23.0"
@@ -23,9 +25,9 @@ tokio = { version = "1.52.3", features = [
 ] }
 
 [[test]]
-name = "cucumber" # the filename of the test
-harness = false   # allows Cucumber to print output instead of libtest
-test = false      # don't run this as part of "cargo test"
+name = "cuke"   # the filename of the test
+harness = false # allows Cucumber to print output instead of libtest
+test = false    # don't run this as part of "cargo test"
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
