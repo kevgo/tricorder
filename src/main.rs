@@ -1,6 +1,7 @@
 use std::process::ExitCode;
 
 mod checkers;
+mod filesystem;
 mod cli;
 mod commands;
 mod error;
@@ -22,9 +23,10 @@ fn inner() -> error::Result<ExitCode> {
     let Some(command) = cli::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
+    let files =
     let stacks = stacks::discover();
     match command {
-        Command::Check => commands::check(),
+        Command::Check => commands::check(stacks),
         Command::Fix => commands::fix(),
     }
 }

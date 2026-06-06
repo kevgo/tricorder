@@ -1,8 +1,5 @@
 mod python;
 
-use crate::error::Result;
-use std::process::Output;
-
 pub trait Stack {
     fn name(&self) -> &str;
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
@@ -13,7 +10,9 @@ pub trait Tool {
 }
 
 pub trait Checker: Tool {
-    fn check(&self) -> Result<Output>;
+    /// Provides the shell command to run this checker.
+    /// This command is executed inside a shell.
+    fn check(&self) -> String;
 }
 
 pub fn discover() -> Vec<Box<dyn Stack>> {
