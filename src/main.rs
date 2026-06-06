@@ -29,6 +29,10 @@ fn inner() -> error::Result<ExitCode> {
     eprintln!("ok");
     eprint!("discovering stacks ... ");
     let stacks = stacks::discover(all_stacks, &files);
+    if stacks.is_empty() {
+        eprintln!("no stacks found");
+        return Ok(ExitCode::SUCCESS);
+    }
     eprintln!("{} stacks found", stacks.len());
     for stack in &stacks {
         eprintln!("  - {}", stack);
