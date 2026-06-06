@@ -42,6 +42,9 @@ ps: test fix  ## pitstop
 
 test: lint  ## runs all tests
 
+unit:  # runs the unit tests
+	cargo test --locked
+
 update: ${RTA}  # updates all dependencies
 	cargo install cargo-edit
 	cargo upgrade --incompatible

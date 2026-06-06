@@ -18,3 +18,19 @@ impl Stack for PythonStack {
             .any(|file| file.extension().map_or(false, |ext| ext == "py"))
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    mod used {
+        use crate::stacks::Stack;
+        use crate::stacks::python::PythonStack;
+
+        #[test]
+        fn no_files() {
+            let stack = PythonStack {};
+            let files = vec!["main.py".into()];
+            assert!(stack.used(&files));
+        }
+    }
+}
