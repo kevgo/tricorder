@@ -29,6 +29,13 @@ mod tests {
         #[test]
         fn no_files() {
             let stack = PythonStack {};
+            let files = vec![];
+            assert!(!stack.used(&files));
+        }
+
+        #[test]
+        fn has_python_files() {
+            let stack = PythonStack {};
             let files = vec!["main.py".into()];
             assert!(stack.used(&files));
         }
