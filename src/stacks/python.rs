@@ -34,9 +34,16 @@ mod tests {
         }
 
         #[test]
-        fn has_python_files() {
+        fn top_level_python_file() {
             let stack = PythonStack {};
             let files = vec!["main.py".into()];
+            assert!(stack.used(&files));
+        }
+
+        #[test]
+        fn nested_python_file() {
+            let stack = PythonStack {};
+            let files = vec!["src/dir/main.py".into()];
             assert!(stack.used(&files));
         }
     }
