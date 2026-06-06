@@ -11,4 +11,10 @@ impl Stack for PythonStack {
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
         vec![Box::new(Ruff {})]
     }
+
+    fn used(&self, files: &[std::path::PathBuf]) -> bool {
+        files
+            .iter()
+            .any(|file| file.extension().map_or(false, |ext| ext == "py"))
+    }
 }
