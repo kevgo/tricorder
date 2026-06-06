@@ -29,9 +29,13 @@ impl TricorderWorld {
     fn new() -> Self {
         let root_dir = tmp_dir();
         let mock_bin_dir = root_dir.join("bin");
-        std::fs::create_dir(&mock_bin_dir).unwrap();
+        std::fs::create_dir(&mock_bin_dir).expect(&format!(
+            "cannot create directory '{}'",
+            mock_bin_dir.display()
+        ));
         let code_dir = root_dir.join("code");
-        std::fs::create_dir(&mock_bin_dir).unwrap();
+        std::fs::create_dir(&code_dir)
+            .expect(&format!("cannot create directory '{}'", code_dir.display()));
         Self {
             root_dir,
             mock_bin_dir,
@@ -71,14 +75,12 @@ impl TricorderWorld {
 }
 
 #[given(expr = "a file {string} with content:")]
-async fn a_file_with_content(
-    world: &mut TricorderWorld,
-    step: &Step,
-    filename: String,
-) -> io::Result<()> {
+async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.code_dir.join(filename);
-    fs::write(filepath, content.as_bytes()).await
+    fs::write(&filepath, content.as_bytes())
+        .await
+        .expect(&format!("cannot write to file '{}'", filepath.display()));
 }
 
 #[given(expr = "a tool {string}")]
@@ -99,7 +101,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     let mut executable = args.next().expect("executable is required");
     let mut _string = String::new();
     if executable == "tricorder" {
-        executable = "../../../target/debug/tricorder";
+        executable = "../../target/debug/tricorder";
         if env::consts::OS == "windows" {
             _string = format!("{executable}.exe");
             executable = &_string;
