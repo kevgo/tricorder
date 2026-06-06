@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::path::PathBuf;
 
 use crate::stacks::python::PythonStack;
@@ -14,6 +15,12 @@ pub trait Stack {
 
     /// provides all checkers that Tricorder can run for this stack
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
+}
+
+impl Display for Box<dyn Stack> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.name())
+    }
 }
 
 /// a tool (checker or fixer) that Tricorder can run

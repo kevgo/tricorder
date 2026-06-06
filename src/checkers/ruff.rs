@@ -1,6 +1,4 @@
-use crate::error::Result;
 use crate::stacks::{Checker, Tool};
-use std::process::{ExitStatus, Output};
 
 pub struct Ruff;
 
@@ -12,10 +10,6 @@ impl Tool for Ruff {
 
 impl Checker for Ruff {
     fn check_command(&self) -> String {
-        Ok(Output {
-            status: ExitStatus::default(),
-            stdout: b"".to_vec(),
-            stderr: b"".to_vec(),
-        })
+        "ruff check".to_string()
     }
 }
