@@ -24,7 +24,7 @@ pub trait Tool {
 /// a checker that Tricorder can run
 pub trait Checker: Tool {
     /// Provides the shell command to run this checker.
-    fn check(&self) -> String;
+    fn check_command(&self) -> String;
 }
 
 /// provides all stacks that Tricorder supports

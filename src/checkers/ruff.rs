@@ -11,7 +11,7 @@ impl Tool for Ruff {
 }
 
 impl Checker for Ruff {
-    fn check(&self) -> String {
+    fn check_command(&self) -> String {
         Ok(Output {
             status: ExitStatus::default(),
             stdout: b"".to_vec(),
