@@ -6,5 +6,11 @@ Feature: checking a codebase containing Python code
       print("Hello, world!")
       """
     When executing "tricorder check"
-    Then it prints nothing
+    Then it prints:
+      """
+      discovering files ... ok
+      discovering stacks ... 1 stacks found
+        - python
+      running 1 tools ...
+      """
     And the exit code is 0
