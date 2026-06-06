@@ -12,8 +12,14 @@ use tokio::{fs, io};
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
-    /// the directory containing the test files of the current scenario
-    dir: PathBuf,
+    /// the directory containing the test files for the current scenario
+    root_dir: PathBuf,
+
+    /// the directory containing the mock binaries for the current scenario
+    mock_bin_dir: PathBuf,
+
+    /// the directory containing the source code for the current scenario
+    code_dir: PathBuf,
 
     /// the result of running Tricorder
     output: Option<Output>,
@@ -21,8 +27,13 @@ struct TricorderWorld {
 
 impl TricorderWorld {
     fn new() -> Self {
+        let root_dir = tmp_dir();
+        let mock_bin_dir = root_dir.join("bin");
+        let code_dir = root_dir.join("code");
         Self {
-            dir: tmp_dir(),
+            root_dir,
+            mock_bin_dir,
+            code_dir,
             output: None,
         }
     }
@@ -64,7 +75,20 @@ async fn a_file_with_content(
     filename: String,
 ) -> io::Result<()> {
     let content = step.docstring.as_ref().unwrap().trim();
-    create_file(&filename, content, &world.dir).await
+    let filepath = world.code_dir.join(filename);
+    fs::write(filepath, content.as_bytes()).await
+}
+
+#[given(expr = "a tool {string}")]
+async fn a_tool(world: &mut TricorderWorld, name: String) -> io::Result<()> {
+    let content = format!(
+        r#"
+#!/bin/sh
+
+echo running {name}"#
+    );
+    let filepath = world.mock_bin_dir.join(name);
+    fs::write(filepath, content.as_bytes()).await
 }
 
 #[when(expr = "executing {string}")]
@@ -79,7 +103,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
             executable = &_string;
         }
         _string = world
-            .dir
+            .root_dir
             .join(executable)
             .canonicalize()
             .unwrap()
@@ -87,10 +111,13 @@ async fn executing(world: &mut TricorderWorld, command: String) {
             .to_string();
         executable = &_string;
     }
+    let env_paths = env::var("PATH").unwrap();
+    let path_with_mocks = format!("{}:{}", world.mock_bin_dir.to_string_lossy(), env_paths);
     world.output = Some(
         Command::new(executable)
             .args(args)
-            .current_dir(&world.dir)
+            .current_dir(&world.code_dir)
+            .env("PATH", &path_with_mocks)
             .output()
             .await
             .expect(&format!("cannot find the '{executable}' executable")),
@@ -139,11 +166,6 @@ fn tmp_dir() -> PathBuf {
     let dir = cwd.join("tmp").join(format!("{}-{}", timestamp, rand));
     std::fs::create_dir_all(&dir).unwrap();
     dir
-}
-
-async fn create_file(filename: &str, content: &str, dir: &Path) -> io::Result<()> {
-    let filepath = dir.join(filename);
-    fs::write(filepath, content.as_bytes()).await
 }
 
 #[tokio::main(flavor = "current_thread")]
