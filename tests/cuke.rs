@@ -2,7 +2,7 @@ use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
 use rand::RngExt;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Output;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::{env, str};
@@ -29,7 +29,9 @@ impl TricorderWorld {
     fn new() -> Self {
         let root_dir = tmp_dir();
         let mock_bin_dir = root_dir.join("bin");
+        std::fs::create_dir(&mock_bin_dir).unwrap();
         let code_dir = root_dir.join("code");
+        std::fs::create_dir(&mock_bin_dir).unwrap();
         Self {
             root_dir,
             mock_bin_dir,
@@ -94,10 +96,10 @@ echo running {name}"#
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
-    let mut executable = args.next().unwrap();
+    let mut executable = args.next().expect("executable is required");
     let mut _string = String::new();
     if executable == "tricorder" {
-        executable = "../../target/debug/tricorder";
+        executable = "../../../target/debug/tricorder";
         if env::consts::OS == "windows" {
             _string = format!("{executable}.exe");
             executable = &_string;
@@ -112,7 +114,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         executable = &_string;
     }
     let env_paths = env::var("PATH").unwrap();
-    let path_with_mocks = format!("{}:{}", world.mock_bin_dir.to_string_lossy(), env_paths);
+    let path_with_mocks = format!("{} {}", world.mock_bin_dir.to_string_lossy(), env_paths);
     world.output = Some(
         Command::new(executable)
             .args(args)
