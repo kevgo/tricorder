@@ -43,8 +43,15 @@ mod tests {
         #[test]
         fn nested_python_file() {
             let stack = PythonStack {};
-            let files = vec!["src/dir/main.py".into()];
+            let files = vec!["other.text".into(), "src/dir/main.py".into()];
             assert!(stack.used(&files));
+        }
+
+        #[test]
+        fn no_python_files() {
+            let stack = PythonStack {};
+            let files = vec!["src/dir/main.txt".into(), "other.text".into()];
+            assert!(!stack.used(&files));
         }
     }
 }
