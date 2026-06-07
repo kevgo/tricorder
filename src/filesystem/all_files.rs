@@ -16,6 +16,7 @@ fn collect_files(dir: &Path, result: &mut Vec<PathBuf>) {
             continue;
         };
         let path = entry.path();
+        // TODO: follow symlinks
         if file_type.is_dir() {
             collect_files(&path, result);
         } else if file_type.is_file() {
