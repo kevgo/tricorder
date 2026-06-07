@@ -5,7 +5,6 @@ Feature: checking a codebase containing Python code
       """
       print("Hello, world!")
       """
-    And a tool "ruff"
     When executing "tricorder check"
     Then it prints:
       """
