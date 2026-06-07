@@ -23,10 +23,9 @@ impl Stack for PythonStack {
 mod tests {
 
     mod used {
-        use maplit::hashmap;
-
         use crate::stacks::Stack;
         use crate::stacks::python::PythonStack;
+        use maplit::hashmap;
 
         #[test]
         fn used() {
