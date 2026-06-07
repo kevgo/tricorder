@@ -115,13 +115,10 @@ async fn executing(world: &mut TricorderWorld, command: String) {
             .to_string();
         executable = &_string;
     }
-    let env_paths = env::var("PATH").unwrap();
-    let path_with_mocks = format!("{} {}", world.mock_bin_dir.to_string_lossy(), env_paths);
     world.output = Some(
         Command::new(executable)
             .args(args)
             .current_dir(&world.code_dir)
-            .env("PATH", &path_with_mocks)
             .output()
             .await
             .expect(&format!("cannot find the '{executable}' executable")),

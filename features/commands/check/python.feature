@@ -9,9 +9,12 @@ Feature: checking a codebase containing Python code
     When executing "tricorder check"
     Then it prints:
       """
+      echo hello
+      hello
       discovering files ... ok
       discovering stacks ... 1 stacks found
         - python
       running 1 tools ...
+      ok
       """
     And the exit code is 0

@@ -31,7 +31,8 @@ pub trait Tool {
 /// a checker that Tricorder can run
 pub trait Checker: Tool {
     /// Provides the shell command to run this checker.
-    fn check_command(&self) -> String;
+    // TODO: this should return something that runs the command via RTA
+    fn check_command(&self) -> conc::Executable;
 }
 
 /// provides all stacks that Tricorder supports

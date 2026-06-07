@@ -9,7 +9,8 @@ impl Tool for Ruff {
 }
 
 impl Checker for Ruff {
-    fn check_command(&self) -> String {
-        "ruff check".to_string()
+    fn check_command(&self) -> conc::Executable {
+        // TODO: run this via RTA
+        conc::shell_executable("echo hello")
     }
 }

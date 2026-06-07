@@ -3,15 +3,15 @@ use crate::stacks::Stack;
 use std::process::ExitCode;
 
 pub fn check(stacks: &[Box<dyn Stack>]) -> error::Result<ExitCode> {
-    let mut commands = Vec::new();
+    let mut executables = Vec::new();
     for stack in stacks {
         for checker in stack.checkers() {
-            commands.push(checker.check_command());
+            executables.push(checker.check_command());
         }
     }
-    eprintln!("running {} tools ... ", commands.len());
+    eprintln!("running {} tools ... ", executables.len());
     let exit_code = conc::run(conc::RunArgs {
-        commands,
+        executables,
         error_on_output: false,
         show: conc::Show::All,
     });
