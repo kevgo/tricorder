@@ -9,12 +9,11 @@ pub fn check(stacks: &[Box<dyn Stack>]) -> error::Result<ExitCode> {
             executables.push(checker.check_command());
         }
     }
-    eprintln!("running {} tools ... ", executables.len());
+    eprintln!("running {} tools", executables.len());
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
         show: conc::Show::All,
     });
-    eprintln!("ok");
     Ok(exit_code)
 }

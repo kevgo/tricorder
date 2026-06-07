@@ -14,7 +14,6 @@ Feature: checking a codebase containing Python code
       discovering files ... 1
       discovering stacks ... 1
       - python
-      running 1 tools ...
-      ok
+      running 1 tools
       """
     And the exit code is 0
