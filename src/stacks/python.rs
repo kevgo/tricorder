@@ -23,35 +23,23 @@ impl Stack for PythonStack {
 mod tests {
 
     mod used {
+        use maplit::hashmap;
+
         use crate::stacks::Stack;
         use crate::stacks::python::PythonStack;
 
         #[test]
-        fn no_files() {
+        fn used() {
+            let tests = hashmap! {
+                vec![] => false,
+                vec!["main.py".into()] => true,
+                vec!["other.text".into(), "src/dir/main.py".into()] => true,
+            };
             let stack = PythonStack {};
-            let files = vec![];
-            assert!(!stack.used(&files));
-        }
-
-        #[test]
-        fn top_level_python_file() {
-            let stack = PythonStack {};
-            let files = vec!["main.py".into()];
-            assert!(stack.used(&files));
-        }
-
-        #[test]
-        fn nested_python_file() {
-            let stack = PythonStack {};
-            let files = vec!["other.text".into(), "src/dir/main.py".into()];
-            assert!(stack.used(&files));
-        }
-
-        #[test]
-        fn no_python_files() {
-            let stack = PythonStack {};
-            let files = vec!["src/dir/main.txt".into(), "other.text".into()];
-            assert!(!stack.used(&files));
+            for (give, want) in tests.iter() {
+                let have = stack.used(give);
+                assert_eq!(&have, want, "{give:?} -> {have:?}");
+            }
         }
     }
 }
