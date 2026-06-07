@@ -12,6 +12,7 @@ pub(crate) fn all_files() -> Vec<PathBuf> {
 fn collect_files(dir: &Path, result: &mut Vec<PathBuf>) {
     let Ok(entries) = dir.read_dir() else { return };
     for entry in entries.flatten() {
+        // TODO: ignore .gitignored files
         let Ok(file_type) = entry.file_type() else {
             continue;
         };
