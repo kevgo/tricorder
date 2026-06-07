@@ -40,7 +40,7 @@ setup-githooks: ${RTA}  ## installs a Git pre-commit hook that auto-formats code
 
 ps: test fix  ## pitstop
 
-test: lint  ## runs all tests
+test: unit lint  ## runs all tests
 
 unit:  # runs the unit tests
 	cargo test --locked
