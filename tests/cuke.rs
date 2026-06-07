@@ -6,20 +6,14 @@ use std::path::PathBuf;
 use std::process::Output;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::{env, str};
+use tokio::fs;
 use tokio::process::Command;
-use tokio::{fs, io};
 
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
     /// the directory containing the test files for the current scenario
-    root_dir: PathBuf,
-
-    /// the directory containing the mock binaries for the current scenario
-    mock_bin_dir: PathBuf,
-
-    /// the directory containing the source code for the current scenario
-    code_dir: PathBuf,
+    dir: PathBuf,
 
     /// the result of running Tricorder
     output: Option<Output>,
@@ -27,19 +21,8 @@ struct TricorderWorld {
 
 impl TricorderWorld {
     fn new() -> Self {
-        let root_dir = tmp_dir();
-        let mock_bin_dir = root_dir.join("bin");
-        std::fs::create_dir(&mock_bin_dir).expect(&format!(
-            "cannot create directory '{}'",
-            mock_bin_dir.display()
-        ));
-        let code_dir = root_dir.join("code");
-        std::fs::create_dir(&code_dir)
-            .expect(&format!("cannot create directory '{}'", code_dir.display()));
         Self {
-            root_dir,
-            mock_bin_dir,
-            code_dir,
+            dir: tmp_dir(),
             output: None,
         }
     }
@@ -77,22 +60,10 @@ impl TricorderWorld {
 #[given(expr = "a file {string} with content:")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.code_dir.join(filename);
+    let filepath = world.dir.join(filename);
     fs::write(&filepath, content.as_bytes())
         .await
         .expect(&format!("cannot write to file '{}'", filepath.display()));
-}
-
-#[given(expr = "a tool {string}")]
-async fn a_tool(world: &mut TricorderWorld, name: String) -> io::Result<()> {
-    let content = format!(
-        r#"
-#!/bin/sh
-
-echo running {name}"#
-    );
-    let filepath = world.mock_bin_dir.join(name);
-    fs::write(filepath, content.as_bytes()).await
 }
 
 #[when(expr = "executing {string}")]
@@ -107,7 +78,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
             executable = &_string;
         }
         _string = world
-            .root_dir
+            .dir
             .join(executable)
             .canonicalize()
             .unwrap()
@@ -118,7 +89,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     world.output = Some(
         Command::new(executable)
             .args(args)
-            .current_dir(&world.code_dir)
+            .current_dir(&world.dir)
             .output()
             .await
             .expect(&format!("cannot find the '{executable}' executable")),
