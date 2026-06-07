@@ -26,7 +26,7 @@ fn inner() -> error::Result<ExitCode> {
     let all_stacks = stacks::all();
     eprint!("discovering files ... ");
     let files = filesystem::all_files();
-    eprintln!("ok");
+    eprintln!("{}", files.len());
     eprint!("discovering stacks ... ");
     let stacks = stacks::discover(all_stacks, &files);
     if stacks.is_empty() {

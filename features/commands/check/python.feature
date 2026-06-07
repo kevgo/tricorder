@@ -11,7 +11,7 @@ Feature: checking a codebase containing Python code
       """
       echo hello
       hello
-      discovering files ... ok
+      discovering files ... 1
       discovering stacks ... 1 stacks found
         - python
       running 1 tools ...
