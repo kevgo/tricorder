@@ -1,4 +1,4 @@
-use crate::checkers::ruff::Ruff;
+use crate::apps::ruff::Ruff;
 use crate::stacks::{Checker, Stack};
 
 pub struct PythonStack;
