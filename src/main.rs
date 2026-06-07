@@ -34,7 +34,7 @@ fn inner() -> error::Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     for stack in &stacks {
-        eprintln!("- {}", stack);
+        eprintln!("- {stack}");
     }
     match command {
         Command::Check => commands::check(&stacks),

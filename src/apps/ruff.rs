@@ -3,7 +3,7 @@ use crate::stacks::{Checker, Tool};
 pub struct Ruff;
 
 impl Tool for Ruff {
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "ruff"
     }
 }

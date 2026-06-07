@@ -4,7 +4,7 @@ use crate::stacks::{Checker, Stack};
 pub struct PythonStack;
 
 impl Stack for PythonStack {
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "python"
     }
 
@@ -15,7 +15,7 @@ impl Stack for PythonStack {
     fn used(&self, files: &[std::path::PathBuf]) -> bool {
         files
             .iter()
-            .any(|file| file.extension().map_or(false, |ext| ext == "py"))
+            .any(|file| file.extension().is_some_and(|ext| ext == "py"))
     }
 }
 

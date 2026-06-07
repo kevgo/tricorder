@@ -10,10 +10,7 @@ pub(crate) fn all_files() -> Vec<PathBuf> {
 }
 
 fn collect_files(dir: &Path, result: &mut Vec<PathBuf>) {
-    let entries = match dir.read_dir() {
-        Ok(entries) => entries,
-        Err(_) => return,
-    };
+    let Ok(entries) = dir.read_dir() else { return };
     for entry in entries.flatten() {
         let Ok(file_type) = entry.file_type() else {
             continue;
