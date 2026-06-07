@@ -8,6 +8,7 @@ mod filesystem;
 mod stacks;
 
 use cli::Command;
+use itertools::Itertools;
 
 fn main() -> ExitCode {
     match inner() {
@@ -29,13 +30,12 @@ fn inner() -> error::Result<ExitCode> {
     eprintln!("{}", files.len());
     eprint!("discovering stacks ... ");
     let stacks = stacks::discover(all_stacks, &files);
-    eprintln!("{}", stacks.len());
     if stacks.is_empty() {
+        eprintln!("0");
         return Ok(ExitCode::SUCCESS);
     }
-    for stack in &stacks {
-        eprintln!("- {stack}");
-    }
+    let stack_names = stacks.iter().map(|stack| stack.name()).join(", ");
+    eprintln!("{stack_names}");
     match command {
         Command::Check => commands::check(&stacks),
         Command::Fix => commands::fix(),

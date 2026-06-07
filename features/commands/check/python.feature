@@ -12,8 +12,7 @@ Feature: checking a codebase containing Python code
       echo hello
       hello
       discovering files ... 1
-      discovering stacks ... 1
-      - python
+      discovering stacks ... python
       running 1 tools
       """
     And the exit code is 0
