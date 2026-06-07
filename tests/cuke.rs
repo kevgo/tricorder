@@ -2,17 +2,17 @@ use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
 use rand::RngExt;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Output;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::{env, str};
+use tokio::fs;
 use tokio::process::Command;
-use tokio::{fs, io};
 
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
-    /// the directory containing the test files of the current scenario
+    /// the directory containing the test files for the current scenario
     dir: PathBuf,
 
     /// the result of running Tricorder
@@ -58,19 +58,18 @@ impl TricorderWorld {
 }
 
 #[given(expr = "a file {string} with content:")]
-async fn a_file_with_content(
-    world: &mut TricorderWorld,
-    step: &Step,
-    filename: String,
-) -> io::Result<()> {
+async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
-    create_file(&filename, content, &world.dir).await
+    let filepath = world.dir.join(filename);
+    fs::write(&filepath, content.as_bytes())
+        .await
+        .expect(&format!("cannot write to file '{}'", filepath.display()));
 }
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
-    let mut executable = args.next().unwrap();
+    let mut executable = args.next().expect("executable is required");
     let mut _string = String::new();
     if executable == "tricorder" {
         executable = "../../target/debug/tricorder";
@@ -105,6 +104,12 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(have, want);
 }
 
+#[then("it prints nothing")]
+fn verify_output_nothing(world: &mut TricorderWorld) {
+    let have = world.output_trimmed();
+    pretty::assert_eq!(have, "");
+}
+
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
@@ -133,11 +138,6 @@ fn tmp_dir() -> PathBuf {
     let dir = cwd.join("tmp").join(format!("{}-{}", timestamp, rand));
     std::fs::create_dir_all(&dir).unwrap();
     dir
-}
-
-async fn create_file(filename: &str, content: &str, dir: &Path) -> io::Result<()> {
-    let filepath = dir.join(filename);
-    fs::write(filepath, content.as_bytes()).await
 }
 
 #[tokio::main(flavor = "current_thread")]
