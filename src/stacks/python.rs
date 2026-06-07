@@ -35,7 +35,7 @@ mod tests {
                 vec!["other.text".into(), "src/dir/main.py".into()] => true,
             };
             let stack = PythonStack {};
-            for (give, want) in tests.into_iter() {
+            for (give, want) in tests {
                 let have = stack.used(&give);
                 assert_eq!(have, want, "{give:?} -> {have:?}");
             }
