@@ -22,13 +22,14 @@ impl Checker for Ruff {
                 version: Some("0.15.16".into()),
                 from_source: false,
                 include_apps: vec![],
-                optional: false,
+                optional: true,
                 verbose: false,
             },
             apps,
         )
         .map_err(|err| UserError::Rta { err })?;
         let Some(command) = command else {
+            // Ruff is not available for this platform --> don't run it
             return Ok(None);
         };
         Ok(Some(conc::Executable {
