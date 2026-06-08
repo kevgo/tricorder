@@ -18,6 +18,6 @@ Feature: ignore files in .gitignore
     Then it prints:
       """
       discovering files ... 0
-      discovering stacks ...0
+      discovering stacks ... 0
       """
     And the exit code is 1
