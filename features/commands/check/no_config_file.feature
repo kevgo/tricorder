@@ -1,9 +1,9 @@
-Feature: checking a codebase containing Python code
+Feature: run without config file
 
-  Scenario: checking a codebase with Python
-    Given a file "main.py" with content:
+  Scenario: run without config file
+    Given a file "test.py" with content:
       """
-      print("Hello, world!")
+      print("")
       """
     When executing "tricorder check"
     Then the output contains
@@ -13,7 +13,7 @@ Feature: checking a codebase containing Python code
       added ruff@0.15.16 to run-that-app
       running 1 tools
       ruff --check
-      Would reformat: main.py
+      Would reformat: test.py
       1 file would be reformatted
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       """
