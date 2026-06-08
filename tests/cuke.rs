@@ -35,11 +35,11 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
-    fn output(&self) -> String {
-        let Some(result) = &self.result else {
-            return String::new();
+    fn output(&self) -> &str {
+        if let Some(result) = &self.result {
+            return str::from_utf8(&result.output).unwrap();
         };
-        String::from_utf8_lossy(&result.output).into_owned()
+        return "";
     }
 
     /// provides the textual output of the Atlanta run with whitespace trimmed from every line
