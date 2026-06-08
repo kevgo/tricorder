@@ -11,7 +11,7 @@ pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error
             }
         }
     }
-    eprintln!("running {} tools", executables.len());
+    println!("running {} tools", executables.len());
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,

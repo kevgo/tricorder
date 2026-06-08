@@ -8,10 +8,10 @@ Feature: checking a codebase containing Python code
     When executing "tricorder check"
     Then it prints:
       """
-      ruff --check
-      Would reformat: main.py
       discovering files ... 1
       discovering stacks ... python
       running 1 tools
+      ruff --check
+      Would reformat: main.py
       """
     And the exit code is 1

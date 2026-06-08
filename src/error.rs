@@ -12,7 +12,7 @@ pub enum UserError {
 impl UserError {
     pub(crate) fn print(self) {
         match self {
-            UserError::Cli { msg } => eprintln!("{msg}"),
+            UserError::Cli { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }
     }
