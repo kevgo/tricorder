@@ -1,11 +1,22 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
-use std::process::Output;
+use std::io::Read;
+use std::process::ExitStatus;
 use std::time::Duration;
 use std::{env, str};
 use tokio::fs;
 use tokio::process::Command;
+
+/// the result of running Tricorder
+#[derive(Debug)]
+struct CommandResult {
+    /// the exit status of the run
+    status: ExitStatus,
+
+    /// STDOUT and STDERR merged in the exact order the application printed them
+    output: Vec<u8>,
+}
 
 #[derive(Debug, World)]
 #[world(init = Self::new)]
@@ -14,7 +25,7 @@ struct TricorderWorld {
     dir: tempfile::TempDir,
 
     /// the result of running Tricorder
-    output: Option<Output>,
+    output: Option<CommandResult>,
 }
 
 impl TricorderWorld {
@@ -30,19 +41,17 @@ impl TricorderWorld {
     /// provides the exit code of the Atlanta run
     fn exit_code(&self) -> i32 {
         match &self.output {
-            Some(output) => output.status.code().unwrap(),
+            Some(result) => result.status.code().unwrap(),
             None => panic!(),
         }
     }
 
     /// provides the textual output of the Atlanta run
     fn output(&self) -> String {
-        let Some(output) = &self.output else {
+        let Some(result) = &self.output else {
             return String::new();
         };
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        format!("{stdout}{stderr}")
+        String::from_utf8_lossy(&result.output).into_owned()
     }
 
     /// provides the textual output of the Atlanta run with whitespace trimmed from every line
@@ -93,14 +102,28 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
-    world.output = Some(
-        Command::new(absolute_path)
-            .args(args)
-            .current_dir(&world.dir.path())
-            .output()
-            .await
-            .expect(&format!("cannot find the '{executable}' executable")),
-    );
+    // Capture STDOUT and STDERR through a single shared OS pipe so that the two
+    // streams are interleaved in the exact order the application wrote to them,
+    // rather than being separated into two independent buffers.
+    let (mut reader, writer) = os_pipe::pipe().expect("cannot create the output pipe");
+    let writer_clone = writer.try_clone().expect("cannot clone the output pipe writer");
+    let mut cmd = Command::new(absolute_path);
+    cmd.args(args)
+        .current_dir(world.dir.path())
+        .stdout(writer)
+        .stderr(writer_clone);
+    let mut child = cmd
+        .spawn()
+        .expect(&format!("cannot find the '{executable}' executable"));
+    // Drop our handles to the write ends of the pipe (including the copies held
+    // by the Command) so that the read end observes EOF once the child exits.
+    drop(cmd);
+    let mut output = Vec::new();
+    reader
+        .read_to_end(&mut output)
+        .expect("cannot read the command output");
+    let status = child.wait().await.expect("the command failed to run");
+    world.output = Some(CommandResult { status, output });
 }
 
 #[then("it prints:")]
