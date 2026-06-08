@@ -66,8 +66,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
-    let mut executable = args.next().expect("executable is required");
-    let mut _string = String::new();
+    let executable = args.next().expect("executable is required");
     if executable != "tricorder" {
         panic!("can only execute 'tricorder'");
     }
