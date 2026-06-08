@@ -14,11 +14,11 @@ impl Checker for Ruff {
         &self,
         apps: &rta::applications::Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
-        // in this case,
         let command = rta::get_cmd(
             &rta::applications::Ruff {},
             rta::GetCmdArgs {
                 app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
+                // TODO: don't hard-code the version here, use the one from the config
                 version: Some("0.15.16".into()),
                 from_source: false,
                 include_apps: vec![],
