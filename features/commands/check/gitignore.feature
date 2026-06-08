@@ -1,5 +1,6 @@
 Feature: ignore files in .gitignore
 
+  @this
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content:
       """
