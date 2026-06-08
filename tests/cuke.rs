@@ -77,15 +77,6 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
     // pause for 1 minute
     tokio::time::sleep(Duration::from_secs(60)).await;
 }
