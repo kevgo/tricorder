@@ -25,17 +25,17 @@ fn inner() -> error::Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     };
     let all_stacks = stacks::all();
-    eprint!("discovering files ... ");
+    print!("discovering files ... ");
     let files = filesystem::all_files();
-    eprintln!("{}", files.len());
-    eprint!("discovering stacks ... ");
+    println!("{}", files.len());
+    print!("discovering stacks ... ");
     let stacks = stacks::discover(all_stacks, &files);
     if stacks.is_empty() {
-        eprintln!("0");
+        println!("0");
         return Ok(ExitCode::SUCCESS);
     }
     let stack_names = stacks.iter().map(|stack| stack.name()).join(", ");
-    eprintln!("{stack_names}");
+    println!("{stack_names}");
     let apps = rta::applications::all();
     match command {
         Command::Check => commands::check(&stacks, &apps),
