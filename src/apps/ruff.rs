@@ -21,7 +21,7 @@ impl Checker for Ruff {
             match rta::get_cmd(
                 &ruff,
                 rta::GetCmdArgs {
-                    app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
+                    app_args: vec!["format".into(), "--check".into()],
                     version: None,
                     from_source: false,
                     include_apps: vec![],
