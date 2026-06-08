@@ -36,8 +36,9 @@ fn inner() -> error::Result<ExitCode> {
     }
     let stack_names = stacks.iter().map(|stack| stack.name()).join(", ");
     eprintln!("{stack_names}");
+    let apps = rta::applications::all();
     match command {
-        Command::Check => commands::check(&stacks),
+        Command::Check => commands::check(&stacks, &apps),
         Command::Fix => commands::fix(),
     }
 }

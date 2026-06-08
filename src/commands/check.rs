@@ -2,11 +2,11 @@ use crate::error;
 use crate::stacks::Stack;
 use std::process::ExitCode;
 
-pub fn check(stacks: &[Box<dyn Stack>]) -> error::Result<ExitCode> {
+pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error::Result<ExitCode> {
     let mut executables = Vec::new();
     for stack in stacks {
         for checker in stack.checkers() {
-            executables.push(checker.check_command());
+            executables.push(checker.check_command(apps));
         }
     }
     eprintln!("running {} tools", executables.len());
