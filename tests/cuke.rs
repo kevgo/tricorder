@@ -89,7 +89,10 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         panic!("can only execute 'tricorder'");
     }
     let cwd = env::current_dir().expect("cannot determine the current directory");
-    let absolute_path = cwd.join("target/debug/tricorder");
+    let mut absolute_path = cwd.join("target/debug/tricorder");
+    if std::env::consts::OS == "windows" {
+        absolute_path.set_extension("exe");
+    }
     world.output = Some(
         Command::new(absolute_path)
             .args(args)
