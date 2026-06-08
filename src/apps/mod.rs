@@ -40,16 +40,13 @@ pub(crate) fn get_check_command(
                         },
                         args.apps,
                     );
-                    match add_result {
-                        Ok(_) => {}
-                        Err(err) => {
-                            println!("error adding app to config file: {err:?}");
-                            match err {
-                                rta::error::UserError::CannotAccessConfigFile(msg) => {
-                                    println!("error: cannot access config file {msg:?}");
-                                }
-                                _ => return Err(UserError::Rta { err }),
+                    if let Err(err) = add_result {
+                        println!("error adding app to config file: {err:?}");
+                        match err {
+                            rta::error::UserError::CannotAccessConfigFile(msg) => {
+                                println!("error: cannot access config file {msg:?}");
                             }
+                            _ => return Err(UserError::Rta { err }),
                         }
                     }
                 }
