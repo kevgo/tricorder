@@ -8,16 +8,6 @@ use std::{env, str};
 use tokio::fs;
 use tokio::process::Command;
 
-/// the result of running Tricorder
-#[derive(Debug)]
-struct CommandResult {
-    /// the exit status of the run
-    status: ExitStatus,
-
-    /// STDOUT and STDERR merged in the exact order the application printed them
-    output: Vec<u8>,
-}
-
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
@@ -35,9 +25,7 @@ impl TricorderWorld {
             output: None,
         }
     }
-}
 
-impl TricorderWorld {
     /// provides the exit code of the Atlanta run
     fn exit_code(&self) -> i32 {
         match &self.output {
@@ -62,6 +50,16 @@ impl TricorderWorld {
             .map(|line| line.trim_end())
             .join("\n")
     }
+}
+
+/// the result of running Tricorder
+#[derive(Debug)]
+struct CommandResult {
+    /// the exit status of the run
+    status: ExitStatus,
+
+    /// STDOUT and STDERR merged in the exact order the application printed them
+    output: Vec<u8>,
 }
 
 #[given(expr = "a file {string} with content:")]
@@ -103,10 +101,9 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         absolute_path.set_extension("exe");
     }
     // Capture STDOUT and STDERR through a single shared OS pipe so that the two
-    // streams are interleaved in the exact order the application wrote to them,
-    // rather than being separated into two independent buffers.
+    // streams are interleaved in the exact order the application wrote to them.
     let (mut reader, writer) = os_pipe::pipe().expect("cannot create the output pipe");
-    let writer_clone = writer.try_clone().expect("cannot clone the output pipe writer");
+    let writer_clone = writer.try_clone().expect("clone output writer");
     let mut cmd = Command::new(absolute_path);
     cmd.args(args)
         .current_dir(world.dir.path())
