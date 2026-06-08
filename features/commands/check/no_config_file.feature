@@ -3,7 +3,7 @@ Feature: run without config file
   Scenario: run without config file
     Given a file "test.py" with content:
       """
-      print("Hello, world!")
+      print("")
       """
     When executing "tricorder check"
     Then the output contains
