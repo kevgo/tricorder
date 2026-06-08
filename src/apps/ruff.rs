@@ -44,20 +44,28 @@ impl Checker for Ruff {
                 Err(err) => {
                     println!("error: {err:?}");
                     match err {
-                        rta::error::UserError::CannotAccessConfigFile(_) => {
-                            println!("cannot access config file");
-                        }
                         rta::error::UserError::RunRequestMissingVersion { app: _ } => {
                             println!("ADDING APP TO CONFIG FILE");
                             // add the app to the config file
-                            rta::commands::add(
+                            let result = rta::commands::add(
                                 rta::commands::AddArgs {
                                     app_name: ruff.name(),
                                     verbose: true,
                                 },
                                 apps,
-                            )
-                            .map_err(|err| UserError::Rta { err })?;
+                            );
+                            match result {
+                                Ok(_) => continue,
+                                Err(err) => {
+                                    println!("error adding app to config file: {err:?}");
+                                    match err {
+                                        rta::error::UserError::CannotAccessConfigFile(msg) => {
+                                            println!("error: cannot access config file {msg:?}");
+                                        }
+                                        _ => return Err(UserError::Rta { err }),
+                                    }
+                                }
+                            }
                         }
                         _ => return Err(UserError::Rta { err }),
                     }
