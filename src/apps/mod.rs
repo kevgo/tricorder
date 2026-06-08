@@ -31,7 +31,6 @@ pub(crate) fn get_check_command(
                 }
                 None => return Ok(None),
             },
-
             Err(err) => match err {
                 rta::error::UserError::RunRequestMissingVersion { app: _ } => {
                     let result = rta::commands::add(
