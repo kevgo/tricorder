@@ -39,6 +39,5 @@ fn inner() -> error::Result<ExitCode> {
     let apps = rta::applications::all();
     match command {
         Command::Check => commands::check(&stacks, &apps),
-        Command::Fix => commands::fix(),
     }
 }

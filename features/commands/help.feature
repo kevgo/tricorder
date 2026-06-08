@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints:
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: check, fix, help]
+        [subcommands: check, help]
       
       Usage: tricorder <COMMAND>
       
@@ -23,7 +23,6 @@ Feature: Displaying help
       
       Commands:
         check  Runs all checkers and linters for all stacks
-        fix    Runs all automated code improvements for all stacks
         help   Print this message or the help of the given subcommand(s)
       
       Options:
@@ -42,7 +41,6 @@ Feature: Displaying help
       
       Commands:
         check  Runs all checkers and linters for all stacks
-        fix    Runs all automated code improvements for all stacks
         help   Print this message or the help of the given subcommand(s)
       
       Options:
@@ -61,7 +59,6 @@ Feature: Displaying help
       
       Commands:
         check  Runs all checkers and linters for all stacks
-        fix    Runs all automated code improvements for all stacks
         help   Print this message or the help of the given subcommand(s)
       
       Options:
