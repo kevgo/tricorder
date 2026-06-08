@@ -1,4 +1,4 @@
-use crate::apps::get_check_command;
+use crate::apps::{GetCheckCmdArgs, get_check_command};
 use crate::error::UserError;
 use crate::stacks::{Checker, Tool};
 
@@ -15,11 +15,11 @@ impl Checker for Ruff {
         &self,
         apps: &rta::applications::Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
-        get_check_command(
-            "ruff --check",
-            &rta::applications::Ruff {},
-            vec!["format".into(), "--check".into()],
+        get_check_command(&GetCheckCmdArgs {
+            executable_name: "ruff --check",
+            app: &rta::applications::Ruff {},
+            app_args: vec!["format", "--check"],
             apps,
-        )
+        })
     }
 }
