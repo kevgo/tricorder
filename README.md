@@ -1,10 +1,9 @@
 # Tricorder / Multi-Tool
 
-_The all-in-one DevEx tool._
+_The all-in-one linter._
 
-Tricorder helps you write
-or generate the highest software quality by running all the DevEx tools
-that check your software stack.
+Tricorder helps AI or you create the highest software quality by running all the
+DevEx tools that help improve software quality.
 
 - all the formatters and linters you need
 - always up to date
@@ -14,7 +13,7 @@ that check your software stack.
 ## Example
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
-- running `tricorder test` runs `biome check --error-on-warnings`, `pyright`,
+- running `tricorder check` runs `biome check --error-on-warnings`, `pyright`,
   and `ruff check --quiet`.
 - You don't need to download or install any of these tools.
   Multi-Tool does that for you.
