@@ -8,10 +8,10 @@ Feature: checking a codebase containing Python code
     When executing "tricorder check"
     Then it prints:
       """
-      echo hello
-      hello
+      ruff --check
+      Would reformat: main.py
       discovering files ... 1
       discovering stacks ... python
       running 1 tools
       """
-    And the exit code is 0
+    And the exit code is 1

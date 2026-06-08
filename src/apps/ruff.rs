@@ -14,13 +14,12 @@ impl Checker for Ruff {
         &self,
         apps: &rta::applications::Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
-        // ideally we call a `load_or_install_cmd` endpoint here instead of `get_cmd`
-        // so that the app is properly installed and available to run later
+        // in this case,
         let command = rta::get_cmd(
             &rta::applications::Ruff {},
             rta::GetCmdArgs {
                 app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
-                version: None,
+                version: Some("0.15.16".into()),
                 from_source: false,
                 include_apps: vec![],
                 optional: false,
