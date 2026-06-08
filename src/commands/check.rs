@@ -8,6 +8,8 @@ pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error
         for checker in stack.checkers() {
             if let Some(executable) = checker.check_command(apps)? {
                 executables.push(executable);
+            } else {
+                // this app is not available for this platform --> don't run it
             }
         }
     }

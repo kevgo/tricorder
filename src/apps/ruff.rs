@@ -29,7 +29,6 @@ impl Checker for Ruff {
         )
         .map_err(|err| UserError::Rta { err })?;
         let Some(command) = command else {
-            // Ruff is not available for this platform --> don't run it
             return Ok(None);
         };
         Ok(Some(conc::Executable {
