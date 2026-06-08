@@ -28,6 +28,7 @@ fn inner() -> error::Result<ExitCode> {
     print!("discovering files ... ");
     let files = filesystem::all_files();
     println!("{}", files.len());
+    println!("files: {:?}", files);
     print!("discovering stacks ... ");
     let stacks = stacks::discover(all_stacks, &files);
     if stacks.is_empty() {
