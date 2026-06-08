@@ -120,7 +120,7 @@ fn output_contains(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let have = world.output();
     if !have.contains(&want) {
-        panic!("output does not contain '{want}':\n{have}");
+        panic!("output does not contain the expected text\n\nWANT:\n{want}\n\nHAVE:\n{have}");
     }
 }
 

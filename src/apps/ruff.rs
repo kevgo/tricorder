@@ -1,3 +1,5 @@
+use rta::applications::AppDefinition;
+
 use crate::error::UserError;
 use crate::stacks::{Checker, Tool};
 
@@ -42,6 +44,14 @@ impl Checker for Ruff {
                 Err(err) => match err {
                     rta::error::UserError::MissingApplication => {
                         // add the app to the config file
+                        rta::commands::add(
+                            rta::commands::AddArgs {
+                                app_name: ruff.name(),
+                                verbose: true,
+                            },
+                            apps,
+                        )
+                        .map_err(|err| UserError::Rta { err })?;
                     }
                     _ => return Err(UserError::Rta { err }),
                 },
