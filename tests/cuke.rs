@@ -2,6 +2,7 @@ use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
 use std::process::Output;
+use std::time::Duration;
 use std::{env, str};
 use tokio::fs;
 use tokio::process::Command;
@@ -58,9 +59,26 @@ impl TricorderWorld {
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(filename);
+    let parent = filepath.parent().unwrap();
+    if parent != world.dir.path() {
+        fs::create_dir_all(parent)
+            .await
+            .expect(&format!("cannot create parent '{}'", parent.display()));
+    }
     fs::write(&filepath, content.as_bytes())
         .await
         .expect(&format!("cannot write to file '{}'", filepath.display()));
+}
+
+#[when(expr = "inspect the workspace")]
+async fn inspect_workspace(world: &mut TricorderWorld) {
+    // print visibly to the user even though this runs inside Cucumber
+    // repeating a few times to break out of the cucumber formatter that deletes the current line
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    // pause for 1 minute
+    tokio::time::sleep(Duration::from_secs(60)).await;
 }
 
 #[when(expr = "executing {string}")]
@@ -71,7 +89,10 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         panic!("can only execute 'tricorder'");
     }
     let cwd = env::current_dir().expect("cannot determine the current directory");
-    let absolute_path = cwd.join("target/debug/tricorder");
+    let mut absolute_path = cwd.join("target/debug/tricorder");
+    if std::env::consts::OS == "windows" {
+        absolute_path.set_extension("exe");
+    }
     world.output = Some(
         Command::new(absolute_path)
             .args(args)
