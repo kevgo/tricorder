@@ -10,8 +10,6 @@ Feature: run without config file
       """
       discovering files ... 1
       discovering stacks ... python
-      error: RunRequestMissingVersion { app: "ruff" }
-      ADDING APP TO CONFIG FILE
       added ruff@0.15.16 to run-that-app
       running 1 tools
       ruff --check
