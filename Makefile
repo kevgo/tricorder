@@ -12,6 +12,9 @@ build:  # builds the codebase
 cuke: build  # runs all end-to-end tests
 	cargo test --test=cuke
 
+cukethis: build  # runs only end-to-end tests with a @this tag
+	cargo test --test=cuke -- -t @this
+
 fix: ${RTA}  # runs all linters and auto-fixes
 	cargo +nightly fix --allow-dirty
 	cargo clippy --fix --allow-dirty
