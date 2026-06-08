@@ -1,10 +1,7 @@
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
-use rand::RngExt;
-use std::path::PathBuf;
 use std::process::Output;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::{env, str};
 use tokio::fs;
 use tokio::process::Command;
@@ -123,23 +120,6 @@ fn output_contains(world: &mut TricorderWorld, step: &Step) {
     if !have.contains(&want) {
         panic!("output does not contain '{want}':\n{have}");
     }
-}
-
-/// creates a temporary directory
-fn tmp_dir() -> PathBuf {
-    let timestamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_millis();
-    let rand: String = rand::rng()
-        .sample_iter(&rand::distr::Alphanumeric)
-        .take(3)
-        .map(char::from)
-        .collect();
-    let cwd = env::current_dir().expect("cannot determine the current directory");
-    let dir = cwd.join("tmp").join(format!("{}-{}", timestamp, rand));
-    std::fs::create_dir_all(&dir).unwrap();
-    dir
 }
 
 #[tokio::main(flavor = "current_thread")]
