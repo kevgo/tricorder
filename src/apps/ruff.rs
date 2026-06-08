@@ -41,20 +41,27 @@ impl Checker for Ruff {
                         None => return Ok(None),
                     };
                 }
-                Err(err) => match err {
-                    rta::error::UserError::MissingApplication => {
-                        // add the app to the config file
-                        rta::commands::add(
-                            rta::commands::AddArgs {
-                                app_name: ruff.name(),
-                                verbose: true,
-                            },
-                            apps,
-                        )
-                        .map_err(|err| UserError::Rta { err })?;
+                Err(err) => {
+                    println!("error: {err:?}");
+                    match err {
+                        rta::error::UserError::CannotAccessConfigFile(_) => {
+                            // config file doesn't exist --> create it
+                            rta::commands::
+                        }
+                        rta::error::UserError::RunRequestMissingVersion { app: _ } => {
+                            // add the app to the config file
+                            rta::commands::add(
+                                rta::commands::AddArgs {
+                                    app_name: ruff.name(),
+                                    verbose: true,
+                                },
+                                apps,
+                            )
+                            .map_err(|err| UserError::Rta { err })?;
+                        }
+                        _ => return Err(UserError::Rta { err }),
                     }
-                    _ => return Err(UserError::Rta { err }),
-                },
+                }
             }
         }
         Ok(None)
