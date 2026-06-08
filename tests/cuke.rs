@@ -59,6 +59,12 @@ impl TricorderWorld {
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(filename);
+    let parent = filepath.parent().unwrap();
+    if parent != world.dir.path() {
+        fs::create_dir_all(parent)
+            .await
+            .expect(&format!("cannot create directory '{}'", parent.display()));
+    }
     fs::write(&filepath, content.as_bytes())
         .await
         .expect(&format!("cannot write to file '{}'", filepath.display()));
@@ -66,6 +72,19 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 
 #[when(expr = "inspect the workspace")]
 async fn inspect_workspace(world: &mut TricorderWorld) {
+    // print visibly to the user even though this runs inside Cucumber
+    println!("INSPECTING WORKSPACE");
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
     // pause for 1 minute
     tokio::time::sleep(Duration::from_secs(60)).await;

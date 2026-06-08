@@ -1,16 +1,18 @@
 Feature: ignore files in .gitignore
 
-  @this
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content:
       """
       *.py
       """
+    And a file ".git/info/exclude" with content:
+      """
+      
+      """
     And a file "main.py" with content:
       """
       print("Hello, world!")
       """
-    When inspect the workspace
     When executing "tricorder check"
     Then it prints:
       """
