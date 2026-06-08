@@ -33,14 +33,11 @@ pub(crate) fn get_check_command(
             },
             Err(err) => match err {
                 rta::error::UserError::RunRequestMissingVersion { app: _ } => {
-                    let add_result = rta::commands::add(
-                        rta::commands::AddArgs {
-                            app_name: args.app.name(),
-                            verbose: true,
-                        },
-                        args.apps,
-                    );
-                    if let Err(err) = add_result {
+                    let add_args = rta::commands::AddArgs {
+                        app_name: args.app.name(),
+                        verbose: true,
+                    };
+                    if let Err(err) = rta::commands::add(add_args, args.apps) {
                         println!("error adding app to config file: {err:?}");
                         match err {
                             rta::error::UserError::CannotAccessConfigFile(msg) => {
