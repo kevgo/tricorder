@@ -18,8 +18,7 @@ impl Checker for Ruff {
             &rta::applications::Ruff {},
             rta::GetCmdArgs {
                 app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
-                // TODO: don't hard-code the version here, use the one from the config
-                version: Some("0.15.16".into()),
+                version: None,
                 from_source: false,
                 include_apps: vec![],
                 optional: true,
