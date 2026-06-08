@@ -5,8 +5,8 @@ use rta::applications::AppDefinition;
 
 /// Resolves an RTA app command for a checker, auto-adding the app to the config if missing.
 pub(crate) fn get_check_command(
-    app: &dyn AppDefinition,
     executable_name: impl Into<String>,
+    app: &dyn AppDefinition,
     app_args: Vec<String>,
     apps: &rta::applications::Apps,
 ) -> Result<Option<conc::Executable>, UserError> {
