@@ -42,10 +42,8 @@ impl Checker for Ruff {
                     };
                 }
                 Err(err) => {
-                    println!("error: {err:?}");
                     match err {
                         rta::error::UserError::RunRequestMissingVersion { app: _ } => {
-                            println!("ADDING APP TO CONFIG FILE");
                             // add the app to the config file
                             let result = rta::commands::add(
                                 rta::commands::AddArgs {
