@@ -45,10 +45,10 @@ impl Checker for Ruff {
                     println!("error: {err:?}");
                     match err {
                         rta::error::UserError::CannotAccessConfigFile(_) => {
-                            // config file doesn't exist --> create it
-                            rta::commands::
+                            println!("cannot access config file");
                         }
                         rta::error::UserError::RunRequestMissingVersion { app: _ } => {
+                            println!("ADDING APP TO CONFIG FILE");
                             // add the app to the config file
                             rta::commands::add(
                                 rta::commands::AddArgs {
