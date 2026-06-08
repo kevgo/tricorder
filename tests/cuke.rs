@@ -63,7 +63,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     if parent != world.dir.path() {
         fs::create_dir_all(parent)
             .await
-            .expect(&format!("cannot create directory '{}'", parent.display()));
+            .expect(&format!("cannot create parent '{}'", parent.display()));
     }
     fs::write(&filepath, content.as_bytes())
         .await
