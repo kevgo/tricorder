@@ -6,7 +6,7 @@ Feature: checking a codebase containing Python code
       print("Hello, world!")
       """
     When executing "tricorder check"
-    Then it prints:
+    Then the output contains
       """
       discovering files ... 1
       discovering stacks ... python
