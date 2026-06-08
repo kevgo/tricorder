@@ -66,26 +66,14 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
-    let mut executable = args.next().expect("executable is required");
-    let mut _string = String::new();
-    if executable == "tricorder" {
-        executable = "../../target/debug/tricorder";
-        if env::consts::OS == "windows" {
-            _string = format!("{executable}.exe");
-            executable = &_string;
-        }
-        _string = world
-            .dir
-            .path()
-            .join(executable)
-            .canonicalize()
-            .unwrap()
-            .to_string_lossy()
-            .to_string();
-        executable = &_string;
+    let executable = args.next().expect("executable is required");
+    if executable != "tricorder" {
+        panic!("can only execute 'tricorder'");
     }
+    let cwd = env::current_dir().expect("cannot determine the current directory");
+    let absolute_path = cwd.join("target/debug/tricorder");
     world.output = Some(
-        Command::new(executable)
+        Command::new(absolute_path)
             .args(args)
             .current_dir(&world.dir)
             .output()
