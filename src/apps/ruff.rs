@@ -14,25 +14,39 @@ impl Checker for Ruff {
         &self,
         apps: &rta::applications::Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
-        let command = rta::get_cmd(
-            &rta::applications::Ruff {},
-            rta::GetCmdArgs {
-                app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
-                version: None,
-                from_source: false,
-                include_apps: vec![],
-                optional: true,
-                verbose: false,
-            },
-            apps,
-        )
-        .map_err(|err| UserError::Rta { err })?;
-        let Some(command) = command else {
-            return Ok(None);
-        };
-        Ok(Some(conc::Executable {
-            name: "ruff --check".into(),
-            command,
-        }))
+        let ruff = rta::applications::Ruff {};
+        for _ in 0..2 {
+            match rta::get_cmd(
+                &ruff,
+                rta::GetCmdArgs {
+                    app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
+                    version: None,
+                    from_source: false,
+                    include_apps: vec![],
+                    optional: true,
+                    verbose: false,
+                },
+                apps,
+            ) {
+                Ok(cmd) => {
+                    match cmd {
+                        Some(command) => {
+                            return Ok(Some(conc::Executable {
+                                name: "ruff --check".into(),
+                                command,
+                            }));
+                        }
+                        None => return Ok(None),
+                    };
+                }
+                Err(err) => match err {
+                    rta::error::UserError::MissingApplication => {
+                        // add the app to the config file
+                    }
+                    _ => return Err(UserError::Rta { err }),
+                },
+            }
+        }
+        Ok(None)
     }
 }
