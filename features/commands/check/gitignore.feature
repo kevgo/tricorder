@@ -5,6 +5,10 @@ Feature: ignore files in .gitignore
       """
       *.py
       """
+    And a file ".git/info/exclude" with content:
+      """
+      other
+      """
     And a file "main.py" with content:
       """
       print("Hello, world!")

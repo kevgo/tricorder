@@ -19,14 +19,15 @@ itertools = "0.14.0"
 maplit = "1.0.2"
 mio = "1.2.1"
 pretty = { package = "pretty_assertions", version = "1.4.1" }
-rand = "0.10.1"
 strip-ansi-escapes = "0.2.1"
+tempfile = "3.27.0"
 tokio = { version = "1.52.3", features = [
   "fs",
   "io-util",
   "macros",
   "process",
   "rt",
+  "time",
 ] }
 
 [[test]]
