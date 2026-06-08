@@ -16,9 +16,6 @@ struct Cli {
 pub enum Command {
     /// Runs all checkers and linters for all stacks
     Check,
-
-    /// Runs all automated code improvements for all stacks
-    Fix,
 }
 
 pub fn parse() -> Result<Option<Command>> {

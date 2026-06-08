@@ -6,12 +6,12 @@ Feature: checking a codebase containing Python code
       print("Hello, world!")
       """
     When executing "tricorder check"
-    Then it prints:
+    Then the output contains
       """
-      echo hello
-      hello
       discovering files ... 1
       discovering stacks ... python
       running 1 tools
+      ruff --check
+      Would reformat: main.py
       """
-    And the exit code is 0
+    And the exit code is 1
