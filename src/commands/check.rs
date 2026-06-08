@@ -17,7 +17,7 @@ pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
-        show: conc::Show::All,
+        show: conc::Show::Names,
     });
     Ok(exit_code)
 }
