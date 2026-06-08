@@ -15,20 +15,20 @@ struct TricorderWorld {
     dir: tempfile::TempDir,
 
     /// the result of running Tricorder
-    output: Option<CommandResult>,
+    result: Option<CommandResult>,
 }
 
 impl TricorderWorld {
     fn new() -> Self {
         Self {
             dir: tempfile::tempdir().unwrap(),
-            output: None,
+            result: None,
         }
     }
 
     /// provides the exit code of the Atlanta run
     fn exit_code(&self) -> i32 {
-        match &self.output {
+        match &self.result {
             Some(result) => result.status.code().unwrap(),
             None => panic!(),
         }
@@ -36,7 +36,7 @@ impl TricorderWorld {
 
     /// provides the textual output of the Atlanta run
     fn output(&self) -> String {
-        let Some(result) = &self.output else {
+        let Some(result) = &self.result else {
             return String::new();
         };
         String::from_utf8_lossy(&result.output).into_owned()
@@ -120,7 +120,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         .read_to_end(&mut output)
         .expect("cannot read the command output");
     let status = child.wait().await.expect("the command failed to run");
-    world.output = Some(CommandResult { status, output });
+    world.result = Some(CommandResult { status, output });
 }
 
 #[then("it prints:")]
