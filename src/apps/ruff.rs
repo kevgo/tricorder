@@ -55,7 +55,7 @@ impl Checker for Ruff {
                                 apps,
                             );
                             match result {
-                                Ok(_) => continue,
+                                Ok(_) => {}
                                 Err(err) => {
                                     println!("error adding app to config file: {err:?}");
                                     match err {
