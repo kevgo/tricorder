@@ -63,6 +63,13 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
         .expect(&format!("cannot write to file '{}'", filepath.display()));
 }
 
+#[when(expr = "inspect the workspace")]
+async fn executing(world: &mut TricorderWorld, command: String) {
+    println!("workspace: {}", world.dir.path().display());
+    // pause for 1 minute
+    tokio::time::sleep(Duration::from_secs(60)).await;
+}
+
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
