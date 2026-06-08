@@ -20,4 +20,4 @@ Feature: ignore files in .gitignore
       discovering files ... 0
       discovering stacks ... 0
       """
-    And the exit code is 1
+    And the exit code is 0
