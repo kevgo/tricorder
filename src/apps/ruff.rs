@@ -1,3 +1,4 @@
+use crate::error::UserError;
 use crate::stacks::{Checker, Tool};
 
 pub struct Ruff;
@@ -9,9 +10,12 @@ impl Tool for Ruff {
 }
 
 impl Checker for Ruff {
-    fn check_command(&self, apps: &rta::applications::Apps) -> conc::Executable {
+    fn check_command(
+        &self,
+        apps: &rta::applications::Apps,
+    ) -> Result<Option<conc::Executable>, UserError> {
         let ruff = rta::applications::Ruff {};
-        let command = rta::get_cmd(
+        let cmd = rta::get_cmd(
             &ruff,
             rta::GetCmdArgs {
                 app_args: vec!["format".into(), "--check".into(), "--quiet".into()],
@@ -22,12 +26,14 @@ impl Checker for Ruff {
                 verbose: false,
             },
             apps,
-        )
-        .unwrap()
-        .unwrap();
-        conc::Executable {
+        );
+        let command = cmd.map_err(|err| UserError::Rta { err })?;
+        let Some(command) = command else {
+            return Ok(None);
+        };
+        Ok(Some(conc::Executable {
             name: "ruff --check".into(),
             command,
-        }
+        }))
     }
 }

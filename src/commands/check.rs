@@ -6,7 +6,9 @@ pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error
     let mut executables = Vec::new();
     for stack in stacks {
         for checker in stack.checkers() {
-            executables.push(checker.check_command(apps));
+            if let Some(executable) = checker.check_command(apps)? {
+                executables.push(executable);
+            }
         }
     }
     eprintln!("running {} tools", executables.len());

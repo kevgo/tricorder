@@ -1,6 +1,7 @@
 use std::fmt::Display;
 use std::path::PathBuf;
 
+use crate::error::UserError;
 use crate::stacks::python::PythonStack;
 
 mod python;
@@ -32,7 +33,10 @@ pub trait Tool {
 pub trait Checker: Tool {
     /// Provides the shell command to run this checker.
     // TODO: this should return something that runs the command via RTA
-    fn check_command(&self, apps: &rta::applications::Apps) -> conc::Executable;
+    fn check_command(
+        &self,
+        apps: &rta::applications::Apps,
+    ) -> Result<Option<conc::Executable>, UserError>;
 }
 
 /// provides all stacks that Tricorder supports
