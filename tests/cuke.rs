@@ -73,7 +73,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 #[when(expr = "inspect the workspace")]
 async fn inspect_workspace(world: &mut TricorderWorld) {
     // print visibly to the user even though this runs inside Cucumber
-    println!("INSPECTING WORKSPACE");
+    // repeating a few times to break out of the cucumber formatter that deletes the current line
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
