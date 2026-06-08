@@ -13,7 +13,7 @@ use tokio::process::Command;
 #[world(init = Self::new)]
 struct TricorderWorld {
     /// the directory containing the test files for the current scenario
-    dir: PathBuf,
+    dir: tempfile::TempDir,
 
     /// the result of running Tricorder
     output: Option<Output>,
@@ -22,7 +22,7 @@ struct TricorderWorld {
 impl TricorderWorld {
     fn new() -> Self {
         Self {
-            dir: tmp_dir(),
+            dir: tempfile::tempdir().unwrap(),
             output: None,
         }
     }
@@ -60,7 +60,7 @@ impl TricorderWorld {
 #[given(expr = "a file {string} with content:")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.join(filename);
+    let filepath = world.dir.path().join(filename);
     fs::write(&filepath, content.as_bytes())
         .await
         .expect(&format!("cannot write to file '{}'", filepath.display()));
@@ -79,6 +79,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         }
         _string = world
             .dir
+            .path()
             .join(executable)
             .canonicalize()
             .unwrap()

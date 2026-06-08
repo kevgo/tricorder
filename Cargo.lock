@@ -1743,6 +1743,7 @@ dependencies = [
  "rand",
  "run-that-app",
  "strip-ansi-escapes",
+ "tempfile",
  "tokio",
 ]
 
