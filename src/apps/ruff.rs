@@ -1,7 +1,6 @@
-use rta::applications::AppDefinition;
-
 use crate::error::UserError;
 use crate::stacks::{Checker, Tool};
+use rta::applications::AppDefinition;
 
 pub struct Ruff;
 
