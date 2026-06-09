@@ -7,20 +7,20 @@ use rta::applications::AppDefinition;
 pub(crate) fn get_check_command(
     args: &GetCheckCmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
-    let get_cmd_args = rta::GetCmdArgs {
-        app_args: string_list(&args.args),
-        version: None,
-        from_source: false,
-        include_apps: vec![],
-        optional: true,
-        verbose: false,
-    };
     // try twice to get the command:
     // - first to get the command
     // - if that fails because the app is not listed in the config file,
     //   add the app to the config and try a second time.
     for _ in 0..2 {
-        match rta::get_cmd(args.app, get_cmd_args.clone(), args.apps) {
+        let get_cmd_args = rta::GetCmdArgs {
+            app_args: string_list(&args.args),
+            version: None,
+            from_source: false,
+            include_apps: vec![],
+            optional: true,
+            verbose: false,
+        };
+        match rta::get_cmd(args.app, get_cmd_args, args.apps) {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.into(),
