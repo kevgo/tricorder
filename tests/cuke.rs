@@ -41,16 +41,12 @@ impl TricorderWorld {
         if let Some(result) = &self.result {
             return str::from_utf8(&result.output).unwrap();
         };
-        return "";
+        ""
     }
 
     /// provides the textual output of the Atlanta run with whitespace trimmed from every line
     fn output_trimmed(&self) -> String {
-        self.output()
-            .trim()
-            .lines()
-            .map(|line| line.trim_end())
-            .join("\n")
+        self.output().trim().lines().map(str::trim_end).join("\n")
     }
 }
 
@@ -76,7 +72,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     }
     fs::write(&filepath, content.as_bytes())
         .await
-        .expect(&format!("cannot write to file '{}'", filepath.display()));
+        .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
 }
 
 #[when(expr = "inspect the workspace")]
