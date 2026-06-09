@@ -209,9 +209,7 @@ fn flush_snapshot_updates() {
     edits.sort_by(|a, b| a.path.cmp(&b.path).then(b.step_line.cmp(&a.step_line)));
     for (path, group) in &edits.into_iter().chunk_by(|edit| edit.path.clone()) {
         let mut group: Vec<SnapshotEdit> = group.collect();
-        // Already sorted bottom-to-top above; drop duplicate edits for the same
-        // step (e.g. a Scenario Outline that runs the same step repeatedly with
-        // identical output).
+        // Filter duplicate edits for the same step
         group.dedup_by(|a, b| a.step_line == b.step_line && a.new_content == b.new_content);
         let mut lines: Vec<String> = std::fs::read_to_string(&path)
             .unwrap_or_else(|err| panic!("cannot read '{}': {err}", path.display()))
