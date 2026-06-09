@@ -131,8 +131,7 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     let filepath = world.dir.path().join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     let have = have.trim();
-    let re = Regex::new(want).unwrap();
-    if !re.is_match(have) {
+    if !Regex::new(want).unwrap().is_match(have) {
         panic!(
             "file {} does not match:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n",
             filename
