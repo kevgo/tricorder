@@ -1,5 +1,7 @@
 # Tricorder / Multi-Tool
 
+[![CI](https://github.com/kevgo/Tricorder/actions/workflows/ci.yml/badge.svg)](https://github.com/kevgo/tricorder/actions/workflows/ci.yml)
+
 _The all-in-one linter._
 
 Tricorder helps AI or you create the highest software quality by running all the
