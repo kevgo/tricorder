@@ -15,6 +15,10 @@ pub(crate) fn get_check_command(
         optional: true,
         verbose: false,
     };
+    // try twice to get the command:
+    // - first to get the command
+    // - if that fails because the app is not listed in the config file,
+    //   add the app to the config and try a second time.
     for _ in 0..2 {
         match rta::get_cmd(args.app, get_cmd_args.clone(), args.apps) {
             Ok(cmd) => {
