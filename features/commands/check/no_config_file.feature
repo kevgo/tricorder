@@ -6,7 +6,7 @@ Feature: run without config file
       print("")
       """
     When executing "tricorder check"
-    Then the output contains
+    Then it prints:
       """
       discovering files ... 1
       discovering stacks ... python
