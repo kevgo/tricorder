@@ -1,4 +1,4 @@
-Feature: checking a codebase containing JSON files
+Feature: checking JSON files
 
   Background:
     And a file "main.json" with content
