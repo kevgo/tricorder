@@ -1,6 +1,7 @@
 RUN_THAT_APP_VERSION = 0.37.0  # run-that-app version to use
 
 RTA      = tools/rta@$(RUN_THAT_APP_VERSION)
+GHOKIN   = $(RTA) ghokin
 LEFTHOOK = $(RTA) lefthook
 RUMDL    = $(RTA) rumdl
 TAPLO    = $(RTA) taplo
@@ -21,6 +22,7 @@ fix: ${RTA}  # runs all linters and auto-fixes
 	cargo +nightly fmt
 	$(RUMDL) fmt
 	$(TAPLO) format
+	${GHOKIN} fmt replace features/
 
 help:  # prints all available targets
 	@grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

@@ -5,9 +5,9 @@ Feature: wrong CLI command
     Then it prints:
       """
       error: unrecognized subcommand 'zonk'
-      
+
       Usage: tricorder <COMMAND>
-      
+
       For more information, try '--help'.
       """
     And the exit code is 1
