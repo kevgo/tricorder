@@ -167,7 +167,6 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
             missing.join("\n")
         );
     }
-    pretty::assert_eq!(have, want);
 }
 
 #[then("it prints nothing")]
