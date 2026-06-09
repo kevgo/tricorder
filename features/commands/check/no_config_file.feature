@@ -1,5 +1,6 @@
 Feature: run without config file
 
+  @this
   Scenario: run without config file
     Given a file "test.py" with content
       """
@@ -18,3 +19,9 @@ Feature: run without config file
       1 file would be reformatted
       """
     And the exit code is 1
+    And file "run-that-app" now matches
+      """
+      # more info at https://github.com/kevgo/run-that-app
+      
+      ruff .*
+      """

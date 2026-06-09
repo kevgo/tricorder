@@ -124,6 +124,15 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     world.result = Some(CommandResult { status, output });
 }
 
+#[then(expr = "file {string} now matches")]
+async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let filepath = world.dir.path().join(filename);
+    let have = fs::read_to_string(filepath).await.unwrap();
+    let have = have.trim();
+    pretty::assert_eq!(have, want);
+}
+
 #[then("it prints:")]
 fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
