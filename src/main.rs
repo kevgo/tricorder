@@ -4,7 +4,6 @@ mod commands;
 mod error;
 mod filesystem;
 mod stacks;
-pub mod strings;
 
 use cli::Command;
 use itertools::Itertools;
