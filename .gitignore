@@ -4,3 +4,8 @@ tools/rta*
 /tmp
 .github/instructions/
 UI/node_modules/
+
+# IntelliJ / JetBrains IDEs
+.idea/
+*.iml
+.github/instructions/wmt-copilot.instructions.md

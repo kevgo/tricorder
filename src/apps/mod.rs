@@ -1,3 +1,4 @@
+pub mod biome;
 pub mod prettier;
 pub mod ruff;
 
