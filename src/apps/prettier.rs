@@ -1,7 +1,7 @@
 use crate::apps::{GetCheckCmdArgs, get_check_command};
 use crate::domain::{Checker, Tool};
 use crate::error::UserError;
-use crate::stacks::Json;
+use crate::stacks::{Json, Yml};
 use rta::applications::Apps;
 
 pub struct Prettier;
@@ -12,7 +12,7 @@ impl Tool for Prettier {
     }
 
     fn stacks(&self) -> Vec<Box<dyn crate::domain::Stack>> {
-        vec![Box::new(Json {})]
+        vec![Box::new(Json {}), Box::new(Yml {})]
     }
 }
 
