@@ -32,7 +32,6 @@ pub trait Tool {
 /// a checker that Tricorder can run
 pub trait Checker: Tool {
     /// Provides the shell command to run this checker.
-    // TODO: this should return something that runs the command via RTA
     fn check_command(&self, apps: &Apps) -> Result<Option<conc::Executable>, UserError>;
 }
 
