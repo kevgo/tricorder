@@ -2,6 +2,7 @@ use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
+use regex::Regex;
 use std::io::Read;
 use std::process::ExitStatus;
 use std::time::Duration;
@@ -127,10 +128,17 @@ async fn executing(world: &mut TricorderWorld, command: String) {
 #[then(expr = "file {string} now matches")]
 async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.path().join(filename);
+    let filepath = world.dir.path().join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     let have = have.trim();
-    pretty::assert_eq!(have, want);
+    // consider want to be a regex, make sure have matches it
+    let re = Regex::new(want).unwrap();
+    if !re.is_match(have) {
+        panic!(
+            "file {} does not match:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n",
+            filename
+        );
+    }
 }
 
 #[then("it prints:")]
