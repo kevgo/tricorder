@@ -1,7 +1,11 @@
 Feature: checking a codebase containing Python code
 
   Scenario: checking a codebase with Python
-    Given a file "main.py" with content
+    Given a file "run-that-app" with content
+      """
+      ruff 0.15.16
+      """
+    And a file "main.py" with content
       """
       print("Hello, world!")
       """
