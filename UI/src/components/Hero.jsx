@@ -127,7 +127,7 @@ export default function Hero() {
           }}
           onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 20px 50px rgba(124,92,252,.5)' }}
           onMouseLeave={e => { e.target.style.transform = ''; e.target.style.boxShadow = '' }}
-          >Try it Live — Free</a>
+          >Try it Live </a>
 
           <a href="#transform" style={{
             background: 'transparent',

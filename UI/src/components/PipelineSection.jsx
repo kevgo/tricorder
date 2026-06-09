@@ -42,7 +42,7 @@ export default function PipelineSection() {
     }}>
       {/* header */}
       <div style={{ textAlign: 'center', marginBottom: 80 }}>
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase' }}>Chapter 05</span>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase' }}>Chapter 04</span>
         <h2 style={{
           fontFamily: 'Space Grotesk, sans-serif',
           fontSize: 'clamp(32px, 5vw, 56px)',

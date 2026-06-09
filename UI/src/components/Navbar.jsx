@@ -4,7 +4,7 @@ const NAV_LINKS = [
   { label: 'How it Works', href: '#scan' },
   { label: 'Before / After', href: '#transform' },
   { label: 'Languages', href: '#languages' },
-  { label: 'Try It', href: '#playground' },
+  
 ]
 
 export default function Navbar() {
@@ -48,7 +48,7 @@ export default function Navbar() {
           background: 'linear-gradient(135deg, #7C5CFC, #00D2FF)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-        }}>LintForge AI</span>
+        }}>TRICORDER </span>
       </div>
 
       {/* Links */}
@@ -78,7 +78,7 @@ export default function Navbar() {
         }}
         onMouseEnter={e => { e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 8px 24px rgba(124,92,252,.5)' }}
         onMouseLeave={e => { e.target.style.transform = ''; e.target.style.boxShadow = '' }}
-        >Try Free</a>
+        >Live Demo</a>
       </div>
     </nav>
   )

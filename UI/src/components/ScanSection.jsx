@@ -59,7 +59,7 @@ export default function ScanSection() {
           <span style={{
             fontFamily: 'JetBrains Mono, monospace', fontSize: 12,
             color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase',
-          }}>Chapter 02</span>
+          }}>Chapter 01</span>
           <h2 style={{
             fontFamily: 'Space Grotesk, sans-serif',
             fontSize: 'clamp(32px, 5vw, 56px)',

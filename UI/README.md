@@ -1,7 +1,8 @@
-# UI demo
+
 
 To run the UI demo:
 
-1. download the ui folder.
+1.cd UI
 2. npm install
 3. npm run dev
+

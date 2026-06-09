@@ -17,7 +17,7 @@ export default function App() {
       <TransformSection />
       <LanguageSection />
       <PipelineSection />
-      <ImpactSection />
+      {/* <ImpactSection /> */}
       <PlaygroundSection />
       <CTASection />
     </div>

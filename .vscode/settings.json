@@ -4,5 +4,6 @@
   ],
   "cucumber.glue": [
     "tests/cuke.rs"
-  ]
+  ],
+  "diffEditor.codeLens": true
 }

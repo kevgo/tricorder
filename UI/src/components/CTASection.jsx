@@ -48,7 +48,7 @@ export default function CTASection() {
           color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase',
           opacity: active ? 1 : 0,
           transition: 'opacity .8s',
-        }}>Chapter 08 — Your Turn</span>
+        }}>Chapter 06 — Your Turn</span>
 
         <h2 style={{
           fontFamily: 'Space Grotesk, sans-serif',
@@ -95,7 +95,7 @@ export default function CTASection() {
           transform: active ? 'translateY(0)' : 'translateY(20px)',
           transition: 'opacity .8s .6s, transform .8s .6s',
         }}>
-          <a href="#playground" style={{
+          <a href="https://gecgithub01.walmart.com/k0g0kip/tricorder/" target='_blank' style={{
             background: 'linear-gradient(135deg, #7C5CFC, #00D2FF)',
             border: 'none', borderRadius: 50,
             color: '#fff', fontFamily: 'Space Grotesk, sans-serif',
@@ -109,9 +109,9 @@ export default function CTASection() {
           }}
           onMouseEnter={e => { e.target.style.transform = 'translateY(-3px) scale(1.03)'; e.target.style.boxShadow = '0 28px 80px rgba(124,92,252,.7)' }}
           onMouseLeave={e => { e.target.style.transform = ''; e.target.style.boxShadow = '0 20px 60px rgba(124,92,252,.5)' }}
-          >Start Free — No Credit Card</a>
+          >Start NOW!</a>
 
-          <a href="#scan" style={{
+          {/* <a href="#scan" style={{
             background: 'transparent',
             border: '1px solid rgba(255,255,255,.2)',
             borderRadius: 50,
@@ -126,11 +126,11 @@ export default function CTASection() {
           }}
           onMouseEnter={e => { e.target.style.borderColor = '#00D2FF'; e.target.style.color = '#00D2FF' }}
           onMouseLeave={e => { e.target.style.borderColor = 'rgba(255,255,255,.2)'; e.target.style.color = 'rgba(255,255,255,.7)' }}
-          >View Docs</a>
+          >View Docs</a> */}
         </div>
 
         {/* bottom trust row */}
-        <div style={{
+        {/* <div style={{
           display: 'flex', gap: 32, justifyContent: 'center',
           marginTop: 64, flexWrap: 'wrap',
           opacity: active ? 1 : 0,
@@ -151,7 +151,7 @@ export default function CTASection() {
               {t}
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* footer */}
         <div style={{
@@ -179,13 +179,13 @@ export default function CTASection() {
               background: 'linear-gradient(135deg, #7C5CFC, #00D2FF)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-            }}>LintForge AI</span>
+            }}>TRICORDER</span>
           </div>
           <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: 'rgba(255,255,255,.2)' }}>
             Built with AI. Loved by engineers.
           </div>
           <div style={{ display: 'flex', gap: 20 }}>
-            {['Privacy', 'Terms', 'GitHub', 'Discord'].map(l => (
+            {[''].map(l => (
               <a key={l} href="#" style={{
                 fontFamily: 'Space Grotesk, sans-serif',
                 fontSize: 13, color: 'rgba(255,255,255,.3)',

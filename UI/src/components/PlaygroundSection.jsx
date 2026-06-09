@@ -106,7 +106,7 @@ export default function PlaygroundSection() {
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 1200 }}>
         {/* header */}
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase' }}>Chapter 07</span>
+          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#7C5CFC', letterSpacing: 3, textTransform: 'uppercase' }}>Chapter 05</span>
           <h2 style={{
             fontFamily: 'Space Grotesk, sans-serif',
             fontSize: 'clamp(32px, 5vw, 56px)',
