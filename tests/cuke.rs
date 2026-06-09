@@ -131,7 +131,6 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     let filepath = world.dir.path().join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     let have = have.trim();
-    // consider want to be a regex, make sure have matches it
     let re = Regex::new(want).unwrap();
     if !re.is_match(have) {
         panic!(
