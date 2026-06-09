@@ -1,11 +1,11 @@
 Feature: checking a codebase containing Python code
 
   Scenario: checking a codebase with Python
-    Given a file "run-that-app" with content:
+    Given a file "run-that-app" with content
       """
       
       """
-    Given a file "main.py" with content:
+    Given a file "main.py" with content
       """
       print("Hello, world!")
       """

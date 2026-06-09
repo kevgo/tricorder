@@ -63,7 +63,7 @@ struct CommandResult {
     output: Vec<u8>,
 }
 
-#[given(expr = "a file {string} with content:")]
+#[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(filename);
