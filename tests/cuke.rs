@@ -107,7 +107,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         .stderr(writer_clone);
     let mut child = cmd
         .spawn()
-        .expect(&format!("cannot find the '{executable}' executable"));
+        .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
     // Drop our handles to the write ends of the pipe (including the copies held
     // by the Command) so that the read end observes EOF once the child exits.
     drop(cmd);
