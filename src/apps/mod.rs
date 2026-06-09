@@ -7,13 +7,8 @@ use rta::applications::AppDefinition;
 pub(crate) fn get_check_command(
     args: &GetCheckCmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
-    let app_args = args
-        .args
-        .iter()
-        .map(std::string::ToString::to_string)
-        .collect();
     let get_cmd_args = rta::GetCmdArgs {
-        app_args,
+        app_args: string_list(&args.args),
         version: None,
         from_source: false,
         include_apps: vec![],
@@ -50,4 +45,11 @@ pub struct GetCheckCmdArgs<'a> {
     app: &'a dyn AppDefinition,
     args: Vec<&'static str>,
     apps: &'a rta::applications::Apps,
+}
+
+fn string_list(strings: &[&'static str]) -> Vec<String> {
+    strings
+        .iter()
+        .map(std::string::ToString::to_string)
+        .collect()
 }
