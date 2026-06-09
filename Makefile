@@ -19,6 +19,9 @@ cuke-update: build  # runs end-to-end tests, updating "Then it prints:" snapshot
 cukethis: build  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 
+install:
+	cargo install --path . --locked
+
 fix: ${RTA}  # runs all linters and auto-fixes
 	cargo +nightly fix --allow-dirty
 	cargo clippy --fix --allow-dirty
