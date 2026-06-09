@@ -22,15 +22,12 @@ pub(crate) fn get_check_command(
     };
     for _ in 0..2 {
         match rta::get_cmd(args.app, get_cmd_args.clone(), args.apps) {
-            Ok(cmd) => match cmd {
-                Some(command) => {
-                    return Ok(Some(conc::Executable {
-                        name: args.executable_name.into(),
-                        command,
-                    }));
-                }
-                None => return Ok(None),
-            },
+            Ok(cmd) => {
+                return Ok(cmd.map(|command| conc::Executable {
+                    name: args.executable_name.into(),
+                    command,
+                }));
+            }
             Err(err) => match err {
                 rta::error::UserError::RunRequestMissingVersion { app: _ } => {
                     let add_args = rta::commands::AddArgs {
@@ -38,11 +35,8 @@ pub(crate) fn get_check_command(
                         verbose: true,
                     };
                     if let Err(err) = rta::commands::add(add_args, args.apps) {
-                        println!("error adding app to config file: {err:?}");
                         match err {
-                            rta::error::UserError::CannotAccessConfigFile(msg) => {
-                                println!("error: cannot access config file {msg:?}");
-                            }
+                            rta::error::UserError::CannotAccessConfigFile(_) => {}
                             _ => return Err(UserError::Rta { err }),
                         }
                     }
