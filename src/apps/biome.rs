@@ -1,8 +1,8 @@
 use crate::apps::{GetCheckCmdArgs, get_check_command};
 use crate::domain::{Checker, Tool};
 use crate::error::UserError;
-use rta::applications::Apps;
 use crate::stacks::Typescript;
+use rta::applications::Apps;
 
 pub struct Biome;
 
