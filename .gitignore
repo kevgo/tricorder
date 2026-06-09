@@ -3,3 +3,4 @@ tools/rta*
 /target
 /tmp
 .github/instructions/
+UI/node_modules/
