@@ -1,4 +1,4 @@
-Feature: checking a codebase containing Python code
+Feature: checking Python code
 
   Background:
     And a file "main.py" with content
