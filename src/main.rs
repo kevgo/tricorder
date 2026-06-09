@@ -1,14 +1,14 @@
-use std::process::ExitCode;
-
 mod apps;
 mod cli;
 mod commands;
 mod error;
 mod filesystem;
 mod stacks;
+pub mod strings;
 
 use cli::Command;
 use itertools::Itertools;
+use std::process::ExitCode;
 
 fn main() -> ExitCode {
     match inner() {
