@@ -1,7 +1,7 @@
 Feature: run without config file
 
   Scenario: run without config file
-    Given a file "test.py" with content:
+    Given a file "test.py" with content
       """
       print("")
       """
