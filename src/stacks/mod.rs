@@ -1,43 +1,8 @@
-use std::fmt::Display;
+use crate::domain::Stack;
+use crate::stacks::python::PythonStack;
 use std::path::PathBuf;
 
-use crate::error::UserError;
-use crate::stacks::python::PythonStack;
-
 mod python;
-
-/// a language stack that Tricorder supports
-pub trait Stack {
-    /// the name of the stack
-    fn name(&self) -> &str;
-
-    /// indicates whether the stack is used in the given files
-    fn used(&self, files: &[PathBuf]) -> bool;
-
-    /// provides all checkers that Tricorder can run for this stack
-    fn checkers(&self) -> Vec<Box<dyn Checker>>;
-}
-
-impl Display for Box<dyn Stack> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.name())
-    }
-}
-
-/// a tool (checker or fixer) that Tricorder can run
-pub trait Tool {
-    fn name(&self) -> &str;
-}
-
-/// a checker that Tricorder can run
-pub trait Checker: Tool {
-    /// Provides the shell command to run this checker.
-    // TODO: this should return something that runs the command via RTA
-    fn check_command(
-        &self,
-        apps: &rta::applications::Apps,
-    ) -> Result<Option<conc::Executable>, UserError>;
-}
 
 /// provides all stacks that Tricorder supports
 pub fn all() -> Vec<Box<dyn Stack>> {

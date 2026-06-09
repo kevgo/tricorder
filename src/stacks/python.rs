@@ -1,5 +1,5 @@
 use crate::apps::ruff::Ruff;
-use crate::stacks::{Checker, Stack};
+use crate::domain::{Checker, Stack};
 
 pub struct PythonStack;
 
