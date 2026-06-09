@@ -13,6 +13,9 @@ build:  # builds the codebase
 cuke: build  # runs all end-to-end tests
 	cargo test --test=cuke
 
+cuke-update: build  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
+	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
+
 cukethis: build  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 

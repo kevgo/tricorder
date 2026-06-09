@@ -4,7 +4,9 @@ use cucumber::{World, given, then, when};
 use itertools::Itertools;
 use regex::Regex;
 use std::io::Read;
+use std::path::PathBuf;
 use std::process::ExitStatus;
+use std::sync::{LazyLock, Mutex};
 use std::time::Duration;
 use std::{env, str};
 use tokio::fs;
@@ -18,6 +20,9 @@ struct TricorderWorld {
 
     /// the result of running Tricorder
     result: Option<CommandResult>,
+
+    /// path to the .feature file of the currently running scenario
+    feature_path: Option<PathBuf>,
 }
 
 impl TricorderWorld {
@@ -25,6 +30,7 @@ impl TricorderWorld {
         Self {
             dir: tempfile::tempdir().unwrap(),
             result: None,
+            feature_path: None,
         }
     }
 
@@ -147,6 +153,24 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
             missing.join("\n")
         );
     }
+    if update_snapshots_enabled() {
+        // Golden snapshot mode: if the actual output differs from the recorded
+        // expectation, queue an update of the .feature file with the real output
+        // and pretend the step succeeded.
+        if have != want {
+            let path = world
+                .feature_path
+                .clone()
+                .expect("the feature file path is unknown - is the `before` hook wired up?");
+            queue_snapshot_update(SnapshotEdit {
+                path,
+                step_line: step.position.line,
+                new_content: have.to_string(),
+            });
+        }
+        return;
+    }
+    pretty::assert_eq!(have, want);
 }
 
 #[then("it prints nothing")]
@@ -160,7 +184,119 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
 }
 
+#[then(expr = "the output contains")]
+fn output_contains(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let have = world.output();
+    if !have.contains(&want) {
+        panic!("output does not contain the expected text\n\nWANT:\n{want}\n\nHAVE:\n{have}");
+    }
+}
+
+/// a queued update of a `Then it prints:` snapshot in a .feature file
+#[derive(Debug)]
+struct SnapshotEdit {
+    /// the .feature file to update
+    path: PathBuf,
+
+    /// the 1-based line number of the `Then it prints:` step whose docstring to replace
+    step_line: usize,
+
+    /// the new docstring content (without the surrounding triple quotes)
+    new_content: String,
+}
+
+/// snapshot edits collected during the test run, flushed to disk once it finishes
+static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
+    LazyLock::new(|| Mutex::new(Vec::new()));
+
+/// whether the test run should update `Then it prints:` snapshots instead of asserting
+fn update_snapshots_enabled() -> bool {
+    env::var("TRICORDER_UPDATE_SNAPSHOTS").is_ok_and(|value| !value.is_empty())
+}
+
+/// queues a snapshot update to be applied after the test run finishes
+fn queue_snapshot_update(edit: SnapshotEdit) {
+    SNAPSHOT_EDITS.lock().unwrap().push(edit);
+}
+
+/// applies all queued snapshot updates to their .feature files
+fn flush_snapshot_updates() {
+    let edits = std::mem::take(&mut *SNAPSHOT_EDITS.lock().unwrap());
+    // Group edits by file and apply them bottom-to-top so that rewriting a
+    // docstring never shifts the line numbers of edits still to be applied.
+    // Sort by path first so that `chunk_by` (which only groups consecutive
+    // items) sees all edits for a file together - scenarios run concurrently
+    // and therefore queue their edits in arbitrary order.
+    let mut edits = edits;
+    edits.sort_by(|a, b| a.path.cmp(&b.path).then(b.step_line.cmp(&a.step_line)));
+    for (path, group) in &edits.into_iter().chunk_by(|edit| edit.path.clone()) {
+        let mut group: Vec<SnapshotEdit> = group.collect();
+        // Already sorted bottom-to-top above; drop duplicate edits for the same
+        // step (e.g. a Scenario Outline that runs the same step repeatedly with
+        // identical output).
+        group.dedup_by(|a, b| a.step_line == b.step_line && a.new_content == b.new_content);
+        let mut lines: Vec<String> = std::fs::read_to_string(&path)
+            .unwrap_or_else(|err| panic!("cannot read '{}': {err}", path.display()))
+            .lines()
+            .map(str::to_string)
+            .collect();
+        for edit in group {
+            apply_snapshot_edit(&mut lines, &edit, &path);
+        }
+        let mut output = lines.join("\n");
+        output.push('\n');
+        std::fs::write(&path, output)
+            .unwrap_or_else(|err| panic!("cannot write '{}': {err}", path.display()));
+        println!("updated snapshots in {}", path.display());
+    }
+}
+
+/// replaces the docstring of the `Then it prints:` step at `edit.step_line` with the new content
+fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit, path: &std::path::Path) {
+    // The docstring opens at the first `"""` line after the step line.
+    let search_start = edit.step_line.saturating_sub(1);
+    let open = (search_start..lines.len())
+        .find(|&i| lines[i].trim() == "\"\"\"")
+        .unwrap_or_else(|| {
+            panic!(
+                "cannot find docstring start for step on line {} in {}",
+                edit.step_line,
+                path.display()
+            )
+        });
+    let close = (open + 1..lines.len())
+        .find(|&i| lines[i].trim() == "\"\"\"")
+        .unwrap_or_else(|| {
+            panic!(
+                "cannot find docstring end for step on line {} in {}",
+                edit.step_line,
+                path.display()
+            )
+        });
+    // Preserve the indentation of the docstring delimiters.
+    let indent: String = lines[open]
+        .chars()
+        .take_while(|c| c.is_whitespace())
+        .collect();
+    let new_body: Vec<String> = edit
+        .new_content
+        .lines()
+        .map(|line| format!("{indent}{line}"))
+        .collect();
+    lines.splice(open + 1..close, new_body);
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    TricorderWorld::run("features").await;
+    TricorderWorld::cucumber()
+        .before(|feature, _rule, _scenario, world| {
+            world.feature_path.clone_from(&feature.path);
+            Box::pin(async {})
+        })
+        .run("features")
+        .await;
+    if update_snapshots_enabled() {
+        flush_snapshot_updates();
+    }
 }
