@@ -302,6 +302,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
 
 [[package]]
+name = "contains_lines"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e975c4385c8388e8f74feca3a40f6300e737bdd26bdfb0e76d3419652e2bb67"
+
+[[package]]
 name = "convert_case"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1706,6 +1712,7 @@ version = "0.0.0"
 dependencies = [
  "clap",
  "concurrent_shell_commands",
+ "contains_lines",
  "cucumber",
  "ignore",
  "itertools",

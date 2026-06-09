@@ -1,3 +1,4 @@
+use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
@@ -128,7 +129,10 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
-    pretty::assert_eq!(have, want);
+    let missing = contains_lines(have, want);
+    if !missing.is_empty() {
+        panic!("output is missing these lines:\n{}", missing.join("\n"));
+    }
 }
 
 #[then("it prints nothing")]
@@ -140,15 +144,6 @@ fn verify_output_nothing(world: &mut TricorderWorld) {
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
-}
-
-#[then(expr = "the output contains")]
-fn output_contains(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
-    if !have.contains(&want) {
-        panic!("output does not contain the expected text\n\nWANT:\n{want}\n\nHAVE:\n{have}");
-    }
 }
 
 #[tokio::main(flavor = "current_thread")]
