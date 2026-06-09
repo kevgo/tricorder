@@ -4,14 +4,16 @@ use std::path::PathBuf;
 mod json;
 mod python;
 mod yml;
+mod typescript;
 
 pub use json::Json;
 pub use python::Python;
 pub use yml::Yml;
+pub use typescript::Typescript;
 
 /// provides all stacks that Tricorder supports
 pub fn all() -> Vec<Box<dyn Stack>> {
-    vec![Box::new(Json {}), Box::new(Python {}), Box::new(Yml {})]
+    vec![Box::new(Json {}), Box::new(Python {}), Box::new(Yml {}), Box::new(Typescript {})]
 }
 
 /// provides all stacks used in the codebase in the current directory
