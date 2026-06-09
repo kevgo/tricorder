@@ -15,7 +15,7 @@ impl Stack for Typescript {
     fn used(&self, files: &[std::path::PathBuf]) -> bool {
         files.iter().any(|file| {
             file.extension()
-                .is_some_and(|ext| ext == "ts" || ext == "tsx")
+                .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
         })
     }
 }
@@ -35,7 +35,7 @@ mod tests {
                 vec!["main.ts".into()] => true,
                 vec!["component.tsx".into()] => true,
                 vec!["other.text".into(), "src/dir/main.ts".into()] => true,
-                vec!["main.js".into()] => false,
+                vec!["main.js".into()] => true,
                 vec!["main.py".into()] => false,
             };
             let stack = Typescript {};
