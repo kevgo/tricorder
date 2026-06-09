@@ -2,6 +2,7 @@ use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
+use regex::Regex;
 use std::io::Read;
 use std::process::ExitStatus;
 use std::time::Duration;
@@ -124,6 +125,16 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     world.result = Some(CommandResult { status, output });
 }
 
+#[then(expr = "file {string} now matches")]
+async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let filepath = world.dir.path().join(&filename);
+    let have = fs::read_to_string(filepath).await.unwrap();
+    if !Regex::new(want).unwrap().is_match(have.trim()) {
+        panic!("HAVE:\n{have}\n\nWANT:\n{want}\n\n");
+    }
+}
+
 #[then("it prints:")]
 fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
@@ -131,7 +142,10 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let have = str::from_utf8(&stripped).unwrap();
     let missing = contains_lines(have, want);
     if !missing.is_empty() {
-        panic!("output is missing these lines:\n{}", missing.join("\n"));
+        panic!(
+            "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+            missing.join("\n")
+        );
     }
 }
 

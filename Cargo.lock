@@ -1720,6 +1720,7 @@ dependencies = [
  "mio",
  "os_pipe",
  "pretty_assertions",
+ "regex",
  "run-that-app",
  "strip-ansi-escapes",
  "tempfile",
