@@ -46,17 +46,13 @@ impl TricorderWorld {
     fn output(&self) -> &str {
         if let Some(result) = &self.result {
             return str::from_utf8(&result.output).unwrap();
-        };
-        return "";
+        }
+        ""
     }
 
     /// provides the textual output of the Atlanta run with whitespace trimmed from every line
     fn output_trimmed(&self) -> String {
-        self.output()
-            .trim()
-            .lines()
-            .map(|line| line.trim_end())
-            .join("\n")
+        self.output().trim().lines().map(str::trim_end).join("\n")
     }
 }
 
@@ -78,11 +74,11 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     if parent != world.dir.path() {
         fs::create_dir_all(parent)
             .await
-            .expect(&format!("cannot create parent '{}'", parent.display()));
+            .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
     }
     fs::write(&filepath, content.as_bytes())
         .await
-        .expect(&format!("cannot write to file '{}'", filepath.display()));
+        .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
 }
 
 #[when(expr = "inspect the workspace")]
@@ -93,16 +89,14 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
     // pause for 1 minute
-    tokio::time::sleep(Duration::from_secs(60)).await;
+    tokio::time::sleep(Duration::from_secs(61)).await;
 }
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
-    if executable != "tricorder" {
-        panic!("can only execute 'tricorder'");
-    }
+    assert!(executable == "tricorder", "can only execute 'tricorder'");
     let cwd = env::current_dir().expect("cannot determine the current directory");
     let mut absolute_path = cwd.join("target/debug/tricorder");
     if std::env::consts::OS == "windows" {
@@ -119,7 +113,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         .stderr(writer_clone);
     let mut child = cmd
         .spawn()
-        .expect(&format!("cannot find the '{executable}' executable"));
+        .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
     // Drop our handles to the write ends of the pipe (including the copies held
     // by the Command) so that the read end observes EOF once the child exits.
     drop(cmd);
@@ -136,9 +130,10 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     let want = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
-    if !Regex::new(want).unwrap().is_match(have.trim()) {
-        panic!("HAVE:\n{have}\n\nWANT:\n{want}\n\n");
-    }
+    assert!(
+        Regex::new(want).unwrap().is_match(have.trim()),
+        "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
+    );
 }
 
 #[then("it prints:")]
@@ -161,12 +156,11 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
         return;
     }
     let missing = contains_lines(have, want);
-    if !missing.is_empty() {
-        panic!(
-            "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
-            missing.join("\n")
-        );
-    }
+    assert!(
+        missing.is_empty(),
+        "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        missing.join("\n")
+    );
 }
 
 #[then("it prints nothing")]
