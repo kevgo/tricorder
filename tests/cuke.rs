@@ -40,7 +40,7 @@ impl TricorderWorld {
     fn output(&self) -> &str {
         if let Some(result) = &self.result {
             return str::from_utf8(&result.output).unwrap();
-        };
+        }
         ""
     }
 
@@ -68,7 +68,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     if parent != world.dir.path() {
         fs::create_dir_all(parent)
             .await
-            .expect(&format!("cannot create parent '{}'", parent.display()));
+            .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
     }
     fs::write(&filepath, content.as_bytes())
         .await
