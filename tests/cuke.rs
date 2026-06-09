@@ -83,16 +83,14 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
     println!("workspace: {}", world.dir.path().display());
     println!("workspace: {}", world.dir.path().display());
     // pause for 1 minute
-    tokio::time::sleep(Duration::from_secs(60)).await;
+    tokio::time::sleep(Duration::from_secs(61)).await;
 }
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
-    if executable != "tricorder" {
-        panic!("can only execute 'tricorder'");
-    }
+    assert!(executable == "tricorder", "can only execute 'tricorder'");
     let cwd = env::current_dir().expect("cannot determine the current directory");
     let mut absolute_path = cwd.join("target/debug/tricorder");
     if std::env::consts::OS == "windows" {
