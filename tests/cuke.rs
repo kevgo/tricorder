@@ -147,10 +147,6 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
     if update_snapshots_enabled() {
-        // Golden snapshot mode: if the actual output differs from the recorded
-        // expectation, queue an update of the .feature file with the real output
-        // and pretend the step succeeded. This must run before any assertion so
-        // that a mismatch updates the snapshot instead of failing the test.
         if have != want {
             let path = world
                 .feature_path
