@@ -10,6 +10,8 @@ DevEx tools that help improve software quality.
 - for all languages in your codebase
 - in all your codebases
 
+[![CI](https://github.com/kevgo/Tricorder/actions/workflows/ci.yml/badge.svg)](https://github.com/kevgo/tricorder/actions/workflows/ci.yml)
+
 ## Example
 
 - You have a Git repo with a TypeScript frontend and a Python backend.
