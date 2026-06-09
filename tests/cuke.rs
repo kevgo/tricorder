@@ -127,8 +127,8 @@ async fn executing(world: &mut TricorderWorld, command: String) {
 #[then("it prints:")]
 fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let have = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&have).unwrap();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped).unwrap();
     let missing = contains_lines(have, want);
     if !missing.is_empty() {
         panic!("output is missing these lines:\n{}", missing.join("\n"));
