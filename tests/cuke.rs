@@ -146,7 +146,7 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
             let path = world
                 .feature_path
                 .clone()
-                .expect("the feature file path is unknown - is the `before` hook wired up?");
+                .expect("the feature file path is unknown, is the `before` hook wired up?");
             queue_snapshot_update(SnapshotEdit {
                 path,
                 step_line: step.position.line,
