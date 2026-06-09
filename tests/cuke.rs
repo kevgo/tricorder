@@ -206,9 +206,6 @@ fn flush_snapshot_updates() {
     let edits = std::mem::take(&mut *SNAPSHOT_EDITS.lock().unwrap());
     // Group edits by file and apply them bottom-to-top so that rewriting a
     // docstring never shifts the line numbers of edits still to be applied.
-    // Sort by path first so that `chunk_by` (which only groups consecutive
-    // items) sees all edits for a file together - scenarios run concurrently
-    // and therefore queue their edits in arbitrary order.
     let mut edits = edits;
     edits.sort_by(|a, b| a.path.cmp(&b.path).then(b.step_line.cmp(&a.step_line)));
     for (path, group) in &edits.into_iter().chunk_by(|edit| edit.path.clone()) {
