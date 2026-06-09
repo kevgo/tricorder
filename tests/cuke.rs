@@ -146,17 +146,11 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
-    let missing = contains_lines(have, want);
-    if !missing.is_empty() {
-        panic!(
-            "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
-            missing.join("\n")
-        );
-    }
     if update_snapshots_enabled() {
         // Golden snapshot mode: if the actual output differs from the recorded
         // expectation, queue an update of the .feature file with the real output
-        // and pretend the step succeeded.
+        // and pretend the step succeeded. This must run before any assertion so
+        // that a mismatch updates the snapshot instead of failing the test.
         if have != want {
             let path = world
                 .feature_path
@@ -169,6 +163,13 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
             });
         }
         return;
+    }
+    let missing = contains_lines(have, want);
+    if !missing.is_empty() {
+        panic!(
+            "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+            missing.join("\n")
+        );
     }
     pretty::assert_eq!(have, want);
 }
