@@ -35,10 +35,7 @@ pub(crate) fn get_check_command(
                         verbose: true,
                     };
                     if let Err(err) = rta::commands::add(add_args, args.apps) {
-                        match err {
-                            rta::error::UserError::CannotAccessConfigFile(_) => {}
-                            _ => return Err(UserError::Rta { err }),
-                        }
+                        return Err(UserError::Rta { err });
                     }
                 }
                 _ => return Err(UserError::Rta { err }),
