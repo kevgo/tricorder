@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "output=$(tricorder check); echo \"$output\"; echo \"$output\" | grep -q \"^TRICORDER FINDINGS\" && exit 2 || exit 0",
+            "asyncRewake": true,
+            "statusMessage": "Tricorder: running quality checks…",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "tricorder format",
+            "statusMessage": "Tricorder: formatting before commit…",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

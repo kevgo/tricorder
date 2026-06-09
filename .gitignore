@@ -2,3 +2,4 @@
 tools/rta*
 /target
 /tmp
+.github/instructions/
