@@ -136,12 +136,11 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
     let missing = contains_lines(have, want);
-    if !missing.is_empty() {
-        panic!(
-            "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
-            missing.join("\n")
-        );
-    }
+    assert!(
+        missing.is_empty(),
+        "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        missing.join("\n")
+    );
 }
 
 #[then("it prints nothing")]
