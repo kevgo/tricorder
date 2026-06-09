@@ -146,15 +146,6 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
 }
 
-#[then(expr = "the output contains")]
-fn output_contains(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
-    if !have.contains(&want) {
-        panic!("output does not contain the expected text\n\nWANT:\n{want}\n\nHAVE:\n{have}");
-    }
-}
-
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     TricorderWorld::run("features").await;
