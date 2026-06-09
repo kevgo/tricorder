@@ -1,7 +1,7 @@
+use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
-use rta::strings::compare_lines;
 use std::io::Read;
 use std::process::ExitStatus;
 use std::time::Duration;
@@ -134,11 +134,13 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
 
 #[then("it prints these lines:")]
 fn verify_output_lines(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim().lines();
+    let want = step.docstring.as_ref().unwrap().trim();
     let have = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&have).unwrap();
-    let have = have.lines();
-    compare_lines(have, want);
+    let missing = contains_lines(have, want);
+    if !missing.is_empty() {
+        panic!("output is missing these lines:\n{}", missing.join("\n"));
+    }
 }
 
 #[then("it prints nothing")]
