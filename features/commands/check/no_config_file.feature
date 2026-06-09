@@ -23,5 +23,5 @@ Feature: run without config file
       """
       # more info at https://github.com/kevgo/run-that-app
       
-      ruff .*
+      ruff \d+\.\d+\.\d+
       """
