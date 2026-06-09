@@ -223,7 +223,6 @@ fn flush_snapshot_updates() {
         output.push('\n');
         std::fs::write(&path, output)
             .unwrap_or_else(|err| panic!("cannot write '{}': {err}", path.display()));
-        println!("updated snapshots in {}", path.display());
     }
 }
 
