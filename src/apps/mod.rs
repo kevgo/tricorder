@@ -1,3 +1,4 @@
+pub mod prettier;
 pub mod ruff;
 
 use crate::error::UserError;

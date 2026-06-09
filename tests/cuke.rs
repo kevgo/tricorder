@@ -18,6 +18,8 @@ struct TricorderWorld {
     /// the directory containing the test files for the current scenario
     dir: tempfile::TempDir,
 
+    original_files: Vec<ExistingFile>,
+
     /// the result of running Tricorder
     result: Option<CommandResult>,
 
@@ -29,6 +31,7 @@ impl TricorderWorld {
     fn new() -> Self {
         Self {
             dir: tempfile::tempdir().unwrap(),
+            original_files: Vec::new(),
             result: None,
             feature_path: None,
         }
@@ -66,10 +69,16 @@ struct CommandResult {
     output: Vec<u8>,
 }
 
+#[derive(Debug)]
+struct ExistingFile {
+    name: String,
+    content: String,
+}
+
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.path().join(filename);
+    let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir.path() {
         fs::create_dir_all(parent)
@@ -79,6 +88,10 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     fs::write(&filepath, content.as_bytes())
         .await
         .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
+    world.original_files.push(ExistingFile {
+        name: filename,
+        content: content.to_string(),
+    });
 }
 
 #[when(expr = "inspect the workspace")]
@@ -95,6 +108,8 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
+    // wait for 1 second
+    // tokio::time::sleep(Duration::from_secs(1)).await;
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
     let cwd = env::current_dir().expect("cannot determine the current directory");
@@ -123,6 +138,49 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         .expect("cannot read the command output");
     let status = child.wait().await.expect("the command failed to run");
     world.result = Some(CommandResult { status, output });
+}
+
+#[then("all files are unchanged")]
+async fn all_files_unchanged(world: &mut TricorderWorld) {
+    for original in &world.original_files {
+        let filepath = world.dir.path().join(&original.name);
+        let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
+            panic!(
+                "cannot read file '{}', which should still exist",
+                original.name
+            )
+        });
+        assert_eq!(
+            have.trim(),
+            original.content.trim(),
+            "file '{}' was modified\n\nORIGINAL:\n{}\n\nNEW:\n{have}",
+            original.name,
+            original.content
+        );
+    }
+}
+
+#[then(expr = "file {string} is unchanged")]
+async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
+    let original = world
+        .original_files
+        .iter()
+        .find(|f| f.name == filename)
+        .expect("file not found in original files");
+    let filepath = world.dir.path().join(&original.name);
+    let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
+        panic!(
+            "cannot read file '{}', which should still exist",
+            original.name
+        )
+    });
+    assert_eq!(
+        have.trim(),
+        original.content.trim(),
+        "file '{}' was modified\n\nORIGINAL:\n{}\n\nNEW:\n{have}",
+        original.name,
+        original.content
+    );
 }
 
 #[then(expr = "file {string} now matches")]

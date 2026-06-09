@@ -1,6 +1,7 @@
 use crate::apps::{GetCheckCmdArgs, get_check_command};
-use crate::domain::{Checker, Tool};
+use crate::domain::{Checker, Stack, Tool};
 use crate::error::UserError;
+use crate::stacks::Python;
 use rta::applications::Apps;
 
 pub struct Ruff;
@@ -8,6 +9,10 @@ pub struct Ruff;
 impl Tool for Ruff {
     fn name(&self) -> &'static str {
         "ruff"
+    }
+
+    fn stacks(&self) -> Vec<Box<dyn Stack>> {
+        vec![Box::new(Python {})]
     }
 }
 

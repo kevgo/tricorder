@@ -1,21 +1,21 @@
-use crate::apps::ruff::Ruff;
+use crate::apps::prettier::Prettier;
 use crate::domain::{Checker, Stack};
 
-pub struct Python;
+pub struct Json;
 
-impl Stack for Python {
+impl Stack for Json {
     fn name(&self) -> &'static str {
-        "python"
+        "json"
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Ruff {})]
+        vec![Box::new(Prettier {})]
     }
 
     fn used(&self, files: &[std::path::PathBuf]) -> bool {
         files
             .iter()
-            .any(|file| file.extension().is_some_and(|ext| ext == "py"))
+            .any(|file| file.extension().is_some_and(|ext| ext == "json"))
     }
 }
 
@@ -23,18 +23,18 @@ impl Stack for Python {
 mod tests {
 
     mod used {
+        use crate::stacks::Json;
         use crate::stacks::Stack;
-        use crate::stacks::python::Python;
         use maplit::hashmap;
 
         #[test]
         fn used() {
             let tests = hashmap! {
                 vec![] => false,
-                vec!["main.py".into()] => true,
-                vec!["other.text".into(), "src/dir/main.py".into()] => true,
+                vec!["main.json".into()] => true,
+                vec!["other.text".into(), "src/dir/main.json".into()] => true,
             };
-            let stack = Python {};
+            let stack = Json {};
             for (give, want) in tests {
                 let have = stack.used(&give);
                 assert_eq!(have, want, "{give:?} -> {have:?}");

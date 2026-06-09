@@ -1,12 +1,15 @@
 use crate::domain::Stack;
-use crate::stacks::python::PythonStack;
 use std::path::PathBuf;
 
+mod json;
 mod python;
+
+pub use json::Json;
+pub use python::Python;
 
 /// provides all stacks that Tricorder supports
 pub fn all() -> Vec<Box<dyn Stack>> {
-    vec![Box::new(PythonStack)]
+    vec![Box::new(Json {}), Box::new(Python {})]
 }
 
 /// provides all stacks used in the codebase in the current directory
