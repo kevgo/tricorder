@@ -16,9 +16,9 @@ impl Checker for Ruff {
         apps: &rta::applications::Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
         get_check_command(&GetCheckCmdArgs {
-            executable_name: "ruff --check",
+            name: "ruff --check",
             app: &rta::applications::Ruff {},
-            app_args: vec!["format", "--check"],
+            args: vec!["format", "--check"],
             apps,
         })
     }

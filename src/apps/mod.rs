@@ -8,7 +8,7 @@ pub(crate) fn get_check_command(
     args: &GetCheckCmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
     let app_args = args
-        .app_args
+        .args
         .iter()
         .map(std::string::ToString::to_string)
         .collect();
@@ -24,7 +24,7 @@ pub(crate) fn get_check_command(
         match rta::get_cmd(args.app, get_cmd_args.clone(), args.apps) {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
-                    name: args.executable_name.into(),
+                    name: args.name.into(),
                     command,
                 }));
             }
@@ -46,8 +46,8 @@ pub(crate) fn get_check_command(
 }
 
 pub struct GetCheckCmdArgs<'a> {
-    executable_name: &'static str,
+    name: &'static str,
     app: &'a dyn AppDefinition,
-    app_args: Vec<&'static str>,
+    args: Vec<&'static str>,
     apps: &'a rta::applications::Apps,
 }
