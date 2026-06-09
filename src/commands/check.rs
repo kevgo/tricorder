@@ -1,5 +1,5 @@
+use crate::domain::Stack;
 use crate::error;
-use crate::stacks::Stack;
 use std::process::ExitCode;
 
 pub fn check(stacks: &[Box<dyn Stack>], apps: &rta::applications::Apps) -> error::Result<ExitCode> {

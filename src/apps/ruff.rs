@@ -1,6 +1,6 @@
 use crate::apps::{GetCheckCmdArgs, get_check_command};
+use crate::domain::{Checker, Tool};
 use crate::error::UserError;
-use crate::stacks::{Checker, Tool};
 use rta::applications::Apps;
 
 pub struct Ruff;

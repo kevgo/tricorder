@@ -1,6 +1,7 @@
 mod apps;
 mod cli;
 mod commands;
+mod domain;
 mod error;
 mod filesystem;
 mod stacks;
