@@ -9,7 +9,6 @@ use std::{env, str};
 use tokio::fs;
 use tokio::process::Command;
 
-
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
