@@ -15,7 +15,7 @@ pub(crate) fn get_check_command(
     //   add the app to the config and try a second time.
     for _ in 0..2 {
         let get_cmd_args = rta::GetCmdArgs {
-            app_args: string_list(&args.args),
+            app_args: args.args.clone(),
             version: None,
             from_source: false,
             include_apps: vec![],
@@ -49,13 +49,6 @@ pub(crate) fn get_check_command(
 pub struct GetCheckCmdArgs<'a> {
     name: &'static str,
     app: &'a dyn AppDefinition,
-    args: Vec<&'static str>,
+    args: Vec<String>,
     apps: &'a rta::applications::Apps,
-}
-
-fn string_list(strings: &[&'static str]) -> Vec<String> {
-    strings
-        .iter()
-        .map(std::string::ToString::to_string)
-        .collect()
 }
