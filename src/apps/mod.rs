@@ -3,6 +3,7 @@ pub mod checkstyle;
 pub mod golangci_lint;
 pub mod prettier;
 pub mod ruff;
+pub mod sqlfmt;
 
 use crate::error::UserError;
 use rta::applications::AppDefinition;
