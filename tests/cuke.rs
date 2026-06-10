@@ -195,7 +195,7 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
 }
 
 #[then("it prints:")]
-fn verify_output(world: &mut TricorderWorld, step: &Step) {
+fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
@@ -221,8 +221,19 @@ fn verify_output(world: &mut TricorderWorld, step: &Step) {
     );
 }
 
+#[then("it does not print:")]
+fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped).unwrap();
+    assert!(
+        !have.contains(want),
+        "output should not contain '{want}'\n\nHAVE:\n{have}",
+    );
+}
+
 #[then("it prints nothing")]
-fn verify_output_nothing(world: &mut TricorderWorld) {
+fn it_prints_nothing(world: &mut TricorderWorld) {
     let have = world.output_trimmed();
     pretty::assert_eq!(have, "");
 }

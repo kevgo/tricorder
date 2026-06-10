@@ -20,6 +20,10 @@ Feature: checking Python code
       Would reformat: main.py
       1 file would be reformatted
       """
+    And it does not print:
+      """
+      Talking to GitHub API
+      """
     And the exit code is 1
 
   Scenario: unconfigured
