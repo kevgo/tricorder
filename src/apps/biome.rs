@@ -13,10 +13,15 @@ impl Tool for Biome {
 
 impl Checker for Biome {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
+        let mut args = Vec::with_capacity(stack.files.len() + 1);
+        args.push(S("check"));
+        for file in &stack.files {
+            args.push(file.to_string_lossy().to_string());
+        }
         get_check_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Biome {},
-            args: vec![S("check")],
+            args,
         })
     }
 }
