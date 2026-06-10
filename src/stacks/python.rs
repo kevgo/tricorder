@@ -9,12 +9,12 @@ impl Stack for Python {
         "Python"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Ruff {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "py")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Ruff {})]
     }
 }
 

@@ -9,13 +9,13 @@ impl Stack for Yml {
         "YML"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Prettier {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension()
             .is_some_and(|ext| ext == "yml" || ext == "yaml")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Prettier {})]
     }
 }
 

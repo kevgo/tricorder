@@ -9,12 +9,12 @@ impl Stack for Css {
         "CSS"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Biome {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "css")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Biome {})]
     }
 }
 

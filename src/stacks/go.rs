@@ -9,12 +9,12 @@ impl Stack for Go {
         "Go"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(GolangciLint {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "go")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(GolangciLint {})]
     }
 }
 
