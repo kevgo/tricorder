@@ -1,3 +1,5 @@
+#![allow(clippy::needless_pass_by_value)]
+
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
@@ -241,6 +243,15 @@ fn it_prints_nothing(world: &mut TricorderWorld) {
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
+}
+
+#[then(expr = "there is no file {string}")]
+fn no_file(world: &mut TricorderWorld, want: String) {
+    let filepath = world.dir.path().join(&want);
+    assert!(
+        !filepath.exists(),
+        "file '{want}' should not exist but does",
+    );
 }
 
 /// a queued update of a `Then it prints:` snapshot in a .feature file

@@ -17,7 +17,7 @@ Feature: checking SQL files
       1 SQL, 1 other
       running 1 tools
       SQL (sqlfmt)
-      schema.sql was reformatted
+      schema.sql failed formatting check.
       """
     And it does not print:
       """
@@ -32,18 +32,12 @@ Feature: checking SQL files
     Then it prints:
       """
       1 SQL
-      Talking to GitHub API (https://api.github.com/repos/tconbeer/sqlfmt/releases/latest) ... ok
       running 1 tools
       SQL (sqlfmt)
-      schema.sql was reformatted
+      schema.sql failed formatting check.
       """
     And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      sqlfmt \d+\.\d+\.\d+
-      """
+    And there is no file "run-that-app"
     And file "schema.sql" is unchanged
 
   Scenario: detects multiple SQL file extensions
