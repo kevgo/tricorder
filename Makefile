@@ -22,6 +22,11 @@ cuke-all: build  # runs only the end-to-end tests that don't use the GitHub API
 cukethis: build  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 
+.PHONY: demo
+demo:  # runs Tricorder in the "demo" folder
+	cargo build --release --quiet
+	(cd demo && ../target/release/tricorder check)
+
 install:
 	cargo install --path . --locked
 
