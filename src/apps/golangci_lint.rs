@@ -1,4 +1,4 @@
-use crate::apps::{GetCheckCmdArgs, get_check_command};
+use crate::apps::{GetCheckCmdArgs, get_rta_command};
 use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
@@ -13,7 +13,7 @@ impl Tool for GolangciLint {
 
 impl Checker for GolangciLint {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
-        get_check_command(&GetCheckCmdArgs {
+        get_rta_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::GolangCiLint {},
             args: vec![S("run")],

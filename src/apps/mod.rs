@@ -8,8 +8,9 @@ pub mod sqlfmt;
 use crate::error::UserError;
 use rta::applications::AppDefinition;
 
-/// Resolves an RTA app command for a checker, auto-adding the app to the config if missing.
-pub(crate) fn get_check_command(
+/// Provides the RTA command to run the given RTA App.
+/// Installs the app if needed.
+pub(crate) fn get_rta_command(
     args: &GetCheckCmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
     // try twice to get the command:
