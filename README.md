@@ -20,7 +20,7 @@ locally executed code quality checks
 that provide quality signals to AI to generate code free of common defects,
 without the overhead.
 
-**Team:** k0g0kip, r0s03yf, s0m08a2
+**Team:** k0g0kip, r0s03yf, s0m08a2,a0s1ryr
 
 **Platform area:** other (developer machines)
 
