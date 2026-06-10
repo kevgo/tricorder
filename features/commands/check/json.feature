@@ -10,8 +10,7 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      1 stacks, 1 files
-      json
+      1 files, json
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       running 1 tools
       prettier
@@ -34,8 +33,7 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      1 stacks, 2 files
-      json
+      2 files, json
       running 1 tools
       prettier
       main.json

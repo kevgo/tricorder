@@ -10,8 +10,7 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      1 stacks, 1 files
-      yml
+      1 files, yml
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       added prettier-standalone@0.24.0 to run-that-app
       running 1 tools
@@ -39,8 +38,7 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      1 stacks, 2 files
-      yml
+      2 files, yml
       running 1 tools
       prettier
       main.yml
@@ -60,8 +58,7 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      1 stacks, 2 files
-      yml
+      2 files, yml
       running 1 tools
       prettier
       main.yaml
