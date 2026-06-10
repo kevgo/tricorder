@@ -1,5 +1,6 @@
 use crate::apps::ruff::Ruff;
 use crate::domain::{Checker, Stack};
+use std::path::Path;
 
 pub struct Python;
 
@@ -12,33 +13,29 @@ impl Stack for Python {
         vec![Box::new(Ruff {})]
     }
 
-    fn used(&self, files: &[std::path::PathBuf]) -> bool {
-        files
-            .iter()
-            .any(|file| file.extension().is_some_and(|ext| ext == "py"))
+    fn has_file(&self, file: &Path) -> bool {
+        file.extension().is_some_and(|ext| ext == "py")
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::Stack;
+    use crate::stacks::Python;
+    use maplit::hashmap;
+    use std::path::Path;
 
-    mod used {
-        use crate::stacks::Stack;
-        use crate::stacks::python::Python;
-        use maplit::hashmap;
-
-        #[test]
-        fn used() {
-            let tests = hashmap! {
-                vec![] => false,
-                vec!["main.py".into()] => true,
-                vec!["other.text".into(), "src/dir/main.py".into()] => true,
-            };
-            let stack = Python {};
-            for (give, want) in tests {
-                let have = stack.used(&give);
-                assert_eq!(have, want, "{give:?} -> {have:?}");
-            }
+    #[test]
+    fn has_file() {
+        let tests = hashmap! {
+            "main.py" => true,
+            "src/dir/main.py" => true,
+            "other.txt" => false,
+        };
+        let python = Python {};
+        for (give, want) in tests {
+            let have = python.has_file(Path::new(give));
+            assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
 }

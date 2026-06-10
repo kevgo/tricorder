@@ -1,5 +1,6 @@
 use crate::apps::biome::Biome;
 use crate::domain::{Checker, Stack};
+use std::path::Path;
 
 pub struct Typescript;
 
@@ -12,37 +13,33 @@ impl Stack for Typescript {
         vec![Box::new(Biome {})]
     }
 
-    fn used(&self, files: &[std::path::PathBuf]) -> bool {
-        files.iter().any(|file| {
-            file.extension()
-                .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
-        })
+    fn has_file(&self, file: &Path) -> bool {
+        file.extension()
+            .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::Stack;
+    use crate::stacks::Typescript;
+    use maplit::hashmap;
+    use std::path::Path;
 
-    mod used {
-        use crate::stacks::Stack;
-        use crate::stacks::typescript::Typescript;
-        use maplit::hashmap;
-
-        #[test]
-        fn used() {
-            let tests = hashmap! {
-                vec![] => false,
-                vec!["main.ts".into()] => true,
-                vec!["component.tsx".into()] => true,
-                vec!["other.text".into(), "src/dir/main.ts".into()] => true,
-                vec!["main.js".into()] => true,
-                vec!["main.py".into()] => false,
-            };
-            let stack = Typescript {};
-            for (give, want) in tests {
-                let have = stack.used(&give);
-                assert_eq!(have, want, "{give:?} -> {have:?}");
-            }
+    #[test]
+    fn has_file() {
+        let tests = hashmap! {
+            "main.ts" => true,
+            "main.tsx" => true,
+            "main.js" => true,
+            "main.jsx" => true,
+            "src/dir/main.ts" => true,
+            "other.txt" => false,
+        };
+        let typescript = Typescript {};
+        for (give, want) in tests {
+            let have = typescript.has_file(Path::new(give));
+            assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
 }

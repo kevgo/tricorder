@@ -29,15 +29,18 @@ fn inner() -> error::Result<ExitCode> {
     let files = filesystem::all_files();
     println!("{}", files.len());
     print!("discovering stacks ... ");
-    let stacks = stacks::discover(all_stacks, &files);
-    if stacks.is_empty() {
+    let active_stacks = stacks::discover(all_stacks, files);
+    if active_stacks.is_empty() {
         println!("0");
         return Ok(ExitCode::SUCCESS);
     }
-    let stack_names = stacks.iter().map(|stack| stack.name()).join(", ");
+    let stack_names = active_stacks
+        .iter()
+        .map(|stack| stack.stack.name())
+        .join(", ");
     println!("{stack_names}");
     let apps = rta::applications::all();
     match command {
-        Command::Check => commands::check(&stacks, &apps),
+        Command::Check => commands::check(&active_stacks, &apps),
     }
 }

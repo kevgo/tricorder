@@ -1,4 +1,4 @@
-use crate::domain::Stack;
+use crate::domain::{PopulatedStack, Stack};
 use std::path::PathBuf;
 
 mod json;
@@ -21,13 +21,25 @@ pub fn all() -> Vec<Box<dyn Stack>> {
     ]
 }
 
-/// provides all stacks used in the codebase in the current directory
-pub fn discover(all_stacks: Vec<Box<dyn Stack>>, files: &[PathBuf]) -> Vec<Box<dyn Stack>> {
-    let mut result = Vec::new();
-    for stack in all_stacks {
-        if stack.used(files) {
-            result.push(stack);
+/// provides all stacks and their files that exist in the workspace
+pub fn discover(all_stacks: Vec<Box<dyn Stack>>, files: Vec<PathBuf>) -> Vec<PopulatedStack> {
+    let mut result: Vec<PopulatedStack> = all_stacks
+        .into_iter()
+        .map(|stack| PopulatedStack {
+            stack,
+            files: vec![],
+        })
+        .collect();
+    for file in files {
+        for stack in &mut result {
+            if stack.stack.has_file(&file) {
+                stack.files.push(file);
+                break;
+            }
         }
     }
     result
+        .into_iter()
+        .filter(|stack| !stack.files.is_empty())
+        .collect()
 }

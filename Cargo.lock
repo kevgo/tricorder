@@ -1710,6 +1710,7 @@ dependencies = [
 name = "tricorder"
 version = "0.0.0"
 dependencies = [
+ "big_s",
  "clap",
  "concurrent_shell_commands",
  "contains_lines",
