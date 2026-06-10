@@ -5,6 +5,7 @@ mod css;
 mod go;
 mod json;
 mod python;
+mod sql;
 mod typescript;
 mod yml;
 
@@ -14,6 +15,7 @@ pub use css::Css;
 pub use go::Go;
 pub use json::Json;
 pub use python::Python;
+pub use sql::Sql;
 pub use typescript::Typescript;
 pub use yml::Yml;
 
@@ -25,6 +27,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Go {}),
         Box::new(Json {}),
         Box::new(Python {}),
+        Box::new(Sql {}),
         Box::new(Yml {}),
         Box::new(Typescript {}),
     ]
