@@ -1,18 +1,18 @@
 use crate::domain::{PopulatedStack, Stack};
 
-mod java;
 mod css;
 mod go;
+mod java;
 mod json;
 mod python;
 mod sql;
 mod typescript;
 mod yml;
 
-use ignore::Walk;
-pub use java::Java;
 pub use css::Css;
 pub use go::Go;
+use ignore::Walk;
+pub use java::Java;
 pub use json::Json;
 pub use python::Python;
 pub use sql::Sql;
