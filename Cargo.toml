@@ -13,6 +13,7 @@ conc = { package = "concurrent_shell_commands", version = "0.3.1" }
 ignore = "0.4.26"
 itertools = "0.14.0"
 run-that-app = "0.37.2"
+which = "5.0.0"
 
 [dev-dependencies]
 contains_lines = "0.0.1"
