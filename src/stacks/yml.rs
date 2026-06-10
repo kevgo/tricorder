@@ -6,7 +6,7 @@ pub struct Yml;
 
 impl Stack for Yml {
     fn name(&self) -> &'static str {
-        "yml"
+        "YML"
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {

@@ -25,7 +25,7 @@ pub(crate) fn get_check_command(
         match rta::get_cmd(args.app, get_cmd_args, args.apps) {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
-                    name: args.name.into(),
+                    name: args.name.clone(),
                     command,
                 }));
             }
@@ -47,7 +47,7 @@ pub(crate) fn get_check_command(
 }
 
 pub struct GetCheckCmdArgs<'a> {
-    name: &'static str,
+    name: String,
     app: &'a dyn AppDefinition,
     args: Vec<String>,
     apps: &'a rta::applications::Apps,

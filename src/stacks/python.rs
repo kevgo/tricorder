@@ -6,7 +6,7 @@ pub struct Python;
 
 impl Stack for Python {
     fn name(&self) -> &'static str {
-        "python"
+        "Python"
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
