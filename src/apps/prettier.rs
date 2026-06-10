@@ -1,4 +1,4 @@
-use crate::apps::{GetCheckCmdArgs, get_check_command};
+use crate::apps::{GetCheckCmdArgs, get_rta_command};
 use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
@@ -19,7 +19,7 @@ impl Checker for Prettier {
             let file_str = stack_file.to_string_lossy().to_string();
             args.push(file_str);
         }
-        get_check_command(&GetCheckCmdArgs {
+        get_rta_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::PrettierStandalone {},
             args,
