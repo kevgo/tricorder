@@ -2,7 +2,6 @@ use crate::apps::{GetCheckCmdArgs, get_check_command};
 use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
-use rta::applications::Apps;
 
 pub struct Prettier;
 
@@ -13,11 +12,7 @@ impl Tool for Prettier {
 }
 
 impl Checker for Prettier {
-    fn check_command(
-        &self,
-        stack: &PopulatedStack,
-        apps: &Apps,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--list-different"));
         for stack_file in &stack.files {
@@ -28,7 +23,6 @@ impl Checker for Prettier {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::PrettierStandalone {},
             args,
-            apps,
         })
     }
 }
