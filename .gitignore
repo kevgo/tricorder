@@ -4,6 +4,7 @@ tools/rta*
 /tmp
 .github/instructions/
 UI/node_modules/
+demo/bad_code.py
 
 # IntelliJ / JetBrains IDEs
 .idea/

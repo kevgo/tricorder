@@ -1,7 +1,9 @@
 # more info at https://github.com/kevgo/run-that-app
 
+biome 2.4.16
 ghokin 3.9.0
 lefthook 2.1.9
 prettier-standalone 0.24.0
+ruff 0.15.16
 rumdl 0.2.7
 taplo 0.10.0
