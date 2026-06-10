@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "output=$(tricorder check); echo \"$output\"; echo \"$output\" | grep -q \"^TRICORDER FINDINGS\" && exit 2 || exit 0",
+            "command": "tricorder check; exit_code=$?; if [ $exit_code -ne 0 ]; then echo '---'; echo 'Tricorder found issues above. Fix them before proceeding.'; exit 2; fi",
             "asyncRewake": true,
             "statusMessage": "Tricorder: running quality checks…",
             "timeout": 120
@@ -20,9 +20,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit *)",
-            "command": "tricorder format",
-            "statusMessage": "Tricorder: formatting before commit…",
+            "command": "tool_input=$(cat); cmd=$(echo \"$tool_input\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('command',''))\" 2>/dev/null || echo ''); if [[ \"$cmd\" == git\\ commit* ]]; then tricorder check || { echo 'Fix tricorder findings before committing.'; exit 2; }; fi",
+            "statusMessage": "Tricorder: checking before commit…",
             "timeout": 60
           }
         ]
