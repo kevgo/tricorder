@@ -1,11 +1,13 @@
 use crate::domain::{PopulatedStack, Stack};
 
+mod go;
 mod json;
 mod python;
 mod typescript;
 mod yml;
 
 use ignore::Walk;
+pub use go::Go;
 pub use json::Json;
 pub use python::Python;
 pub use typescript::Typescript;
@@ -14,6 +16,7 @@ pub use yml::Yml;
 /// provides all stacks that Tricorder supports
 pub fn all() -> Vec<Box<dyn Stack>> {
     vec![
+        Box::new(Go {}),
         Box::new(Json {}),
         Box::new(Python {}),
         Box::new(Yml {}),
