@@ -9,13 +9,13 @@ impl Stack for Typescript {
         "TypeScript"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Biome {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension()
             .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Biome {})]
     }
 }
 

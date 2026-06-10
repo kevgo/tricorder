@@ -9,13 +9,13 @@ impl Stack for Sql {
         "SQL"
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Sqlfmt {})]
-    }
-
     fn has_file(&self, file: &Path) -> bool {
         file.extension()
             .is_some_and(|ext| ext == "sql" || ext == "pgsql" || ext == "tsql")
+    }
+
+    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Sqlfmt {})]
     }
 }
 
