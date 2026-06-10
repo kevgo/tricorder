@@ -3,7 +3,6 @@ mod cli;
 mod commands;
 mod domain;
 mod error;
-mod filesystem;
 mod stacks;
 
 use cli::Command;
@@ -24,14 +23,9 @@ fn inner() -> error::Result<ExitCode> {
     let Some(command) = cli::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
-    let all_stacks = stacks::all();
-    print!("discovering files ... ");
-    let files = filesystem::all_files();
-    println!("{}", files.len());
-    print!("discovering stacks ... ");
-    let active_stacks = stacks::discover(all_stacks, files);
+    let (active_stacks, file_count) = stacks::discover();
+    println!("{} stacks, {file_count} files", active_stacks.len());
     if active_stacks.is_empty() {
-        println!("0");
         return Ok(ExitCode::SUCCESS);
     }
     let stack_names = active_stacks

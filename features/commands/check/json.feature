@@ -10,10 +10,12 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 1
-      discovering stacks ... json
+      1 stacks, 1 files
+      json
+      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       running 1 tools
       prettier
+      main.json
       """
     And the exit code is 1
     And file "run-that-app" now matches
@@ -32,10 +34,11 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 2
-      discovering stacks ... json
+      1 stacks, 2 files
+      json
       running 1 tools
       prettier
+      main.json
       """
     And the exit code is 1
     And all files are unchanged
