@@ -14,8 +14,8 @@ Feature: checking Python code
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 2
-      discovering stacks ... python
+      1 stacks, 2 files
+      python
       running 1 tools
       ruff --check
       Would reformat: main.py
@@ -27,9 +27,10 @@ Feature: checking Python code
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 1
-      discovering stacks ... python
+      1 stacks, 1 files
+      python
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
+      added ruff@0.15.16 to run-that-app
       running 1 tools
       ruff --check
       Would reformat: main.py

@@ -10,10 +10,13 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 1
-      discovering stacks ... yml
+      1 stacks, 1 files
+      yml
+      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      added prettier-standalone@0.24.0 to run-that-app
       running 1 tools
       prettier
+      main.yml
       """
     And the exit code is 1
     And file "run-that-app" now matches
@@ -36,8 +39,8 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 2
-      discovering stacks ... yml
+      1 stacks, 2 files
+      yml
       running 1 tools
       prettier
       main.yml
@@ -57,10 +60,11 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 2
-      discovering stacks ... yml
+      1 stacks, 2 files
+      yml
       running 1 tools
       prettier
+      main.yaml
       """
     And the exit code is 1
     And all files are unchanged

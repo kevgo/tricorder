@@ -13,9 +13,10 @@ Feature: checking a codebase containing TypeScript code
     When executing "tricorder check"
     Then it prints:
       """
-      discovering files ... 2
-      discovering stacks ... typescript
+      1 stacks, 2 files
+      typescript
       running 1 tools
       biome --check
+      Found 1 error.
       """
     And the exit code is 1
