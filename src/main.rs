@@ -5,6 +5,7 @@ mod domain;
 mod error;
 mod stacks;
 
+use crate::domain::PopulatedStack;
 use cli::Command;
 use itertools::Itertools;
 use std::process::ExitCode;
@@ -23,18 +24,21 @@ fn inner() -> error::Result<ExitCode> {
     let Some(command) = cli::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
-    let (active_stacks, file_count) = stacks::discover();
-    println!("{} stacks, {file_count} files", active_stacks.len());
-    if active_stacks.is_empty() {
+    let (stacks, file_count) = stacks::discover();
+    print_metadata(&stacks, file_count);
+    if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    let stack_names = active_stacks
-        .iter()
-        .map(|stack| stack.stack.name())
-        .join(", ");
-    println!("{stack_names}");
     let apps = rta::applications::all();
     match command {
-        Command::Check => commands::check(&active_stacks, &apps),
+        Command::Check => commands::check(&stacks, &apps),
     }
+}
+
+fn print_metadata(stacks: &[PopulatedStack], file_count: usize) {
+    let mut stack_names = stacks.iter().map(|stack| stack.stack.name()).join(", ");
+    if stack_names.is_empty() {
+        stack_names = "0 stacks".to_string();
+    }
+    println!("{file_count} files, {stack_names}");
 }
