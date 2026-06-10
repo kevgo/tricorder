@@ -6,6 +6,7 @@ Feature: checking JSON files
       { "key": "value" }
       """
 
+  @online
   Scenario: unconfigured
     When executing "tricorder check"
     Then it prints:

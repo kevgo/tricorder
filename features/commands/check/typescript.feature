@@ -26,6 +26,7 @@ Feature: checking a codebase containing TypeScript code
       """
     And the exit code is 1
 
+  @online
   Scenario: unconfigured
     When executing "tricorder check"
     Then it prints:
@@ -41,6 +42,6 @@ Feature: checking a codebase containing TypeScript code
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       biome \d+\.\d+\.\d+
       """
