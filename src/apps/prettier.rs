@@ -1,5 +1,5 @@
 use crate::apps::{GetCheckCmdArgs, get_check_command};
-use crate::domain::{Checker, Tool};
+use crate::domain::{Checker, Stack, Tool};
 use crate::error::UserError;
 use crate::stacks::{Json, Yml};
 use rta::applications::Apps;
@@ -11,7 +11,7 @@ impl Tool for Prettier {
         "prettier"
     }
 
-    fn stacks(&self) -> Vec<Box<dyn crate::domain::Stack>> {
+    fn stacks(&self) -> Vec<Box<dyn Stack>> {
         vec![Box::new(Json {}), Box::new(Yml {})]
     }
 }
