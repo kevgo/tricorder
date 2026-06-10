@@ -1,4 +1,5 @@
 pub mod biome;
+pub mod checkstyle;
 pub mod golangci_lint;
 pub mod prettier;
 pub mod ruff;

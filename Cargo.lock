@@ -1726,6 +1726,7 @@ dependencies = [
  "strip-ansi-escapes",
  "tempfile",
  "tokio",
+ "which",
 ]
 
 [[package]]
