@@ -2,6 +2,11 @@
 tools/rta*
 /target
 /tmp
+
+.DS_Store
+UI/node_modules/
+UI/dist/
+
 .github/instructions/
 UI/node_modules/
 demo/bad_code.py
@@ -10,3 +15,4 @@ demo/bad_code.py
 .idea/
 *.iml
 .github/instructions/wmt-copilot.instructions.md
+
