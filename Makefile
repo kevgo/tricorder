@@ -16,6 +16,9 @@ cuke: build  # runs all end-to-end tests
 cuke-update: build  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
 
+cuke-offline: build  # runs only the end-to-end tests that don't use the GitHub API
+	cargo test --test=cuke -- -t "not @online"
+
 cukethis: build  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 

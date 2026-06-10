@@ -2,6 +2,7 @@ Feature: checking YML files
 
   Background:
 
+  @online
   Scenario: unconfigured
     Given a file "main.yml" with content
       """

@@ -26,6 +26,7 @@ Feature: checking Python code
       """
     And the exit code is 1
 
+  @online
   Scenario: unconfigured
     When executing "tricorder check"
     Then it prints:
