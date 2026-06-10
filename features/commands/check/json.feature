@@ -38,5 +38,9 @@ Feature: checking JSON files
       prettier
       main.json
       """
+    And it does not print:
+      """
+      Talking to GitHub API
+      """
     And the exit code is 1
     And all files are unchanged

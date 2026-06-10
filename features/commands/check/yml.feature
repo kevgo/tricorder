@@ -43,6 +43,10 @@ Feature: checking YML files
       prettier
       main.yml
       """
+    And it does not print:
+      """
+      Talking to GitHub API
+      """
     And the exit code is 1
     And all files are unchanged
 
@@ -62,6 +66,10 @@ Feature: checking YML files
       running 1 tools
       prettier
       main.yaml
+      """
+    And it does not print:
+      """
+      Talking to GitHub API
       """
     And the exit code is 1
     And all files are unchanged
