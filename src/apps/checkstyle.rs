@@ -1,6 +1,5 @@
 use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
-use rta::applications::Apps;
 
 pub struct Checkstyle;
 
@@ -17,7 +16,6 @@ impl Checker for Checkstyle {
     fn check_command(
         &self,
         _stack: &PopulatedStack,
-        _apps: &Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(

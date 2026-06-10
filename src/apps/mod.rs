@@ -16,6 +16,7 @@ pub(crate) fn get_check_command(
     // - first to get the command
     // - if that fails because the app is not listed in the config file,
     //   add the app to the config and try a second time.
+    let apps = rta::applications::all();
     for _ in 0..2 {
         let get_cmd_args = rta::GetCmdArgs {
             app_args: args.args.clone(),
@@ -25,7 +26,7 @@ pub(crate) fn get_check_command(
             optional: true,
             verbose: false,
         };
-        match rta::get_cmd(args.app, get_cmd_args, args.apps) {
+        match rta::get_cmd(args.app, get_cmd_args, &apps) {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
@@ -38,7 +39,7 @@ pub(crate) fn get_check_command(
                         app_name: args.app.name(),
                         verbose: true,
                     };
-                    if let Err(err) = rta::commands::add(add_args, args.apps) {
+                    if let Err(err) = rta::commands::add(add_args, &apps) {
                         return Err(UserError::Rta { err });
                     }
                 }
@@ -53,5 +54,4 @@ pub struct GetCheckCmdArgs<'a> {
     name: String,
     app: &'a dyn AppDefinition,
     args: Vec<String>,
-    apps: &'a rta::applications::Apps,
 }

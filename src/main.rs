@@ -29,9 +29,8 @@ fn inner() -> error::Result<ExitCode> {
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    let apps = rta::applications::all();
     match command {
-        Command::Check => commands::check(&stacks, &apps),
+        Command::Check => commands::check(&stacks),
     }
 }
 

@@ -2,7 +2,6 @@ use crate::apps::{GetCheckCmdArgs, get_check_command};
 use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
-use rta::applications::Apps;
 
 pub struct Ruff;
 
@@ -13,16 +12,11 @@ impl Tool for Ruff {
 }
 
 impl Checker for Ruff {
-    fn check_command(
-        &self,
-        stack: &PopulatedStack,
-        apps: &Apps,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
         get_check_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Ruff {},
             args: vec![S("format"), S("--check")],
-            apps,
         })
     }
 }
