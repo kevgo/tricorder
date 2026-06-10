@@ -14,9 +14,9 @@ Feature: checking Python code
     When executing "tricorder check"
     Then it prints:
       """
-      2 files, python
+      1 Python, 1 other
       running 1 tools
-      ruff --check
+      Python (ruff)
       Would reformat: main.py
       1 file would be reformatted
       """
@@ -30,11 +30,10 @@ Feature: checking Python code
     When executing "tricorder check"
     Then it prints:
       """
-      1 files, python
+      1 Python
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
-      added ruff@0.15.16 to run-that-app
       running 1 tools
-      ruff --check
+      Python (ruff)
       Would reformat: main.py
       1 file would be reformatted
       """

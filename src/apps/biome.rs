@@ -1,7 +1,5 @@
-use std::path::PathBuf;
-
 use crate::apps::{GetCheckCmdArgs, get_check_command};
-use crate::domain::{Checker, Tool};
+use crate::domain::{Checker, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
 use rta::applications::Apps;
@@ -17,11 +15,11 @@ impl Tool for Biome {
 impl Checker for Biome {
     fn check_command(
         &self,
-        _files: &[PathBuf],
+        stack: &PopulatedStack,
         apps: &Apps,
     ) -> Result<Option<conc::Executable>, UserError> {
         get_check_command(&GetCheckCmdArgs {
-            name: "biome --check",
+            name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Biome {},
             args: vec![S("check")],
             apps,

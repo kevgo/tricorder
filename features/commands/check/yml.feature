@@ -10,11 +10,11 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      1 files, yml
+      1 YML
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       added prettier-standalone@0.24.0 to run-that-app
       running 1 tools
-      prettier
+      YML (prettier)
       main.yml
       """
     And the exit code is 1
@@ -38,9 +38,9 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      2 files, yml
+      1 YML, 1 other
       running 1 tools
-      prettier
+      YML (prettier)
       main.yml
       """
     And it does not print:
@@ -62,9 +62,9 @@ Feature: checking YML files
     When executing "tricorder check"
     Then it prints:
       """
-      2 files, yml
+      1 YML, 1 other
       running 1 tools
-      prettier
+      YML (prettier)
       main.yaml
       """
     And it does not print:

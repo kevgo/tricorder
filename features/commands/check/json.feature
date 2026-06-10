@@ -10,10 +10,10 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      1 files, json
+      1 JSON
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       running 1 tools
-      prettier
+      JSON (prettier)
       main.json
       """
     And the exit code is 1
@@ -33,9 +33,9 @@ Feature: checking JSON files
     When executing "tricorder check"
     Then it prints:
       """
-      2 files, json
+      1 JSON, 1 other
       running 1 tools
-      prettier
+      JSON (prettier)
       main.json
       """
     And it does not print:

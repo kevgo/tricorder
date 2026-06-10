@@ -6,7 +6,7 @@ pub fn check(stacks: &[PopulatedStack], apps: &rta::applications::Apps) -> error
     let mut executables = Vec::new();
     for stack in stacks {
         for checker in stack.stack.checkers() {
-            if let Some(executable) = checker.check_command(&stack.files, apps)? {
+            if let Some(executable) = checker.check_command(stack, apps)? {
                 executables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it

@@ -6,7 +6,7 @@ pub struct Json;
 
 impl Stack for Json {
     fn name(&self) -> &'static str {
-        "json"
+        "JSON"
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {

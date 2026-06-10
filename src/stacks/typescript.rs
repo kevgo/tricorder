@@ -6,7 +6,7 @@ pub struct Typescript;
 
 impl Stack for Typescript {
     fn name(&self) -> &'static str {
-        "typescript"
+        "TypeScript"
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {

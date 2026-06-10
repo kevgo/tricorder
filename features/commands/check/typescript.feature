@@ -15,9 +15,9 @@ Feature: checking a codebase containing TypeScript code
     When executing "tricorder check"
     Then it prints:
       """
-      2 files, typescript
+      1 TypeScript, 1 other
       running 1 tools
-      biome --check
+      TypeScript (biome)
       Found 1 error.
       """
     And it does not print:
@@ -30,10 +30,11 @@ Feature: checking a codebase containing TypeScript code
     When executing "tricorder check"
     Then it prints:
       """
-      1 files, typescript
+      1 TypeScript
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
+      added biome@2.4.16 to run-that-app
       running 1 tools
-      biome --check
+      TypeScript (biome)
       Found 1 error.
       """
     And the exit code is 1
