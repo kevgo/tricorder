@@ -24,6 +24,9 @@ fn inner() -> error::Result<ExitCode> {
     let Some(command) = cli::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
+    if let Command::Init(args) = &command {
+        return commands::init(args);
+    }
     let (stacks, file_count) = stacks::discover();
     print_metadata(&stacks, file_count);
     if stacks.is_empty() {
@@ -32,6 +35,7 @@ fn inner() -> error::Result<ExitCode> {
     match command {
         Command::Check => commands::check(&stacks),
         Command::Format => commands::format(&stacks),
+        Command::Init(_) => unreachable!("handled above"),
     }
 }
 

@@ -1,256 +1,151 @@
-# Tricorder / Multi-Tool
+# Tricorder
 
-_The all-in-one linter._
+_One command. Every linter. Every stack._
 
-Tricorder helps AI or you create the highest software quality by running all the
-DevEx tools that help improve software quality.
+Tricorder is a zero-config quality gate for polyglot codebases.
+It detects which languages are present,
+resolves the canonical linter for each,
+auto-generates the necessary config,
+and runs them in parallel behind a single command and a single exit code.
+That exit code is the integration surface:
+AI agents, Git hooks, CI pipelines, and IDE plugins
+all act on the same signal.
 
-- all the formatters and linters you need
-- always up to date
-- for all languages in your codebase
-- in all your codebases
+## Why
 
-[![CI](https://github.com/kevgo/Tricorder/actions/workflows/ci.yml/badge.svg)](https://github.com/kevgo/tricorder/actions/workflows/ci.yml)
+The status quo is painful.
+Every team has to figure out which linters apply to their stack,
+install them consistently across macOS, Linux, and Windows,
+pin every tool to the same version on dev and CI,
+and maintain config files across every repo.
+Almost nobody gets all four right.
 
-## Example
+AI-generated code amplifies the cost of getting it wrong:
+agents produce code at machine speed
+and need a deterministic, locally executed quality signal
+to fix their own output before a human ever sees it.
 
-- You have a Git repo with a TypeScript frontend and a Python backend.
-- running `tricorder check` runs `biome check --error-on-warnings`, `pyright`,
-  and `ruff check --quiet`.
-- You don't need to download or install any of these tools.
-  Multi-Tool does that for you.
-- It has also created config files for these tools in your repo
-  that enable all features.
-  You can customize them for your use case.
-- Later you add shell scripts somewhere in a subfolder.
-  Multi-Tool detects this new language and now also runs `shellcheck`
-  and `shfmt`.
+Tricorder makes "run the right checks for this repo" one command,
+and "have the agent fix its own output" one more.
+Every team at Walmart gets the same reliable, reproducible checks
+with no per-developer setup.
 
-Look at all the things you don't do:
+## Install
 
-- no need to check which languages your codebase uses that you need formatters
-  and linters for (there are always more than you think)
-- no forgetting to add formatters and linters for new languages
-- no market research which linters and formatters are available and
-  which one is the best
-- no RTFM to install, setup, and configure the dozens of tools needed
-- no Sisyphean work to keep all these tools up to date
-- no forgetting to add tools when your codebase develops more file types
-- no disagreements with other developers and teams which tool to use
-
-Pretty much no project/team/codebase does all of this well all of the time.
-With Multi-Tool everybody does this well all of the time.
-
-## Q & A
-
-> Does Tricorder lock me into their tooling choices?
-
-No, you can customize the default selection of tools.
-
-> I am using a linter that isn't supported by Tricorder.
-
-Send a pull request!
-
-## Background
-
-Multi-Tool solves the problem that I deal with dozens of codebases privately,
-and hundreds at work, and for each one I need to set up
-and configure between 5-10 third-party DevEx tools like formatters and linters
-and then keep these tools updated over time.
-
-When I switch from one tool to another I need to make a shotgun refactor across
-dozens of repos.
-
-This is a lot of ongoing work.
-It costs me many hours and days of repetitive, tedious,
-and boring toil that would be better spent on more interesting things.
-I would like to automate this work.
-
-I always want the same thing:
-
-- use the best available tools for all programming languages used in a codebase
-- use all tools that make sense together
-- always use the latest versions
-- activate all features in the tools
-- allow me to configure things as needed
-
-Doing all this requires a lot of time on things that aren't this exciting.
-It makes me spend all my free time chasing windmills.
-
-This isn't going to scale for thousands of repos at large organizations.
-This needs to be automated.
-
-## Commands
-
-- `mt setup`: scans the codebase for file typs,
-  sets up missing formatters or linters, updates all existing tool versions
-- `mt fix`: run all formatters and fixers
-- `mt check`: run all checkers and linters that do not change code,
-  - errors if there is a stack in the codebase that isn't configured
-    - this helps add tooling in the same PR that adds the new language
-  - auto-updates if something is outdated
-- `mt check --ci`: check command to be run on CI
-  - fails if something is outdated
-- checks whether it is outdated concurrently with running the tools
-- fails tests to signal that it is too outdated and needs to be updated
-
-CLI flags:
-
-- `mt check --stack python`
-- `mt run pyright`
-
-## Config file
-
-File `multi-tool.toml`:
-
-```toml
-# configure how MT installs and runs applications
-installer.type = "run-that-app"
-installer.run-that-app.path = "tools/rta"
-
-# configure languages
-
-[lang.python]
-checkers = ["pyright", "pyrefly"]  # requires at least one entry, must contain "pyright" (this is configurable via policy)
-additional-checkers = ["pyright"]  # add a tool to the default checker list
-
-[lang.go]
-checkers = [
-  "golangci-lint"
-]
-fixers = [
-  "gofumpt"
-]
-
-# enable or disable a language
-
-lang.shellscript.enabled = true  # our shell files don't get detected
-
-# configure tools for a particular language
-
-[tool.pyright]
-executable = "~/pyright"  # optional override if you want to use another version
-prepend-args = ["--verbose"] # additional args before the default args for this tool
-append-args = ["src"]  # additional args after the default args for this tool
-
-[setup]
-interval = "1 week"  # how often it runs "mt setup"
-branch = "update-dependencies"  # the branch in which it runs "mt setup"
-alert = "1 month"  # fails all operations if it "mt setup" hasn't run that long
-
-vcs.type = "git"
-
-# customize VCS commands
-[vcs.commands]
-diff = "git diff"  # how MT checks for open changes
-commit = "git add . && git commit -m 'open changes'"  # how MT commits open changes
-create-branch = "git town hack {{branch}}"  # how MT creates a new Git branch and switches to it
-propose = "git town propose"  # how MT creates a new pull request for the current branch
-switch-branch = "git checkout {{branch}}"  # how MT switches to a different branch
+```sh
+curl https://repository.walmart.com/content/repositories/pangaea_snapshots/com/walmart/atlas/tricorder/install.sh | sh
 ```
 
-## Tools
+Tricorder downloads the linters it needs on demand
+through Walmart's `run-that-app` cache;
+there's no per-tool install step.
 
-There are different support levels for tools:
+## Usage
 
-- install + configure + run
-  - example: third-party tools
-- configure + run
-  - the user installs the tool (because it is the core for the stack).
-  - we provide standardized configuration to it
-  - examples
-    - Node.js in a TypeScript codebase
-    - Rust formatter settings
-- run only
-  - the user installs and configures the tool
-  - example:
-    - we let the user set up Cargo.toml and don't mess with it
+```sh
+tricorder check              # run every applicable linter
+tricorder init               # install agentic hooks (see below)
+```
 
-These tools always run, no matter which stack:
+`check` exits 0 when every tool passes, non-zero otherwise.
+That exit code is the contract everything else builds on.
 
-- delete-empty-folders
+## Agentic integration
 
-Stack-specific tools:
+The headline feature.
+One command wires Tricorder into Claude Code, Code Puppy, and Wibey:
 
-Cucumber:
+```sh
+cd your/project
+tricorder init
+git add .claude/ && git commit -m "chore: tricorder hooks"
+```
 
-- cucumber-sort if cucumber-sort config file exists
-- ghokin
+After that, every teammate who clones the repo gets the same agent behavior
+automatically, with zero per-developer setup:
 
-GitHub Actions:
+- After every `Write` / `Edit` / `MultiEdit`, Tricorder runs.
+  Output and a one-line hint are returned to the agent as a tool failure
+  so it self-corrects before moving on.
+- Before every `git commit`, Tricorder runs.
+  Findings block the commit until the agent (or the human) fixes them.
 
-- actionlint
+This works because Claude Code, Code Puppy, and Wibey all read
+`.claude/settings.json` natively —
+Code Puppy and Wibey adopted the Claude Code hook spec verbatim.
+No plugin to install, no Python to write.
 
-Go:
+`tricorder init` produces:
 
-- govulncheck
-- staticcheck
-- golangci-lint
-- many others that I run with custom CLI flags
+```text
+.claude/
+  settings.json                  registers the hooks
+  tricorder-hooks/
+    post_write.sh                runs after every edit
+    pre_commit.sh                runs before `git commit`
+```
 
-JSON:
+The scripts are short, readable, and yours to modify.
+They no-op silently when Tricorder isn't installed,
+so committing `.claude/` never breaks a teammate's setup.
 
-- prettier-standalone
+## CI
 
-Markdown:
+The same `tricorder check` exit code feeds straight into CI.
+A representative pipeline step:
 
-- rumdl
-- markdown-lint
+```yaml
+- name: tricorder
+  run: tricorder check
+```
 
-Python:
-
-- Pyright
-- Ruff
-
-Shell:
-
-- shellcheck
-- shellfmt
-
-TOML:
-
-- taplo
-
-TypeScript:
-
-- Biome
-
-YML:
-
-- prettier-standalone
+Any non-zero exit fails the build,
+which is a clear signal to set up Tricorder locally
+and let the pre-commit hook catch the issue next time.
 
 ## How it works
 
-- RTA calls Multi-Tool
-- MT is configured to use the RTA adapter to execute DevEx tools
-  - is given the path to RTA in the config file
-  - there might be other adapters in the future,
-    for example to use Mise, asdf, or HomeBrew
-- MT calls `rta --add` as needed to add DevEx tools it wants to run
-- MT runs `rta --update` as needed according to the MT update schedule
+Tricorder walks the project,
+classifies files by extension into known stacks,
+and asks each stack which linters apply.
+For every applicable linter it also generates a sensible default config
+(both the Tricorder-level config and the per-tool config files),
+so teams don't have to maintain those by hand.
 
-## Staying up to date
+Linter executables are fetched on demand through Walmart's `run-that-app` cache,
+so there's no per-tool install step.
+Checks run concurrently
+and the unified exit code is the integration surface
+that every downstream consumer (agents, hooks, CI) keys off of.
 
-A success criteria for Tricorder is keep everthing up to date, including itself.
+## Supported stacks
 
-When an update is due:
+| Stack      | Linter        |
+| ---------- | ------------- |
+| TypeScript | biome         |
+| CSS        | biome         |
+| JSON       | prettier      |
+| YAML       | prettier      |
+| Python     | ruff          |
+| Go         | golangci-lint |
+| Java       | checkstyle    |
+| SQL        | sqlfmt        |
 
-- it checks for uncommitted changes
-  - using the configured shell command
-  - exits with an error if there are uncommitted changes
-  - or commits them to the current branch using the configured command
-- it creates a new branch with the configured name using the configured command
-- it updates all dependencies
-- it runs all fixers
-- it creates a pull request using the configured command
+Stacks are auto-detected — there's no config file to maintain.
 
-## Enforcing policies
+## Roadmap
 
-- policies define things like
-  - required tools per stack
-  - whether stacks can be disabled
-- the config file can define the policies
-- if the config file doesn't define the policies,
-  then it can link to an external config file that defines them
-- for closed organizations,
-  this config file can exist on an internal server like Artifactory
+- `tricorder format`: a write-mode that applies every safe auto-fix
+  so the agent doesn't have to round-trip findings it could resolve mechanically.
+- Structured JSON output (`--json`, `--output`)
+  for richer agent digests and CI dashboards.
+  Schema is drafted on the `struct-response` branch.
+- IDE plugins for the manual coding flow.
+- Continued rollout to more teams at Walmart post-hackathon.
+
+---
+
+### Hackathon entry
+
+**Team:** k0g0kip, r0s03yf, s0m08a2, a0s1ryr • **Track:** 02 • **Repo:**
+<https://gecgithub01.walmart.com/k0g0kip/multi-tool>
