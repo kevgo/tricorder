@@ -3,7 +3,7 @@ Feature: check SQL
   Scenario: already configured
     Given a file "run-that-app" with content
       """
-      sqlfmt 0.24.0
+      uv 0.11.20
       """
     And a file "schema.sql" with content
       """
@@ -39,10 +39,14 @@ Feature: check SQL
       schema.sql failed formatting check.
       """
     And the exit code is 1
-    And there is no file "run-that-app"
+    And file "run-that-app" now matches
+      """
+      # more info at https://github.com/kevgo/run-that-app
+
+      uv \d+\.\d+\.\d+
+      """
     And file "schema.sql" is unchanged
 
-  @this
   Scenario Outline: unsupported SQL flavors
     Given a file "migration.<FILE EXTENSION>" with content
       """
