@@ -14,23 +14,26 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Runs all linters for all stacks
+    /// Run all checkers and linters for every detected stack
     Check,
 
-    /// Runs all formatters for all stacks
+    /// Run all formatters for all stacks
     Format,
+
+    /// Install Claude Code / Code Puppy hooks for this project
+    Init(InitArgs),
+}
+
+#[derive(clap::Args)]
+pub struct InitArgs {
+    /// Overwrite existing files
+    #[arg(long, short)]
+    pub force: bool,
 }
 
 pub fn parse() -> Result<Option<Command>> {
     match Cli::try_parse() {
-        Ok(cli) => {
-            if let Some(cmd) = cli.command {
-                Ok(Some(cmd))
-            } else {
-                // no command given --> print help
-                Ok(None)
-            }
-        }
+        Ok(cli) => Ok(cli.command),
         Err(err) => match err.kind() {
             ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
                 let _ = err.print();
