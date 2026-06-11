@@ -1,5 +1,5 @@
 use crate::apps::golangci_lint::GolangciLint;
-use crate::domain::{Checker, Stack};
+use crate::domain::{Checker, Formatter, Stack};
 use std::path::Path;
 
 pub struct Go;
@@ -15,6 +15,10 @@ impl Stack for Go {
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
         vec![Box::new(GolangciLint {})]
+    }
+
+    fn formatters(&self) -> Vec<Box<dyn Formatter>> {
+        vec![]
     }
 }
 

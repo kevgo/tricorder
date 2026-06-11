@@ -1,4 +1,4 @@
-use crate::domain::{Checker, PopulatedStack, Tool};
+use crate::domain::{Checker, Formatter, PopulatedStack, Tool};
 use crate::error::UserError;
 use big_s::S;
 use std::process::Command;
@@ -15,6 +15,20 @@ impl Checker for Sqlfmt {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut command = Command::new("sqlfmt");
         command.arg("--check");
+        command.args(&stack.files);
+        Ok(Some(conc::Executable {
+            name: S("SQL (sqlfmt)"),
+            command,
+        }))
+    }
+}
+
+impl Formatter for Sqlfmt {
+    fn format_command(
+        &self,
+        stack: &PopulatedStack,
+    ) -> Result<Option<conc::Executable>, UserError> {
+        let mut command = Command::new("sqlfmt");
         command.args(&stack.files);
         Ok(Some(conc::Executable {
             name: S("SQL (sqlfmt)"),

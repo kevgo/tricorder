@@ -1,4 +1,4 @@
-Feature: check multiple stacks
+Feature: format multiple stacks
 
   Scenario: already configured
     Given a file "run-that-app" with content
@@ -8,7 +8,7 @@ Feature: check multiple stacks
       """
     And a file "main.json" with content
       """
-      { "key": "value" }
+      {"key":"value"}
       """
     And a file "main.css" with content
       """
@@ -23,9 +23,9 @@ Feature: check multiple stacks
       """
     And a file "main.yml" with content
       """
-      key: value
+      key :  value
       """
-    When executing "tricorder check"
+    When executing "tricorder format"
     Then it prints:
       """
       1 CSS, 1 JSON, 1 YML, 1 TypeScript, 1 other
@@ -34,20 +34,35 @@ Feature: check multiple stacks
     And it prints:
       """
       YML (prettier)
-      main.yml
       """
     And it prints:
       """
       JSON (prettier)
-      main.json
       """
     And it prints:
       """
       TypeScript (biome)
-      Found 1 error.
       """
     And it prints:
       """
       CSS (biome)
-      Found 1 error.
+      """
+    And file "main.json" now has content
+      """
+      { "key": "value" }
+      """
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    And file "main.ts" now has content
+      """
+      const greeting: string = "Hello, world!";
+      console.log(greeting);
+      """
+    And file "main.yml" now has content
+      """
+      key: value
       """

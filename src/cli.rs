@@ -14,8 +14,11 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Runs all checkers and linters for all stacks
+    /// Runs all linters for all stacks
     Check,
+
+    /// Runs all formatters for all stacks
+    Format,
 }
 
 pub fn parse() -> Result<Option<Command>> {

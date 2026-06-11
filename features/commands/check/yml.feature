@@ -1,9 +1,9 @@
-Feature: checking YML files
+Feature: check YML
 
   Background:
 
   @online
-  Scenario: unconfigured
+  Scenario: auto-install
     Given a file "main.yml" with content
       """
       key: value

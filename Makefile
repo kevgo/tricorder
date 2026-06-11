@@ -10,16 +10,20 @@ build:  # builds the codebase
 	rm -rf tmp
 	cargo build
 
-cuke: build  # runs all end-to-end tests
+build-release:	# builds the codebase in release mode
+	rm -rf tmp
+	cargo build --release
+
+cuke: build-release  # runs all end-to-end tests
 	cargo test --test=cuke -- -t "not @online"
 
-cuke-update: build  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
+cuke-update: build-release  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
 
-cuke-all: build  # runs only the end-to-end tests that don't use the GitHub API
+cuke-all: build-release  # runs only the end-to-end tests that don't use the GitHub API
 	cargo test --test=cuke
 
-cukethis: build  # runs only end-to-end tests with a @this tag
+cukethis: build-release  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 
 .PHONY: demo

@@ -1,4 +1,4 @@
-Feature: ignore files in .gitignore
+Feature: don't check files in .gitignore
 
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content

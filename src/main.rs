@@ -31,6 +31,7 @@ fn inner() -> error::Result<ExitCode> {
     }
     match command {
         Command::Check => commands::check(&stacks),
+        Command::Format => commands::format(&stacks),
     }
 }
 
