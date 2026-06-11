@@ -30,7 +30,8 @@ without the overhead.
 
 **Project repo:** <https://gecgithub01.walmart.com/k0g0kip/multi-tool>
 
-**Demo video:** ADD_LINK_BEFORE_SUBMIT
+**Demo video:**
+<https://my.wal-mart.com/:v:/g/personal/k0g0kip_homeoffice_wal-mart_com/IQAe_PwS5sEYTorPuwS-TIbCAUjolJOOCkg4wZhO9DSbnxE?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=AJDfCG>
 
 ## What it does
 
