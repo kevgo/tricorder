@@ -13,7 +13,11 @@ impl Tool for Sqlfmt {
 
 impl Checker for Sqlfmt {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
-        let mut command = Command::new("sqlfmt");
+        let Ok(path) = which::which("sqlfmt") else {
+            // TODO: show notification to user to install sqlfmt
+            return Ok(None);
+        };
+        let mut command = Command::new(path);
         command.arg("--check");
         command.args(&stack.files);
         Ok(Some(conc::Executable {
