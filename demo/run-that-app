@@ -2,3 +2,5 @@
 
 biome 2.4.16
 prettier-standalone 0.24.0
+ruff 0.15.16
+uv 0.11.20
