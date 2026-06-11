@@ -78,3 +78,5 @@ This isn't just a hackathon project,
 it's solving real problems in our day-to-day work.
 Several team members plan to maintain it and roll it out to more teams
 after the hackathon.
+
+See [Tricorder](README2.md) for the documentation of the tool.
