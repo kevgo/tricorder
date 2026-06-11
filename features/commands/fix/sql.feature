@@ -38,3 +38,32 @@ Feature: format SQL
       | FILE EXTENSION |
       | pgsql          |
       | tsql           |
+
+  @online
+  Scenario: auto-install
+    Given a file "schema.sql" with content
+      """
+      SELECT id,name,email FROM users WHERE active=true ORDER BY name
+      """
+    When executing "tricorder format"
+    Then it prints:
+      """
+      1 SQL
+      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
+      running 1 tools
+      SQL (sqlfmt)
+      1 file formatted.
+      0 files left unchanged.
+      schema.sql formatted.
+      """
+    And the exit code is 0
+    And file "schema.sql" now has content
+      """
+      select id, name, email from users where active = true order by name
+      """
+    And file "run-that-app" now matches
+      """
+      # more info at https://github.com/kevgo/run-that-app
+
+      uv \d+\.\d+\.\d+
+      """
