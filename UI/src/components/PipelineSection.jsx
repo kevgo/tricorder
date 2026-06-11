@@ -226,7 +226,7 @@ function NodeIcon({ id, color }) {
 }
 
 const LOG_LINES = [
-  { delay: 200,  col: '#7C5CFC', text: '> lintforge scan ./src --ai --all-rules' },
+  { delay: 200,  col: '#7C5CFC', text: '> tricorder check --ai ./src' },
   { delay: 800,  col: '#00D2FF', text: '  Parsing 47 files across 3 languages...' },
   { delay: 1400, col: '#FFA502', text: '  AI model loaded (gpt-4o-mini, 8ms)' },
   { delay: 2000, col: '#FFA502', text: '  Rule engine: 327 rules x 47 files = 15,369 checks' },

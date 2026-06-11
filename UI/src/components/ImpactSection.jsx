@@ -66,7 +66,7 @@ function StatCard({ stat, active, index }) {
 
 const TESTIMONIALS = [
   { name: 'Sarah K.',  role: 'Staff Engineer, Stripe',    text: 'Reduced our PR review time by 40%. Game-changer for our CI pipeline.' },
-  { name: 'Marcus T.', role: 'CTO, DevFlow',              text: 'We caught a SQL injection before prod. LintForge flagged it in 200ms.' },
+  { name: 'Marcus T.', role: 'CTO, DevFlow',              text: 'We caught a SQL injection before prod. Tricorder flagged it in 200ms.' },
   { name: 'Priya M.',  role: 'Lead Dev, Shopify',         text: 'The AI-suggested fixes actually make sense. Not just pattern matching.' },
 ]
 

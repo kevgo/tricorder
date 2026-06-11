@@ -161,7 +161,7 @@ export default function PlaygroundSection() {
                 Scanning...
               </>
             ) : (
-              <>Run LintForge AI</>
+              <>Run Tricorder AI</>
             )}
           </button>
         </div>
@@ -282,7 +282,7 @@ export default function PlaygroundSection() {
                     <circle cx="24" cy="34" r="1.5" fill="rgba(124,92,252,.6)" />
                   </svg>
                   <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 15 }}>
-                    Hit "Run LintForge AI" to scan
+                    Hit "Run Tricorder AI" to scan
                   </div>
                 </div>
               )}
