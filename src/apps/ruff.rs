@@ -13,7 +13,7 @@ impl Tool for Ruff {
 
 impl Checker for Ruff {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+        let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--check"));
         for file in &stack.files {
@@ -32,7 +32,7 @@ impl Formatter for Ruff {
         &self,
         stack: &PopulatedStack,
     ) -> Result<Option<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+        let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--quiet"));
         for file in &stack.files {
