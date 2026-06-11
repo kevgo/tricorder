@@ -1,5 +1,5 @@
 use crate::apps::ruff::Ruff;
-use crate::domain::{Checker, Stack};
+use crate::domain::{Checker, Formatter, Stack};
 use std::path::Path;
 
 pub struct Python;
@@ -14,6 +14,10 @@ impl Stack for Python {
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Ruff {})]
+    }
+
+    fn formatters(&self) -> Vec<Box<dyn Formatter>> {
         vec![Box::new(Ruff {})]
     }
 }

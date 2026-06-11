@@ -1,4 +1,4 @@
-Feature: checking a codebase containing Go code
+Feature: check Go code
 
   Background:
     Given a file "go.mod" with content
@@ -38,7 +38,7 @@ Feature: checking a codebase containing Go code
     And the exit code is 1
 
   @online
-  Scenario: unconfigured
+  Scenario: auto-install
     When executing "tricorder check"
     Then it prints:
       """

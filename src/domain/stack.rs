@@ -1,4 +1,4 @@
-use crate::domain::Checker;
+use crate::domain::{Checker, Formatter};
 use std::fmt::Display;
 use std::path::{Path, PathBuf};
 
@@ -12,6 +12,9 @@ pub trait Stack {
 
     /// provides all checkers that Tricorder can run for this stack
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
+
+    /// provides all formatters that Tricorder can run for this stack
+    fn formatters(&self) -> Vec<Box<dyn Formatter>>;
 }
 
 impl Display for Box<dyn Stack> {

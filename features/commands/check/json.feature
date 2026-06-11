@@ -1,4 +1,4 @@
-Feature: checking JSON files
+Feature: check JSON
 
   Background:
     And a file "main.json" with content
@@ -7,7 +7,7 @@ Feature: checking JSON files
       """
 
   @online
-  Scenario: unconfigured
+  Scenario: auto-install
     When executing "tricorder check"
     Then it prints:
       """

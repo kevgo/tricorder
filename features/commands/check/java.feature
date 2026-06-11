@@ -1,4 +1,4 @@
-Feature: checking Java code
+Feature: check Java
 
   Background:
     Given a file "Main.java" with content

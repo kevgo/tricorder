@@ -1,9 +1,9 @@
-Feature: check Python
+Feature: format Python
 
   Background:
     And a file "main.py" with content
       """
-      print("Hello, world!")
+      print("Hello","world!")
       """
 
   Scenario: already configured
@@ -11,34 +11,38 @@ Feature: check Python
       """
       ruff 0.15.16
       """
-    When executing "tricorder check"
+    When executing "tricorder format"
     Then it prints:
       """
       1 Python, 1 other
       running 1 tools
       Python (ruff)
-      Would reformat: main.py
-      1 file would be reformatted
       """
     And it does not print:
       """
       Talking to GitHub API
       """
-    And the exit code is 1
+    And the exit code is 0
+    And file "main.py" now has content
+      """
+      print("Hello", "world!")
+      """
 
   @online
   Scenario: auto-install
-    When executing "tricorder check"
+    When executing "tricorder format"
     Then it prints:
       """
       1 Python
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       running 1 tools
       Python (ruff)
-      Would reformat: main.py
-      1 file would be reformatted
       """
-    And the exit code is 1
+    And the exit code is 0
+    And file "main.py" now has content
+      """
+      print("Hello", "world!")
+      """
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app

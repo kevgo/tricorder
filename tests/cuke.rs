@@ -115,7 +115,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
     let cwd = env::current_dir().expect("cannot determine the current directory");
-    let mut absolute_path = cwd.join("target/debug/tricorder");
+    let mut absolute_path = cwd.join("target/release/tricorder");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
@@ -183,6 +183,15 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
         original.name,
         original.content
     );
+}
+
+#[then(expr = "file {string} now has content")]
+async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+    let want = step.docstring.as_ref().unwrap().as_str();
+    let want = want.replace("\\t", "\t");
+    let filepath = world.dir.path().join(&filename);
+    let have = fs::read_to_string(filepath).await.unwrap();
+    assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
 
 #[then(expr = "file {string} now matches")]

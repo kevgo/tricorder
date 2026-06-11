@@ -1,4 +1,4 @@
-Feature: checking a codebase without any code
+Feature: check an empty folder
 
   Scenario: checking a codebase without any code
     When executing "tricorder check"

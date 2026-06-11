@@ -1,5 +1,5 @@
 use crate::apps::checkstyle::Checkstyle;
-use crate::domain::{Checker, Stack};
+use crate::domain::{Checker, Formatter, Stack};
 use std::path::Path;
 
 pub struct Java;
@@ -15,6 +15,10 @@ impl Stack for Java {
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
         vec![Box::new(Checkstyle {})]
+    }
+
+    fn formatters(&self) -> Vec<Box<dyn Formatter>> {
+        vec![]
     }
 }
 

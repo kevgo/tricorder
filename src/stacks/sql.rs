@@ -1,5 +1,5 @@
 use crate::apps::sqlfmt::Sqlfmt;
-use crate::domain::{Checker, Stack};
+use crate::domain::{Checker, Formatter, Stack};
 use std::path::Path;
 
 pub struct Sql;
@@ -10,11 +10,14 @@ impl Stack for Sql {
     }
 
     fn has_file(&self, file: &Path) -> bool {
-        file.extension()
-            .is_some_and(|ext| ext == "sql" || ext == "pgsql" || ext == "tsql")
+        file.extension().is_some_and(|ext| ext == "sql")
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
+        vec![Box::new(Sqlfmt {})]
+    }
+
+    fn formatters(&self) -> Vec<Box<dyn Formatter>> {
         vec![Box::new(Sqlfmt {})]
     }
 }
@@ -30,8 +33,8 @@ mod tests {
     fn has_file() {
         let tests = hashmap! {
             "schema.sql" => true,
-            "query.pgsql" => true,
-            "proc.tsql" => true,
+            "query.pgsql" => false,
+            "proc.tsql" => false,
             "other.txt" => false,
         };
         let sql = Sql {};
