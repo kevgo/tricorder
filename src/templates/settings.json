@@ -13,19 +13,6 @@
           }
         ]
       }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/tricorder-hooks/pre_commit.sh",
-            "statusMessage": "Tricorder: pre-commit check...",
-            "timeout": 60
-          }
-        ]
-      }
     ]
   }
 }

@@ -1,15 +1,13 @@
 # Tricorder
 
-_One command. Every linter. Every stack._
+_One command._ _Every linter._ _Every stack._
 
 Tricorder is a zero-config quality gate for polyglot codebases.
-It detects which languages are present,
-resolves the canonical linter for each,
+It detects which languages are present, resolves the canonical linter for each,
 auto-generates the necessary config,
 and runs them in parallel behind a single command and a single exit code.
-That exit code is the integration surface:
-AI agents, Git hooks, CI pipelines, and IDE plugins
-all act on the same signal.
+That exit code is the integration surface: AI agents, Git hooks, CI pipelines,
+and IDE plugins all act on the same signal.
 
 ## Why
 
@@ -21,14 +19,14 @@ and maintain config files across every repo.
 Almost nobody gets all four right.
 
 AI-generated code amplifies the cost of getting it wrong:
-agents produce code at machine speed
-and need a deterministic, locally executed quality signal
-to fix their own output before a human ever sees it.
+agents produce code at machine speed and need a deterministic,
+locally executed quality signal to fix their own output
+before a human ever sees it.
 
 Tricorder makes "run the right checks for this repo" one command,
 and "have the agent fix its own output" one more.
-Every team at Walmart gets the same reliable, reproducible checks
-with no per-developer setup.
+Every team at Walmart gets the same reliable,
+reproducible checks with no per-developer setup.
 
 ## Install
 
@@ -36,9 +34,8 @@ with no per-developer setup.
 curl https://repository.walmart.com/content/repositories/pangaea_snapshots/com/walmart/atlas/tricorder/install.sh | sh
 ```
 
-Tricorder downloads the linters it needs on demand
-through Walmart's `run-that-app` cache;
-there's no per-tool install step.
+Tricorder downloads the linters it needs on demand through Walmart's
+`run-that-app` cache; there's no per-tool install step.
 
 ## Usage
 
@@ -70,8 +67,8 @@ automatically, with zero per-developer setup:
 - Before every `git commit`, Tricorder runs.
   Findings block the commit until the agent (or the human) fixes them.
 
-This works because Claude Code, Code Puppy, and Wibey all read
-`.claude/settings.json` natively —
+This works because Claude Code, Code Puppy,
+and Wibey all read `.claude/settings.json` natively —
 Code Puppy and Wibey adopted the Claude Code hook spec verbatim.
 No plugin to install, no Python to write.
 
@@ -105,8 +102,7 @@ and let the pre-commit hook catch the issue next time.
 
 ## How it works
 
-Tricorder walks the project,
-classifies files by extension into known stacks,
+Tricorder walks the project, classifies files by extension into known stacks,
 and asks each stack which linters apply.
 For every applicable linter it also generates a sensible default config
 (both the Tricorder-level config and the per-tool config files),
@@ -114,8 +110,7 @@ so teams don't have to maintain those by hand.
 
 Linter executables are fetched on demand through Walmart's `run-that-app` cache,
 so there's no per-tool install step.
-Checks run concurrently
-and the unified exit code is the integration surface
+Checks run concurrently and the unified exit code is the integration surface
 that every downstream consumer (agents, hooks, CI) keys off of.
 
 ## Supported stacks
@@ -136,9 +131,10 @@ Stacks are auto-detected — there's no config file to maintain.
 ## Roadmap
 
 - `tricorder format`: a write-mode that applies every safe auto-fix
-  so the agent doesn't have to round-trip findings it could resolve mechanically.
-- Structured JSON output (`--json`, `--output`)
-  for richer agent digests and CI dashboards.
+  so the agent doesn't have to round-trip findings it could resolve
+  mechanically.
+- Structured JSON output (`--json`, `--output`) for richer agent digests
+  and CI dashboards.
   Schema is drafted on the `struct-response` branch.
 - IDE plugins for the manual coding flow.
 - Continued rollout to more teams at Walmart post-hackathon.
