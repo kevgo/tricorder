@@ -1,23 +1,23 @@
-Feature: check JSON
+Feature: check Markdown
 
   Background:
-    And a file "main.json" with content
+    And a file "README.md" with content
       """
-      { "key": "value" }
+      #    Hello
       """
 
   Scenario: already configured
     Given a file "run-that-app" with content
       """
-      prettier-standalone 0.24.0
+      rumdl 0.2.14
       """
     When executing "tricorder check"
     Then it prints:
       """
-      1 JSON, 1 other
+      1 Markdown, 1 other
       running 1 tools
-      JSON (prettier)
-      main.json
+      Markdown (rumdl)
+      README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
     And it does not print:
       """
@@ -26,7 +26,7 @@ Feature: check JSON
     And the exit code is 1
     And all files are unchanged
 
-  @online
+  @this @online
   Scenario: auto-install
     When executing "tricorder check"
     Then it prints:
