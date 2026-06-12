@@ -132,7 +132,7 @@ Stacks are auto-detected — there's no config file to maintain.
 
 - add Tricorder to your scripts that run the linters
 - start removing lints that Tricorder runs
-- add missing lints to Tricoder if necessary
+- contribute tools that Tricoder doesn't run but should to Tricorder
 
 ## Roadmap
 
