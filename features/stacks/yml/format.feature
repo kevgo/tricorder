@@ -19,8 +19,6 @@ Feature: format YML
     When executing "tricorder format"
     Then it prints the lines
       """
-      2 YML, 1 other
-      running 1 tools
       YML (prettier)
       """
     And it does not print

@@ -18,7 +18,7 @@ pub enum Command {
     Check(CheckArgs),
 
     /// Run all formatters for all stacks
-    Format,
+    Format(CheckArgs),
 
     /// Install Claude Code / Code Puppy hooks for this project
     Init(InitArgs),
