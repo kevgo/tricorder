@@ -12,13 +12,13 @@ Feature: format Markdown
       rumdl 0.2.14
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
       Markdown (rumdl)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -31,7 +31,7 @@ Feature: format Markdown
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok

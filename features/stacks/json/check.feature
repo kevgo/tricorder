@@ -12,14 +12,14 @@ Feature: check JSON
       prettier-standalone 0.24.0
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 JSON, 1 other
       running 1 tools
       JSON (prettier)
       main.json
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -29,7 +29,7 @@ Feature: check JSON
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 JSON
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok

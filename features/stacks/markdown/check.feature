@@ -12,14 +12,14 @@ Feature: check Markdown
       rumdl 0.2.14
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -29,7 +29,7 @@ Feature: check Markdown
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok

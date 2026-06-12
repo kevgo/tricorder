@@ -2,7 +2,7 @@ Feature: wrong CLI command
 
   Scenario: calling a non-existing subcommand
     When executing "tricorder zonk"
-    Then it prints:
+    Then it prints the lines
       """
       error: unrecognized subcommand 'zonk'
 

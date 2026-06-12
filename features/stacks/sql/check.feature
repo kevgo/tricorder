@@ -10,14 +10,14 @@ Feature: check SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 SQL, 1 other
       running 1 tools
       SQL (sqlfmt)
       schema.sql failed formatting check.
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -31,7 +31,7 @@ Feature: check SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 SQL
       running 1 tools
@@ -53,7 +53,7 @@ Feature: check SQL
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 other
       """

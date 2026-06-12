@@ -12,7 +12,7 @@ Feature: check Python
       ruff 0.15.16
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Python, 1 other
       running 1 tools
@@ -20,7 +20,7 @@ Feature: check Python
       Would reformat: main.py
       1 file would be reformatted
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -29,7 +29,7 @@ Feature: check Python
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Python
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok

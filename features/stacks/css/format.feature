@@ -15,14 +15,14 @@ Feature: check CSS
       biome 2.4.0
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 CSS, 1 other
       running 1 tools
       CSS (biome)
       Found 1 error.
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -31,7 +31,7 @@ Feature: check CSS
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 CSS
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
