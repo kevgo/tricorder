@@ -12,7 +12,7 @@ Feature: all tests are passing
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
@@ -23,13 +23,13 @@ Feature: all tests are passing
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
       Markdown (rumdl)
       """
-    And it does not print:
+    And it does not print
       """
       Success: No issues found in 1 file (2ms)
       """
@@ -37,16 +37,16 @@ Feature: all tests are passing
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
       """
-    And it does not print:
+    And it does not print
       """
       Markdown (rumdl)
       """
-    And it does not print:
+    And it does not print
       """
       Success: No issues found in 1 file (2ms)
       """
