@@ -1,6 +1,7 @@
 pub mod biome;
 pub mod checkstyle;
 pub mod ghokin;
+pub mod gofumpt;
 pub mod golangci_lint;
 pub mod prettier;
 pub mod ruff;
