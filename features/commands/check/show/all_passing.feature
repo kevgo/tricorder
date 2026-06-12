@@ -62,11 +62,7 @@ Feature: all tests are passing
   @this
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it prints:
-      """
-      1 Markdown, 1 Python, 1 other
-      running 2 tools
-      """
+    Then it prints nothing
     And it does not print:
       """
       Markdown (rumdl)
