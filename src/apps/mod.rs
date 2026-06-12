@@ -4,6 +4,7 @@ pub mod ghokin;
 pub mod golangci_lint;
 pub mod prettier;
 pub mod ruff;
+pub mod rumdl;
 pub mod sqlfmt;
 
 use crate::error::UserError;
