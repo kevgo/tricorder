@@ -26,27 +26,27 @@ Feature: check multiple stacks
       key: value
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
       running 4 tools
       """
-    And it prints:
+    And it prints the lines
       """
       YML (prettier)
       main.yml
       """
-    And it prints:
+    And it prints the lines
       """
       JSON (prettier)
       main.json
       """
-    And it prints:
+    And it prints the lines
       """
       TypeScript (biome)
       Found 1 error.
       """
-    And it prints:
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.

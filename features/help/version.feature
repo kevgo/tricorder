@@ -2,7 +2,7 @@ Feature: Displaying the version
 
   Scenario Outline: help command
     When executing "tricorder <ARG>"
-    Then it prints:
+    Then it prints the lines
       """
       tricorder 0.0.0
       """

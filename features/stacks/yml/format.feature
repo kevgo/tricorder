@@ -17,13 +17,13 @@ Feature: format YML
       prettier-standalone 0.24.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       2 YML, 1 other
       running 1 tools
       YML (prettier)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -44,7 +44,7 @@ Feature: format YML
       key:   value
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 YML
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
