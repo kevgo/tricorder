@@ -26,6 +26,7 @@ pub use yml::Yml;
 /// provides all stacks that Tricorder supports
 pub fn all() -> Vec<Box<dyn Stack>> {
     vec![
+        // keep-sorted start
         Box::new(Css {}),
         Box::new(Cucumber {}),
         Box::new(Java {}),
@@ -36,6 +37,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Sql {}),
         Box::new(Yml {}),
         Box::new(Typescript {}),
+        // keep-sorted end
     ]
 }
 
