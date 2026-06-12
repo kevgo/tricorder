@@ -26,22 +26,22 @@ Feature: check Markdown
     And the exit code is 1
     And all files are unchanged
 
-  @this @online
+  @online
   Scenario: auto-install
     When executing "tricorder check"
     Then it prints:
       """
-      1 JSON
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      1 Markdown
+      Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
       running 1 tools
-      JSON (prettier)
-      main.json
+      Markdown (rumdl)
+      README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
     And the exit code is 1
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
       
-      prettier-standalone \d+\.\d+\.\d+
+      rumdl \d+\.\d+\.\d+
       """
-    And file "main.json" is unchanged
+    And file "README.md" is unchanged
