@@ -54,7 +54,7 @@ impl From<Show> for conc::Show {
 #[derive(clap::Args)]
 pub struct InitArgs {
     /// Overwrite existing files
-    #[arg(long, short)]
+    #[ar
     pub force: bool,
 }
 
