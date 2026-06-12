@@ -5,6 +5,7 @@ mod cucumber;
 mod go;
 mod java;
 mod json;
+mod markdown;
 mod python;
 mod sql;
 mod typescript;
@@ -16,6 +17,7 @@ pub use go::Go;
 use ignore::Walk;
 pub use java::Java;
 pub use json::Json;
+pub use markdown::Markdown;
 pub use python::Python;
 pub use sql::Sql;
 pub use typescript::Typescript;
@@ -29,6 +31,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Java {}),
         Box::new(Go {}),
         Box::new(Json {}),
+        Box::new(Markdown {}),
         Box::new(Python {}),
         Box::new(Sql {}),
         Box::new(Yml {}),
