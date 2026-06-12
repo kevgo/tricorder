@@ -26,18 +26,18 @@ pub enum Command {
 
 #[derive(clap::Args)]
 pub struct CheckArgs {
-    /// Controls which command output to display
-    #[arg(long, default_value = "all")]
+    /// how much output to display
+    #[arg(long, default_value = "failed")]
     pub show: Show,
 }
 
 #[derive(Clone, ValueEnum)]
 pub enum Show {
-    /// Display the names of all commands and their output
+    /// all commands and their output
     All,
-    /// Display the names of all commands but only output of failed ones
+    /// all commands but only output of failed ones
     Names,
-    /// Display only failed commands and their output
+    /// failed commands
     Failed,
 }
 
