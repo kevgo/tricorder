@@ -5,9 +5,7 @@ mod domain;
 mod error;
 mod stacks;
 
-use crate::domain::PopulatedStack;
-use cli::Command;
-use itertools::Itertools;
+use cli::input::Command;
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
@@ -21,14 +19,14 @@ fn main() -> ExitCode {
 }
 
 fn inner() -> error::Result<ExitCode> {
-    let Some(command) = cli::parse()? else {
+    let Some(command) = cli::input::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
     if let Command::Init(args) = &command {
         return commands::init(args);
     }
     let (stacks, file_count) = stacks::discover();
-    print_metadata(&stacks, file_count, args.show);
+    cli::output::print_metadata(&stacks, file_count);
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
