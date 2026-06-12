@@ -79,7 +79,8 @@ struct ExistingFile {
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
-    let content = step.docstring.as_ref().unwrap().trim();
+    let content = step.docstring.as_ref().unwrap();
+    let content = content[1..].to_string();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir.path() {
@@ -92,7 +93,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
         .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
     world.original_files.push(ExistingFile {
         name: filename,
-        content: content.to_string(),
+        content: content.clone(),
     });
 }
 
