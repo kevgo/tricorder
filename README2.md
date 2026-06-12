@@ -131,7 +131,7 @@ Stacks are auto-detected — there's no config file to maintain.
 ## Migration
 
 - add Tricorder to your scripts that run the linters
-- start removing lints that Tricorder runs now
+- start removing lints that Tricorder runs
 - add missing lints to Tricoder if necessary
 
 ## Roadmap
