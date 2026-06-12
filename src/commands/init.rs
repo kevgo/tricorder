@@ -1,7 +1,7 @@
 //! `tricorder init` — scaffold Claude Code / Code Puppy hooks into the
 //! current project so tricorder runs after every edit and pre-commit.
 
-use crate::cli::InitArgs;
+use crate::cli::input::InitArgs;
 use crate::error::{Result, UserError};
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
