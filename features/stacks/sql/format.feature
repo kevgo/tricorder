@@ -6,7 +6,7 @@ Feature: format SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 SQL
       running 1 tools
@@ -27,7 +27,7 @@ Feature: format SQL
       CREATE TABLE orders (id INT,total DECIMAL(10,2));
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 other
       """
@@ -46,7 +46,7 @@ Feature: format SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 SQL
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
@@ -64,6 +64,6 @@ Feature: format SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """

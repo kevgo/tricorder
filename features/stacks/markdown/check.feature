@@ -12,7 +12,7 @@ Feature: check Markdown
       rumdl 0.2.14
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown, 1 other
       running 1 tools
@@ -29,7 +29,7 @@ Feature: check Markdown
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Markdown
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
@@ -41,7 +41,7 @@ Feature: check Markdown
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       rumdl \d+\.\d+\.\d+
       """
     And file "README.md" is unchanged

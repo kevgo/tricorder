@@ -12,7 +12,7 @@ Feature: format TOML
       taplo 0.10.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 TOML, 1 other
       running 1 tools
@@ -31,7 +31,7 @@ Feature: format TOML
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 TOML
       Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
@@ -42,7 +42,7 @@ Feature: format TOML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       taplo \d+\.\d+\.\d+
       """
     And file "main.toml" now has content

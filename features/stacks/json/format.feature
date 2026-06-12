@@ -12,7 +12,7 @@ Feature: format JSON
       prettier-standalone 0.24.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 JSON, 1 other
       running 1 tools
@@ -31,7 +31,7 @@ Feature: format JSON
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 JSON
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
@@ -42,7 +42,7 @@ Feature: format JSON
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.json" now has content

@@ -18,7 +18,8 @@ build-release:	# builds the codebase in release mode
 cuke: build-release  # runs all end-to-end tests
 	cargo test --test=cuke -- -t "not @online"
 
-cuke-update: build-release  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
+cuke-update: build-release  # runs end-to-end tests, updating "Then it prints the lines
+" snapshots from actual output
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
 
 cuke-all: build-release  # runs only the end-to-end tests that don't use the GitHub API

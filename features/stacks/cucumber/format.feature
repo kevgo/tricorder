@@ -4,7 +4,7 @@ Feature: format Cucumber
     Given a file "main.feature" with content
       """
       Feature:    foo
-
+      
         Scenario:  bar
           Given a step
       """
@@ -15,7 +15,7 @@ Feature: format Cucumber
       ghokin 3.9.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Cucumber, 1 other
       running 1 tools
@@ -29,7 +29,7 @@ Feature: format Cucumber
     And file "main.feature" now has content
       """
       Feature: foo
-
+      
         Scenario: bar
           Given a step
       """
@@ -37,7 +37,7 @@ Feature: format Cucumber
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Cucumber
       Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
@@ -48,13 +48,13 @@ Feature: format Cucumber
     And file "main.feature" now has content
       """
       Feature: foo
-
+      
         Scenario: bar
           Given a step
       """
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       ghokin \d+\.\d+\.\d+
       """

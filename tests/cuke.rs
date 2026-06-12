@@ -205,7 +205,7 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     );
 }
 
-#[then("it prints:")]
+#[then("it prints the lines")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
@@ -263,13 +263,15 @@ fn no_file(world: &mut TricorderWorld, want: String) {
     );
 }
 
-/// a queued update of a `Then it prints:` snapshot in a .feature file
+/// a queued update of a `Then it prints the lines
+` snapshot in a .feature file
 #[derive(Debug)]
 struct SnapshotEdit {
     /// the .feature file to update
     path: PathBuf,
 
-    /// the 1-based line number of the `Then it prints:` step whose docstring to replace
+    /// the 1-based line number of the `Then it prints the lines
+` step whose docstring to replace
     step_line: usize,
 
     /// the new docstring content (without the surrounding triple quotes)
@@ -280,7 +282,8 @@ struct SnapshotEdit {
 static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
     LazyLock::new(|| Mutex::new(Vec::new()));
 
-/// whether the test run should update `Then it prints:` snapshots instead of asserting
+/// whether the test run should update `Then it prints the lines
+` snapshots instead of asserting
 fn update_snapshots_enabled() -> bool {
     env::var("TRICORDER_UPDATE_SNAPSHOTS").is_ok_and(|value| !value.is_empty())
 }
@@ -315,7 +318,8 @@ fn flush_snapshot_updates() {
     }
 }
 
-/// replaces the docstring of the `Then it prints:` step at `edit.step_line` with the new content
+/// replaces the docstring of the `Then it prints the lines
+` step at `edit.step_line` with the new content
 fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit, path: &std::path::Path) {
     // The docstring opens at the first `"""` line after the step line.
     let search_start = edit.step_line.saturating_sub(1);

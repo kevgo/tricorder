@@ -17,7 +17,7 @@ Feature: format YML
       prettier-standalone 0.24.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       2 YML, 1 other
       running 1 tools
@@ -44,7 +44,7 @@ Feature: format YML
       key:   value
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 YML
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
@@ -55,7 +55,7 @@ Feature: format YML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.yml" now has content

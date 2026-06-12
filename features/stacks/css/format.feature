@@ -15,7 +15,7 @@ Feature: check CSS
       biome 2.4.0
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 CSS, 1 other
       running 1 tools
@@ -31,7 +31,7 @@ Feature: check CSS
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 CSS
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
@@ -44,6 +44,6 @@ Feature: check CSS
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       biome \d+\.\d+\.\d+
       """
