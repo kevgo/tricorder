@@ -1,4 +1,4 @@
-use crate::cli::CheckArgs;
+use crate::cli::input::CheckArgs;
 use crate::domain::PopulatedStack;
 use crate::error;
 use std::process::ExitCode;
