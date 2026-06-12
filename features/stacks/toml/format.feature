@@ -18,7 +18,7 @@ Feature: format TOML
       running 1 tools
       TOML (taplo)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -42,7 +42,7 @@ Feature: format TOML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       taplo \d+\.\d+\.\d+
       """
     And file "main.toml" now has content

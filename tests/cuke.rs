@@ -232,7 +232,7 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     );
 }
 
-#[then("it does not print:")]
+#[then("it does not print")]
 fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());

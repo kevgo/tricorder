@@ -19,7 +19,7 @@ Feature: check Markdown
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -41,7 +41,7 @@ Feature: check Markdown
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       rumdl \d+\.\d+\.\d+
       """
     And file "README.md" is unchanged

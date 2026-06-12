@@ -17,7 +17,7 @@ Feature: check SQL
       SQL (sqlfmt)
       schema.sql failed formatting check.
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -42,7 +42,7 @@ Feature: check SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """
     And file "schema.sql" is unchanged

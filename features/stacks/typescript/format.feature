@@ -19,7 +19,7 @@ Feature: format TypeScript
       running 1 tools
       TypeScript (biome)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """

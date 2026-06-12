@@ -22,7 +22,7 @@ Feature: check YML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.yml" is unchanged
@@ -44,7 +44,7 @@ Feature: check YML
       YML (prettier)
       main.yml
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -68,7 +68,7 @@ Feature: check YML
       YML (prettier)
       main.yaml
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """

@@ -18,7 +18,7 @@ Feature: format Python
       running 1 tools
       Python (ruff)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -46,6 +46,6 @@ Feature: format Python
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       ruff \d+\.\d+\.\d+
       """

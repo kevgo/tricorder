@@ -21,7 +21,7 @@ Feature: format CSS
       running 1 tools
       CSS (biome)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -55,6 +55,6 @@ Feature: format CSS
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       biome \d+\.\d+\.\d+
       """
