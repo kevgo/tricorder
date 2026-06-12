@@ -42,6 +42,6 @@ Feature: check TypeScript
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       biome \d+\.\d+\.\d+
       """
