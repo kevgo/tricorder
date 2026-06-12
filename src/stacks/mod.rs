@@ -8,6 +8,7 @@ mod json;
 mod markdown;
 mod python;
 mod sql;
+mod toml;
 mod typescript;
 mod yml;
 
@@ -20,6 +21,7 @@ pub use json::Json;
 pub use markdown::Markdown;
 pub use python::Python;
 pub use sql::Sql;
+pub use toml::Toml;
 pub use typescript::Typescript;
 pub use yml::Yml;
 
@@ -35,6 +37,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Markdown {}),
         Box::new(Python {}),
         Box::new(Sql {}),
+        Box::new(Toml {}),
         Box::new(Typescript {}),
         Box::new(Yml {}),
         // keep-sorted end

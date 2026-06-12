@@ -7,6 +7,7 @@ pub mod prettier;
 pub mod ruff;
 pub mod rumdl;
 pub mod sqlfmt;
+pub mod taplo;
 
 use crate::error::UserError;
 use rta::applications::AppDefinition;
