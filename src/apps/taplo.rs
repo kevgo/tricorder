@@ -14,7 +14,7 @@ impl Tool for Taplo {
 impl Checker for Taplo {
     fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
-        args.push(S("check"));
+        args.push(S("lint"));
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }
