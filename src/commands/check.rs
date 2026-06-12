@@ -8,20 +8,20 @@ pub fn check(args: CheckArgs) -> error::Result<ExitCode> {
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    if args.show == Show::All {
-        print_metadata(&stacks, file_count);
-    }
     let mut executables = Vec::new();
-    for stack in stacks {
+    for stack in &stacks {
         for checker in stack.stack.checkers() {
-            if let Some(executable) = checker.check_command(&stack)? {
+            if let Some(executable) = checker.check_command(stack)? {
                 executables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it
             }
         }
     }
-    println!("running {} tools", executables.len());
+    if args.show == Show::All {
+        print_metadata(&stacks, file_count);
+        println!("running {} tools", executables.len());
+    }
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
