@@ -1,6 +1,7 @@
 use crate::domain::{PopulatedStack, Stack};
 
 mod css;
+mod cucumber;
 mod go;
 mod java;
 mod json;
@@ -10,6 +11,7 @@ mod typescript;
 mod yml;
 
 pub use css::Css;
+pub use cucumber::Cucumber;
 pub use go::Go;
 use ignore::Walk;
 pub use java::Java;
@@ -23,6 +25,7 @@ pub use yml::Yml;
 pub fn all() -> Vec<Box<dyn Stack>> {
     vec![
         Box::new(Css {}),
+        Box::new(Cucumber {}),
         Box::new(Java {}),
         Box::new(Go {}),
         Box::new(Json {}),
