@@ -13,14 +13,14 @@ Feature: check TypeScript
       biome 2.4.0
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 TypeScript, 1 other
       running 1 tools
       TypeScript (biome)
       Found 1 error.
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -29,7 +29,7 @@ Feature: check TypeScript
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 TypeScript
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok

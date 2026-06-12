@@ -25,13 +25,13 @@ Feature: check Go code
       golangci-lint 2.12.2
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Go, 2 other
       running 1 tools
       Go (golangci-lint)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -40,7 +40,7 @@ Feature: check Go code
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 Go, 1 other
       Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok

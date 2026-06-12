@@ -12,14 +12,14 @@ Feature: check TOML
       taplo 0.10.0
       """
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 TOML, 1 other
       running 1 tools
       TOML (taplo)
       error: invalid TOML
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -29,7 +29,7 @@ Feature: check TOML
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints:
+    Then it prints the lines
       """
       1 TOML
       Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok

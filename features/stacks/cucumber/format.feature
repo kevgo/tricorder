@@ -15,13 +15,13 @@ Feature: format Cucumber
       ghokin 3.9.0
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Cucumber, 1 other
       running 1 tools
       Cucumber (ghokin)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -37,7 +37,7 @@ Feature: format Cucumber
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       1 Cucumber
       Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok

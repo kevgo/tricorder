@@ -35,13 +35,13 @@ Feature: format Go code
       golangci-lint 2.12.2
       """
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       2 Go, 2 other
       running 1 tools
       Go (gofumpt)
       """
-    And it does not print:
+    And it does not print
       """
       Talking to GitHub API
       """
@@ -70,7 +70,7 @@ Feature: format Go code
   @online
   Scenario: auto-install
     When executing "tricorder format"
-    Then it prints:
+    Then it prints the lines
       """
       2 Go, 1 other
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
