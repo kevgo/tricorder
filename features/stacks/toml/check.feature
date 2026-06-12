@@ -3,10 +3,9 @@ Feature: check TOML
   Background:
     And a file "main.toml" with content
       """
-      key =    "value"
+      key =    "value
       """
 
-  @this
   Scenario: already configured
     Given a file "run-that-app" with content
       """
@@ -18,7 +17,7 @@ Feature: check TOML
       1 TOML, 1 other
       running 1 tools
       TOML (taplo)
-      main.toml
+      error: invalid TOML
       """
     And it does not print:
       """
@@ -32,17 +31,17 @@ Feature: check TOML
     When executing "tricorder check"
     Then it prints:
       """
-      1 JSON
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      1 TOML
+      Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
       running 1 tools
-      JSON (prettier)
-      main.json
+      TOML (taplo)
+      error: invalid TOML
       """
     And the exit code is 1
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
       
-      prettier-standalone \d+\.\d+\.\d+
+      taplo \d+\.\d+\.\d+
       """
-    And file "main.json" is unchanged
+    And file "main.toml" is unchanged
