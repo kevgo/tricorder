@@ -28,7 +28,7 @@ fn inner() -> error::Result<ExitCode> {
         return commands::init(args);
     }
     let (stacks, file_count) = stacks::discover();
-    print_metadata(&stacks, file_count);
+    print_metadata(&stacks, file_count, args.show);
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
@@ -39,7 +39,7 @@ fn inner() -> error::Result<ExitCode> {
     }
 }
 
-fn print_metadata(stacks: &[PopulatedStack], file_count: usize) {
+fn print_metadata(stacks: &[PopulatedStack], file_count: usize, show: Show) {
     let mut texts = Vec::with_capacity(stacks.len());
     let mut counted = 0;
     for stack in stacks {
