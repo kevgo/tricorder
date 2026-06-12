@@ -128,6 +128,12 @@ that every downstream consumer (agents, hooks, CI) keys off of.
 
 Stacks are auto-detected — there's no config file to maintain.
 
+## Migration
+
+- add Tricorder to your scripts that run the linters
+- start removing lints that Tricorder runs
+- contribute tools that Tricoder doesn't run but should to Tricorder
+
 ## Roadmap
 
 - `tricorder format`: a write-mode that applies every safe auto-fix
@@ -138,10 +144,3 @@ Stacks are auto-detected — there's no config file to maintain.
   Schema is drafted on the `struct-response` branch.
 - IDE plugins for the manual coding flow.
 - Continued rollout to more teams at Walmart post-hackathon.
-
----
-
-### Hackathon entry
-
-**Team:** k0g0kip, r0s03yf, s0m08a2, a0s1ryr • **Track:** 02 • **Repo:**
-<https://gecgithub01.walmart.com/k0g0kip/multi-tool>

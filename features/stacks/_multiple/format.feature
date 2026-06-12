@@ -28,7 +28,7 @@ Feature: format multiple stacks
     When executing "tricorder format"
     Then it prints:
       """
-      1 CSS, 1 JSON, 1 YML, 1 TypeScript, 1 other
+      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
       running 4 tools
       """
     And it prints:
