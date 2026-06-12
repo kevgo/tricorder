@@ -29,14 +29,14 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         // keep-sorted start
         Box::new(Css {}),
         Box::new(Cucumber {}),
-        Box::new(Java {}),
         Box::new(Go {}),
+        Box::new(Java {}),
         Box::new(Json {}),
         Box::new(Markdown {}),
         Box::new(Python {}),
         Box::new(Sql {}),
-        Box::new(Yml {}),
         Box::new(Typescript {}),
+        Box::new(Yml {}),
         // keep-sorted end
     ]
 }
