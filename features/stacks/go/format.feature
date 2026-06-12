@@ -67,7 +67,7 @@ Feature: format Go code
       }
       """
 
-  @this @online
+  @online
   Scenario: auto-install
     When executing "tricorder format"
     Then it prints:
