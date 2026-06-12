@@ -33,7 +33,7 @@ fn inner() -> error::Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     match command {
-        Command::Check => commands::check(&stacks),
+        Command::Check(args) => commands::check(&stacks, args),
         Command::Format => commands::format(&stacks),
         Command::Init(_) => unreachable!("handled above"),
     }
