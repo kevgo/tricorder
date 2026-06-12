@@ -26,7 +26,6 @@ fn inner() -> error::Result<ExitCode> {
         return commands::init(args);
     }
     let (stacks, file_count) = stacks::discover();
-    cli::output::print_metadata(&stacks, file_count);
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
