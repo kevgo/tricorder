@@ -1,12 +1,15 @@
-use crate::domain::PopulatedStack;
-use crate::error;
+use crate::{error, stacks};
 use std::process::ExitCode;
 
-pub fn format(stacks: &[PopulatedStack]) -> error::Result<ExitCode> {
+pub fn format() -> error::Result<ExitCode> {
+    let (stacks, _file_count) = stacks::discover();
+    if stacks.is_empty() {
+        return Ok(ExitCode::SUCCESS);
+    }
     let mut executables = Vec::new();
     for stack in stacks {
         for formatter in stack.stack.formatters() {
-            if let Some(executable) = formatter.format_command(stack)? {
+            if let Some(executable) = formatter.format_command(&stack)? {
                 executables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it

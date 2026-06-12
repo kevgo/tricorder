@@ -31,7 +31,7 @@ pub struct CheckArgs {
     pub show: Show,
 }
 
-#[derive(Clone, ValueEnum)]
+#[derive(Clone, PartialEq, ValueEnum)]
 pub enum Show {
     /// all commands and their output
     All,
