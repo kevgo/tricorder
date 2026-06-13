@@ -17,8 +17,6 @@ Feature: check CSS
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 CSS, 1 other
-      running 1 tools
       CSS (biome)
       Found 1 error.
       """
@@ -33,10 +31,7 @@ Feature: check CSS
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 CSS
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
-      added biome@2.4.16 to run-that-app
-      running 1 tools
       CSS (biome)
       Found 1 error.
       """

@@ -8,8 +8,6 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 SQL
-      running 1 tools
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.
@@ -48,9 +46,7 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 SQL
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
-      running 1 tools
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.

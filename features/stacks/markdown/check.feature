@@ -14,8 +14,6 @@ Feature: check Markdown
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Markdown, 1 other
-      running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
@@ -31,9 +29,7 @@ Feature: check Markdown
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Markdown
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
-      running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """

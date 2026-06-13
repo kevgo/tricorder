@@ -37,8 +37,6 @@ Feature: format Go code
     When executing "tricorder format"
     Then it prints the lines
       """
-      2 Go, 2 other
-      running 1 tools
       Go (gofumpt)
       """
     And it does not print
@@ -72,10 +70,8 @@ Feature: format Go code
     When executing "tricorder format"
     Then it prints the lines
       """
-      2 Go, 1 other
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
       added gofumpt@0.10.0 to run-that-app
-      running 1 tools
       Go (gofumpt)
       """
     And the exit code is 0

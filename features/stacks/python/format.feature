@@ -14,8 +14,6 @@ Feature: format Python
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 Python, 1 other
-      running 1 tools
       Python (ruff)
       """
     And it does not print
@@ -33,9 +31,7 @@ Feature: format Python
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 Python
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
-      running 1 tools
       Python (ruff)
       """
     And the exit code is 0

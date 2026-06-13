@@ -17,8 +17,6 @@ Feature: format Cucumber
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 Cucumber, 1 other
-      running 1 tools
       Cucumber (ghokin)
       """
     And it does not print
@@ -39,9 +37,7 @@ Feature: format Cucumber
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 Cucumber
       Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
-      running 1 tools
       Cucumber (ghokin)
       """
     And the exit code is 0
