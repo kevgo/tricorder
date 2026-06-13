@@ -26,7 +26,7 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
-        show: conc::Show::All,
+        show: args.show.into(),
     });
     Ok(exit_code)
 }
