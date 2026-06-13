@@ -1,12 +1,5 @@
-mod apps;
-mod cli;
-mod commands;
-mod domain;
-mod error;
-mod stacks;
-
-use cli::input::Command;
 use std::process::ExitCode;
+use tricorder::cli::input::Command;
 
 fn main() -> ExitCode {
     match inner() {
@@ -18,13 +11,13 @@ fn main() -> ExitCode {
     }
 }
 
-fn inner() -> error::Result<ExitCode> {
-    let Some(command) = cli::input::parse()? else {
+fn inner() -> tricorder::error::Result<ExitCode> {
+    let Some(command) = tricorder::cli::input::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
     match command {
-        Command::Check(args) => commands::check(args),
-        Command::Format(args) => commands::format(&args),
-        Command::Init(args) => commands::init(&args),
+        Command::Check(args) => tricorder::commands::check(args),
+        Command::Format(args) => tricorder::commands::format(&args),
+        Command::Init(args) => tricorder::commands::init(&args),
     }
 }
