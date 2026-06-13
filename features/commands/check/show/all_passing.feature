@@ -47,7 +47,6 @@ Feature: all tests are passing
       """
     And the exit code is 0
 
-  @this
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing

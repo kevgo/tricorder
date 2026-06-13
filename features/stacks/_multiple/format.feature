@@ -28,6 +28,10 @@ Feature: format multiple stacks
     When executing "tricorder format"
     Then it prints the lines
       """
+      xxx
+      """
+    Then it prints the lines
+      """
       TypeScript (biome)
       """
     And it prints the lines
@@ -46,7 +50,7 @@ Feature: format multiple stacks
       """
     And it prints the block
       """
-
+      
       """
     And file "main.json" now has content
       """
