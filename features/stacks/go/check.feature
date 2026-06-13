@@ -27,8 +27,6 @@ Feature: check Go code
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Go, 2 other
-      running 1 tools
       Go (golangci-lint)
       """
     And it does not print
@@ -42,10 +40,8 @@ Feature: check Go code
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Go, 1 other
       Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok
       added golangci-lint@2.12.2 to run-that-app
-      running 1 tools
       Go (golangci-lint)
       """
     And the exit code is 1

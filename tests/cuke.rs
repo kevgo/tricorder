@@ -219,6 +219,16 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(have, want);
 }
 
+#[then("it prints the block")]
+fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let have = world.output();
+    assert!(
+        have.contains(want),
+        "output does not contain the block\n\nHAVE:\n{have}\n\n"
+    );
+}
+
 #[then("it prints the lines")]
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();

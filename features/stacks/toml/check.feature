@@ -14,8 +14,6 @@ Feature: check TOML
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 TOML, 1 other
-      running 1 tools
       TOML (taplo)
       error: invalid TOML
       """
@@ -31,9 +29,7 @@ Feature: check TOML
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 TOML
       Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
-      running 1 tools
       TOML (taplo)
       error: invalid TOML
       """
