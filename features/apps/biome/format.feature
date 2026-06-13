@@ -1,4 +1,4 @@
-Feature: format CSS
+Feature: format CSS using Biome
 
   Background:
     Given a file "run-that-app" with content
@@ -6,7 +6,7 @@ Feature: format CSS
       biome 2.4.0
       """
 
-  Scenario: all good
+  Scenario: valid CSS
     Given a file "main.css" with content
       """
       .foo {

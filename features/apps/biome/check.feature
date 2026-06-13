@@ -1,4 +1,4 @@
-Feature: check CSS
+Feature: check CSS using Biome
 
   Background:
     Given a file "run-that-app" with content
@@ -12,10 +12,6 @@ Feature: check CSS
       .foo {
       \tcolor: red;
       }
-      """
-    Given a file "run-that-app" with content
-      """
-      biome 2.4.0
       """
     When executing "tricorder check --show=all"
     Then it prints the lines
