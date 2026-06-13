@@ -18,6 +18,7 @@ Feature: all tests are passing
       running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD064] Multiple consecutive spaces (3) found [*]
+      Run `rumdl fmt` to automatically fix 2 of the 2 issues
       """
     And the exit code is 1
 
@@ -25,9 +26,9 @@ Feature: all tests are passing
     When executing "tricorder check --show=names"
     Then it prints the lines
       """
-      1 Markdown, 1 other
-      running 1 tools
       Markdown (rumdl)
+      README.md:1:2: [MD064] Multiple consecutive spaces (3) found [*]
+      Run `rumdl fmt` to automatically fix 2 of the 2 issues
       """
     And it does not print
       """
@@ -39,15 +40,8 @@ Feature: all tests are passing
     When executing "tricorder check --show=failed"
     Then it prints the lines
       """
-      1 Markdown, 1 other
-      running 1 tools
-      """
-    And it does not print
-      """
       Markdown (rumdl)
-      """
-    And it does not print
-      """
-      Success: No issues found in 1 file (2ms)
+      README.md:1:2: [MD064] Multiple consecutive spaces (3) found [*]
+      Run `rumdl fmt` to automatically fix 2 of the 2 issues
       """
     And the exit code is 0

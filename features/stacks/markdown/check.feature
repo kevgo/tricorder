@@ -14,10 +14,9 @@ Feature: check Markdown
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Markdown, 1 other
-      running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
+      Run `rumdl fmt` to automatically fix 1 of the 1 issues
       """
     And it does not print
       """
@@ -31,17 +30,16 @@ Feature: check Markdown
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Markdown
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
-      running 1 tools
       Markdown (rumdl)
       README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
+      Run `rumdl fmt` to automatically fix 1 of the 1 issues
       """
     And the exit code is 1
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       rumdl \d+\.\d+\.\d+
       """
     And file "README.md" is unchanged

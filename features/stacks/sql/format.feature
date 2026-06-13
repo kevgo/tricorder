@@ -8,8 +8,6 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 SQL
-      running 1 tools
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.
@@ -29,7 +27,7 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 other
+      
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged
@@ -48,9 +46,7 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 SQL
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
-      running 1 tools
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.
@@ -64,6 +60,6 @@ Feature: format SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """

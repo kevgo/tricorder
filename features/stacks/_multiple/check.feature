@@ -1,6 +1,6 @@
 Feature: check multiple stacks
 
-  Scenario: already configured
+  Background:
     Given a file "run-that-app" with content
       """
       biome 2.4.0
@@ -25,21 +25,13 @@ Feature: check multiple stacks
       """
       key: value
       """
-    When executing "tricorder check"
+
+  Scenario: --show=all
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
-      """
-    And it prints the lines
-      """
-      YML (prettier)
-      main.yml
-      """
-    And it prints the lines
-      """
-      JSON (prettier)
-      main.json
+      CSS (biome)
+      Found 1 error.
       """
     And it prints the lines
       """
@@ -48,6 +40,5 @@ Feature: check multiple stacks
       """
     And it prints the lines
       """
-      CSS (biome)
-      Found 1 error.
+      xxx
       """

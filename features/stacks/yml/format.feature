@@ -44,9 +44,7 @@ Feature: format YML
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 YML
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      running 1 tools
       YML (prettier)
       """
     And the exit code is 0

@@ -17,8 +17,6 @@ Feature: format CSS
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 CSS, 1 other
-      running 1 tools
       CSS (biome)
       """
     And it does not print
@@ -39,9 +37,7 @@ Feature: format CSS
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 CSS
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
-      running 1 tools
       CSS (biome)
       """
     And the exit code is 0
@@ -55,6 +51,6 @@ Feature: format CSS
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       biome \d+\.\d+\.\d+
       """

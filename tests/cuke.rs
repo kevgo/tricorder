@@ -206,6 +206,14 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     );
 }
 
+#[then("it prints")]
+fn it_prints(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped).unwrap();
+    pretty::assert_eq!(have, want);
+}
+
 #[then("it prints the lines")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
@@ -248,6 +256,17 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
 fn it_prints_nothing(world: &mut TricorderWorld) {
     let have = world.output_trimmed();
     pretty::assert_eq!(have, "");
+}
+
+#[then("the output matches")]
+fn it_prints(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped).unwrap();
+    assert!(
+        Regex::new(want).unwrap().is_match(have.trim()),
+        "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
+    );
 }
 
 #[then(expr = "the exit code is {int}")]

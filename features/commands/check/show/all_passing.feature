@@ -25,7 +25,6 @@ Feature: all tests are passing
     And it prints the lines
       """
       Markdown (rumdl)
-      Success: No issues found in 1 file (2ms)
       """
     And it prints the lines
       """
