@@ -6,7 +6,7 @@ Feature: format CSS
       biome 2.4.0
       """
 
-  Scenario: valid CSS
+  Scenario: all good
     Given a file "main.css" with content
       """
       .foo {
