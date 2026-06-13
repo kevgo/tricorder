@@ -33,6 +33,19 @@ pub struct CompareResult {
 }
 
 impl CompareResult {
+    pub fn message(&self) -> String {
+        let mut message = String::new();
+        if !self.missing.is_empty() {
+            message.push_str(&format!("missing lines:\n{}", self.missing.join("\n")));
+        }
+        if !self.extra.is_empty() {
+            message.push_str(&format!("extra lines:\n{}", self.extra.join("\n")));
+        }
+        if message.is_empty() {
+            message.push_str("no differences found");
+        }
+        message
+    }
     pub fn success(&self) -> bool {
         self.missing.is_empty() && self.extra.is_empty()
     }
