@@ -1,5 +1,8 @@
 #:schema https://www.schemastore.org/cargo.json
 
+[workspace]
+members = [".", "test_helpers"]
+
 [package]
 name = "tricorder"
 version = "0.0.0"
@@ -17,6 +20,7 @@ which = "5.0.0"
 
 [dev-dependencies]
 contains_lines = "0.0.1"
+test_helpers = { path = "test_helpers" }
 cucumber = "0.23.0"
 itertools = "0.14.0"
 maplit = "1.0.2"
@@ -42,6 +46,7 @@ test = false    # don't run this as part of "cargo test"
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
+missing_errors_doc = "allow"
 
 [lints.rust]
 unsafe_code = "forbid"
