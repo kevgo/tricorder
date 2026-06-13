@@ -240,6 +240,22 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
         missing.join("\n")
     );
 }
+#[then("it prints these lines in any order")]
+fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
+    let want = step
+        .docstring
+        .as_ref()
+        .unwrap()
+        .lines()
+        .collect::<Vec<&str>>();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped)
+        .unwrap()
+        .lines()
+        .collect::<Vec<&str>>();
+    let compare_result = compare_lines_any_order(have, want);
+    assert!(compare_result.success(), compare_result.message());
+}
 
 #[then("it does not print")]
 fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {

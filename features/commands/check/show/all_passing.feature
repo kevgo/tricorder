@@ -35,26 +35,10 @@ Feature: all tests are passing
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it prints the lines
-      """
-      1 Markdown, 1 Python, 1 other
-      running 2 tools
-      """
-    And it prints the lines
+    Then it prints these lines in any order
       """
       Markdown (rumdl)
-      """
-    And it does not print
-      """
-      Success: No issues found in 1 file (2ms)
-      """
-    And it prints the lines
-      """
       Python (ruff)
-      """
-    And it does not print
-      """
-      1 file already formatted
       """
     And the exit code is 0
 
