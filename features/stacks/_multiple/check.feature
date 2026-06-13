@@ -30,15 +30,26 @@ Feature: check multiple stacks
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
+      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
+      running 4 tools
+      """
+    Then it prints the lines
+      """
       CSS (biome)
       Found 1 error.
+      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
       TypeScript (biome)
       Found 1 error.
+      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      xxx
+      JSON (prettier)
+      """
+    And it prints the lines
+      """
+      YML (prettier)
       """
