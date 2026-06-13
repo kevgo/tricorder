@@ -219,18 +219,15 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints")]
-fn it_prints_nothing(world: &mut TricorderWorld) {
+fn it_prints(world: &mut TricorderWorld) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
-    assert!(
-        !have.contains(want),
-        "output should not contain '{want}'\n\nHAVE:\n{have}",
-    );
+    pretty::assert_eq!(have, want);
 }
 
 #[then("it prints the lines")]
-fn it_prints(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
