@@ -11,7 +11,7 @@
       "comment": "all tests in a Cucumber file",
       "type": "test-file",
       "files": "*.feature",
-      "run": "cargo test --release --quiet --locked --test cuke -- --input {{file}}"
+      "run": "cargo test --release --quiet --locked --test cuke -- --input {{file}} -t 'not @online'"
     },
 
     {
