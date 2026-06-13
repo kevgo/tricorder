@@ -101,6 +101,10 @@ mod tests {
         fn happy_path() {
             let mut have = vec![
                 "  Scenario: example".to_string(),
+                "    Given a file with content".to_string(),
+                "      \"\"\"".to_string(),
+                "      setup content".to_string(),
+                "      \"\"\"".to_string(),
                 "    When executing \"tricorder\"".to_string(),
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
@@ -112,12 +116,16 @@ mod tests {
             let path = PathBuf::from("test.feature");
             let edit = SnapshotEdit {
                 path: path.clone(),
-                step_line: 3,
+                step_line: 7,
                 new_content: "new line 1\nnew line 2".to_string(),
             };
             apply_snapshot_edit(&mut have, &edit, &path);
             let want = vec![
                 "  Scenario: example".to_string(),
+                "    Given a file with content".to_string(),
+                "      \"\"\"".to_string(),
+                "      setup content".to_string(),
+                "      \"\"\"".to_string(),
                 "    When executing \"tricorder\"".to_string(),
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
@@ -126,7 +134,7 @@ mod tests {
                 "      \"\"\"".to_string(),
                 "    And the exit code is 0".to_string(),
             ];
-            assert_eq!(have, want);
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -152,42 +160,6 @@ mod tests {
                     "        unindented one".to_string(),
                     "        unindented two".to_string(),
                     "        \"\"\"".to_string(),
-                ]
-            );
-        }
-
-        #[test]
-        fn uses_docstring_after_step_line() {
-            let mut lines = vec![
-                "    Given a file with content".to_string(),
-                "      \"\"\"".to_string(),
-                "      setup content".to_string(),
-                "      \"\"\"".to_string(),
-                "    Then it prints".to_string(),
-                "      \"\"\"".to_string(),
-                "      old output".to_string(),
-                "      \"\"\"".to_string(),
-            ];
-            let path = PathBuf::from("multiple.feature");
-            let edit = SnapshotEdit {
-                path: path.clone(),
-                step_line: 5,
-                new_content: "new output".to_string(),
-            };
-
-            apply_snapshot_edit(&mut lines, &edit, &path);
-
-            assert_eq!(
-                lines,
-                vec![
-                    "    Given a file with content".to_string(),
-                    "      \"\"\"".to_string(),
-                    "      setup content".to_string(),
-                    "      \"\"\"".to_string(),
-                    "    Then it prints".to_string(),
-                    "      \"\"\"".to_string(),
-                    "      new output".to_string(),
-                    "      \"\"\"".to_string(),
                 ]
             );
         }
