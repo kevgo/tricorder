@@ -26,6 +26,7 @@ pub use typescript::Typescript;
 pub use yml::Yml;
 
 /// provides all stacks that Tricorder supports
+#[must_use]
 pub fn all() -> Vec<Box<dyn Stack>> {
     vec![
         // keep-sorted start
@@ -45,6 +46,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 }
 
 /// provides all stacks and their files that exist in the workspace
+#[must_use]
 pub fn discover() -> (Vec<PopulatedStack>, usize) {
     let all_stacks = all();
     let mut result: Vec<PopulatedStack> = all_stacks
