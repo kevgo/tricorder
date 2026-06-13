@@ -229,7 +229,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
                 .feature_path
                 .clone()
                 .expect("the feature file path is unknown, is the `before` hook wired up?");
-            snapshots::queue_update(test_helpers::snapshots::SnapshotEdit {
+            snapshots::queue_update(snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
                 new_content: have,
