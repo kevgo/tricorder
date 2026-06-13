@@ -1,20 +1,18 @@
-pub fn compare_lines_any_order(have: &str, want: &str) -> CompareResult {
-    let mut have_lines = have.lines().collect::<Vec<&str>>();
-    let mut want_lines = want.lines().collect::<Vec<&str>>();
-    have_lines.sort();
-    want_lines.sort();
+pub fn compare_lines_any_order(have: &mut Vec<&str>, want: &mut Vec<&str>) -> CompareResult {
+    have.sort();
+    want.sort();
     let mut missing = Vec::new();
     let mut extra = Vec::new();
     let mut i = 0;
     let mut j = 0;
-    while i < have_lines.len() && j < want_lines.len() {
-        match have_lines[i].cmp(want_lines[j]) {
+    while i < have.len() && j < want.len() {
+        match have[i].cmp(want[j]) {
             std::cmp::Ordering::Less => {
-                missing.push(have_lines[i].to_string());
+                missing.push(have[i].to_string());
                 i += 1;
             }
             std::cmp::Ordering::Greater => {
-                extra.push(want_lines[j].to_string());
+                extra.push(want[j].to_string());
                 j += 1;
             }
             std::cmp::Ordering::Equal => {
@@ -23,8 +21,8 @@ pub fn compare_lines_any_order(have: &str, want: &str) -> CompareResult {
             }
         }
     }
-    missing.extend(have_lines[i..].iter().map(|line| line.to_string()));
-    extra.extend(want_lines[j..].iter().map(|line| line.to_string()));
+    missing.extend(have[i..].iter().map(|line| line.to_string()));
+    extra.extend(want[j..].iter().map(|line| line.to_string()));
 
     CompareResult { missing, extra }
 }
@@ -46,23 +44,23 @@ mod tests {
 
     #[test]
     fn same_order() {
-        let left = "one\ntwo\nthree";
-        let right = "one\ntwo\nthree";
-        assert!(compare_lines_any_order(left, right).success());
+        let mut left = vec!["one", "two", "three"];
+        let mut right = vec!["one", "two", "three"];
+        assert!(compare_lines_any_order(&mut left, &mut right).success());
     }
 
     #[test]
     fn different_order() {
-        let left = "one\ntwo\nthree";
-        let right = "three\ntwo\none";
-        assert!(compare_lines_any_order(left, right).success());
+        let mut left = vec!["one", "two", "three"];
+        let mut right = vec!["three", "two", "one"];
+        assert!(compare_lines_any_order(&mut left, &mut right).success());
     }
 
     #[test]
     fn missing_line() {
-        let left = "one\ntwo\nthree";
-        let right = "two\nthree";
-        let have = compare_lines_any_order(left, right);
+        let mut left = vec!["one", "two", "three"];
+        let mut right = vec!["two", "three"];
+        let have = compare_lines_any_order(&mut left, &mut right);
         assert!(!have.success());
         assert_eq!(have.missing, vec!["one"]);
         assert!(have.extra.is_empty());
@@ -70,9 +68,9 @@ mod tests {
 
     #[test]
     fn extra_line() {
-        let left = "two\nthree";
-        let right = "one\ntwo\nthree";
-        let have = compare_lines_any_order(left, right);
+        let mut left = vec!["two", "three"];
+        let mut right = vec!["one", "two", "three"];
+        let have = compare_lines_any_order(&mut left, &mut right);
         assert!(!have.success());
         assert!(have.missing.is_empty());
         assert_eq!(have.extra, vec!["one"]);
@@ -80,9 +78,9 @@ mod tests {
 
     #[test]
     fn same_number_different_content() {
-        let left = "one\none\ntwo";
-        let right = "one\ntwo\ntwo";
-        let have = compare_lines_any_order(left, right);
+        let mut left = vec!["one", "one", "two"];
+        let mut right = vec!["one", "two", "two"];
+        let have = compare_lines_any_order(&mut left, &mut right);
         assert!(!have.success());
         assert_eq!(have.missing, vec!["one"]);
         assert_eq!(have.extra, vec!["two"]);

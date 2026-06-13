@@ -259,8 +259,8 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
         .unwrap()
         .lines()
         .collect::<Vec<&str>>();
-    let have = world.output();
-    let compare_result = compare_lines_any_order(have, want);
+    let have = world.output().lines().collect::<Vec<&str>>();
+    let compare_result = test_helpers::compare_lines_any_order(&have, &want);
     assert!(compare_result.success(), "{}", compare_result.message());
 }
 
