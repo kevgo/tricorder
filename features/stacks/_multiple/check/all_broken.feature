@@ -4,11 +4,11 @@ Feature: check multiple stacks
     Given a file "run-that-app" with content
       """
       biome 2.4.0
-      prettier-standalone 0.24.0
+      ruff 0.15.16
       """
-    And a file "main.json" with content
+    And a file "main.py" with content
       """
-      {"key":"value"}
+      print(  "hello"  )
       """
     And a file "main.css" with content
       """
@@ -21,17 +21,13 @@ Feature: check multiple stacks
       const greeting:string="Hello, world!"
       console.log(greeting);
       """
-    And a file "main.yml" with content
-      """
-      key:   value
-      """
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
     Then it prints the lines
       """
@@ -45,21 +41,19 @@ Feature: check multiple stacks
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the lines
+    And it prints the block
       """
-      JSON (prettier)
-      """
-    And it prints the lines
-      """
-      YML (prettier)
+      Python (ruff)
+      Would reformat: main.py
+      1 file would be reformatted
       """
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
     Then it does not print
       """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
     Then it prints the lines
       """
@@ -75,21 +69,18 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      JSON (prettier)
-      main.json
-      """
-    And it prints the block
-      """
-      YML (prettier)
-      main.yml
+      Python (ruff)
+      Would reformat: main.py
+      1 file would be reformatted
       """
 
+  @this
   Scenario: --show=failed
-    When executing "tricorder check --show=names"
+    When executing "tricorder check --show=failed"
     Then it does not print
       """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
     Then it prints the lines
       """
@@ -105,11 +96,7 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      JSON (prettier)
-      main.json
-      """
-    And it prints the block
-      """
-      YML (prettier)
-      main.yml
+      Python (ruff)
+      Would reformat: main.py
+      1 file would be reformatted
       """
