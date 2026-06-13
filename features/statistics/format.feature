@@ -12,7 +12,7 @@ Feature: display statistics about the codebase
       """
     And a file "main.css" with content
       """
-      color: red ;
+      color: red;
       """
     And a file "main.ts" with content
       """
