@@ -10,9 +10,7 @@ use std::path::PathBuf;
 use std::process::ExitStatus;
 use std::time::Duration;
 use std::{env, str};
-use test_helpers::snapshots::{
-    flush_snapshot_updates, queue_snapshot_update, update_snapshots_enabled,
-};
+use test_helpers::snapshots;
 use tokio::fs;
 use tokio::process::Command;
 
@@ -225,13 +223,13 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let have = world.output();
-    if update_snapshots_enabled() {
+    if snapshots::update_snapshots_enabled() {
         if have != want {
             let path = world
                 .feature_path
                 .clone()
                 .expect("the feature file path is unknown, is the `before` hook wired up?");
-            queue_snapshot_update(test_helpers::snapshots::SnapshotEdit {
+            snapshots::queue_snapshot_update(test_helpers::snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
                 new_content: have,
@@ -278,7 +276,7 @@ async fn main() {
         })
         .run("features")
         .await;
-    if update_snapshots_enabled() {
-        flush_snapshot_updates();
+    if snapshots::update_snapshots_enabled() {
+        snapshots::flush_snapshot_updates();
     }
 }

@@ -16,7 +16,7 @@ pub struct SnapshotEdit {
 }
 
 /// snapshot edits collected during the test run, flushed to disk once it finishes
-pub static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
+static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
     LazyLock::new(|| Mutex::new(Vec::new()));
 
 /// whether the test run should update `Then it prints:` snapshots instead of asserting
