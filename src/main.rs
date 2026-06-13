@@ -22,17 +22,9 @@ fn inner() -> error::Result<ExitCode> {
     let Some(command) = cli::input::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };
-    if let Command::Init(args) = &command {
-        return commands::init(args);
-    }
-    let (stacks, file_count) = stacks::discover();
-    cli::output::print_metadata(&stacks, file_count);
-    if stacks.is_empty() {
-        return Ok(ExitCode::SUCCESS);
-    }
     match command {
-        Command::Check => commands::check(&stacks),
-        Command::Format => commands::format(&stacks),
-        Command::Init(_) => unreachable!("handled above"),
+        Command::Check => commands::check(),
+        Command::Format => commands::format(),
+        Command::Init(args) => commands::init(&args),
     }
 }
