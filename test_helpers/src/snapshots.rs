@@ -3,6 +3,7 @@ use std::env;
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
+/// represents a golden snapshot for the `Then it prints:` step
 #[derive(Debug)]
 pub struct SnapshotEdit {
     /// the .feature file to update
@@ -19,18 +20,18 @@ pub struct SnapshotEdit {
 static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
     LazyLock::new(|| Mutex::new(Vec::new()));
 
-/// whether the test run should update `Then it prints:` snapshots instead of asserting
-pub fn update_snapshots_enabled() -> bool {
+/// indicates whether the test run should update the golden snapshots
+pub fn enabled() -> bool {
     env::var("TRICORDER_UPDATE_SNAPSHOTS").is_ok_and(|value| !value.is_empty())
 }
 
 /// queues a snapshot update to be applied after the test run finishes
-pub fn queue_snapshot_update(edit: SnapshotEdit) {
+pub fn queue_update(edit: SnapshotEdit) {
     SNAPSHOT_EDITS.lock().unwrap().push(edit);
 }
 
 /// applies all queued snapshot updates to their .feature files
-pub fn flush_snapshot_updates() {
+pub fn flush() {
     let mut edits = std::mem::take(&mut *SNAPSHOT_EDITS.lock().unwrap());
     // Group edits by file and apply them bottom-to-top so that rewriting a
     // docstring never shifts the line numbers of edits still to be applied.
@@ -55,7 +56,7 @@ pub fn flush_snapshot_updates() {
 }
 
 /// replaces the docstring of the `Then it prints:` step at `edit.step_line` with the new content
-pub fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
+fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
     // The docstring opens at the first `"""` line after the step line.
     let search_start = edit.step_line.saturating_sub(1);
     let open = (search_start..lines.len())

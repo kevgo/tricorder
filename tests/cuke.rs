@@ -223,13 +223,13 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let have = world.output();
-    if snapshots::update_snapshots_enabled() {
+    if snapshots::enabled() {
         if have != want {
             let path = world
                 .feature_path
                 .clone()
                 .expect("the feature file path is unknown, is the `before` hook wired up?");
-            snapshots::queue_snapshot_update(test_helpers::snapshots::SnapshotEdit {
+            snapshots::queue_update(test_helpers::snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
                 new_content: have,
@@ -276,7 +276,7 @@ async fn main() {
         })
         .run("features")
         .await;
-    if snapshots::update_snapshots_enabled() {
-        snapshots::flush_snapshot_updates();
+    if snapshots::enabled() {
+        snapshots::flush();
     }
 }
