@@ -10,7 +10,9 @@ use std::path::PathBuf;
 use std::process::ExitStatus;
 use std::time::Duration;
 use std::{env, str};
-use test_helpers::{flush_snapshot_updates, queue_snapshot_update, update_snapshots_enabled};
+use test_helpers::snapshots::{
+    flush_snapshot_updates, queue_snapshot_update, update_snapshots_enabled,
+};
 use tokio::fs;
 use tokio::process::Command;
 
@@ -229,7 +231,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
                 .feature_path
                 .clone()
                 .expect("the feature file path is unknown, is the `before` hook wired up?");
-            queue_snapshot_update(test_helpers::SnapshotEdit {
+            queue_snapshot_update(test_helpers::snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
                 new_content: have,
