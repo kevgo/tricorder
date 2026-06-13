@@ -32,7 +32,7 @@
       "comment": "single test in Rust file",
       "type": "test-file-line",
       "files": "*.rs",
-      "run": "cargo test --show-output -- {{fn_name}}",
+      "run": "cargo test -- {{fn_name}} --show-output",
       "vars": [
         {
           "name": "fn_name",
