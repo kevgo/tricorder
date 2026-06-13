@@ -183,9 +183,7 @@ mod tests {
                 step_line: 3,
                 new_content: String::new(),
             };
-
             apply_snapshot_edit(&mut lines, &edit, &path);
-
             assert_eq!(
                 lines,
                 vec![
