@@ -21,6 +21,11 @@ Feature: check multiple stacks
       console.log("hello");
       """
 
+  Scenario: default visibility
+    When executing "tricorder check --show=failed"
+    Then it prints nothing
+    And all files are unchanged
+
   Scenario: --show=all
     When executing "tricorder check --show=all"
     Then it prints the block
@@ -41,6 +46,7 @@ Feature: check multiple stacks
       Python (ruff)
       1 file already formatted
       """
+    And all files are unchanged
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
@@ -50,7 +56,9 @@ Feature: check multiple stacks
       CSS (biome)
       Python (ruff)
       """
+    And all files are unchanged
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing
+    And all files are unchanged

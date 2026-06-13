@@ -18,9 +18,44 @@ Feature: check multiple stacks
       """
     And a file "main.ts" with content
       """
-      const greeting:string="Hello, world!"
-      console.log(greeting);
+      console.log(  "hello"  );
       """
+
+  Scenario: default visibility
+    When executing "tricorder check"
+    Then it does not print
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
+      """
+    And it does not print
+      """
+      CSS (biome)
+      """
+    Then it prints the block
+      """
+      Found 1 error.
+      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it does not print
+      """
+      TypeScript (biome)
+      """
+    And it prints the block
+      """
+      Found 1 error.
+      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it does not print
+      """
+      Python (ruff)
+      """
+    And it prints the block
+      """
+      Would reformat: main.py
+      1 file would be reformatted
+      """
+    And all files are unchanged
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
@@ -47,6 +82,7 @@ Feature: check multiple stacks
       Would reformat: main.py
       1 file would be reformatted
       """
+    And all files are unchanged
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
@@ -73,8 +109,8 @@ Feature: check multiple stacks
       Would reformat: main.py
       1 file would be reformatted
       """
+    And all files are unchanged
 
-  @this
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it does not print
@@ -109,3 +145,4 @@ Feature: check multiple stacks
       Would reformat: main.py
       1 file would be reformatted
       """
+    And all files are unchanged

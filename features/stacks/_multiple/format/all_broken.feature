@@ -1,14 +1,14 @@
 Feature: format multiple stacks
 
-  Scenario: already configured
+  Background:
     Given a file "run-that-app" with content
       """
       biome 2.4.0
-      prettier-standalone 0.24.0
+      ruff 0.15.16
       """
-    And a file "main.json" with content
+    And a file "main.py" with content
       """
-      {"key":"value"}
+      print(  "hello"  )
       """
     And a file "main.css" with content
       """
@@ -18,13 +18,10 @@ Feature: format multiple stacks
       """
     And a file "main.ts" with content
       """
-      const greeting:string="Hello, world!"
-      console.log(greeting);
+      console.log(  "hello"  );
       """
-    And a file "main.yml" with content
-      """
-      key :  value
-      """
+
+  Scenario: default visibility
     When executing "tricorder format"
     Then it prints the lines
       """
@@ -70,4 +67,39 @@ Feature: format multiple stacks
     And file "main.yml" now has content
       """
       key: value
+      """
+
+  @this
+  Scenario: --show=all
+    When executing "tricorder format --show=all"
+    Then it prints the block
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
+      """
+    Then it prints the lines
+      """
+      TypeScript (biome)
+      """
+    And it prints the lines
+      """
+      CSS (biome)
+      """
+    And it prints the block
+      """
+      Python (ruff)
+      """
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    And file "main.ts" now has content
+      """
+      console.log("hello");
+      """
+    And file "main.py" now has content
+      """
+      print("hello")
       """
