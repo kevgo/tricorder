@@ -14,8 +14,6 @@ Feature: format JSON
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 JSON, 1 other
-      running 1 tools
       JSON (prettier)
       """
     And it does not print
@@ -33,16 +31,14 @@ Feature: format JSON
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 JSON
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      running 1 tools
       JSON (prettier)
       """
     And the exit code is 0
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.json" now has content

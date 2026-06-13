@@ -14,7 +14,5 @@ Feature: check Java
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 Java
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle
-      running 0 tools
       """

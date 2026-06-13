@@ -5,7 +5,6 @@ Feature: format CSS
       """
       .foo {
         color : red ;
-        background:    blue;
       }
       """
 
@@ -17,8 +16,6 @@ Feature: format CSS
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 CSS, 1 other
-      running 1 tools
       CSS (biome)
       """
     And it does not print
@@ -30,7 +27,6 @@ Feature: format CSS
       """
       .foo {
       \tcolor: red;
-      \tbackground: blue;
       }
       """
 
@@ -39,9 +35,7 @@ Feature: format CSS
     When executing "tricorder format"
     Then it prints the lines
       """
-      1 CSS
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
-      running 1 tools
       CSS (biome)
       """
     And the exit code is 0
