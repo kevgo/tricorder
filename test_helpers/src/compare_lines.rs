@@ -1,7 +1,23 @@
-pub fn compare_lines_any_order(have: &str, want: &str) -> bool {
-    let have_lines = have.lines().collect::<Vec<&str>>();
-    let want_lines = want.lines().collect::<Vec<&str>>();
-    have_lines.iter().all(|line| want_lines.contains(line))
+pub fn compare_lines_any_order(have: &str, want: &str) -> CompareResult {
+    let mut have_lines = have.lines().collect::<Vec<&str>>();
+    let mut want_lines = want.lines().collect::<Vec<&str>>();
+    have_lines.sort();
+    want_lines.sort();
+    CompareResult {
+        missing: Vec::new(),
+        extra: Vec::new(),
+    }
+}
+
+pub struct CompareResult {
+    pub missing: Vec<String>,
+    pub extra: Vec<String>,
+}
+
+impl CompareResult {
+    pub fn success(&self) -> bool {
+        self.missing.is_empty() && self.extra.is_empty()
+    }
 }
 
 #[cfg(test)]
@@ -10,15 +26,35 @@ mod tests {
 
     #[test]
     fn same_order() {
-        let have = "one\ntwo\nthree";
-        let want = "one\ntwo\nthree";
-        assert!(compare_lines_any_order(have, want));
+        let left = "one\ntwo\nthree";
+        let right = "one\ntwo\nthree";
+        assert!(compare_lines_any_order(left, right).success());
     }
 
     #[test]
     fn different_order() {
-        let have = "one\ntwo\nthree";
-        let want = "three\ntwo\none";
-        assert!(compare_lines_any_order(have, want));
+        let left = "one\ntwo\nthree";
+        let right = "three\ntwo\none";
+        assert!(compare_lines_any_order(left, right).success());
+    }
+
+    #[test]
+    fn missing_line() {
+        let left = "one\ntwo\nthree";
+        let right = "two\nthree";
+        let have = compare_lines_any_order(left, right);
+        assert!(!have.success());
+        assert_eq!(have.missing, vec!["one"]);
+        assert!(have.extra.is_empty());
+    }
+
+    #[test]
+    fn extra_line() {
+        let left = "two\nthree";
+        let right = "one\ntwo\nthree";
+        let have = compare_lines_any_order(left, right);
+        assert!(!have.success());
+        assert!(have.missing.is_empty());
+        assert_eq!(have.extra, vec!["one"]);
     }
 }
