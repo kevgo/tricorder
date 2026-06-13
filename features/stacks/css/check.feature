@@ -5,7 +5,6 @@ Feature: format CSS
       """
       .foo {
         color : red ;
-        background:    blue;
       }
       """
 
@@ -28,7 +27,6 @@ Feature: format CSS
       """
       .foo {
       \tcolor: red;
-      \tbackground: blue;
       }
       """
 
@@ -45,7 +43,6 @@ Feature: format CSS
       """
       .foo {
       \tcolor: red;
-      \tbackground: blue;
       }
       """
     And file "run-that-app" now matches

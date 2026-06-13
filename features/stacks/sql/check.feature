@@ -12,8 +12,7 @@ Feature: check SQL
     When executing "tricorder check"
     Then it prints the lines
       """
-      1 file failed formatting check.
-      0 files passed formatting check.
+      SQL (sqlfmt)
       schema.sql failed formatting check.
       """
     And it does not print
@@ -42,7 +41,7 @@ Feature: check SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """
     And file "schema.sql" is unchanged

@@ -34,19 +34,19 @@ Feature: format multiple stacks
       """
       CSS (biome)
       """
-    And it prints the lines
+    And it prints the block
       """
       YML (prettier)
       main.yml 7ms
       """
-    And it prints the lines
+    And it prints the block
       """
       JSON (prettier)
       main.json 9ms
       """
-    And it prints the lines
+    And it prints the block
       """
-
+      
       """
     And file "main.json" now has content
       """
