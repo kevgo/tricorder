@@ -4,15 +4,15 @@ Feature: format Go code
     Given a file "go.mod" with content
       """
       module example.com/demo
-      
+
       go 1.21
       """
     And a file "main.go" with content
       """
       package   main
-      
+
       import   "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -20,9 +20,9 @@ Feature: format Go code
     And a file "other.go" with content
       """
       package   other
-      
+
       import   "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, other!")
       }
@@ -47,9 +47,9 @@ Feature: format Go code
     And file "main.go" now has content
       """
       package main
-      
+
       import "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -57,9 +57,9 @@ Feature: format Go code
     And file "other.go" now has content
       """
       package other
-      
+
       import "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, other!")
       }
@@ -78,9 +78,9 @@ Feature: format Go code
     And file "main.go" now has content
       """
       package main
-      
+
       import "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -88,9 +88,9 @@ Feature: format Go code
     And file "other.go" now has content
       """
       package other
-      
+
       import "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, other!")
       }
@@ -98,6 +98,6 @@ Feature: format Go code
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       gofumpt \d+\.\d+\.\d+
       """

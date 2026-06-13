@@ -37,7 +37,7 @@ Feature: check TOML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       taplo \d+\.\d+\.\d+
       """
     And file "main.toml" is unchanged
