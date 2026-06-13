@@ -1,44 +1,61 @@
-Feature: check CSS
+Feature: format CSS
 
   Background:
-    Given a file "main.css" with content
-      """
-      .foo {
-        color : red ;
-        background:    blue;
-      }
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       biome 2.4.0
       """
-    When executing "tricorder check"
+
+  Scenario: valid CSS
+    Given a file "main.css" with content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
       CSS (biome)
-      Found 1 error.
       """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 1
+    And the exit code is 0
+    And file "main.css" is unchanged
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
+  Scenario: unformatted CSS
+    Given a file "main.css" with content
+      """
+      .foo {
+        color : red ;
+      }
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
       CSS (biome)
-      Found 1 error.
+      """
+    And the exit code is 0
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+
+  Scenario: invalid CSS
+    Given a file "main.css" with content
+      """
+      .foo {
+        col
+      }
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      CSS (biome)
+      """
+    And it prints the lines
+      """
+      Found 2 errors.
       """
     And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      biome \d+\.\d+\.\d+
-      """
+    And file "main.css" is unchanged

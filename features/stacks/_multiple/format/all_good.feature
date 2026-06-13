@@ -57,7 +57,6 @@ Feature: format multiple good stacks
       """
     And all files are unchanged
 
-  @this
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing
