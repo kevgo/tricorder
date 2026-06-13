@@ -48,18 +48,13 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
-    // TODO: inline into output_trimmed() and rename output_trimmed to output
-    // also trim ascii escapes
-    fn output(&self) -> &str {
-        if let Some(result) = &self.result {
-            return str::from_utf8(&result.output).unwrap();
-        }
-        ""
-    }
-
-    /// provides the textual output of the Atlanta run with whitespace trimmed from every line
-    fn output_trimmed(&self) -> String {
-        self.output().trim().lines().map(str::trim_end).join("\n")
+    fn output(&self) -> String {
+        let Some(command_result) = &self.result else {
+            panic!("no command run");
+        };
+        let stripped = strip_ansi_escapes::strip(&command_result.output);
+        let output = str::from_utf8(&stripped).unwrap();
+        output.trim().lines().map(str::trim_end).join("\n")
     }
 }
 
@@ -211,8 +206,7 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
 #[then("it does not print")]
 fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped).unwrap();
+    let have = world.output();
     assert!(
         !have.contains(want),
         "output should not contain '{want}'\n\nHAVE:\n{have}",
@@ -222,22 +216,20 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped).unwrap();
+    let have = world.output();
     pretty::assert_eq!(have, want);
 }
 
 #[then("it prints nothing")]
 fn it_prints_nothing(world: &mut TricorderWorld) {
-    let have = world.output_trimmed();
+    let have = world.output();
     pretty::assert_eq!(have, "");
 }
 
 #[then("it prints the lines")]
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped).unwrap();
+    let have = world.output();
     if update_snapshots_enabled() {
         if have != want {
             let path = world
@@ -247,12 +239,12 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
             queue_snapshot_update(SnapshotEdit {
                 path,
                 step_line: step.position.line,
-                new_content: have.to_string(),
+                new_content: have,
             });
         }
         return;
     }
-    let missing = contains_lines(have, want);
+    let missing = contains_lines(&have, want);
     assert!(
         missing.is_empty(),
         "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -267,24 +259,9 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
         .unwrap()
         .lines()
         .collect::<Vec<&str>>();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped)
-        .unwrap()
-        .lines()
-        .collect::<Vec<&str>>();
+    let have = world.output();
     let compare_result = compare_lines_any_order(have, want);
-    assert!(compare_result.success(), compare_result.message());
-}
-
-#[then("the output matches")]
-fn it_prints(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped).unwrap();
-    assert!(
-        Regex::new(want).unwrap().is_match(have.trim()),
-        "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
-    );
+    assert!(compare_result.success(), "{}", compare_result.message());
 }
 
 #[then(expr = "the exit code is {int}")]
