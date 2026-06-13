@@ -1,4 +1,4 @@
-use crate::domain::{PopulatedStack, Stack};
+use crate::domain::{DetectedStack, Stack};
 
 mod css;
 mod cucumber;
@@ -47,11 +47,11 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover() -> (Vec<PopulatedStack>, usize) {
+pub fn discover() -> (Vec<DetectedStack>, usize) {
     let all_stacks = all();
-    let mut result: Vec<PopulatedStack> = all_stacks
+    let mut result: Vec<DetectedStack> = all_stacks
         .into_iter()
-        .map(|stack| PopulatedStack {
+        .map(|stack| DetectedStack {
             stack,
             files: vec![],
         })
