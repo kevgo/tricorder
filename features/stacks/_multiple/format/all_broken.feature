@@ -69,7 +69,6 @@ Feature: format multiple stacks
       key: value
       """
 
-  @this
   Scenario: --show=all
     When executing "tricorder format --show=all"
     Then it prints the block
@@ -89,6 +88,58 @@ Feature: format multiple stacks
       """
       Python (ruff)
       """
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    And file "main.ts" now has content
+      """
+      console.log("hello");
+      """
+    And file "main.py" now has content
+      """
+      print("hello")
+      """
+
+  Scenario: --show=names
+    When executing "tricorder format --show=names"
+    Then it does not print
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
+      """
+    Then it prints the lines
+      """
+      TypeScript (biome)
+      """
+    And it prints the lines
+      """
+      CSS (biome)
+      """
+    And it prints the block
+      """
+      Python (ruff)
+      """
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    And file "main.ts" now has content
+      """
+      console.log("hello");
+      """
+    And file "main.py" now has content
+      """
+      print("hello")
+      """
+
+  Scenario: --show=failed
+    When executing "tricorder format --show=failed"
+    Then it prints nothing
     And file "main.css" now has content
       """
       .foo {
