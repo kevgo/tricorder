@@ -1,6 +1,7 @@
 RUN_THAT_APP_VERSION = 0.37.0  # run-that-app version to use
 
 RTA        = tools/rta@$(RUN_THAT_APP_VERSION)
+CONTEST    = $(RTA) contest
 GHOKIN     = $(RTA) ghokin
 KEEPSORTED = $(RTA) keep-sorted
 LEFTHOOK   = $(RTA) lefthook
@@ -14,6 +15,9 @@ build:  # builds the codebase
 build-release:	# builds the codebase in release mode
 	rm -rf tmp
 	cargo build --release
+
+contest: ${RTA}
+	$(CONTEST)
 
 cuke: build-release  # runs all end-to-end tests
 	cargo test --test=cuke -- -t "not @online"
