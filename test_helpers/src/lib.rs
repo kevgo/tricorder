@@ -3,10 +3,6 @@ use std::env;
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
-
 /// a queued update of a `Then it prints:` snapshot in a .feature file
 #[derive(Debug)]
 pub struct SnapshotEdit {
