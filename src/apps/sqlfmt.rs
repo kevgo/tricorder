@@ -1,5 +1,5 @@
 use crate::apps::{GetCheckCmdArgs, get_rta_command};
-use crate::domain::{Checker, Formatter, PopulatedStack, Tool};
+use crate::domain::{Checker, DetectedStack, Formatter, Tool};
 use crate::error::UserError;
 use big_s::S;
 
@@ -12,7 +12,7 @@ impl Tool for Sqlfmt {
 }
 
 impl Checker for Sqlfmt {
-    fn check_command(&self, stack: &PopulatedStack) -> Result<Option<conc::Executable>, UserError> {
+    fn check_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 6);
         args.push(S("tool"));
         args.push(S("run"));
@@ -32,10 +32,7 @@ impl Checker for Sqlfmt {
 }
 
 impl Formatter for Sqlfmt {
-    fn format_command(
-        &self,
-        stack: &PopulatedStack,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 5);
         args.push(S("tool"));
         args.push(S("run"));
