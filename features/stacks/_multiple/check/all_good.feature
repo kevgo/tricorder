@@ -49,7 +49,6 @@ Feature: check multiple stacks
       YML (prettier)
       """
 
-  @this
   Scenario: --show=names
     When executing "tricorder check --show=names"
     Then it prints these lines in any order
@@ -59,3 +58,7 @@ Feature: check multiple stacks
       YML (prettier)
       JSON (prettier)
       """
+
+  Scenario: --show=failed
+    When executing "tricorder check --show=failed"
+    Then it prints nothing
