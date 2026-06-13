@@ -43,13 +43,6 @@
     },
 
     {
-      "comment": "verify a Markdown file",
-      "type": "test-file",
-      "files": "*.md",
-      "run": "text-runner {{file}}"
-    },
-
-    {
       "comment": "only the end-to-end tests with the @this tag",
       "type": "test-file-line",
       "files": "*.feature",
