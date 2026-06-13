@@ -1,4 +1,4 @@
-use crate::error::{Result, UserError};
+use crate::domain::{Result, UserError};
 use clap::error::ErrorKind;
 use clap::{Parser, Subcommand, ValueEnum};
 

@@ -11,7 +11,7 @@ fn main() -> ExitCode {
     }
 }
 
-fn inner() -> tricorder::error::Result<ExitCode> {
+fn inner() -> tricorder::domain::Result<ExitCode> {
     let Some(command) = tricorder::cli::input::parse()? else {
         return Ok(ExitCode::SUCCESS);
     };

@@ -1,6 +1,5 @@
 use crate::apps::{GetCheckCmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Tool};
-use crate::error::UserError;
+use crate::domain::{Checker, DetectedStack, Tool, UserError};
 use big_s::S;
 
 pub struct GolangciLint;

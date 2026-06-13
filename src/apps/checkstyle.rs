@@ -1,5 +1,4 @@
-use crate::domain::{Checker, DetectedStack, Tool};
-use crate::error::UserError;
+use crate::domain::{Checker, DetectedStack, Tool, UserError};
 
 pub struct Checkstyle;
 
