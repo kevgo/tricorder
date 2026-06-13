@@ -3,10 +3,31 @@ pub fn compare_lines_any_order(have: &str, want: &str) -> CompareResult {
     let mut want_lines = want.lines().collect::<Vec<&str>>();
     have_lines.sort();
     want_lines.sort();
-    CompareResult {
-        missing: Vec::new(),
-        extra: Vec::new(),
+
+    let mut missing = Vec::new();
+    let mut extra = Vec::new();
+    let mut i = 0;
+    let mut j = 0;
+    while i < have_lines.len() && j < want_lines.len() {
+        match have_lines[i].cmp(want_lines[j]) {
+            std::cmp::Ordering::Less => {
+                missing.push(have_lines[i].to_string());
+                i += 1;
+            }
+            std::cmp::Ordering::Greater => {
+                extra.push(want_lines[j].to_string());
+                j += 1;
+            }
+            std::cmp::Ordering::Equal => {
+                i += 1;
+                j += 1;
+            }
+        }
     }
+    missing.extend(have_lines[i..].iter().map(|line| line.to_string()));
+    extra.extend(want_lines[j..].iter().map(|line| line.to_string()));
+
+    CompareResult { missing, extra }
 }
 
 pub struct CompareResult {
