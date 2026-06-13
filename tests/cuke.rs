@@ -48,8 +48,6 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
-    // TODO: inline into output_trimmed() and rename output_trimmed to output
-    // also trim ascii escapes
     fn output(&self) -> String {
         let Some(command_result) = &self.result else {
             panic!("no command run");
