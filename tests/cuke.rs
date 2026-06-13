@@ -1,6 +1,7 @@
 #![allow(clippy::needless_pass_by_value)]
 
 use contains_lines::contains_lines;
+use test_helpers::add;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
@@ -76,6 +77,7 @@ struct ExistingFile {
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+    println!("{}", add(1, 2));
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
