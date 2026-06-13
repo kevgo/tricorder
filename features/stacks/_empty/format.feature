@@ -2,15 +2,17 @@ Feature: formatting a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder format"
-    Then it prints nothing
+    Then it prints
+      """
+      no stacks found
+      """
     And the exit code is 0
 
   Scenario: --show=all
     When executing "tricorder format --show=all"
     Then it prints
       """
-      0 files
-      running 0 tools
+      no stacks found
       """
     And the exit code is 0
 
@@ -18,8 +20,7 @@ Feature: formatting a codebase without any code
     When executing "tricorder format --show=names"
     Then it prints
       """
-      0 files
-      running 0 tools
+      no stacks found
       """
     And the exit code is 0
 
@@ -27,7 +28,6 @@ Feature: formatting a codebase without any code
     When executing "tricorder format --show=failed"
     Then it prints
       """
-      0 files
-      running 0 tools
+      no stacks found
       """
     And the exit code is 0
