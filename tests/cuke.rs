@@ -77,6 +77,7 @@ struct ExistingFile {
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap();
+    let content = content.replace("\\t", "\t");
     let content = content[1..].to_string();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
@@ -272,7 +273,9 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let output = world.output();
     let mut have = output.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
-    assert!(compare_result.success(), "{}", compare_result.message());
+    if !compare_result.success() {
+        panic!("{}", compare_result.message());
+    }
 }
 
 #[then(expr = "the exit code is {int}")]

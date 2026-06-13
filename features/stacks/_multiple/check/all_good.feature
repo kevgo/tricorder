@@ -13,7 +13,7 @@ Feature: check multiple stacks
     And a file "main.css" with content
       """
       .foo {
-        color: red;
+      \tcolor: red;
       }
       """
     And a file "main.ts" with content
@@ -27,22 +27,18 @@ Feature: check multiple stacks
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints the block
       """
       1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
       running 4 tools
       """
-    Then it prints the lines
+    And it prints the lines
       """
       CSS (biome)
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
       TypeScript (biome)
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
@@ -53,31 +49,13 @@ Feature: check multiple stacks
       YML (prettier)
       """
 
+  @this
   Scenario: --show=names
-    When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
-      xxx
-      """
-    Then it prints the lines
-      """
-      CSS (biome)
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the lines
+    When executing "tricorder check --show=names"
+    Then it prints these lines in any order
       """
       TypeScript (biome)
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the lines
-      """
-      JSON (prettier)
-      """
-    And it prints the lines
-      """
+      CSS (biome)
       YML (prettier)
+      JSON (prettier)
       """

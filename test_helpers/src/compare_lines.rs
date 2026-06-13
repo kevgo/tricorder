@@ -35,15 +35,15 @@ pub struct CompareResult {
 impl CompareResult {
     pub fn message(&self) -> String {
         let mut message = String::new();
-        if !self.missing.is_empty() {
-            message.push_str(&format!("missing lines:\n{}", self.missing.join("\n")));
+        message.push_str(&format!("\nmissing lines:\n"));
+        for (line, i) in self.missing.iter().enumerate() {
+            message.push_str(&format!("{}. {}\n", i, line));
         }
-        if !self.extra.is_empty() {
-            message.push_str(&format!("extra lines:\n{}", self.extra.join("\n")));
+        message.push_str(&format!("extra lines:\n"));
+        for (i, line) in self.extra.iter().enumerate() {
+            message.push_str(&format!("{}. '{}'\n", i, line));
         }
-        if message.is_empty() {
-            message.push_str("no differences found");
-        }
+        message.push_str("end\n");
         message
     }
     pub fn success(&self) -> bool {
