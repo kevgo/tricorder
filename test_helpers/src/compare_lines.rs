@@ -3,7 +3,6 @@ pub fn compare_lines_any_order(have: &str, want: &str) -> CompareResult {
     let mut want_lines = want.lines().collect::<Vec<&str>>();
     have_lines.sort();
     want_lines.sort();
-
     let mut missing = Vec::new();
     let mut extra = Vec::new();
     let mut i = 0;
