@@ -1613,6 +1613,9 @@ dependencies = [
 [[package]]
 name = "test_helpers"
 version = "0.0.0"
+dependencies = [
+ "itertools",
+]
 
 [[package]]
 name = "textwrap"
