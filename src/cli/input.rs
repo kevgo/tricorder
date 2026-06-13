@@ -15,17 +15,17 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// Run all checkers and linters for every detected stack
-    Check(CheckArgs),
+    Check(RunArgs),
 
     /// Run all formatters for all stacks
-    Format(CheckArgs),
+    Format(RunArgs),
 
     /// Install Claude Code / Code Puppy hooks for this project
     Init(InitArgs),
 }
 
 #[derive(clap::Args)]
-pub struct CheckArgs {
+pub struct RunArgs {
     /// how much output to display
     #[arg(long, default_value = "failed")]
     pub show: Show,

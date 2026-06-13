@@ -1,8 +1,10 @@
+use crate::cli::input::RunArgs;
+use crate::cli::output::print_metadata;
 use crate::domain::Result;
-use crate::{cli, stacks};
+use crate::stacks;
 use std::process::ExitCode;
 
-pub fn format() -> Result<ExitCode> {
+pub fn format(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
         return Ok(ExitCode::SUCCESS);
