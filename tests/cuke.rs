@@ -1,7 +1,6 @@
 #![allow(clippy::needless_pass_by_value)]
 
 use contains_lines::contains_lines;
-use test_helpers::add;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
 use itertools::Itertools;
@@ -12,6 +11,7 @@ use std::process::ExitStatus;
 use std::sync::{LazyLock, Mutex};
 use std::time::Duration;
 use std::{env, str};
+use test_helpers::add;
 use tokio::fs;
 use tokio::process::Command;
 
