@@ -14,5 +14,8 @@ Feature: don't format files in .gitignore
       #      this file will get ignored
       """
     When executing "tricorder format"
-    Then it prints nothing
+    Then it prints
+      """
+      No stacks found
+      """
     And the exit code is 0

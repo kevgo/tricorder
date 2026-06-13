@@ -48,6 +48,8 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
+    // TODO: inline into output_trimmed() and rename output_trimmed to output
+    // also trim ascii escapes
     fn output(&self) -> &str {
         if let Some(result) = &self.result {
             return str::from_utf8(&result.output).unwrap();
@@ -232,7 +234,7 @@ fn it_prints_nothing(world: &mut TricorderWorld) {
 }
 
 #[then("it prints the lines")]
-fn it_prints(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
