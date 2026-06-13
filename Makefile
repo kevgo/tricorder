@@ -78,6 +78,7 @@ test: unit lint cuke  ## runs all tests
 
 unit:  # runs the unit tests
 	cargo test --locked
+	cargo test -p test_helpers
 
 update: ${RTA}  # updates all dependencies
 	cargo install cargo-edit
