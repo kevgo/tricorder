@@ -9,7 +9,7 @@ pub mod rumdl;
 pub mod sqlfmt;
 pub mod taplo;
 
-use crate::error::UserError;
+use crate::domain::UserError;
 use rta::applications::AppDefinition;
 
 /// Provides the RTA command to run the given RTA App.

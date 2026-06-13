@@ -2,7 +2,7 @@
 //! current project so tricorder runs after every edit and pre-commit.
 
 use crate::cli::input::InitArgs;
-use crate::error::{Result, UserError};
+use crate::domain::{Result, UserError};
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};

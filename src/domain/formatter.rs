@@ -1,5 +1,4 @@
-use crate::domain::{DetectedStack, Tool};
-use crate::error::UserError;
+use crate::domain::{DetectedStack, Tool, UserError};
 
 /// a formatter that Tricorder can run
 pub trait Formatter: Tool {
