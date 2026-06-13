@@ -36,6 +36,7 @@ Feature: check CSS
     Then it prints the lines
       """
       CSS (biome)
+      Found 1 error.
       """
     And the exit code is 1
     And file "main.css" is unchanged
@@ -51,9 +52,6 @@ Feature: check CSS
     Then it prints the lines
       """
       CSS (biome)
-      """
-    And it prints the lines
-      """
       Found 5 errors.
       """
     And the exit code is 1
