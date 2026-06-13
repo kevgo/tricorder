@@ -57,4 +57,14 @@ mod tests {
         assert!(have.missing.is_empty());
         assert_eq!(have.extra, vec!["one"]);
     }
+
+    #[test]
+    fn same_number_different_content() {
+        let left = "one\none\ntwo";
+        let right = "one\ntwo\ntwo";
+        let have = compare_lines_any_order(left, right);
+        assert!(!have.success());
+        assert_eq!(have.missing, vec!["one"]);
+        assert_eq!(have.extra, vec!["two"]);
+    }
 }
