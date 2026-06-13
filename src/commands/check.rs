@@ -1,12 +1,16 @@
-use crate::domain::PopulatedStack;
-use crate::error;
+use crate::{cli, error, stacks};
 use std::process::ExitCode;
 
-pub fn check(stacks: &[PopulatedStack]) -> error::Result<ExitCode> {
+pub fn check() -> error::Result<ExitCode> {
+    let (stacks, file_count) = stacks::discover();
+    cli::output::print_metadata(&stacks, file_count);
+    if stacks.is_empty() {
+        return Ok(ExitCode::SUCCESS);
+    }
     let mut executables = Vec::new();
     for stack in stacks {
         for checker in stack.stack.checkers() {
-            if let Some(executable) = checker.check_command(stack)? {
+            if let Some(executable) = checker.check_command(&stack)? {
                 executables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it
