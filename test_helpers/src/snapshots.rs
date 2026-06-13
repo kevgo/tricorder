@@ -46,7 +46,7 @@ pub fn flush() {
             .map(str::to_string)
             .collect();
         for edit in group {
-            apply_snapshot_edit(&mut lines, &edit);
+            apply_edit(&mut lines, &edit);
         }
         let mut output = lines.join("\n");
         output.push('\n');
@@ -56,7 +56,7 @@ pub fn flush() {
 }
 
 /// replaces the docstring of the `Then it prints:` step at `edit.step_line` with the new content
-fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
+fn apply_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
     // The docstring opens at the first `"""` line after the step line.
     let search_start = edit.step_line.saturating_sub(1);
     let open = (search_start..lines.len())
@@ -93,8 +93,8 @@ fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
 #[cfg(test)]
 mod tests {
 
-    mod apply_snapshot_edit {
-        use crate::snapshots::{SnapshotEdit, apply_snapshot_edit};
+    mod apply_edit {
+        use crate::snapshots::{SnapshotEdit, apply_edit};
         use std::path::PathBuf;
 
         #[test]
@@ -118,7 +118,7 @@ mod tests {
                 step_line: 7,
                 new_content: "new line 1\nnew line 2".to_string(),
             };
-            apply_snapshot_edit(&mut have, &edit);
+            apply_edit(&mut have, &edit);
             let want = vec![
                 "  Scenario: example".to_string(),
                 "    Given a file with content".to_string(),
@@ -137,7 +137,7 @@ mod tests {
         }
 
         #[test]
-        fn preserve_indentation() {
+        fn preserves_indentation() {
             let mut lines = vec![
                 "    Then it prints the lines".to_string(),
                 "        \"\"\"".to_string(),
@@ -149,7 +149,7 @@ mod tests {
                 step_line: 1,
                 new_content: "unindented one\nunindented two".to_string(),
             };
-            apply_snapshot_edit(&mut lines, &edit);
+            apply_edit(&mut lines, &edit);
             assert_eq!(
                 lines,
                 vec![
@@ -163,7 +163,7 @@ mod tests {
         }
 
         #[test]
-        fn clears_docstring_body() {
+        fn can_remove_docstring() {
             let mut lines = vec![
                 "  Scenario: example".to_string(),
                 "    When executing \"tricorder\"".to_string(),
@@ -180,7 +180,7 @@ mod tests {
                 step_line: 3,
                 new_content: String::new(),
             };
-            apply_snapshot_edit(&mut lines, &edit);
+            apply_edit(&mut lines, &edit);
             assert_eq!(
                 lines,
                 vec![
@@ -196,7 +196,7 @@ mod tests {
 
         #[test]
         #[should_panic(expected = "cannot find docstring start")]
-        fn panics_when_docstring_start_missing() {
+        fn no_docstring() {
             let mut lines = vec![
                 "    Then it prints".to_string(),
                 "      no docstring here".to_string(),
@@ -207,12 +207,12 @@ mod tests {
                 new_content: "new output".to_string(),
             };
 
-            apply_snapshot_edit(&mut lines, &edit);
+            apply_edit(&mut lines, &edit);
         }
 
         #[test]
         #[should_panic(expected = "cannot find docstring end")]
-        fn panics_when_docstring_end_missing() {
+        fn unclosed_docstring() {
             let mut lines = vec![
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
@@ -224,7 +224,7 @@ mod tests {
                 new_content: "new output".to_string(),
             };
 
-            apply_snapshot_edit(&mut lines, &edit);
+            apply_edit(&mut lines, &edit);
         }
     }
 }
