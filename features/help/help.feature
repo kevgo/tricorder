@@ -2,7 +2,7 @@ Feature: Displaying help
 
   Scenario: no command given
     When executing "tricorder"
-    Then it prints the lines
+    Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
         [subcommands: check, format, init, help]
@@ -15,7 +15,7 @@ Feature: Displaying help
 
   Scenario: help command
     When executing "tricorder help"
-    Then it prints the lines
+    Then it prints
       """
       The all-in-one DevEx tool.
 
@@ -35,7 +35,7 @@ Feature: Displaying help
 
   Scenario: --help flag
     When executing "tricorder --help"
-    Then it prints the lines
+    Then it prints
       """
       The all-in-one DevEx tool.
 
@@ -55,7 +55,7 @@ Feature: Displaying help
 
   Scenario: -h flag
     When executing "tricorder -h"
-    Then it prints the lines
+    Then it prints
       """
       The all-in-one DevEx tool.
 
