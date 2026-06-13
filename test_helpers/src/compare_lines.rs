@@ -36,12 +36,12 @@ impl CompareResult {
     pub fn message(&self) -> String {
         let mut message = String::new();
         message.push_str(&format!("\nmissing lines:\n"));
-        for (line, i) in self.missing.iter().enumerate() {
-            message.push_str(&format!("{}. {}\n", i, line));
+        for (i, line) in self.missing.iter().enumerate() {
+            message.push_str(&format!("{}. '{}'\n", i + 1, line));
         }
         message.push_str(&format!("extra lines:\n"));
         for (i, line) in self.extra.iter().enumerate() {
-            message.push_str(&format!("{}. '{}'\n", i, line));
+            message.push_str(&format!("{}. '{}'\n", i + 1, line));
         }
         message.push_str("end\n");
         message

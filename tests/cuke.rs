@@ -264,10 +264,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
 }
 #[then("it prints these lines in any order")]
 fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
-    let mut want = step
-        .docstring
-        .as_ref()
-        .unwrap()
+    let mut want = step.docstring.as_ref().unwrap()[1..]
         .lines()
         .collect::<Vec<&str>>();
     let output = world.output();
