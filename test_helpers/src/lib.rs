@@ -46,7 +46,7 @@ pub fn flush_snapshot_updates() {
             .map(str::to_string)
             .collect();
         for edit in group {
-            apply_snapshot_edit(&mut lines, &edit, &path);
+            apply_snapshot_edit(&mut lines, &edit);
         }
         let mut output = lines.join("\n");
         output.push('\n');
@@ -56,7 +56,7 @@ pub fn flush_snapshot_updates() {
 }
 
 /// replaces the docstring of the `Then it prints:` step at `edit.step_line` with the new content
-pub fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit, path: &std::path::Path) {
+pub fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit) {
     // The docstring opens at the first `"""` line after the step line.
     let search_start = edit.step_line.saturating_sub(1);
     let open = (search_start..lines.len())
@@ -65,7 +65,7 @@ pub fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit, path: &
             panic!(
                 "cannot find docstring start for step on line {} in {}",
                 edit.step_line,
-                path.display()
+                edit.path.display()
             )
         });
     let close = (open + 1..lines.len())
@@ -74,7 +74,7 @@ pub fn apply_snapshot_edit(lines: &mut Vec<String>, edit: &SnapshotEdit, path: &
             panic!(
                 "cannot find docstring end for step on line {} in {}",
                 edit.step_line,
-                path.display()
+                edit.path.display()
             )
         });
     // Preserve the indentation of the docstring delimiters.
@@ -113,13 +113,12 @@ mod tests {
                 "      \"\"\"".to_string(),
                 "    And the exit code is 0".to_string(),
             ];
-            let path = PathBuf::from("test.feature");
             let edit = SnapshotEdit {
-                path: path.clone(),
+                path: PathBuf::from("test.feature"),
                 step_line: 7,
                 new_content: "new line 1\nnew line 2".to_string(),
             };
-            apply_snapshot_edit(&mut have, &edit, &path);
+            apply_snapshot_edit(&mut have, &edit);
             let want = vec![
                 "  Scenario: example".to_string(),
                 "    Given a file with content".to_string(),
@@ -145,13 +144,12 @@ mod tests {
                 "        captured output".to_string(),
                 "        \"\"\"".to_string(),
             ];
-            let path = PathBuf::from("indented.feature");
             let edit = SnapshotEdit {
-                path: path.clone(),
+                path: PathBuf::from("indented.feature"),
                 step_line: 1,
                 new_content: "unindented one\nunindented two".to_string(),
             };
-            apply_snapshot_edit(&mut lines, &edit, &path);
+            apply_snapshot_edit(&mut lines, &edit);
             assert_eq!(
                 lines,
                 vec![
@@ -177,13 +175,12 @@ mod tests {
                 "    And the exit code is 0".to_string(),
             ];
 
-            let path = PathBuf::from("empty.feature");
             let edit = SnapshotEdit {
-                path: path.clone(),
+                path: PathBuf::from("empty.feature"),
                 step_line: 3,
                 new_content: String::new(),
             };
-            apply_snapshot_edit(&mut lines, &edit, &path);
+            apply_snapshot_edit(&mut lines, &edit);
             assert_eq!(
                 lines,
                 vec![
@@ -204,14 +201,13 @@ mod tests {
                 "    Then it prints".to_string(),
                 "      no docstring here".to_string(),
             ];
-            let path = PathBuf::from("missing-start.feature");
             let edit = SnapshotEdit {
-                path: path.clone(),
+                path: PathBuf::from("missing-start.feature"),
                 step_line: 1,
                 new_content: "new output".to_string(),
             };
 
-            apply_snapshot_edit(&mut lines, &edit, &path);
+            apply_snapshot_edit(&mut lines, &edit);
         }
 
         #[test]
@@ -222,14 +218,13 @@ mod tests {
                 "      \"\"\"".to_string(),
                 "      never closed".to_string(),
             ];
-            let path = PathBuf::from("missing-end.feature");
             let edit = SnapshotEdit {
-                path: path.clone(),
+                path: PathBuf::from("missing-end.feature"),
                 step_line: 1,
                 new_content: "new output".to_string(),
             };
 
-            apply_snapshot_edit(&mut lines, &edit, &path);
+            apply_snapshot_edit(&mut lines, &edit);
         }
     }
 }
