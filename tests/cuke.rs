@@ -48,6 +48,8 @@ impl TricorderWorld {
     }
 
     /// provides the textual output of the Atlanta run
+    // TODO: inline into output_trimmed() and rename output_trimmed to output
+    // also trim ascii escapes
     fn output(&self) -> &str {
         if let Some(result) = &self.result {
             return str::from_utf8(&result.output).unwrap();
