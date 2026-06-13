@@ -15,6 +15,11 @@ Feature: all tests are passing
       ruff 0.15.16
       """
 
+  Scenario: default behavior
+    When executing "tricorder check"
+    Then it prints nothing
+    And the exit code is 0
+
   Scenario: --show=all
     When executing "tricorder check --show=all"
     Then it prints the lines
