@@ -1,5 +1,5 @@
 use crate::apps::{GetCheckCmdArgs, get_rta_command};
-use crate::domain::{Checker, Formatter, DetectedStack, Tool};
+use crate::domain::{Checker, DetectedStack, Formatter, Tool};
 use crate::error::UserError;
 use big_s::S;
 
@@ -28,10 +28,7 @@ impl Checker for Ruff {
 }
 
 impl Formatter for Ruff {
-    fn format_command(
-        &self,
-        stack: &DetectedStack,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--quiet"));
