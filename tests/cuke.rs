@@ -206,12 +206,29 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
     );
 }
 
+#[then("it does not print")]
+fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
+    let have = str::from_utf8(&stripped).unwrap();
+    assert!(
+        !have.contains(want),
+        "output should not contain '{want}'\n\nHAVE:\n{have}",
+    );
+}
+
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let stripped = strip_ansi_escapes::strip(world.output_trimmed());
     let have = str::from_utf8(&stripped).unwrap();
     pretty::assert_eq!(have, want);
+}
+
+#[then("it prints nothing")]
+fn it_prints_nothing(world: &mut TricorderWorld) {
+    let have = world.output_trimmed();
+    pretty::assert_eq!(have, "");
 }
 
 #[then("it prints the lines")]
@@ -255,23 +272,6 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
         .collect::<Vec<&str>>();
     let compare_result = compare_lines_any_order(have, want);
     assert!(compare_result.success(), compare_result.message());
-}
-
-#[then("it does not print")]
-fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let stripped = strip_ansi_escapes::strip(world.output_trimmed());
-    let have = str::from_utf8(&stripped).unwrap();
-    assert!(
-        !have.contains(want),
-        "output should not contain '{want}'\n\nHAVE:\n{have}",
-    );
-}
-
-#[then("it prints nothing")]
-fn it_prints_nothing(world: &mut TricorderWorld) {
-    let have = world.output_trimmed();
-    pretty::assert_eq!(have, "");
 }
 
 #[then("the output matches")]
