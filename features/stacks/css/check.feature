@@ -43,12 +43,11 @@ Feature: format CSS
       """
       .foo {
       \tcolor: red;
-      \tbackground: blue;
       }
       """
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       biome \d+\.\d+\.\d+
       """
