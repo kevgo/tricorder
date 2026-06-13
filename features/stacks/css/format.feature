@@ -52,9 +52,6 @@ Feature: format CSS
     Then it prints the lines
       """
       CSS (biome)
-      """
-    And it prints the lines
-      """
       Found 2 errors.
       """
     And the exit code is 1
