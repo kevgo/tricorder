@@ -82,21 +82,30 @@ Feature: check multiple stacks
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the lines
+    And it does not print
       """
       CSS (biome)
+      """
+    Then it prints the block
+      """
       Found 1 error.
       main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the lines
+    And it does not print
       """
       TypeScript (biome)
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the block
       """
+      Found 1 error.
+      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it does not print
+      """
       Python (ruff)
+      """
+    And it prints the block
+      """
       Would reformat: main.py
       1 file would be reformatted
       """
