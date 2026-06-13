@@ -1,4 +1,4 @@
-use crate::domain::{Checker, PopulatedStack, Tool};
+use crate::domain::{Checker, DetectedStack, Tool};
 use crate::error::UserError;
 
 pub struct Checkstyle;
@@ -13,10 +13,7 @@ impl Tool for Checkstyle {
 }
 
 impl Checker for Checkstyle {
-    fn check_command(
-        &self,
-        _stack: &PopulatedStack,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn check_command(&self, _stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",
