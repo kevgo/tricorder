@@ -1,5 +1,5 @@
 use crate::apps::{GetCheckCmdArgs, get_rta_command};
-use crate::domain::{Formatter, PopulatedStack, Tool};
+use crate::domain::{DetectedStack, Formatter, Tool};
 use crate::error::UserError;
 use big_s::S;
 
@@ -12,10 +12,7 @@ impl Tool for Ghokin {
 }
 
 impl Formatter for Ghokin {
-    fn format_command(
-        &self,
-        stack: &PopulatedStack,
-    ) -> Result<Option<conc::Executable>, UserError> {
+    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));

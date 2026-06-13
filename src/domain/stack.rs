@@ -23,8 +23,9 @@ impl Display for Box<dyn Stack> {
     }
 }
 
-/// A stack and the files from the current workspace that belong to it.
-pub struct PopulatedStack {
+/// A stack that was detected in the workspace,
+/// and the workspace files belonging to it.
+pub struct DetectedStack {
     pub stack: Box<dyn Stack>,
     pub files: Vec<PathBuf>,
 }
