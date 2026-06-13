@@ -4,11 +4,11 @@ Feature: display statistics about the codebase
     Given a file "run-that-app" with content
       """
       biome 2.4.0
-      prettier-standalone 0.24.0
+      ruff 0.15.16
       """
-    And a file "main.json" with content
+    And a file "main.py" with content
       """
-      { "key": "value" }
+      print("Hello, world!")
       """
     And a file "main.css" with content
       """
@@ -18,13 +18,9 @@ Feature: display statistics about the codebase
       """
       console.log("hello);
       """
-    And a file "main.yml" with content
-      """
-      key: value
-      """
     When executing "tricorder format"
     Then it prints the block
       """
-      1 CSS, 1 JSON, 1 TypeScript, 1 YML, 1 other
-      running 4 tools
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
