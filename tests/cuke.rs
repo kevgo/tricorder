@@ -8,10 +8,9 @@ use regex::Regex;
 use std::io::Read;
 use std::path::PathBuf;
 use std::process::ExitStatus;
-use std::sync::{LazyLock, Mutex};
 use std::time::Duration;
 use std::{env, str};
-use test_helpers::add;
+use test_helpers::{flush_snapshot_updates, queue_snapshot_update, update_snapshots_enabled};
 use tokio::fs;
 use tokio::process::Command;
 
@@ -77,7 +76,6 @@ struct ExistingFile {
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
-    println!("{}", add(1, 2));
     let content = step.docstring.as_ref().unwrap().trim();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
@@ -231,7 +229,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
                 .feature_path
                 .clone()
                 .expect("the feature file path is unknown, is the `before` hook wired up?");
-            queue_snapshot_update(SnapshotEdit {
+            queue_snapshot_update(test_helpers::SnapshotEdit {
                 path,
                 step_line: step.position.line,
                 new_content: have,
