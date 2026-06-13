@@ -27,7 +27,7 @@ Feature: format SQL
     When executing "tricorder format"
     Then it prints the lines
       """
-      
+
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged
@@ -60,6 +60,6 @@ Feature: format SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       uv \d+\.\d+\.\d+
       """

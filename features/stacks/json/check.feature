@@ -35,7 +35,7 @@ Feature: check JSON
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.json" is unchanged

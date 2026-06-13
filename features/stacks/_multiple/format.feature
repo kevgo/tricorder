@@ -46,7 +46,7 @@ Feature: format multiple stacks
       """
     And it prints the lines
       """
-      
+
       """
     And file "main.json" now has content
       """

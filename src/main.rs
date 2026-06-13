@@ -24,7 +24,7 @@ fn inner() -> error::Result<ExitCode> {
     };
     match command {
         Command::Check(args) => commands::check(args),
-        Command::Format(args) => commands::format(args),
+        Command::Format(args) => commands::format(&args),
         Command::Init(args) => commands::init(&args),
     }
 }

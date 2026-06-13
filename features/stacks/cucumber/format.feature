@@ -4,7 +4,7 @@ Feature: format Cucumber
     Given a file "main.feature" with content
       """
       Feature:    foo
-      
+
         Scenario:  bar
           Given a step
       """
@@ -28,7 +28,7 @@ Feature: format Cucumber
     And file "main.feature" now has content
       """
       Feature: foo
-      
+
         Scenario: bar
           Given a step
       """
@@ -46,13 +46,13 @@ Feature: format Cucumber
     And file "main.feature" now has content
       """
       Feature: foo
-      
+
         Scenario: bar
           Given a step
       """
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       ghokin \d+\.\d+\.\d+
       """

@@ -38,7 +38,7 @@ Feature: format Markdown
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       rumdl \d+\.\d+\.\d+
       """
     And file "README.md" now has content
