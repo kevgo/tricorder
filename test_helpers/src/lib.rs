@@ -141,18 +141,16 @@ mod tests {
             let edit = SnapshotEdit {
                 path: path.clone(),
                 step_line: 1,
-                new_content: "line one\nline two".to_string(),
+                new_content: "unindented one\nunindented two".to_string(),
             };
-
             apply_snapshot_edit(&mut lines, &edit, &path);
-
             assert_eq!(
                 lines,
                 vec![
                     "    Then it prints the lines".to_string(),
                     "        \"\"\"".to_string(),
-                    "        line one".to_string(),
-                    "        line two".to_string(),
+                    "        unindented one".to_string(),
+                    "        unindented two".to_string(),
                     "        \"\"\"".to_string(),
                 ]
             );
