@@ -11,7 +11,7 @@ pub fn check(args: CheckArgs) -> error::Result<ExitCode> {
     let mut executables = Vec::new();
     for stack in &stacks {
         for checker in stack.stack.checkers() {
-            if let Some(executable) = checker.check_command(&stack)? {
+            if let Some(executable) = checker.check_command(stack)? {
                 executables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it
