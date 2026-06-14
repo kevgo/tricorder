@@ -21,7 +21,6 @@ Feature: format multiple stacks with invalid code
 
   @this
   Scenario: default visibility
-    # When inspect the workspace
     When executing "tricorder format"
     Then it does not print
       """
