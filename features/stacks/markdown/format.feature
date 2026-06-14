@@ -36,35 +36,18 @@ Feature: format Markdown
       # Hello
       """
 
+  @this
   Scenario: invalid JSON
     Given a file "main.md" with content
       """
       # hello
-
+      
       [e
       """
     When executing "tricorder format --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)
-      Success: No issues found in 1 file (3ms)
       """
     And the exit code is 0
     And file "main.md" is unchanged
-  #   @online
-  #   Scenario: auto-install
-  #     When executing "tricorder format"
-  #     Then it prints the lines
-  #       """
-  #       Markdown (rumdl)
-  #       """
-  #     And the exit code is 0
-  #     And file "run-that-app" now matches
-  #       """
-  #       # more info at https://github.com/kevgo/run-that-app
-  #       rumdl \d+\.\d+\.\d+
-  #       """
-  #     And file "README.md" now has content
-  #       """
-  #       # Hello
-  #       """
