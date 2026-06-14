@@ -26,7 +26,7 @@ Feature: format multiple stacks
       key :  value
       """
     When executing "tricorder format"
-    And it prints the block
+    Then it prints the block
       """
       YML (prettier)
       """
