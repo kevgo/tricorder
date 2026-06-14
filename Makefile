@@ -81,8 +81,9 @@ unit:  # runs the unit tests
 	cargo test -p test_helpers
 
 update: ${RTA}  # updates all dependencies
-	cargo install cargo-edit
-	cargo upgrade --incompatible
+	cargo install cargo-edit cargo-machete
+	cargo machete
+	cargo upgrade
 	$(RTA) --update
 
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
