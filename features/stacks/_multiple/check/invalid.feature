@@ -95,16 +95,10 @@ Feature: check multiple stacks with invalid code
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing to STDERR
-    And it does not print
+    And it does not print any of these lines
       """
       CSS (biome)
-      """
-    And it does not print
-      """
       TypeScript (biome)
-      """
-    And it does not print
-      """
       Python (ruff)
       """
     Then it prints the block
