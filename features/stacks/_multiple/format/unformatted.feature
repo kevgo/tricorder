@@ -46,11 +46,11 @@ Feature: format multiple stacks
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the lines
+    Then it prints the block
       """
       TypeScript (biome)
       """
-    And it prints the lines
+    And it prints the block
       """
       CSS (biome)
       """
