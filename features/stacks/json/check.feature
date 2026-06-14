@@ -1,43 +1,48 @@
 Feature: check JSON
 
   Background:
-    And a file "main.json" with content
-      """
-      { "key": "value" }
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       prettier-standalone 0.24.0
       """
-    When executing "tricorder check"
-    Then it prints
-      """
-      JSON (prettier)
-      main.json
-      """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 1
-    And all files are unchanged
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
+  Scenario: valid JSON
+    Given a file "main.json" with content
+      """
+      { "key": "value" }
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      JSON (prettier)
+      """
+    And the exit code is 0
+    And file "main.json" is unchanged
+
+  Scenario: unformatted JSON
+    Given a file "main.json" with content
+      """
+      {"key":"value"}
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the lines
+      """
       JSON (prettier)
       main.json
       """
     And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
+    And file "main.json" is unchanged
 
-      prettier-standalone \d+\.\d+\.\d+
+  Scenario: invalid CSS
+    Given a file "main.json" with content
       """
+      { "key":
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the lines
+      """
+      JSON (prettier)
+      [error] main.json: SyntaxError: Unexpected token (2:1)
+      """
+    And the exit code is 2
     And file "main.json" is unchanged
