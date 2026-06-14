@@ -16,7 +16,7 @@ Feature: install all Cucumber tools
       """
       Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
       Cucumber (ghokin)
-      "./main.feature" formatted
+      "." formatted
       """
     And the exit code is 0
     And file "main.feature" now has content
@@ -42,7 +42,7 @@ Feature: install all Cucumber tools
     Then it prints the block
       """
       Cucumber (ghokin)
-      "./main.feature" formatted
+      "." formatted
       """
     And it does not print
       """
