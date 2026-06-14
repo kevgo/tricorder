@@ -4,15 +4,15 @@ Feature: check Go code
     Given a file "go.mod" with content
       """
       module example.com/demo
-
+      
       go 1.21
       """
     And a file "main.go" with content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	unused := "value"
       	fmt.Println("Hello, world!")
@@ -38,9 +38,14 @@ Feature: check Go code
   @online
   Scenario: auto-install
     When executing "tricorder check"
+    Then it prints to STDERR
+      """
+      1 Go, 1 other
+      Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok
       added golangci-lint@2.12.2 to run-that-app
       Go (golangci-lint)
       """
@@ -48,6 +53,6 @@ Feature: check Go code
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       golangci-lint \d+\.\d+\.\d+
       """

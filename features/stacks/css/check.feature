@@ -33,9 +33,14 @@ Feature: format CSS
   @online
   Scenario: auto-install
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 CSS
+      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
       CSS (biome)
       """
     And the exit code is 0
@@ -48,6 +53,6 @@ Feature: format CSS
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       biome \d+\.\d+\.\d+
       """
