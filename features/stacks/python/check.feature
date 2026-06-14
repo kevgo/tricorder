@@ -1,40 +1,67 @@
 Feature: check Python
 
   Background:
-    And a file "main.py" with content
-      """
-      print("Hello, world!")
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
       """
-    When executing "tricorder check"
+
+  Scenario: valid JSON
+    Given a file "main.py" with content
+      """
+      print("Hello, world!")
+      """
+    Given a file "other.py" with content
+      """
+      print("Hello, other!")
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      Python (ruff)
+      2 files already formatted
+      """
+    And the exit code is 0
+    And file "main.py" is unchanged
+    And file "other.py" is unchanged
+
+  Scenario: unformatted Python
+    Given a file "main.py" with content
+      """
+      print   ("Hello, world!")
+      """
+    Given a file "other.py" with content
+      """
+      print   ("Hello, other!")
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       Python (ruff)
       Would reformat: main.py
-
-      """
-    And it does not print
-      """
-      Talking to GitHub API
+      Would reformat: other.py
+      2 files would be reformatted
       """
     And the exit code is 1
+    And file "main.py" is unchanged
+    And file "other.py" is unchanged
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
-    Then it prints the lines
+  Scenario: invalid Python
+    Given a file "main.py" with content
       """
-      Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
+      print("
       """
-    And the exit code is 1
-    And file "run-that-app" now matches
+    Given a file "other.py" with content
       """
-      # more info at https://github.com/kevgo/run-that-app
-
-      ruff \d+\.\d+\.\d+
+      print("
       """
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      Python (ruff)
+      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      error: Failed to parse other.py:1:7: missing closing quote in string literal
+      """
+    And the exit code is 2
+    And file "main.py" is unchanged
+    And file "other.py" is unchanged

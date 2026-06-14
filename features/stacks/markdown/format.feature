@@ -56,7 +56,6 @@ Feature: format Markdown
 #     When executing "tricorder format"
 #     Then it prints the lines
 #       """
-#       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
 #       Markdown (rumdl)
 #       """
 #     And the exit code is 0
