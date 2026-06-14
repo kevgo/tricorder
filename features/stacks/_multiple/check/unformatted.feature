@@ -32,6 +32,14 @@ Feature: check multiple stacks with unformatted files
       """
       CSS (biome)
       """
+    And it does not print
+      """
+      TypeScript (biome)
+      """
+    And it does not print
+      """
+      Python (ruff)
+      """
     Then it prints the block
       """
       Found 1 error.
