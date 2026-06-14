@@ -6,9 +6,10 @@ Feature: install all Python tools
       print    ("Hello, world!")
       """
 
+  @this
   Scenario: not installed
     When executing "tricorder format --show=all"
-    Then it prints to STDERR
+    Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       1 Python
@@ -27,7 +28,7 @@ Feature: install all Python tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       ruff \d+\.\d+\.\d+
       """
 

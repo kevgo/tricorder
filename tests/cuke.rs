@@ -244,9 +244,9 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let have = String::from_utf8_lossy(&output.stdout);
+    let stdout = String::from_utf8_lossy(&output.stdout);
     if snapshots::enabled() {
-        if have != want {
+        if stdout != want {
             let path = world
                 .feature_path
                 .clone()
@@ -254,18 +254,34 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
             snapshots::queue_update(snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
-                new_content: have.to_string(),
+                new_content: stdout.to_string(),
             });
         }
         return;
     }
-    let missing = contains_lines(&have, want);
+    let missing = contains_lines(&stdout, want);
     assert!(
         missing.is_empty(),
-        "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        "STDOUT is missing lines:\n\nHAVE:\n{stdout}\n\nWANT:\n{want}\n\nMISSING:\n{}",
         missing.join("\n")
     );
 }
+
+#[then("it prints the lines to STDERR")]
+fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let missing = contains_lines(&stderr, want);
+    assert!(
+        missing.is_empty(),
+        "STDERR is missing lines:\n\nHAVE:\n{stderr}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        missing.join("\n")
+    );
+}
+
 #[then("it prints only these lines in any order")]
 fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let mut want = step.docstring.as_ref().unwrap()[1..]
