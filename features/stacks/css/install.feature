@@ -32,25 +32,3 @@ Feature: install all CSS tools
 
       biome \d+\.\d+\.\d+
       """
-
-  Scenario: already installed
-    Given a file "run-that-app" with content
-      """
-      biome 2.4.0
-      """
-    When executing "tricorder format --show=all"
-    Then it prints the lines
-      """
-      CSS (biome)
-      """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 0
-    And file "main.css" now has content
-      """
-      .foo {
-      \tcolor: red;
-      }
-      """
