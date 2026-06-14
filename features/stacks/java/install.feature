@@ -10,7 +10,6 @@ Feature: install all Java tools
       }
       """
 
-  @online
   Scenario: not installed
     When executing "tricorder check --show=all"
     Then it prints the lines
