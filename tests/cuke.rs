@@ -7,7 +7,7 @@ use itertools::Itertools;
 use regex::Regex;
 use std::io::Read;
 use std::path::PathBuf;
-use std::process::ExitStatus;
+use std::process::{ExitStatus, Output};
 use std::time::Duration;
 use std::{env, str};
 use test_helpers::snapshots;
@@ -23,7 +23,7 @@ struct TricorderWorld {
     original_files: Vec<ExistingFile>,
 
     /// the result of running Tricorder
-    result: Option<CommandResult>,
+    output: Option<Output>,
 
     /// path to the .feature file of the currently running scenario
     feature_path: Option<PathBuf>,
@@ -34,14 +34,14 @@ impl TricorderWorld {
         Self {
             dir: tempfile::tempdir().unwrap(),
             original_files: Vec::new(),
-            result: None,
+            output: None,
             feature_path: None,
         }
     }
 
     /// provides the exit code of the Atlanta run
     fn exit_code(&self) -> i32 {
-        match &self.result {
+        match &self.output {
             Some(result) => result.status.code().unwrap(),
             None => panic!(),
         }
@@ -49,23 +49,13 @@ impl TricorderWorld {
 
     /// provides the textual output of the Atlanta run
     fn output(&self) -> String {
-        let Some(command_result) = &self.result else {
+        let Some(command_result) = &self.output else {
             panic!("no command run");
         };
         let stripped = strip_ansi_escapes::strip(&command_result.output);
         let output = str::from_utf8(&stripped).unwrap();
         output.trim().lines().map(str::trim_end).join("\n")
     }
-}
-
-/// the result of running Tricorder
-#[derive(Debug)]
-struct CommandResult {
-    /// the exit status of the run
-    status: ExitStatus,
-
-    /// STDOUT and STDERR merged in the exact order the application printed them
-    output: Vec<u8>,
 }
 
 #[derive(Debug)]
@@ -116,27 +106,11 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
-    // Capture STDOUT and STDERR through a single shared OS pipe so that the two
-    // streams are interleaved in the exact order the application wrote to them.
-    let (mut reader, writer) = os_pipe::pipe().expect("cannot create the output pipe");
-    let writer_clone = writer.try_clone().expect("clone output writer");
-    let mut cmd = Command::new(absolute_path);
-    cmd.args(args)
-        .current_dir(world.dir.path())
-        .stdout(writer)
-        .stderr(writer_clone);
-    let mut child = cmd
-        .spawn()
+    cmd.args(args).current_dir(world.dir.path());
+    let output = cmd
+        .output()
         .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
-    // Drop our handles to the write ends of the pipe (including the copies held
-    // by the Command) so that the read end observes EOF once the child exits.
-    drop(cmd);
-    let mut output = Vec::new();
-    reader
-        .read_to_end(&mut output)
-        .expect("cannot read the command output");
-    let status = child.wait().await.expect("the command failed to run");
-    world.result = Some(CommandResult { status, output });
+    world.output = Some(output);
 }
 
 #[then("all files are unchanged")]
