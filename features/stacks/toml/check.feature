@@ -27,9 +27,13 @@ Feature: check TOML
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
+      running 1 tools
+      """
+    Then it prints the lines
+      """
       TOML (taplo)
       error: invalid TOML
       """

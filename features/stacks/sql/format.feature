@@ -65,6 +65,6 @@ Feature: format SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       uv \d+\.\d+\.\d+
       """

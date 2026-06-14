@@ -27,9 +27,13 @@ Feature: check TypeScript
   @online
   Scenario: auto-install
     When executing "tricorder check"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
+      running 1 tools
+      """
+    Then it prints the lines
+      """
       TypeScript (biome)
       Found 1 error.
       """

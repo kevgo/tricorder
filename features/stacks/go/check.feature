@@ -4,15 +4,15 @@ Feature: check Go code
     Given a file "go.mod" with content
       """
       module example.com/demo
-      
+
       go 1.21
       """
     And a file "main.go" with content
       """
       package main
-      
+
       import "fmt"
-      
+
       func main() {
       	unused := "value"
       	fmt.Println("Hello, world!")
@@ -53,6 +53,6 @@ Feature: check Go code
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       golangci-lint \d+\.\d+\.\d+
       """

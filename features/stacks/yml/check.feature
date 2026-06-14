@@ -9,10 +9,14 @@ Feature: check YML
       key: value
       """
     When executing "tricorder check"
+    Then it prints to STDERR
+      """
+      1 YML
+      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      added prettier-standalone@0.24.0 to run-that-app
       YML (prettier)
       main.yml
       """
