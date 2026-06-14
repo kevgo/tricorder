@@ -14,7 +14,8 @@ Feature: don't check files in .gitignore
       # this file will get ignored
       """
     When executing "tricorder check"
-    Then it prints to STDERR
+    Then it prints nothing
+    And it prints to STDERR
       """
       no stacks found
       """
