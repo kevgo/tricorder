@@ -29,9 +29,14 @@ Feature: format Python
   @online
   Scenario: auto-install
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 Python
+      Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       Python (ruff)
       """
     And the exit code is 0

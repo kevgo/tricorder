@@ -38,9 +38,14 @@ Feature: check Go code
   @online
   Scenario: auto-install
     When executing "tricorder check"
+    Then it prints to STDERR
+      """
+      1 Go, 1 other
+      Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/golangci/golangci-lint/releases/latest) ... ok
       added golangci-lint@2.12.2 to run-that-app
       Go (golangci-lint)
       """

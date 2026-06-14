@@ -2,7 +2,6 @@ Feature: format YML
 
   Background:
 
-  @this
   Scenario: already configured
     Given a file "main.yml" with content
       """
@@ -17,10 +16,13 @@ Feature: format YML
       prettier-standalone 0.24.0
       """
     When executing "tricorder format"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       2 YML, 1 other
       running 1 tools
+      """
+    Then it prints the lines
+      """
       YML (prettier)
       """
     And it does not print
@@ -44,11 +46,14 @@ Feature: format YML
       key:   value
       """
     When executing "tricorder format"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       1 YML
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       running 1 tools
+      """
+    And it prints the lines
+      """
       YML (prettier)
       """
     And the exit code is 0

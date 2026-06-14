@@ -25,7 +25,7 @@ Feature: format SQL
       CREATE TABLE orders (id INT,total DECIMAL(10,2));
       """
     When executing "tricorder format"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       1 other
       """
@@ -44,9 +44,14 @@ Feature: format SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 SQL
+      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.

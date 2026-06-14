@@ -27,9 +27,14 @@ Feature: check JSON
   @online
   Scenario: auto-install
     When executing "tricorder check"
+    Then it prints to STDERR
+      """
+      1 JSON
+      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       JSON (prettier)
       main.json
       """

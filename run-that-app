@@ -1,12 +1,12 @@
 # more info at https://github.com/kevgo/run-that-app
 
-biome 2.4.16
+biome 2.5.0
 contest 0.5.0
 ghokin 3.9.0
 keep-sorted 0.9.0
 lefthook 2.1.9
 prettier-standalone 0.24.0
 ripgrep 15.1.0
-ruff 0.15.16
-rumdl 0.2.7
+ruff 0.15.17
+rumdl 0.2.16
 taplo 0.10.0
