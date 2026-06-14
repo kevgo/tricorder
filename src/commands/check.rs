@@ -23,6 +23,7 @@ pub fn check() -> Result<ExitCode> {
         executables,
         error_on_output: false,
         show: conc::Show::All,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }
