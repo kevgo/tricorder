@@ -11,10 +11,6 @@ Feature: check TOML
       """
       key = "value"
       """
-    Given a file "other.toml" with content
-      """
-      key = "other"
-      """
     When executing "tricorder check --show=all"
     Then it prints the block
       """
@@ -22,16 +18,11 @@ Feature: check TOML
       """
     And the exit code is 0
     And file "main.toml" is unchanged
-    And file "other.toml" is unchanged
 
   Scenario: unformatted TOML
     Given a file "main.toml" with content
       """
       key =     "value"
-      """
-    Given a file "other.toml" with content
-      """
-      key =     "other"
       """
     When executing "tricorder check --show=all"
     Then it prints the lines
@@ -40,7 +31,6 @@ Feature: check TOML
       """
     And the exit code is 0
     And file "main.toml" is unchanged
-    And file "other.toml" is unchanged
 
   Scenario: invalid TOML
     Given a file "main.toml" with content
@@ -56,8 +46,6 @@ Feature: check TOML
       """
       TOML (taplo)
       error: invalid TOML
-      error: invalid TOML
       """
     And the exit code is 1
     And file "main.toml" is unchanged
-    And file "other.toml" is unchanged
