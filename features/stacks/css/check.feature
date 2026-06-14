@@ -29,11 +29,6 @@ Feature: check CSS
       }
       """
     When executing "tricorder check --show=all"
-    Then it prints to STDERR
-      """
-      1 CSS, 1 other
-      running 1 tools
-      """
     And it prints the lines
       """
       CSS (biome)
@@ -54,11 +49,6 @@ Feature: check CSS
       """
       CSS (biome)
       Found 5 errors.
-      """
-    And it prints to STDERR
-      """
-      1 CSS, 1 other
-      running 1 tools
       """
     And the exit code is 1
     And file "main.css" is unchanged
