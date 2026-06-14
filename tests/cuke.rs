@@ -205,6 +205,15 @@ fn it_prints_nothing(world: &mut TricorderWorld) {
     pretty::assert_eq!(stdout, "");
 }
 
+#[then("it prints nothing to STDERR")]
+fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    pretty::assert_eq!(stderr, "");
+}
+
 #[then("it prints to STDERR")]
 fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();

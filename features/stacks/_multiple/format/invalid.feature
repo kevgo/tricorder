@@ -18,15 +18,11 @@ Feature: format multiple stacks with invalid code
       """
       console.log("
       """
+  # @this
 
-  @this
   Scenario: default visibility
     When executing "tricorder format"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
+    Then it prints nothing to STDERR
     And it does not print
       """
       CSS (biome)
@@ -57,12 +53,12 @@ Feature: format multiple stacks with invalid code
 
   Scenario: --show=all
     When executing "tricorder format --show=all"
-    Then it prints the block
+    Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the lines
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.
@@ -79,12 +75,8 @@ Feature: format multiple stacks with invalid code
 
   Scenario: --show=names
     When executing "tricorder format --show=names"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
-    Then it prints the lines
+    Then it prints nothing to STDERR
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.
@@ -99,13 +91,10 @@ Feature: format multiple stacks with invalid code
     # no python error message here
     And all files are unchanged
 
+  @this
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
+    Then it prints nothing to STDERR
     And it does not print
       """
       CSS (biome)
