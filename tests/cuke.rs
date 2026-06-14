@@ -3,11 +3,9 @@
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
-use itertools::Itertools;
 use regex::Regex;
-use std::io::Read;
 use std::path::PathBuf;
-use std::process::{ExitStatus, Output};
+use std::process::Output;
 use std::time::Duration;
 use std::{env, str};
 use test_helpers::snapshots;
@@ -45,16 +43,6 @@ impl TricorderWorld {
             Some(result) => result.status.code().unwrap(),
             None => panic!(),
         }
-    }
-
-    /// provides the textual output of the Atlanta run
-    fn output(&self) -> String {
-        let Some(command_result) = &self.output else {
-            panic!("no command run");
-        };
-        let stripped = strip_ansi_escapes::strip(&command_result.output);
-        let output = str::from_utf8(&stripped).unwrap();
-        output.trim().lines().map(str::trim_end).join("\n")
     }
 }
 
@@ -106,9 +94,11 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
+    let mut cmd = Command::new(absolute_path);
     cmd.args(args).current_dir(world.dir.path());
     let output = cmd
         .output()
+        .await
         .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
     world.output = Some(output);
 }
@@ -179,34 +169,51 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
 #[then("it does not print")]
 fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
+    let Some(output) = &world.output else {
+        panic!("no output");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(
-        !have.contains(want),
-        "output should not contain '{want}'\n\nHAVE:\n{have}",
+        !stdout.contains(want),
+        "output should not contain '{want}'\n\nHAVE:\n{stdout}",
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        !stderr.contains(want),
+        "output should not contain '{want}'\n\nHAVE:\n{stderr}",
     );
 }
 
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
-    pretty::assert_eq!(have, want);
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    pretty::assert_eq!(stdout, want);
 }
 
 #[then("it prints the block")]
 fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
+    let Some(have) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&have.stdout);
     assert!(
-        have.contains(want),
-        "output does not contain the block\n\nHAVE:\n{have}\n\n"
+        stdout.contains(want),
+        "output does not contain the block\n\nHAVE:\n{stdout}\n\n"
     );
 }
 
 #[then("it prints the lines")]
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let have = world.output();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let have = String::from_utf8_lossy(&output.stdout);
     if snapshots::enabled() {
         if have != want {
             let path = world
@@ -216,7 +223,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
             snapshots::queue_update(snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
-                new_content: have,
+                new_content: have.to_string(),
             });
         }
         return;
@@ -231,8 +238,11 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
 
 #[then("it prints nothing")]
 fn it_prints_nothing(world: &mut TricorderWorld) {
-    let have = world.output();
-    pretty::assert_eq!(have, "");
+    let Some(have) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&have.stdout);
+    pretty::assert_eq!(stdout, "");
 }
 
 #[then(expr = "the exit code is {int}")]
