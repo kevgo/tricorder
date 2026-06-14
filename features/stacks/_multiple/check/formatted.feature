@@ -56,6 +56,7 @@ Feature: check multiple stacks
       CSS (biome)
       Python (ruff)
       """
+    And it prints nothing to STDERR
     And all files are unchanged
 
   Scenario: --show=failed
