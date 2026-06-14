@@ -1,44 +1,68 @@
 Feature: format TypeScript
 
   Background:
-    Given a file "main.ts" with content
-      """
-      const      greeting:string="Hello, world!"
-      console.log(greeting)
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
-      biome 2.4.16
-      """
-    When executing "tricorder format"
-    Then it prints the lines
-      """
-      TypeScript (biome)
-      """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 0
-    And file "main.ts" now has content
-      """
-      const greeting: string = "Hello, world!";
-      console.log(greeting);
+      biome 2.4.0
       """
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder format"
+  Scenario: valid TypeScript
+    Given a file "main.ts" with content
+      """
+      console.log("hello");
+      """
+    Given a file "other.ts" with content
+      """
+      console.log("other");
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the block
+      """
+      TypeScript (biome)
+      """
+    And the exit code is 0
+    And file "main.ts" is unchanged
+    And file "other.ts" is unchanged
+
+  Scenario: unformatted TypeScript
+    Given a file "main.ts" with content
+      """
+      console.log(  "hello"  );
+      """
+    Given a file "other.ts" with content
+      """
+      console.log(  "other"  );
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
       TypeScript (biome)
       """
     And the exit code is 0
     And file "main.ts" now has content
       """
-      const greeting: string = "Hello, world!";
-      console.log(greeting);
+      console.log("hello");
       """
+    And file "other.ts" now has content
+      """
+      console.log("other");
+      """
+
+  Scenario: invalid TypeScript
+    Given a file "main.ts" with content
+      """
+      console.log("
+      """
+    Given a file "other.ts" with content
+      """
+      console.error("
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      TypeScript (biome)
+      Found 4 errors.
+      """
+    And the exit code is 1
+    And file "main.ts" is unchanged
+    And file "other.ts" is unchanged
