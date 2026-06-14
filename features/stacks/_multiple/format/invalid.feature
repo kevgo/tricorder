@@ -1,4 +1,4 @@
-Feature: format multiple stacks
+Feature: format multiple stacks with invalid code
 
   Background:
     Given a file "run-that-app" with content
@@ -8,36 +8,48 @@ Feature: format multiple stacks
       """
     And a file "main.py" with content
       """
-      print(  "hello"  )
+      print("
       """
     And a file "main.css" with content
       """
-      p {
-        color : red ;
-      }
+      .foo {
       """
     And a file "main.ts" with content
       """
-      console.log(  "hello"  );
+      console.log("
       """
 
   Scenario: default visibility
     When executing "tricorder format"
-    Then it prints nothing
-    And file "main.py" now has content
+    Then it does not print
       """
-      print("hello")
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
-    And file "main.css" now has content
+    And it does not print
       """
-      p {
-      \tcolor: red;
-      }
+      CSS (biome)
       """
-    And file "main.ts" now has content
+    And it does not print
       """
-      console.log("hello");
+      TypeScript (biome)
       """
+    And it does not print
+      """
+      Python (ruff)
+      """
+    And it prints the block
+      """
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it prints the block
+      """
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    # no python error message here
+    And all files are unchanged
 
   Scenario: --show=all
     When executing "tricorder format --show=all"
@@ -48,30 +60,18 @@ Feature: format multiple stacks
       """
     Then it prints the lines
       """
-      TypeScript (biome)
+      CSS (biome)
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      CSS (biome)
+      TypeScript (biome)
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (ruff)
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
+    # no python error message here
+    And all files are unchanged
 
   Scenario: --show=names
     When executing "tricorder format --show=names"
@@ -82,45 +82,47 @@ Feature: format multiple stacks
       """
     Then it prints the lines
       """
-      TypeScript (biome)
+      CSS (biome)
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      CSS (biome)
+      TypeScript (biome)
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (ruff)
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
+    # no python error message here
+    And all files are unchanged
 
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
-    Then it prints nothing
-    And file "main.css" now has content
+    Then it does not print
       """
-      p {
-      \tcolor: red;
-      }
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
       """
-    And file "main.ts" now has content
+    And it does not print
       """
-      console.log("hello");
+      CSS (biome)
       """
-    And file "main.py" now has content
+    And it does not print
       """
-      print("hello")
+      TypeScript (biome)
       """
+    And it does not print
+      """
+      Python (ruff)
+      """
+    Then it prints the block
+      """
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it prints the block
+      """
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    # no python error message here
+    And all files are unchanged
