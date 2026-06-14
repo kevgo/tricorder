@@ -11,9 +11,12 @@ Feature: install all CSS tools
   @online
   Scenario: not installed
     When executing "tricorder format --show=all"
-    Then it prints the lines
+    Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
+      """
+    And it prints the block
+      """
       CSS (biome)
       """
     And the exit code is 0
