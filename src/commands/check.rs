@@ -10,6 +10,9 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
         println!("no stacks found");
         return Ok(ExitCode::SUCCESS);
     }
+    if args.show == Show::All {
+        print_metadata(&stacks, file_count);
+    }
     let mut executables = Vec::new();
     for stack in &stacks {
         for checker in stack.stack.checkers() {
@@ -21,7 +24,6 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
         }
     }
     if args.show == Show::All {
-        print_metadata(&stacks, file_count);
         println!("running {} tools", executables.len());
     }
     let exit_code = conc::run(conc::RunArgs {
