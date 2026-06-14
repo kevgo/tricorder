@@ -255,9 +255,9 @@ dependencies = [
 
 [[package]]
 name = "concurrent_shell_commands"
-version = "0.3.2"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c23d0cf176d5bd7ab14a00dcd1538e7f41f32d32f715addd4cec35704056e0b"
+checksum = "ceb8317928fb4bb434314ed1ed8a38e9816ce0dc67e75041f62360e9092ad715"
 dependencies = [
  "colored 3.1.1",
 ]
@@ -1050,16 +1050,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 
 [[package]]
-name = "os_pipe"
-version = "1.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d8fae84b431384b68627d0f9b3b1245fcf9f46f6c0e3dc902e9dce64edd1967"
-dependencies = [
- "libc",
- "windows-sys 0.52.0",
-]
-
-[[package]]
 name = "password-hash"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1727,7 +1717,6 @@ dependencies = [
  "itertools",
  "maplit",
  "mio",
- "os_pipe",
  "pretty_assertions",
  "regex",
  "run-that-app",

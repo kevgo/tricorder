@@ -49,7 +49,7 @@ Feature: check SQL
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
     When executing "tricorder check"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       1 other
       """

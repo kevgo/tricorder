@@ -18,11 +18,12 @@ pub fn format() -> Result<ExitCode> {
             }
         }
     }
-    println!("running {} tools", executables.len());
+    eprintln!("running {} tools", executables.len());
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
         show: conc::Show::All,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }

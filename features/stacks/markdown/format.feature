@@ -29,9 +29,14 @@ Feature: format Markdown
   @online
   Scenario: auto-install
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
       Markdown (rumdl)
       """
     And the exit code is 0

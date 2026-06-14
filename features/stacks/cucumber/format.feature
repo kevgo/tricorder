@@ -35,9 +35,14 @@ Feature: format Cucumber
   @online
   Scenario: auto-install
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 Cucumber
+      Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
       Cucumber (ghokin)
       """
     And the exit code is 0
