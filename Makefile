@@ -82,7 +82,7 @@ unit:  # runs the unit tests
 
 update: ${RTA}  # updates all dependencies
 	cargo install cargo-edit
-	cargo upgrade --incompatible
+	cargo upgrade
 	$(RTA) --update
 
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
