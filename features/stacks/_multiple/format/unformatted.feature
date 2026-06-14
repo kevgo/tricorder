@@ -80,16 +80,10 @@ Feature: format multiple stacks
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the lines
+    Then it prints only these lines in any order
       """
       TypeScript (biome)
-      """
-    And it prints the lines
-      """
       CSS (biome)
-      """
-    And it prints the block
-      """
       Python (ruff)
       """
     And file "main.css" now has content
