@@ -18,7 +18,7 @@ Feature: format Cucumber
     Then it prints the lines
       """
       Cucumber (ghokin)
-      "./main.feature" formatted
+      "." formatted
       """
     And the exit code is 0
     And file "main.feature" is unchanged
@@ -42,7 +42,7 @@ Feature: format Cucumber
     Then it prints the lines
       """
       Cucumber (ghokin)
-      "./main.feature" formatted
+      "." formatted
       """
     And the exit code is 0
     And file "main.feature" now has content
@@ -69,7 +69,7 @@ Feature: format Cucumber
     Then it prints the lines
       """
       Cucumber (ghokin)
-      Parser errors:
+      an error occurred with file "main.feature" : Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
     And the exit code is 1
