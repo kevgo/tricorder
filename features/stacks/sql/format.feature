@@ -44,9 +44,14 @@ Feature: format SQL
       SELECT id,name,email FROM users WHERE active=true ORDER BY name
       """
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 SQL
+      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
       SQL (sqlfmt)
       1 file formatted.
       0 files left unchanged.
@@ -60,6 +65,6 @@ Feature: format SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """

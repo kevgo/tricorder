@@ -29,16 +29,21 @@ Feature: format JSON
   @online
   Scenario: auto-install
     When executing "tricorder format"
+    Then it prints to STDERR
+      """
+      1 JSON
+      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      running 1 tools
+      """
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       JSON (prettier)
       """
     And the exit code is 0
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.json" now has content
