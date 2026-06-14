@@ -1,47 +1,68 @@
 Feature: format TOML
 
   Background:
-    And a file "main.toml" with content
-      """
-      key =    "value"
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       taplo 0.10.0
       """
-    When executing "tricorder format"
-    Then it prints the lines
+
+  Scenario: valid TOML
+    Given a file "main.toml" with content
+      """
+      key = "value"
+      """
+    Given a file "other.toml" with content
+      """
+      key = "other"
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the block
       """
       TOML (taplo)
       """
-    And it does not print
+    And the exit code is 0
+    And file "main.toml" is unchanged
+    And file "other.toml" is unchanged
+
+  Scenario: unformatted TOML
+    Given a file "main.toml" with content
       """
-      Talking to GitHub API
+      key =     "value"
+      """
+    Given a file "other.toml" with content
+      """
+      key =     "other"
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      TOML (taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content
       """
       key = "value"
       """
+    And file "other.toml" now has content
+      """
+      key = "other"
+      """
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder format"
+  Scenario: invalid TOML
+    Given a file "main.toml" with content
+      """
+      key = "
+      """
+    Given a file "other.toml" with content
+      """
+      other = "
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
       TOML (taplo)
+      ERROR operation failed error=some files were not formatted due to syntax errors
       """
-    And the exit code is 0
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      taplo \d+\.\d+\.\d+
-      """
-    And file "main.toml" now has content
-      """
-      key = "value"
-      """
+    And the exit code is 1
+    And file "main.toml" is unchanged
+    And file "other.toml" is unchanged

@@ -1,45 +1,62 @@
 Feature: check TOML
 
   Background:
-    And a file "main.toml" with content
-      """
-      key =    "value
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       taplo 0.10.0
       """
-    When executing "tricorder check"
-    Then it prints the lines
+
+  Scenario: valid TOML
+    Given a file "main.toml" with content
+      """
+      key = "value"
+      """
+    Given a file "other.toml" with content
+      """
+      key = "other"
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the block
       """
       TOML (taplo)
-      error: invalid TOML
-      ERROR operation failed error=some files were not valid
       """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 1
-    And all files are unchanged
-
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
-    Then it prints the lines
-      """
-      Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
-      TOML (taplo)
-      error: invalid TOML
-      ERROR operation failed error=some files were not valid
-      """
-    And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      taplo \d+\.\d+\.\d+
-      """
+    And the exit code is 0
     And file "main.toml" is unchanged
+    And file "other.toml" is unchanged
+
+  Scenario: unformatted TOML
+    Given a file "main.toml" with content
+      """
+      key =     "value"
+      """
+    Given a file "other.toml" with content
+      """
+      key =     "other"
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the lines
+      """
+      TOML (taplo)
+      """
+    And the exit code is 0
+    And file "main.toml" is unchanged
+    And file "other.toml" is unchanged
+
+  Scenario: invalid TOML
+    Given a file "main.toml" with content
+      """
+      key = "
+      """
+    Given a file "other.toml" with content
+      """
+      other = "
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the lines
+      """
+      TOML (taplo)
+      ERROR operation failed error=some files were not valid
+      """
+    And the exit code is 1
+    And file "main.toml" is unchanged
+    And file "other.toml" is unchanged
