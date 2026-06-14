@@ -7,7 +7,7 @@ use std::process::ExitCode;
 pub fn check(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
-        println!("no stacks found");
+        eprintln!("no stacks found");
         return Ok(ExitCode::SUCCESS);
     }
     if args.show == Show::All {

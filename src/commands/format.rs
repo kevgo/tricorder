@@ -7,7 +7,7 @@ use std::process::ExitCode;
 pub fn format(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
-        println!("no stacks found");
+        eprintln!("no stacks found");
         return Ok(ExitCode::SUCCESS);
     }
     let mut executables = Vec::new();

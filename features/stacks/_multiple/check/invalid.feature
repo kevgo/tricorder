@@ -56,7 +56,7 @@ Feature: check multiple stacks with invalid code
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
-    Then it prints the block
+    Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
@@ -82,11 +82,7 @@ Feature: check multiple stacks with invalid code
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
+    Then it prints nothing to STDERR
     Then it prints the lines
       """
       CSS (biome)
@@ -108,11 +104,7 @@ Feature: check multiple stacks with invalid code
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
+    Then it prints nothing to STDERR
     And it does not print
       """
       CSS (biome)
