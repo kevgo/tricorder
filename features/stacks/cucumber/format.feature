@@ -31,6 +31,13 @@ Feature: format Cucumber
         Scenario:   bar
           Given   a step
       """
+    And a file "other.feature" with content
+      """
+      Feature:   foo2
+      
+        Scenario:   bar2
+          Given   another step
+      """
     When executing "tricorder format --show=all"
     Then it prints the lines
       """
@@ -44,6 +51,13 @@ Feature: format Cucumber
       
         Scenario: bar
           Given a step
+      """
+    And file "other.feature" now has content
+      """
+      Feature: foo2
+      
+        Scenario: bar2
+          Given another step
       """
 
   Scenario: invalid Cucumber

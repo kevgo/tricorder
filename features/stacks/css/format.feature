@@ -28,6 +28,12 @@ Feature: format CSS
         color : red ;
       }
       """
+    And a file "other.css" with content
+      """
+      .bar {
+        color : blue ;
+      }
+      """
     When executing "tricorder format --show=all"
     Then it prints the lines
       """
@@ -38,6 +44,12 @@ Feature: format CSS
       """
       .foo {
       \tcolor: red;
+      }
+      """
+    And file "other.css" now has content
+      """
+      .bar {
+      \tcolor: blue;
       }
       """
 
