@@ -29,6 +29,7 @@ Feature: check TypeScript
     When executing "tricorder check"
     Then it prints to STDERR
       """
+      1 TypeScript
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
       running 1 tools
       """
