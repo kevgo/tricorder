@@ -40,7 +40,7 @@ Feature: check multiple stacks with unformatted files
       """
       Python (ruff)
       """
-    Then it prints the block
+    And it prints the block
       """
       Found 1 error.
       main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
