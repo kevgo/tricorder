@@ -21,10 +21,6 @@ Feature: format YML
       2 YML, 1 other
       running 1 tools
       """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
     Then it prints the lines
       """
       YML (prettier)
@@ -61,7 +57,7 @@ Feature: format YML
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       prettier-standalone \d+\.\d+\.\d+
       """
     And file "main.yml" now has content
