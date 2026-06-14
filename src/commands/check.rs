@@ -30,7 +30,7 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
         executables,
         error_on_output: false,
         show: args.show.into(),
-        stderr_to_stdout: false,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }
