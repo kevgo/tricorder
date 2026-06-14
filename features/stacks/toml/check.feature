@@ -55,7 +55,8 @@ Feature: check TOML
     Then it prints the lines
       """
       TOML (taplo)
-      ERROR operation failed error=some files were not valid
+      error: invalid TOML
+      error: invalid TOML
       """
     And the exit code is 1
     And file "main.toml" is unchanged
