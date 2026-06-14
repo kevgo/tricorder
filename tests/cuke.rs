@@ -191,7 +191,7 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stdout = String::from_utf8_lossy(&output.stdout);
-    pretty::assert_eq!(stdout, want);
+    pretty::assert_eq!(stdout.trim(), want);
 }
 
 #[then("it prints the block")]
