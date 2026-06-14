@@ -26,7 +26,7 @@ Feature: check multiple stacks
       key: value
       """
     When executing "tricorder check"
-    And it prints the block
+    Then it prints the block
       """
       YML (prettier)
       main.yml
