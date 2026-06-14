@@ -36,9 +36,6 @@ Feature: check multiple stacks
     And it prints the lines
       """
       CSS (biome)
-      """
-    And it prints the lines
-      """
       TypeScript (biome)
       """
     And it prints the block
