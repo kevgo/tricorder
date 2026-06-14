@@ -45,8 +45,11 @@ fix: ${RTA}  # runs all linters and auto-fixes
 	cargo +nightly fmt
 	$(RUMDL) fmt
 	$(TAPLO) format
-	${GHOKIN} fmt replace features/
+	make --no-print-directory ghokin
 	make --no-print-directory keep-sorted
+
+ghokin: ${RTA}
+	${GHOKIN} fmt replace features/
 
 help:  # prints all available targets
 	@grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
