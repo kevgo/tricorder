@@ -97,7 +97,8 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         absolute_path.set_extension("exe");
     }
     let mut cmd = Command::new(absolute_path);
-    cmd.args(args).current_dir(world.dir.path());
+    cmd.args(args);
+    cmd.current_dir(world.dir.path());
     let output = cmd
         .output()
         .await

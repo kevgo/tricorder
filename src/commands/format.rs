@@ -4,7 +4,7 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn format(args: &RunArgs) -> Result<ExitCode> {
+pub fn format(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
         println!("no stacks found");
@@ -27,7 +27,7 @@ pub fn format(args: &RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
-        show: conc::Show::All,
+        show: args.show.into(),
         stderr_to_stdout: true,
     });
     Ok(exit_code)

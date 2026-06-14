@@ -16,8 +16,8 @@ fn inner() -> tricorder::domain::Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     };
     match command {
-        Command::Check(args) => tricorder::commands::check(&args),
-        Command::Format(args) => tricorder::commands::format(&args),
+        Command::Check(args) => tricorder::commands::check(args),
+        Command::Format(args) => tricorder::commands::format(args),
         Command::Init(args) => tricorder::commands::init(&args),
     }
 }

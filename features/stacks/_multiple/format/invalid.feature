@@ -18,8 +18,8 @@ Feature: format multiple stacks with invalid code
       """
       console.log("
       """
-  # @this
 
+  @this
   Scenario: default visibility
     When executing "tricorder format"
     Then it prints nothing to STDERR
@@ -91,7 +91,6 @@ Feature: format multiple stacks with invalid code
     # no python error message here
     And all files are unchanged
 
-  @this
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
     Then it prints nothing to STDERR
@@ -107,7 +106,11 @@ Feature: format multiple stacks with invalid code
       """
       Python (ruff)
       """
-    Then it prints the block
+    And it prints the block
+      """
+      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      """
+    And it prints the block
       """
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -117,5 +120,4 @@ Feature: format multiple stacks with invalid code
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    # no python error message here
     And all files are unchanged
