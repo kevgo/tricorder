@@ -19,7 +19,6 @@ Feature: format multiple stacks with invalid code
       console.log("
       """
 
-  @this
   Scenario: default visibility
     When executing "tricorder format"
     Then it prints nothing to STDERR
@@ -70,6 +69,11 @@ Feature: format multiple stacks with invalid code
   Scenario: --show=names
     When executing "tricorder format --show=names"
     Then it prints nothing to STDERR
+    And it prints the block
+      """
+      Python (ruff)
+      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      """
     And it prints the lines
       """
       CSS (biome)
@@ -82,22 +86,15 @@ Feature: format multiple stacks with invalid code
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    # no python error message here
     And all files are unchanged
 
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
     Then it prints nothing to STDERR
-    And it does not print
+    And it does not print any of these lines
       """
       CSS (biome)
-      """
-    And it does not print
-      """
       TypeScript (biome)
-      """
-    And it does not print
-      """
       Python (ruff)
       """
     And it prints the block
