@@ -19,19 +19,14 @@ Feature: format multiple stacks with invalid code
       console.log("
       """
 
+  @this
   Scenario: default visibility
     When executing "tricorder format"
     Then it prints nothing to STDERR
-    And it does not print
+    And it does not print any of these lines
       """
       CSS (biome)
-      """
-    And it does not print
-      """
       TypeScript (biome)
-      """
-    And it does not print
-      """
       Python (ruff)
       """
     And it prints the block
