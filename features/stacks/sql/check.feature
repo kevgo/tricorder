@@ -77,7 +77,7 @@ Feature: check SQL
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
     When executing "tricorder check --show=all"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """

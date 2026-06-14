@@ -8,10 +8,16 @@ Feature: install all Python tools
 
   Scenario: not installed
     When executing "tricorder format --show=all"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
+      1 Python
+      running 1 tools
+      """
+    And it prints
+      """
       Python (ruff)
+      1 file reformatted
       """
     And the exit code is 0
     And file "main.py" now has content
