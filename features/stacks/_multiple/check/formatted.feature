@@ -22,7 +22,7 @@ Feature: check multiple stacks
       """
 
   Scenario: default visibility
-    When executing "tricorder check --show=failed"
+    When executing "tricorder check"
     Then it prints nothing
     And all files are unchanged
 
