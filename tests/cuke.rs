@@ -196,6 +196,15 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(stdout.trim(), want);
 }
 
+#[then("it prints nothing")]
+fn it_prints_nothing(world: &mut TricorderWorld) {
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    pretty::assert_eq!(stdout, "");
+}
+
 #[then("it prints to STDERR")]
 fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
@@ -204,12 +213,6 @@ fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
     };
     let stderr = String::from_utf8_lossy(&output.stderr);
     pretty::assert_eq!(stderr.trim(), want);
-}
-
-#[then("it prints nothing")]
-fn it_prints_nothing(world: &mut TricorderWorld) {
-    let have = world.output();
-    pretty::assert_eq!(have, "");
 }
 
 #[then("it prints the block")]
@@ -258,8 +261,11 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let mut want = step.docstring.as_ref().unwrap()[1..]
         .lines()
         .collect::<Vec<&str>>();
-    let output = world.output();
-    let mut have = output.lines().collect::<Vec<&str>>();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut have = stdout.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
     assert!(compare_result.success(), "{}", compare_result.message());
 }
