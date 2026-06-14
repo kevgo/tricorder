@@ -12,13 +12,15 @@ Feature: display statistics about the codebase
       """
     And a file "main.css" with content
       """
-      color: red;
+      p {
+        color: red;
+      }
       """
     And a file "main.ts" with content
       """
-      console.log("hello);
+      console.log("hello");
       """
-    When executing "tricorder format"
+    When executing "tricorder format --show=all"
     Then it prints the block
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
