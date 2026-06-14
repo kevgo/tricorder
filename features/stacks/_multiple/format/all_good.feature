@@ -49,7 +49,7 @@ Feature: format multiple good stacks
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it prints these lines in any order
+    Then it prints only these lines in any order
       """
       TypeScript (biome)
       CSS (biome)
