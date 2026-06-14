@@ -19,7 +19,9 @@ Feature: format multiple stacks with invalid code
       console.log("
       """
 
+  @this
   Scenario: default visibility
+    # When inspect the workspace
     When executing "tricorder format"
     Then it does not print
       """
@@ -48,7 +50,10 @@ Feature: format multiple stacks with invalid code
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    # no python error message here
+    And it prints the block
+      """
+      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      """
     And all files are unchanged
 
   Scenario: --show=all
