@@ -10,7 +10,7 @@ Feature: format Java
       }
       """
     When executing "tricorder format --show=all"
-    Then it prints
+    Then it prints to STDERR
       """
       1 Java
       running 0 tools
@@ -28,7 +28,7 @@ Feature: format Java
       }
       """
     When executing "tricorder format --show=all"
-    Then it prints
+    Then it prints to STDERR
       """
       1 Java
       running 0 tools
@@ -46,7 +46,7 @@ Feature: format Java
       }
       """
     When executing "tricorder format --show=all"
-    Then it prints
+    Then it prints to STDERR
       """
       1 Java
       running 0 tools

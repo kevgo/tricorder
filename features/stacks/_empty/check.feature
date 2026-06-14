@@ -10,7 +10,7 @@ Feature: checking a codebase without any code
 
   Scenario: --show=all
     When executing "tricorder check --show=all"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """
@@ -18,7 +18,7 @@ Feature: checking a codebase without any code
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """
@@ -26,7 +26,7 @@ Feature: checking a codebase without any code
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """
