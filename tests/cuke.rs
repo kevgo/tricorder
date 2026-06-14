@@ -187,6 +187,18 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     );
 }
 
+#[then("it does not print any of these lines")]
+fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    for want_line in want.lines() {
+        assert!(!stdout.contains(want_line), "STDOUT contains '{want_line}'");
+    }
+}
+
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
