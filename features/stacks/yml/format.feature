@@ -17,10 +17,17 @@ Feature: format YML
       prettier-standalone 0.24.0
       """
     When executing "tricorder format"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       2 YML, 1 other
       running 1 tools
+      """
+    And it does not print
+      """
+      Talking to GitHub API
+      """
+    Then it prints the lines
+      """
       YML (prettier)
       """
     And it does not print

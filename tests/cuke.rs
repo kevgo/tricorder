@@ -194,6 +194,16 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(stdout.trim(), want);
 }
 
+#[then("it prints to STDERR")]
+fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    pretty::assert_eq!(stderr.trim(), want);
+}
+
 #[then("it prints the block")]
 fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
