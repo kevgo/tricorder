@@ -14,7 +14,7 @@ impl Tool for Checkstyle {
 impl Checker for Checkstyle {
     fn check_command(&self, _stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         if which::which(BINARY).is_err() {
-            eprintln!(
+            println!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",
             );
             return Ok(None);
