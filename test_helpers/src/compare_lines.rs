@@ -35,11 +35,11 @@ pub struct CompareResult {
 impl CompareResult {
     pub fn message(&self) -> String {
         let mut message = String::new();
-        message.push_str(&format!("\nmissing lines:\n"));
+        message.push_str("\nmissing lines:\n");
         for (i, line) in self.missing.iter().enumerate() {
             message.push_str(&format!("{}. '{}'\n", i + 1, line));
         }
-        message.push_str(&format!("extra lines:\n"));
+        message.push_str("extra lines:\n");
         for (i, line) in self.extra.iter().enumerate() {
             message.push_str(&format!("{}. '{}'\n", i + 1, line));
         }

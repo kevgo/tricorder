@@ -270,9 +270,7 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let output = world.output();
     let mut have = output.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
-    if !compare_result.success() {
-        panic!("{}", compare_result.message());
-    }
+    assert!(compare_result.success(), "{}", compare_result.message());
 }
 
 #[then(expr = "the exit code is {int}")]

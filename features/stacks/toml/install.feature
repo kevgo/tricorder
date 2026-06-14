@@ -22,7 +22,7 @@ Feature: install all TOML tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       taplo \d+\.\d+\.\d+
       """
 
@@ -45,18 +45,18 @@ Feature: install all TOML tools
       """
       key = "value"
       """
-#   @online
-#   Scenario: auto-install
-#     When executing "tricorder check"
-#     Then it prints the lines
-#       """
-#       error: invalid TOML
-#       ERROR operation failed error=some files were not valid
-#       """
-#     And the exit code is 1
-#     And file "run-that-app" now matches
-#       """
-#       # more info at https://github.com/kevgo/run-that-app
-#       taplo \d+\.\d+\.\d+
-#       """
-#     And file "main.toml" is unchanged
+  #   @online
+  #   Scenario: auto-install
+  #     When executing "tricorder check"
+  #     Then it prints the lines
+  #       """
+  #       error: invalid TOML
+  #       ERROR operation failed error=some files were not valid
+  #       """
+  #     And the exit code is 1
+  #     And file "run-that-app" now matches
+  #       """
+  #       # more info at https://github.com/kevgo/run-that-app
+  #       taplo \d+\.\d+\.\d+
+  #       """
+  #     And file "main.toml" is unchanged
