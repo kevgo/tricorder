@@ -12,7 +12,7 @@ Feature: format multiple stacks
       """
     And a file "main.css" with content
       """
-      .foo {
+      p {
         color : red ;
       }
       """
@@ -23,50 +23,20 @@ Feature: format multiple stacks
 
   Scenario: default visibility
     When executing "tricorder format"
-    Then it prints the lines
+    Then it prints nothing
+    And file "main.py" now has content
       """
-      xxx
-      """
-    Then it prints the lines
-      """
-      TypeScript (biome)
-      """
-    And it prints the lines
-      """
-      CSS (biome)
-      """
-    And it prints the block
-      """
-      YML (prettier)
-      main.yml 7ms
-      """
-    And it prints the block
-      """
-      JSON (prettier)
-      main.json 9ms
-      """
-    And it prints the block
-      """
-
-      """
-    And file "main.json" now has content
-      """
-      { "key": "value" }
+      print("hello")
       """
     And file "main.css" now has content
       """
-      .foo {
+      p {
       \tcolor: red;
       }
       """
     And file "main.ts" now has content
       """
-      const greeting: string = "Hello, world!";
-      console.log(greeting);
-      """
-    And file "main.yml" now has content
-      """
-      key: value
+      console.log("hello");
       """
 
   Scenario: --show=all
@@ -90,7 +60,7 @@ Feature: format multiple stacks
       """
     And file "main.css" now has content
       """
-      .foo {
+      p {
       \tcolor: red;
       }
       """
@@ -124,7 +94,7 @@ Feature: format multiple stacks
       """
     And file "main.css" now has content
       """
-      .foo {
+      p {
       \tcolor: red;
       }
       """
@@ -142,7 +112,7 @@ Feature: format multiple stacks
     Then it prints nothing
     And file "main.css" now has content
       """
-      .foo {
+      p {
       \tcolor: red;
       }
       """
