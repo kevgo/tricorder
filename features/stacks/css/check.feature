@@ -29,7 +29,13 @@ Feature: check CSS
       }
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints to STDERR
+      """
+      1 CSS
+      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
+      running 1 tools
+      """
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.

@@ -40,7 +40,7 @@ Feature: format Markdown
     Given a file "main.md" with content
       """
       # hello
-
+      
       [e
       """
     When executing "tricorder format --show=all"

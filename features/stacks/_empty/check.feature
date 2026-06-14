@@ -2,7 +2,7 @@ Feature: checking a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder check"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """

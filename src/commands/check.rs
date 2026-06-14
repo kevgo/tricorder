@@ -24,12 +24,13 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
         }
     }
     if args.show == Show::All {
-        println!("running {} tools", executables.len());
+        eprintln!("running {} tools", executables.len());
     }
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
-        show: args.show.into(),
+        show: conc::Show::All,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }

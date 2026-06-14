@@ -22,12 +22,13 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     }
     if args.show == crate::cli::input::Show::All {
         print_metadata(&stacks, file_count);
-        println!("running {} tools", executables.len());
+        eprintln!("running {} tools", executables.len());
     }
     let exit_code = conc::run(conc::RunArgs {
         executables,
         error_on_output: false,
-        show: args.show.into(),
+        show: conc::Show::All,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }

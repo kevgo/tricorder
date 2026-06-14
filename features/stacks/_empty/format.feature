@@ -2,7 +2,7 @@ Feature: formatting a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder format"
-    Then it prints
+    Then it prints to STDERR
       """
       no stacks found
       """

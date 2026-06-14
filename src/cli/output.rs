@@ -13,8 +13,8 @@ pub fn print_metadata(stacks: &[DetectedStack], file_count: usize) {
         texts.push(format!("{remaining} other"));
     }
     if texts.is_empty() {
-        println!("No stacks found");
+        eprintln!("No stacks found");
         return;
     }
-    println!("{}", texts.iter().join(", "));
+    eprintln!("{}", texts.iter().join(", "));
 }

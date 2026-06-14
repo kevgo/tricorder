@@ -16,9 +16,9 @@ Feature: format Go
     Given a file "main.go" with content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -59,9 +59,9 @@ Feature: format Go
     And file "main.go" now has content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -69,9 +69,9 @@ Feature: format Go
     And file "other.go" now has content
       """
       package other
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, other!")
       }
