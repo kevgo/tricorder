@@ -6,7 +6,6 @@ Feature: install all Python tools
       print    ("Hello, world!")
       """
 
-  @this
   Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines

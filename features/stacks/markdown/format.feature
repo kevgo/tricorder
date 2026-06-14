@@ -36,7 +36,6 @@ Feature: format Markdown
       # Hello
       """
 
-  @this
   Scenario: invalid JSON
     Given a file "main.md" with content
       """
