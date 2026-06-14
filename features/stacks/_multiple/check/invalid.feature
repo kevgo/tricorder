@@ -21,11 +21,7 @@ Feature: check multiple stacks with invalid code
 
   Scenario: default visibility
     When executing "tricorder check"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
+    Then it prints nothing to STDERR
     And it does not print
       """
       CSS (biome)
