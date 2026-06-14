@@ -21,7 +21,7 @@ Feature: display statistics about the codebase
       console.log("hello");
       """
     When executing "tricorder check --show=all"
-    Then it prints the block
+    Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools

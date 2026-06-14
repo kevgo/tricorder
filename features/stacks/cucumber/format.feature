@@ -10,7 +10,7 @@ Feature: format Cucumber
     Given a file "main.feature" with content
       """
       Feature: foo
-      
+
         Scenario: bar
           Given a step
       """
@@ -27,14 +27,14 @@ Feature: format Cucumber
     Given a file "main.feature" with content
       """
       Feature:   foo
-      
+
         Scenario:   bar
           Given   a step
       """
     And a file "other.feature" with content
       """
       Feature:   foo2
-      
+
         Scenario:   bar2
           Given   another step
       """
@@ -48,14 +48,14 @@ Feature: format Cucumber
     And file "main.feature" now has content
       """
       Feature: foo
-      
+
         Scenario: bar
           Given a step
       """
     And file "other.feature" now has content
       """
       Feature: foo2
-      
+
         Scenario: bar2
           Given another step
       """
