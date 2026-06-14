@@ -1,4 +1,4 @@
-Feature: Ghokin installation
+Feature: install all Cucumber tools
 
   Background:
     Given a file "main.feature" with content

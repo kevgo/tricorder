@@ -1,4 +1,4 @@
-Feature: biome installation
+Feature: install all CSS tools
 
   Background:
     Given a file "main.css" with content

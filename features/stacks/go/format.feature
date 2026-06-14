@@ -1,4 +1,4 @@
-Feature: format Go code
+Feature: format Go
 
   Background:
     Given a file "go.mod" with content

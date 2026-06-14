@@ -1,4 +1,4 @@
-Feature: check Go using Golangci-Lint
+Feature: check Go
 
   Background:
     Given a file "go.mod" with content

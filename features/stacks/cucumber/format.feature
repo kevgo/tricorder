@@ -1,4 +1,4 @@
-Feature: format Cucumber using Ghokin
+Feature: format Cucumber
 
   Background:
     Given a file "run-that-app" with content

@@ -1,4 +1,4 @@
-Feature: Golangci-Lint installation
+Feature: install all Go tools
 
   Background:
     Given a file "go.mod" with content

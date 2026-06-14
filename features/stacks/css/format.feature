@@ -1,4 +1,4 @@
-Feature: format CSS using Biome
+Feature: format CSS
 
   Background:
     Given a file "run-that-app" with content

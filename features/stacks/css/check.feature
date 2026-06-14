@@ -1,4 +1,4 @@
-Feature: check CSS using Biome
+Feature: check CSS
 
   Background:
     Given a file "run-that-app" with content
