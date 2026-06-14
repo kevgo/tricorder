@@ -14,7 +14,7 @@ Feature: don't format files in .gitignore
       #      this file will get ignored
       """
     When executing "tricorder format"
-    Then it prints
+    Then it prints to STDERR
       """
       No stacks found
       """

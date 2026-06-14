@@ -38,7 +38,7 @@ Feature: check SQL
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       uv \d+\.\d+\.\d+
       """
     And file "schema.sql" is unchanged
@@ -49,7 +49,7 @@ Feature: check SQL
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
     When executing "tricorder check"
-    Then it prints the lines
+    Then it prints to STDERR
       """
       1 other
       """
