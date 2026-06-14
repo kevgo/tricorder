@@ -48,7 +48,7 @@ Feature: format multiple good stacks
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder check --show=names"
+    When executing "tricorder format --show=names"
     Then it prints only these lines in any order
       """
       TypeScript (biome)
@@ -58,6 +58,6 @@ Feature: format multiple good stacks
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder check --show=failed"
+    When executing "tricorder format --show=failed"
     Then it prints nothing
     And all files are unchanged
