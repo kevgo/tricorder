@@ -1,4 +1,4 @@
-Feature: check multiple stacks
+Feature: check multiple stacks with unformatted files
 
   Background:
     Given a file "run-that-app" with content
