@@ -1,67 +1,65 @@
 Feature: check YML
 
   Background:
+    Given a file "run-that-app" with content
+      """
+      prettier-standalone 0.24.0
+      """
 
-  Scenario: YML file extension
+  Scenario: valid YML
     Given a file "main.yml" with content
       """
       key: value
       """
-    And a file "run-that-app" with content
+    Given a file "other.yml" with content
       """
-      prettier-standalone 0.24.0
+      key: other
       """
-    When executing "tricorder check"
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      YML (prettier)
+      """
+    And the exit code is 0
+    And file "main.yml" is unchanged
+    And file "other.yml" is unchanged
+
+  Scenario: unformatted YML
+    Given a file "main.yml" with content
+      """
+      key:     value
+      """
+    Given a file "other.yml" with content
+      """
+      key:     other
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       YML (prettier)
+      other.yml
       main.yml
       """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
     And the exit code is 1
-    And all files are unchanged
+    And file "main.yml" is unchanged
+    And file "other.yml" is unchanged
 
-  Scenario: YAML file extension
-    Given a file "main.yaml" with content
-      """
-      key: value
-      """
-    And a file "run-that-app" with content
-      """
-      prettier-standalone 0.24.0
-      """
-    When executing "tricorder check"
-    Then it prints the lines
-      """
-      YAML (prettier)
-      main.yaml
-      """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
-    And the exit code is 1
-    And all files are unchanged
-
-  @online
-  Scenario: auto-install
+  Scenario: invalid YML
     Given a file "main.yml" with content
       """
-      key: value
+      key: "
       """
-    When executing "tricorder check"
+    Given a file "other.yml" with content
+      """
+      other: "
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
+      YML (prettier)
+      [error] other.yml: SyntaxError: Missing closing "quote (1:8)
+      [error] main.yml: SyntaxError: Missing closing "quote (1:6)
       """
-    And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      prettier-standalone \d+\.\d+\.\d+
-      """
+    And the exit code is 2
     And file "main.yml" is unchanged
+    And file "other.yml" is unchanged
