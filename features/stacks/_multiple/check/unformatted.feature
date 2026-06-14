@@ -122,23 +122,23 @@ Feature: check multiple stacks with unformatted files
       """
       CSS (biome)
       """
+    And it does not print
+      """
+      TypeScript (biome)
+      """
+    And it does not print
+      """
+      Python (ruff)
+      """
     Then it prints the block
       """
       Found 1 error.
       main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it does not print
-      """
-      TypeScript (biome)
-      """
     And it prints the block
       """
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it does not print
-      """
-      Python (ruff)
       """
     And it prints the block
       """
