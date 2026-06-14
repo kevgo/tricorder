@@ -23,21 +23,11 @@ Feature: check multiple stacks with unformatted files
 
   Scenario: default visibility
     When executing "tricorder check"
-    Then it does not print
-      """
-      1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
-      """
-    And it does not print
+    Then it prints nothing to STDERR
+    And it does not print any of these lines
       """
       CSS (biome)
-      """
-    And it does not print
-      """
       TypeScript (biome)
-      """
-    And it does not print
-      """
       Python (ruff)
       """
     And it prints the block
@@ -110,19 +100,13 @@ Feature: check multiple stacks with unformatted files
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing to STDERR
-    And it does not print
+    And it does not print any of these lines
       """
       CSS (biome)
-      """
-    And it does not print
-      """
       TypeScript (biome)
-      """
-    And it does not print
-      """
       Python (ruff)
       """
-    Then it prints the block
+    And it prints the block
       """
       Found 1 error.
       main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
