@@ -1,33 +1,91 @@
 Feature: format SQL
 
-  Scenario: formats .sql files
-    And a file "schema.sql" with content
+  Background:
+    Given a file "run-that-app" with content
       """
-      SELECT id,name,email FROM users WHERE active=true ORDER BY name
+      uv 0.11.20
       """
-    When executing "tricorder format"
-    Then it prints the lines
+
+  Scenario: valid SQL
+    Given a file "one.sql" with content
+      """
+      select id, name from one
+      """
+    Given a file "two.sql" with content
+      """
+      select id, name from two
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the block
       """
       SQL (sqlfmt)
-      1 file formatted.
-      0 files left unchanged.
-      schema.sql formatted.
+      2 files left unchanged.
       """
     And the exit code is 0
-    And file "schema.sql" now has content
+    And file "one.sql" is unchanged
+    And file "two.sql" is unchanged
+
+  Scenario: unformatted SQL
+    Given a file "one.sql" with content
       """
-      select id, name, email from users where active = true order by name
+      SELECT            id, name FROM one
+      """
+    Given a file "two.sql" with content
+      """
+      SELECT            id, name FROM two
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the block
+      """
+      SQL (sqlfmt)
+      2 files formatted.
+      0 files left unchanged.
+      one.sql formatted.
+      two.sql formatted.
+      """
+    And the exit code is 0
+    And file "one.sql" now has content
+      """
+      select id, name from one
+      """
+    And file "two.sql" now has content
+      """
+      select id, name from two
       """
 
-  Scenario Outline: does not format other SQL flavors
+  Scenario: invalid SQL
+    Given a file "one.sql" with content
+      """
+      SELECT FROM "
+      """
+    Given a file "two.sql" with content
+      """
+      SELECT FROM "
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the block
+      """
+      SQL (sqlfmt)
+      2 files had errors while formatting.
+      0 files left unchanged.
+      one.sql
+          sqlfmt encountered an error: Could not parse SQL at position 11: '"'
+      two.sql
+          sqlfmt encountered an error: Could not parse SQL at position 11: '"'
+      """
+    And the exit code is 2
+    And file "one.sql" is unchanged
+    And file "two.sql" is unchanged
+
+  Scenario Outline: unsupported SQL flavors
     Given a file "migration.<FILE EXTENSION>" with content
       """
-      CREATE TABLE orders (id INT,total DECIMAL(10,2));
+      CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
-    When executing "tricorder format"
-    Then it prints the lines
+    When executing "tricorder format --show=all"
+    Then it prints
       """
-
+      no stacks found
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged
@@ -36,30 +94,3 @@ Feature: format SQL
       | FILE EXTENSION |
       | pgsql          |
       | tsql           |
-
-  @online
-  Scenario: auto-install
-    Given a file "schema.sql" with content
-      """
-      SELECT id,name,email FROM users WHERE active=true ORDER BY name
-      """
-    When executing "tricorder format"
-    Then it prints the lines
-      """
-      Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
-      SQL (sqlfmt)
-      1 file formatted.
-      0 files left unchanged.
-      schema.sql formatted.
-      """
-    And the exit code is 0
-    And file "schema.sql" now has content
-      """
-      select id, name, email from users where active = true order by name
-      """
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      uv \d+\.\d+\.\d+
-      """
