@@ -12,11 +12,11 @@ description = "The all-in-one DevEx tool."
 [dependencies]
 big_s = "1.0.2"
 clap = { version = "4.6.1", features = ["derive"] }
-conc = { package = "concurrent_shell_commands", version = "0.3.1" }
+conc = { package = "concurrent_shell_commands", version = "0.3.2" }
 ignore = "0.4.26"
 itertools = "0.14.0"
 run-that-app = "0.37.2"
-which = "5.0.0"
+which = "8.0.3"
 
 [dev-dependencies]
 contains_lines = "0.0.1"
@@ -27,7 +27,7 @@ maplit = "1.0.2"
 mio = "1.2.1"
 os_pipe = "1.2.3"
 pretty = { package = "pretty_assertions", version = "1.4.1" }
-regex = "1.12.3"
+regex = "1.12.4"
 strip-ansi-escapes = "0.2.1"
 tempfile = "3.27.0"
 tokio = { version = "1.52.3", features = [
