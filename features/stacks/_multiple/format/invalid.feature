@@ -19,7 +19,6 @@ Feature: format multiple stacks with invalid code
       console.log("
       """
 
-  @this
   Scenario: default visibility
     When executing "tricorder format"
     Then it prints nothing to STDERR
