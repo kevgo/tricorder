@@ -2,7 +2,7 @@ Feature: formatting a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder format"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     Then it prints to STDERR
       """
       no stacks found
@@ -11,7 +11,7 @@ Feature: formatting a codebase without any code
 
   Scenario: --show=all
     When executing "tricorder format --show=all"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     Then it prints to STDERR
       """
       no stacks found
@@ -20,7 +20,7 @@ Feature: formatting a codebase without any code
 
   Scenario: --show=names
     When executing "tricorder format --show=names"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     Then it prints to STDERR
       """
       no stacks found
@@ -29,7 +29,7 @@ Feature: formatting a codebase without any code
 
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     Then it prints to STDERR
       """
       no stacks found
