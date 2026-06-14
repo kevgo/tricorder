@@ -1,4 +1,4 @@
-Feature: check Go
+Feature: format Go
 
   Background:
     Given a file "go.mod" with content
@@ -40,10 +40,19 @@ Feature: check Go
       	fmt.Println(    "Hello, world!")
       }
       """
+    And a file "other.go" with content
+      """
+      package other
+      import "fmt"
+      func main() {
+      	fmt.Println(    "Hello, other!")
+      }
+      """
     When executing "tricorder format --show=all"
     Then it prints the block
       """
       Go (gofumpt)
+      other.go
       main.go
       """
     And the exit code is 0
@@ -55,6 +64,16 @@ Feature: check Go
       
       func main() {
       	fmt.Println("Hello, world!")
+      }
+      """
+    And file "other.go" now has content
+      """
+      package other
+      
+      import "fmt"
+      
+      func main() {
+      	fmt.Println("Hello, other!")
       }
       """
 

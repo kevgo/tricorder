@@ -8,14 +8,24 @@ Feature: install all Go tools
       """
   # @online
 
-  Scenario: not installed
-    When executing "tricorder format"
-    Then it prints the lines
+  Scenario: formatter not installed
+    Given a file "main.go" with content
+      """
+      package main
+      import "fmt"
+      func main() {
+      	fmt.Println(    "Hello, world!")
+      }
+      """
+    When executing "tricorder format --show=all"
+    Then it prints
       """
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
       added gofumpt@0.10.0 to run-that-app
+      1 Go, 1 other
+      running 1 tools
       Go (gofumpt)
-      x
+      main.go
       """
     And the exit code is 0
     And file "main.go" now has content
