@@ -1,6 +1,6 @@
 Feature: install all Java tools
 
-  Background:
+  Scenario: not installed
     Given a file "Main.java" with content
       """
       public class Main {
@@ -9,8 +9,6 @@ Feature: install all Java tools
           }
       }
       """
-
-  Scenario: not installed
     When executing "tricorder check --show=all"
     Then it prints the lines to STDERR
       """

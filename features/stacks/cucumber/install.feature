@@ -1,6 +1,7 @@
+@online
 Feature: install all Cucumber tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.feature" with content
       """
       Feature:   foo
@@ -8,9 +9,6 @@ Feature: install all Cucumber tools
         Scenario:   bar
           Given a step
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """

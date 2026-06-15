@@ -6,7 +6,7 @@ Feature: check Go
       module example.com/demo
       go 1.21
       """
-    Given a file "run-that-app" with content
+    And a file "run-that-app" with content
       """
       golangci-lint 2.12.2
       """

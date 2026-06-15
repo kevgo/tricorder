@@ -24,7 +24,7 @@ Feature: format TOML
       """
       key =     "value"
       """
-    Given a file "other.toml" with content
+    And a file "other.toml" with content
       """
       key =     "other"
       """

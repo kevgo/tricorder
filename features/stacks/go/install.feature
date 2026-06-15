@@ -1,6 +1,7 @@
+@online
 Feature: install all Go tools
 
-  Background:
+  Scenario: not installed
     Given a file "go.mod" with content
       """
       module example.com/demo
@@ -14,15 +15,12 @@ Feature: install all Go tools
       	fmt.Println(    "Hello, world!")
       }
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
       """
-    Then it prints the block
+    And it prints the block
       """
       Go (gofumpt)
       main.go

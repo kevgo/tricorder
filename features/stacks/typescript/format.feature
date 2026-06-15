@@ -24,7 +24,7 @@ Feature: format TypeScript
       """
       console.log(  "hello"  );
       """
-    Given a file "other.ts" with content
+    And a file "other.ts" with content
       """
       console.log(  "other"  );
       """

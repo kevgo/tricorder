@@ -1,19 +1,17 @@
+@online
 Feature: install all Markdown tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.md" with content
       """
       #     Hello
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       Markdown (rumdl)
       """

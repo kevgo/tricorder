@@ -7,11 +7,11 @@ Feature: format Python
       """
 
   Scenario: valid Python
-    Given a file "main.py" with content
+    And a file "main.py" with content
       """
       print("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("Hello, other!")
       """
@@ -29,7 +29,7 @@ Feature: format Python
       """
       print   ("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print   ("Hello, other!")
       """
@@ -53,7 +53,7 @@ Feature: format Python
       """
       print("
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("
       """
