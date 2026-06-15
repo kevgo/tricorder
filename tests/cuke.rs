@@ -205,7 +205,8 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     pretty::assert_eq!(stdout.trim(), want);
 }
 
@@ -225,7 +226,8 @@ fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     pretty::assert_eq!(stdout, "");
 }
 
@@ -234,7 +236,8 @@ fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stripped = strip_ansi_escapes::strip(&output.stderr);
+    let stderr = String::from_utf8_lossy(&stripped);
     pretty::assert_eq!(stderr, "");
 }
 
@@ -244,17 +247,19 @@ fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stripped = strip_ansi_escapes::strip(&output.stderr);
+    let stderr = String::from_utf8_lossy(&stripped);
     pretty::assert_eq!(stderr.trim(), want);
 }
 
 #[then("it prints the block")]
 fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(have) = &world.output else {
+    let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&have.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     assert!(
         stdout.contains(want),
         "output does not contain the block\n\nHAVE:\n{stdout}\n\n"
@@ -267,7 +272,8 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     if snapshots::enabled() {
         if stdout != want {
             let path = world
@@ -296,7 +302,8 @@ fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stripped = strip_ansi_escapes::strip(&output.stderr);
+    let stderr = String::from_utf8_lossy(&stripped);
     let missing = contains_lines(&stderr, want);
     assert!(
         missing.is_empty(),
@@ -313,7 +320,8 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     let mut have = stdout.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
     assert!(compare_result.success(), "{}", compare_result.message());

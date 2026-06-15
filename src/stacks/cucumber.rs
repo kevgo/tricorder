@@ -1,3 +1,4 @@
+use crate::apps::gherkin_lint::GherkinLint;
 use crate::apps::ghokin::Ghokin;
 use crate::domain::{Checker, Formatter, Stack};
 use std::path::Path;
@@ -14,7 +15,7 @@ impl Stack for Cucumber {
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![]
+        vec![Box::new(GherkinLint {})]
     }
 
     fn formatters(&self) -> Vec<Box<dyn Formatter>> {
