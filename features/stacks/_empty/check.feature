@@ -15,6 +15,7 @@ Feature: checking a codebase without any code
     And it prints to STDERR
       """
       no stacks found
+      running 0 tools
       """
     And the exit code is 0
 
