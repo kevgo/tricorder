@@ -16,7 +16,7 @@ Feature: check CSS
           Given a step
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints
       """
       Cucumber (gherkin-lint)
       """

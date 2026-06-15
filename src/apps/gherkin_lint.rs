@@ -12,8 +12,7 @@ impl Tool for GherkinLint {
 
 impl Checker for GherkinLint {
     fn check_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 4);
-        args.push(S("check"));
+        let mut args = Vec::with_capacity(stack.files.len() + 3);
         args.push(S("exec"));
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
