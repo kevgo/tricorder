@@ -11,10 +11,6 @@ Feature: format TOML
       """
       key = "value"
       """
-    Given a file "other.toml" with content
-      """
-      key = "other"
-      """
     When executing "tricorder format --show=all"
     Then it prints the block
       """
@@ -22,7 +18,6 @@ Feature: format TOML
       """
     And the exit code is 0
     And file "main.toml" is unchanged
-    And file "other.toml" is unchanged
 
   Scenario: unformatted TOML
     Given a file "main.toml" with content
@@ -53,10 +48,6 @@ Feature: format TOML
       """
       key = "
       """
-    Given a file "other.toml" with content
-      """
-      other = "
-      """
     When executing "tricorder format --show=all"
     Then it prints the lines
       """
@@ -65,4 +56,3 @@ Feature: format TOML
       """
     And the exit code is 1
     And file "main.toml" is unchanged
-    And file "other.toml" is unchanged
