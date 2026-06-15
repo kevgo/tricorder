@@ -22,10 +22,10 @@ contest: ${RTA}
 cuke: build-release  # runs all end-to-end tests
 	cargo test --test=cuke -- -t "not @online"
 
-cuke-update: build-release  # runs end-to-end tests, updating "Then it prints:" snapshots from actual output
+cuke-update: build-release  # updates the end-to-end tests
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
 
-cuke-all: build-release  # runs only the end-to-end tests that don't use the GitHub API
+cuke-all: build-release  # runs the online end-to-end tests
 	cargo test --test=cuke
 
 cukethis: build-release  # runs only end-to-end tests with a @this tag
@@ -48,7 +48,7 @@ fix: ${RTA}  # runs all linters and auto-fixes
 	make --no-print-directory ghokin
 	make --no-print-directory keep-sorted
 
-ghokin: ${RTA}
+ghokin: ${RTA}  # format the Cucumber tests
 	${GHOKIN} fmt replace features/
 
 help:  # prints all available targets
@@ -72,7 +72,7 @@ setup-ci:
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
 
-setup-githooks: ${RTA}  ## installs a Git pre-commit hook that auto-formats code
+setup-githooks: ${RTA}  ## installs the Git pre-commit to auto-format
 	@$(LEFTHOOK) install
 
 ps: test fix  ## pitstop
