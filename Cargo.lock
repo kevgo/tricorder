@@ -1599,7 +1599,7 @@ dependencies = [
 
 [[package]]
 name = "test_helpers"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "itertools",
  "pretty_assertions",
@@ -1703,7 +1703,7 @@ dependencies = [
 
 [[package]]
 name = "tricorder"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "big_s",
  "clap",
