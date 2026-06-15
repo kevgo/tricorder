@@ -77,7 +77,7 @@ Feature: check multiple stacks with unformatted files
   Scenario: --show=names
     When executing "tricorder check --show=names"
     Then it prints nothing to STDERR
-    Then it prints the lines
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.

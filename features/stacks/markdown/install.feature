@@ -11,7 +11,7 @@ Feature: install all Markdown tools
       """
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       Markdown (rumdl)
       """
@@ -23,6 +23,6 @@ Feature: install all Markdown tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       rumdl \d+\.\d+\.\d+
       """

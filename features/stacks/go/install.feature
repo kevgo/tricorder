@@ -1,6 +1,7 @@
+@online
 Feature: install all Go tools
 
-  Background:
+  Scenario: not installed
     Given a file "go.mod" with content
       """
       module example.com/demo
@@ -14,9 +15,6 @@ Feature: install all Go tools
       	fmt.Println(    "Hello, world!")
       }
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
@@ -31,9 +29,9 @@ Feature: install all Go tools
     And file "main.go" now has content
       """
       package main
-      
+
       import "fmt"
-      
+
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -41,6 +39,6 @@ Feature: install all Go tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       gofumpt \d+\.\d+\.\d+
       """

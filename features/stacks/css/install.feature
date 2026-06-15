@@ -1,15 +1,13 @@
 @online
 Feature: install all CSS tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.css" with content
       """
       .foo {
         color:    red;
       }
       """
-
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
@@ -29,6 +27,6 @@ Feature: install all CSS tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       biome \d+\.\d+\.\d+
       """

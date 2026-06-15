@@ -1,16 +1,14 @@
 @online
 Feature: install all Cucumber tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.feature" with content
       """
       Feature:   foo
-      
+
         Scenario:   bar
           Given a step
       """
-
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
@@ -25,13 +23,13 @@ Feature: install all Cucumber tools
     And file "main.feature" now has content
       """
       Feature: foo
-      
+
         Scenario: bar
           Given a step
       """
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-      
+
       ghokin \d+\.\d+\.\d+
       """
