@@ -11,7 +11,7 @@ Feature: install all SQL tools
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       SQL (sqlfmt)
       """
