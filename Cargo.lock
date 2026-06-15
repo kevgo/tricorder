@@ -1599,7 +1599,7 @@ dependencies = [
 
 [[package]]
 name = "test_helpers"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
  "itertools",
  "pretty_assertions",
