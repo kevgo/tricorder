@@ -8,7 +8,6 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
         eprintln!("no stacks found");
-        return Ok(ExitCode::SUCCESS);
     }
     if args.show == Show::All {
         print_metadata(&stacks, file_count);
@@ -25,6 +24,9 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
     }
     if args.show == Show::All {
         eprintln!("running {} tools", executables.len());
+    }
+    if executables.is_empty() {
+        return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
         executables,

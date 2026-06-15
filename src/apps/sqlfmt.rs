@@ -26,6 +26,7 @@ impl Checker for Sqlfmt {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Uv {},
             args,
+            version: None,
         })
     }
 }
@@ -45,6 +46,7 @@ impl Formatter for Sqlfmt {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Uv {},
             args,
+            version: None,
         })
     }
 }

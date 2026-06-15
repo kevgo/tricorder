@@ -44,7 +44,7 @@ Feature: format multiple stacks
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
+      running 4 tools
       """
     And it prints the block
       """
@@ -78,13 +78,14 @@ Feature: format multiple stacks
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 3 tools
+      running 4 tools
       """
     And it prints only these lines in any order
       """
       TypeScript (biome)
       CSS (biome)
       Python (ruff)
+      delete-empty-folders
       """
     And file "main.css" now has content
       """

@@ -20,6 +20,7 @@ impl Formatter for Ghokin {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Ghokin {},
             args,
+            version: None,
         })
     }
 }

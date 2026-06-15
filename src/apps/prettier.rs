@@ -22,6 +22,7 @@ impl Checker for Prettier {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::PrettierStandalone {},
             args,
+            version: None,
         })
     }
 }
@@ -38,6 +39,7 @@ impl Formatter for Prettier {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::PrettierStandalone {},
             args,
+            version: None,
         })
     }
 }

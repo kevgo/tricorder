@@ -13,7 +13,7 @@ Feature: format Java
     Then it prints to STDERR
       """
       1 Java
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -31,7 +31,7 @@ Feature: format Java
     Then it prints to STDERR
       """
       1 Java
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -49,7 +49,7 @@ Feature: format Java
     Then it prints to STDERR
       """
       1 Java
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged

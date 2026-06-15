@@ -1,5 +1,6 @@
 pub mod biome;
 pub mod checkstyle;
+pub mod delete_empty_folders;
 pub mod gherkin_lint;
 pub mod ghokin;
 pub mod gofumpt;
@@ -26,7 +27,7 @@ pub(crate) fn get_rta_command(
     for _ in 0..2 {
         let get_cmd_args = rta::GetCmdArgs {
             app_args: args.args.clone(),
-            version: None,
+            version: args.version.clone(),
             from_source: false,
             include_apps: vec![],
             optional: true,
@@ -60,4 +61,5 @@ pub struct GetCheckCmdArgs<'a> {
     name: String,
     app: &'a dyn AppDefinition,
     args: Vec<String>,
+    version: Option<rta::Version>,
 }
