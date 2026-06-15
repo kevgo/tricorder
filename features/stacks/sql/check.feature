@@ -80,6 +80,8 @@ Feature: check SQL
     Then it prints to STDERR
       """
       no stacks found
+      2 other
+      running 0 tools
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged
