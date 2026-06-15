@@ -9,7 +9,6 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     let (stacks, file_count) = stacks::discover();
     if stacks.is_empty() {
         eprintln!("no stacks found");
-        return Ok(ExitCode::SUCCESS);
     }
     let mut executables = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -27,6 +26,9 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     if args.show == crate::cli::input::Show::All {
         print_metadata(&stacks, file_count);
         eprintln!("running {} tools", executables.len());
+    }
+    if executables.is_empty() {
+        return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
         executables,
