@@ -66,7 +66,6 @@ Feature: check CSS
     And the exit code is 0
     And file "features/one.feature" is unchanged
 
-  @this
   Scenario: unformatted CSS
     Given a file "features/one.feature" with content
       """
@@ -85,17 +84,15 @@ Feature: check CSS
     And file "features/one.feature" is unchanged
 
   Scenario: invalid CSS
-    Given a file "main.css" with content
+    Given a file "features/one.feature" with content
       """
-      .foo {
-        col
-      }
+      Feat
       """
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      CSS (biome)
-      Found 5 errors.
+      Cucumber (gherkin-lint)
+        1    (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'    unexpected-error
       """
     And the exit code is 1
-    And file "main.css" is unchanged
+    And file "features/one.feature" is unchanged
