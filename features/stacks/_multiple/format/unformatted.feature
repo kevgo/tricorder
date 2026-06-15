@@ -46,7 +46,7 @@ Feature: format multiple stacks
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the block
+    And it prints the block
       """
       TypeScript (biome)
       """
@@ -80,7 +80,7 @@ Feature: format multiple stacks
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints only these lines in any order
+    And it prints only these lines in any order
       """
       TypeScript (biome)
       CSS (biome)

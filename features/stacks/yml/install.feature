@@ -1,19 +1,17 @@
+@online
 Feature: install all YML tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.yml" with content
       """
       key:     value
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       YML (prettier)
       """

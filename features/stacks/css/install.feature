@@ -1,15 +1,13 @@
+@online
 Feature: install all CSS tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.css" with content
       """
       .foo {
         color:    red;
       }
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """

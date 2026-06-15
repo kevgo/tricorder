@@ -1,13 +1,11 @@
+@online
 Feature: install all Python tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.py" with content
       """
       print    ("Hello, world!")
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """

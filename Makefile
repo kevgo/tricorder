@@ -1,12 +1,14 @@
 RUN_THAT_APP_VERSION = 0.37.0  # run-that-app version to use
 
-RTA        = tools/rta@$(RUN_THAT_APP_VERSION)
-CONTEST    = $(RTA) contest
-GHOKIN     = $(RTA) ghokin
-KEEPSORTED = $(RTA) keep-sorted
-LEFTHOOK   = $(RTA) lefthook
-RUMDL      = $(RTA) rumdl
-TAPLO      = $(RTA) taplo
+RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
+CONTEST      = $(RTA) contest
+GHERKIN_LINT = $(NPM) exec --yes gherkin-lint
+GHOKIN       = $(RTA) ghokin
+KEEPSORTED   = $(RTA) keep-sorted
+LEFTHOOK     = $(RTA) lefthook
+NPM          = $(RTA) npm
+RUMDL        = $(RTA) rumdl
+TAPLO        = $(RTA) taplo
 
 build:  # builds the codebase
 	rm -rf tmp
@@ -62,6 +64,7 @@ lint: ${RTA}  # lints the main codebase concurrently
 	cargo clippy --all-targets --all-features -- --deny=warnings
 	cargo clippy --test=cuke --all-features -- --deny=warnings
 	$(RUMDL) check
+	${GHERKIN_LINT}
 	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
 
 setup: setup-ci  # install development dependencies on this computer

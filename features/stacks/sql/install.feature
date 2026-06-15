@@ -1,19 +1,17 @@
+@online
 Feature: install all SQL tools
 
-  Background:
+  Scenario: not installed
     Given a file "one.sql" with content
       """
       SELECT    id, name FROM one
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       SQL (sqlfmt)
       """

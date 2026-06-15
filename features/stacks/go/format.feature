@@ -6,7 +6,7 @@ Feature: format Go
       module example.com/demo
       go 1.21
       """
-    Given a file "run-that-app" with content
+    And a file "run-that-app" with content
       """
       gofumpt 0.10.0
       golangci-lint 2.12.2
