@@ -28,14 +28,34 @@ and "have the agent fix its own output" one more.
 Every team at Walmart gets the same reliable,
 reproducible checks with no per-developer setup.
 
-## Install
+## Installation
+
+The installer script places the Tricorder executable into the current directory.
+To install elsewhere, execute the installer from that directory.
+
+Linux and macOS:
 
 ```sh
-curl https://repository.walmart.com/content/repositories/pangaea_snapshots/com/walmart/atlas/tricorder/install.sh | sh
+curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
 ```
 
-Tricorder downloads the linters it needs on demand through Walmart's
-`run-that-app` cache; there's no per-tool install step.
+To download a specific version or save under a specific filename:
+
+```sh
+curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
+```
+
+Windows (Powershell):
+
+```powershell
+Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
+```
+
+Compile from source:
+
+```sh
+cargo install --git https://github.com/kevgo/tricorder
+```
 
 ## Usage
 
