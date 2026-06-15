@@ -69,7 +69,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
         .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
     world.original_files.push(ExistingFile {
         name: filename,
-        content: content.clone(),
+        content,
     });
 }
 
