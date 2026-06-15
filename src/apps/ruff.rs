@@ -22,6 +22,7 @@ impl Checker for Ruff {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Ruff {},
             args,
+            version: None,
         })
     }
 }
@@ -37,6 +38,7 @@ impl Formatter for Ruff {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Ruff {},
             args,
+            version: None,
         })
     }
 }

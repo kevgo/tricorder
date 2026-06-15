@@ -22,6 +22,7 @@ impl Formatter for DeleteEmptyFolders {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Biome {},
             args,
+            version: None,
         })
     }
 }
@@ -31,5 +32,6 @@ pub fn format_command() -> Result<Option<conc::Executable>, UserError> {
         name: S("delete-empty-folders"),
         app: &rta::applications::DeleteEmptyFolders {},
         args: vec![],
+        version: Some(rta::Version::from("0.1.0")),
     })
 }

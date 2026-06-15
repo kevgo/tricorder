@@ -21,6 +21,7 @@ impl Checker for Taplo {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Taplo {},
             args,
+            version: None,
         })
     }
 }
@@ -36,6 +37,7 @@ impl Formatter for Taplo {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Taplo {},
             args,
+            version: None,
         })
     }
 }

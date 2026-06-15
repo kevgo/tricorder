@@ -22,6 +22,7 @@ impl Formatter for Gofumpt {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Gofumpt {},
             args,
+            version: None,
         })
     }
 }
