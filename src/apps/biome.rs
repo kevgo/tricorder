@@ -21,6 +21,7 @@ impl Checker for Biome {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Biome {},
             args,
+            version: None,
         })
     }
 }
@@ -37,6 +38,7 @@ impl Formatter for Biome {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Biome {},
             args,
+            version: None,
         })
     }
 }

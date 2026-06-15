@@ -23,6 +23,7 @@ impl Checker for GherkinLint {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Npm {},
             args,
+            version: None,
         })
     }
 }

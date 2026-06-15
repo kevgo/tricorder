@@ -16,6 +16,7 @@ impl Checker for GolangciLint {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::GolangCiLint {},
             args: vec![S("run")],
+            version: None,
         })
     }
 }

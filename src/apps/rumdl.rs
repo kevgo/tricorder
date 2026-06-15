@@ -21,6 +21,7 @@ impl Checker for Rumdl {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Rumdl {},
             args,
+            version: None,
         })
     }
 }
@@ -36,6 +37,7 @@ impl Formatter for Rumdl {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Rumdl {},
             args,
+            version: None,
         })
     }
 }
