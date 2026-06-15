@@ -1,6 +1,6 @@
 use crate::domain::{Result, UserError};
 use clap::error::ErrorKind;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_PKG_NAME"))]
@@ -15,19 +15,46 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// Run all checkers and linters for every detected stack
-    Check,
+    Check(RunArgs),
 
     /// Run all formatters for all stacks
-    Format,
+    Format(RunArgs),
 
     /// Install Claude Code / Code Puppy hooks for this project
     Init(InitArgs),
 }
 
 #[derive(clap::Args)]
+pub struct RunArgs {
+    /// how much output to display
+    #[arg(long, default_value = "failed")]
+    pub show: Show,
+}
+
+#[derive(Clone, PartialEq, ValueEnum)]
+pub enum Show {
+    /// all commands and their output
+    All,
+    /// all commands but only output of failed ones
+    Names,
+    /// failed commands
+    Failed,
+}
+
+impl From<Show> for conc::Show {
+    fn from(value: Show) -> Self {
+        match value {
+            Show::All => conc::Show::All,
+            Show::Names => conc::Show::Names,
+            Show::Failed => conc::Show::Failed,
+        }
+    }
+}
+
+#[derive(clap::Args)]
 pub struct InitArgs {
     /// Overwrite existing files
-    #[arg(long, short)]
+    #[arg(long, short, default_value = "false")]
     pub force: bool,
 }
 

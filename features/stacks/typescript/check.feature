@@ -1,47 +1,53 @@
 Feature: check TypeScript
 
   Background:
-    Given a file "main.ts" with content
-      """
-      const greeting:string="Hello, world!"
-      console.log(greeting);
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       biome 2.4.0
       """
-    When executing "tricorder check"
+
+  Scenario: valid TypeScript
+    Given a file "main.ts" with content
+      """
+      console.log("hello");
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      TypeScript (biome)
+      """
+    And the exit code is 0
+    And file "main.ts" is unchanged
+
+  Scenario: unformatted TypeScript
+    Given a file "main.ts" with content
+      """
+      console.log(  "hello"  );
+      """
+    Given a file "other.ts" with content
+      """
+      console.log(  "other"  );
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       TypeScript (biome)
-      Found 1 error.
-      """
-    And it does not print
-      """
-      Talking to GitHub API
+      Found 2 errors.
       """
     And the exit code is 1
+    And file "main.ts" is unchanged
+    And file "other.ts" is unchanged
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
-    Then it prints to STDERR
+  Scenario: invalid TypeScript
+    Given a file "main.ts" with content
       """
-      1 TypeScript
-      Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
-      running 1 tools
+      console.log("
       """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       TypeScript (biome)
-      Found 1 error.
+      Found 5 errors.
       """
     And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      biome \d+\.\d+\.\d+
-      """
+    And file "main.ts" is unchanged

@@ -1,4 +1,4 @@
-Feature: check Java
+Feature: format Java
 
   Scenario: valid Java
     Given a file "Main.java" with content
@@ -9,11 +9,10 @@ Feature: check Java
           }
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder format --show=all"
     Then it prints to STDERR
       """
       1 Java
-      checkstyle not found on PATH - skipping. Install with: brew install checkstyle
       running 0 tools
       """
     And the exit code is 0
@@ -28,10 +27,11 @@ Feature: check Java
       }
       }
       """
-    When executing "tricorder check"
+    When executing "tricorder format --show=all"
     Then it prints to STDERR
       """
-      checkstyle not found on PATH - skipping. Install with: brew install checkstyle
+      1 Java
+      running 0 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -45,10 +45,11 @@ Feature: check Java
           }
       }
       """
-    When executing "tricorder check"
+    When executing "tricorder format --show=all"
     Then it prints to STDERR
       """
-      checkstyle not found on PATH - skipping. Install with: brew install checkstyle
+      1 Java
+      running 0 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged

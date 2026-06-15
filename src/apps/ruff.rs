@@ -30,7 +30,6 @@ impl Formatter for Ruff {
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
-        args.push(S("--quiet"));
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }

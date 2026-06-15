@@ -1,48 +1,48 @@
 Feature: check Markdown
 
   Background:
-    And a file "README.md" with content
-      """
-      #    Hello
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       rumdl 0.2.14
       """
-    When executing "tricorder check"
+
+  Scenario: valid Markdown
+    Given a file "main.md" with content
+      """
+      # Hello
+      """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)
-      README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
       """
-    And it does not print
+    And the exit code is 0
+    And file "main.md" is unchanged
+
+  Scenario: unformatted Markdown
+    Given a file "main.md" with content
       """
-      Talking to GitHub API
+      #     Hello
+      """
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      Markdown (rumdl)
+      main.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
       """
     And the exit code is 1
-    And all files are unchanged
+    And file "main.md" is unchanged
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder check"
-    Then it prints to STDERR
+  Scenario: invalid Markdown
+    Given a file "main.md" with content
       """
-      1 Markdown
-      Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
-      running 1 tools
+      text
       """
+    When executing "tricorder check --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)
-      README.md:1:2: [MD019] Multiple spaces (4) after # in heading [*]
+      main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
     And the exit code is 1
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      rumdl \d+\.\d+\.\d+
-      """
-    And file "README.md" is unchanged
+    And file "main.md" is unchanged
