@@ -37,7 +37,7 @@ Feature: check TOML
       """
       key = "
       """
-    Given a file "other.toml" with content
+    And a file "other.toml" with content
       """
       other = "
       """

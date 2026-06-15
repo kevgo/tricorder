@@ -1,19 +1,17 @@
+@online
 Feature: install all TypeScript tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.ts" with content
       """
       console.log(  "hello"  );
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       TypeScript (biome)
       """

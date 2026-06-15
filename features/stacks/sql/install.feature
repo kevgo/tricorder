@@ -1,13 +1,11 @@
+@online
 Feature: install all SQL tools
 
-  Background:
+  Scenario: not installed
     Given a file "one.sql" with content
       """
       SELECT    id, name FROM one
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """

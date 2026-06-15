@@ -24,7 +24,7 @@ Feature: check YML
       """
       key:     value
       """
-    Given a file "other.yml" with content
+    And a file "other.yml" with content
       """
       key:     other
       """
