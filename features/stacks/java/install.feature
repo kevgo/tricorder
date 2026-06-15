@@ -12,7 +12,7 @@ Feature: install all Java tools
 
   Scenario: not installed
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints the lines to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle
       """
