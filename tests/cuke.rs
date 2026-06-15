@@ -267,7 +267,8 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = String::from_utf8_lossy(&stripped);
     if snapshots::enabled() {
         if stdout != want {
             let path = world

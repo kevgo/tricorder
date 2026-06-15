@@ -50,7 +50,6 @@ Feature: check CSS
       }
       """
 
-  @this
   Scenario: valid Cucumber
     Given a file "features/one.feature" with content
       """
@@ -67,6 +66,7 @@ Feature: check CSS
     And the exit code is 0
     And file "features/one.feature" is unchanged
 
+  @this
   Scenario: unformatted CSS
     Given a file "features/one.feature" with content
       """
@@ -79,10 +79,10 @@ Feature: check CSS
     Then it prints the lines
       """
       Cucumber (gherkin-lint)
-      Found 1 error.
+        4    Wrong indentation for "given", expected indentation level of 4, but got 12    indentation
       """
     And the exit code is 1
-    And file "main.css" is unchanged
+    And file "features/one.feature" is unchanged
 
   Scenario: invalid CSS
     Given a file "main.css" with content
