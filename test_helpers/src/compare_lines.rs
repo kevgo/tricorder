@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 pub fn compare_lines_any_order(have: &mut Vec<&str>, want: &mut Vec<&str>) -> CompareResult {
     have.sort();
     want.sort();
@@ -7,15 +9,15 @@ pub fn compare_lines_any_order(have: &mut Vec<&str>, want: &mut Vec<&str>) -> Co
     let mut j = 0;
     while i < have.len() && j < want.len() {
         match have[i].cmp(want[j]) {
-            std::cmp::Ordering::Less => {
+            Ordering::Less => {
                 missing.push(have[i].to_string());
                 i += 1;
             }
-            std::cmp::Ordering::Greater => {
+            Ordering::Greater => {
                 extra.push(want[j].to_string());
                 j += 1;
             }
-            std::cmp::Ordering::Equal => {
+            Ordering::Equal => {
                 i += 1;
                 j += 1;
             }
