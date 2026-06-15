@@ -29,7 +29,7 @@ Feature: check CSS
       }
       """
     When executing "tricorder check --show=all"
-    And it prints the lines
+    Then it prints the lines
       """
       CSS (biome)
       Found 1 error.
