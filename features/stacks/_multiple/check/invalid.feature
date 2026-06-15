@@ -101,7 +101,7 @@ Feature: check multiple stacks with invalid code
       TypeScript (biome)
       Python (ruff)
       """
-    Then it prints the block
+    And it prints the block
       """
       Found 3 errors.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

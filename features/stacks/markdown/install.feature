@@ -1,13 +1,11 @@
+@online
 Feature: install all Markdown tools
 
-  Background:
+  Scenario: not installed
     Given a file "main.md" with content
       """
       #     Hello
       """
-
-  @online
-  Scenario: not installed
     When executing "tricorder format --show=all"
     Then it prints the lines to STDERR
       """
@@ -25,6 +23,6 @@ Feature: install all Markdown tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       rumdl \d+\.\d+\.\d+
       """

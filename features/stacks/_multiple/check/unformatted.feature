@@ -54,7 +54,7 @@ Feature: check multiple stacks with unformatted files
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    Then it prints the lines
+    And it prints the lines
       """
       CSS (biome)
       Found 1 error.

@@ -1,17 +1,15 @@
 Feature: format Python
 
-  Background:
+  Scenario: valid Python
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
       """
-
-  Scenario: valid Python
-    Given a file "main.py" with content
+    And a file "main.py" with content
       """
       print("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("Hello, other!")
       """
@@ -29,7 +27,7 @@ Feature: format Python
       """
       print   ("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print   ("Hello, other!")
       """
@@ -53,7 +51,7 @@ Feature: format Python
       """
       print("
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("
       """

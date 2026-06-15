@@ -11,7 +11,7 @@ Feature: format SQL
       """
       select id, name from one
       """
-    Given a file "two.sql" with content
+    And a file "two.sql" with content
       """
       select id, name from two
       """
@@ -30,7 +30,7 @@ Feature: format SQL
       """
       SELECT            id, name FROM one
       """
-    Given a file "two.sql" with content
+    And a file "two.sql" with content
       """
       SELECT            id, name FROM two
       """
@@ -58,7 +58,7 @@ Feature: format SQL
       """
       SELECT FROM "
       """
-    Given a file "two.sql" with content
+    And a file "two.sql" with content
       """
       SELECT FROM "
       """

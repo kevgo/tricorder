@@ -22,7 +22,7 @@ Feature: install all Go tools
       """
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
       """
-    Then it prints the block
+    And it prints the block
       """
       Go (gofumpt)
       main.go
@@ -31,9 +31,9 @@ Feature: install all Go tools
     And file "main.go" now has content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -41,6 +41,6 @@ Feature: install all Go tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       gofumpt \d+\.\d+\.\d+
       """

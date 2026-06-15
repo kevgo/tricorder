@@ -11,7 +11,7 @@ Feature: check Python
       """
       print("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("Hello, other!")
       """
@@ -30,7 +30,7 @@ Feature: check Python
       """
       print   ("Hello, world!")
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print   ("Hello, other!")
       """
@@ -51,7 +51,7 @@ Feature: check Python
       """
       print("
       """
-    Given a file "other.py" with content
+    And a file "other.py" with content
       """
       print("
       """

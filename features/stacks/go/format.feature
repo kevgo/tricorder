@@ -6,7 +6,7 @@ Feature: format Go
       module example.com/demo
       go 1.21
       """
-    Given a file "run-that-app" with content
+    And a file "run-that-app" with content
       """
       gofumpt 0.10.0
       golangci-lint 2.12.2
@@ -16,9 +16,9 @@ Feature: format Go
     Given a file "main.go" with content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -59,9 +59,9 @@ Feature: format Go
     And file "main.go" now has content
       """
       package main
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, world!")
       }
@@ -69,9 +69,9 @@ Feature: format Go
     And file "other.go" now has content
       """
       package other
-
+      
       import "fmt"
-
+      
       func main() {
       	fmt.Println("Hello, other!")
       }
