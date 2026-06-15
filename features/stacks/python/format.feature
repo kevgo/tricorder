@@ -1,10 +1,12 @@
 Feature: format Python
 
-  Scenario: valid Python
+  Background:
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
       """
+
+  Scenario: valid Python
     And a file "main.py" with content
       """
       print("Hello, world!")
