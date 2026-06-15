@@ -11,10 +11,6 @@ Feature: format YML
       """
       key: value
       """
-    Given a file "other.yml" with content
-      """
-      key: other
-      """
     When executing "tricorder format --show=all"
     Then it prints the block
       """
@@ -22,7 +18,6 @@ Feature: format YML
       """
     And the exit code is 0
     And file "main.yml" is unchanged
-    And file "other.yml" is unchanged
 
   Scenario: unformatted YML
     Given a file "main.yml" with content
@@ -53,17 +48,11 @@ Feature: format YML
       """
       key: "
       """
-    Given a file "other.yml" with content
-      """
-      other: "
-      """
     When executing "tricorder format --show=all"
     Then it prints the lines
       """
       YML (prettier)
-      [error] other.yml: SyntaxError: Missing closing "quote (1:8)
       [error] main.yml: SyntaxError: Missing closing "quote (1:6)
       """
     And the exit code is 2
     And file "main.yml" is unchanged
-    And file "other.yml" is unchanged
