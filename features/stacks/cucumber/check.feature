@@ -1,4 +1,4 @@
-Feature: check CSS
+Feature: check Cucumber
 
   Background:
     Given a file "run-that-app" with content
