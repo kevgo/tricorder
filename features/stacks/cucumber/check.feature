@@ -66,7 +66,7 @@ Feature: check Cucumber
     And the exit code is 0
     And file "features/one.feature" is unchanged
 
-  Scenario: unformatted CSS
+  Scenario: unformatted Cucumber
     Given a file "features/one.feature" with content
       """
       Feature: one
@@ -83,7 +83,7 @@ Feature: check Cucumber
     And the exit code is 1
     And file "features/one.feature" is unchanged
 
-  Scenario: invalid CSS
+  Scenario: invalid Cucumber
     Given a file "features/one.feature" with content
       """
       Feat
