@@ -60,6 +60,7 @@ Feature: format Python
     When executing "tricorder format --show=all"
     Then it prints
       """
+      delete-empty-folders
       Python (ruff)
       error: Failed to parse main.py:1:7: missing closing quote in string literal
       error: Failed to parse other.py:1:7: missing closing quote in string literal
