@@ -3,16 +3,13 @@ tools/rta*
 /target
 /tmp
 
-.DS_Store
 UI/node_modules/
 UI/dist/
 
 .github/instructions/
-UI/node_modules/
 demo/bad_code.py
 
 # IntelliJ / JetBrains IDEs
 .idea/
 *.iml
-.github/instructions/wmt-copilot.instructions.md
-
+.DS_Store
