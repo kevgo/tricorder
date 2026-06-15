@@ -54,7 +54,9 @@ struct ExistingFile {
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
-    let content = step.docstring.as_ref().unwrap().trim();
+    let content = step.docstring.as_ref().unwrap();
+    let content = content.replace("\\t", "\t");
+    let content = content[1..].to_string();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir.path() {
@@ -67,7 +69,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
         .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
     world.original_files.push(ExistingFile {
         name: filename,
-        content: content.to_string(),
+        content,
     });
 }
 
@@ -95,7 +97,8 @@ async fn executing(world: &mut TricorderWorld, command: String) {
         absolute_path.set_extension("exe");
     }
     let mut cmd = Command::new(absolute_path);
-    cmd.args(args).current_dir(world.dir.path());
+    cmd.args(args);
+    cmd.current_dir(world.dir.path());
     let output = cmd
         .output()
         .await
@@ -184,6 +187,18 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     );
 }
 
+#[then("it does not print any of these lines")]
+fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    for want_line in want.lines() {
+        assert!(!stdout.contains(want_line), "STDOUT contains '{want_line}'");
+    }
+}
+
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
@@ -192,6 +207,35 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     };
     let stdout = String::from_utf8_lossy(&output.stdout);
     pretty::assert_eq!(stdout.trim(), want);
+}
+
+#[then("it prints nothing")]
+fn it_prints_nothing(world: &mut TricorderWorld) {
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    pretty::assert_eq!(stdout, "", "unexpected STDOUT content");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    pretty::assert_eq!(stderr, "", "unexpected STDERR content");
+}
+
+#[then("it prints nothing to STDOUT")]
+fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    pretty::assert_eq!(stdout, "");
+}
+
+#[then("it prints nothing to STDERR")]
+fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    pretty::assert_eq!(stderr, "");
 }
 
 #[then("it prints to STDERR")]
@@ -223,9 +267,9 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let have = String::from_utf8_lossy(&output.stdout);
+    let stdout = String::from_utf8_lossy(&output.stdout);
     if snapshots::enabled() {
-        if have != want {
+        if stdout != want {
             let path = world
                 .feature_path
                 .clone()
@@ -233,26 +277,46 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
             snapshots::queue_update(snapshots::SnapshotEdit {
                 path,
                 step_line: step.position.line,
-                new_content: have.to_string(),
+                new_content: stdout.to_string(),
             });
         }
         return;
     }
-    let missing = contains_lines(&have, want);
+    let missing = contains_lines(&stdout, want);
     assert!(
         missing.is_empty(),
-        "output is missing lines:\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        "STDOUT is missing lines:\n\nHAVE:\n{stdout}\n\nWANT:\n{want}\n\nMISSING:\n{}",
         missing.join("\n")
     );
 }
 
-#[then("it prints nothing")]
-fn it_prints_nothing(world: &mut TricorderWorld) {
-    let Some(have) = &world.output else {
+#[then("it prints the lines to STDERR")]
+fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&have.stdout);
-    pretty::assert_eq!(stdout, "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let missing = contains_lines(&stderr, want);
+    assert!(
+        missing.is_empty(),
+        "STDERR is missing lines:\n\nHAVE:\n{stderr}\n\nWANT:\n{want}\n\nMISSING:\n{}",
+        missing.join("\n")
+    );
+}
+
+#[then("it prints only these lines in any order")]
+fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
+    let mut want = step.docstring.as_ref().unwrap()[1..]
+        .lines()
+        .collect::<Vec<&str>>();
+    let Some(output) = &world.output else {
+        panic!("no command run");
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut have = stdout.lines().collect::<Vec<&str>>();
+    let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
+    assert!(compare_result.success(), "{}", compare_result.message());
 }
 
 #[then(expr = "the exit code is {int}")]
@@ -273,6 +337,7 @@ fn no_file(world: &mut TricorderWorld, want: String) {
 async fn main() {
     TricorderWorld::cucumber()
         // setting max_concurrent_scenarios to 1 causes more fluent output
+        // and doesn't seem to have a performance impact
         .max_concurrent_scenarios(1)
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);

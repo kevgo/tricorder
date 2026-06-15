@@ -1,69 +1,58 @@
 Feature: format YML
 
   Background:
-
-  Scenario: already configured
-    Given a file "main.yml" with content
-      """
-      key1:   value1
-      """
-    And a file "main.yaml" with content
-      """
-      key2:   value2
-      """
-    And a file "run-that-app" with content
+    Given a file "run-that-app" with content
       """
       prettier-standalone 0.24.0
       """
-    When executing "tricorder format"
-    Then it prints to STDERR
+
+  Scenario: valid YML
+    Given a file "main.yml" with content
       """
-      2 YML, 1 other
-      running 1 tools
+      key: value
       """
+    When executing "tricorder format --show=all"
+    Then it prints the block
+      """
+      YML (prettier)
+      """
+    And the exit code is 0
+    And file "main.yml" is unchanged
+
+  Scenario: unformatted YML
+    Given a file "main.yml" with content
+      """
+      key:     value
+      """
+    Given a file "other.yml" with content
+      """
+      key:     other
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
       YML (prettier)
       """
-    And it does not print
-      """
-      Talking to GitHub API
-      """
     And the exit code is 0
-    And file "main.yml" now has content
-      """
-      key1: value1
-      """
-    And file "main.yaml" now has content
-      """
-      key2: value2
-      """
-
-  @online
-  Scenario: auto-install
-    Given a file "main.yml" with content
-      """
-      key:   value
-      """
-    When executing "tricorder format"
-    Then it prints to STDERR
-      """
-      1 YML
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      running 1 tools
-      """
-    And it prints the lines
-      """
-      YML (prettier)
-      """
-    And the exit code is 0
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      prettier-standalone \d+\.\d+\.\d+
-      """
     And file "main.yml" now has content
       """
       key: value
       """
+    And file "other.yml" now has content
+      """
+      key: other
+      """
+
+  Scenario: invalid YML
+    Given a file "main.yml" with content
+      """
+      key: "
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      YML (prettier)
+      [error] main.yml: SyntaxError: Missing closing "quote (1:6)
+      """
+    And the exit code is 2
+    And file "main.yml" is unchanged

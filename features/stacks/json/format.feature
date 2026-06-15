@@ -1,24 +1,33 @@
 Feature: format JSON
 
   Background:
-    And a file "main.json" with content
-      """
-      {"key":"value"}
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       prettier-standalone 0.24.0
       """
-    When executing "tricorder format"
+
+  Scenario: valid JSON
+    Given a file "main.json" with content
+      """
+      { "key": "value" }
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
       JSON (prettier)
       """
-    And it does not print
+    And the exit code is 0
+    And file "main.json" is unchanged
+
+  Scenario: unformatted JSON
+    Given a file "main.json" with content
       """
-      Talking to GitHub API
+      {"key":"value"}
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      JSON (prettier)
       """
     And the exit code is 0
     And file "main.json" now has content
@@ -26,27 +35,16 @@ Feature: format JSON
       { "key": "value" }
       """
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder format"
-    Then it prints to STDERR
+  Scenario: invalid JSON
+    Given a file "main.json" with content
       """
-      1 JSON
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      running 1 tools
+      { "key":
       """
-    Then it prints the lines
+    When executing "tricorder format --show=all"
+    Then it prints the block
       """
       JSON (prettier)
+      [error] main.json: SyntaxError: Unexpected token (2:1)
       """
-    And the exit code is 0
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      prettier-standalone \d+\.\d+\.\d+
-      """
-    And file "main.json" now has content
-      """
-      { "key": "value" }
-      """
+    And the exit code is 2
+    And file "main.json" is unchanged

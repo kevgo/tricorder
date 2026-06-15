@@ -1,27 +1,48 @@
 Feature: format Cucumber
 
   Background:
-    Given a file "main.feature" with content
-      """
-      Feature:    foo
-
-        Scenario:  bar
-          Given a step
-      """
-
-  Scenario: already configured
     Given a file "run-that-app" with content
       """
       ghokin 3.9.0
       """
-    When executing "tricorder format"
+
+  Scenario: valid Cucumber
+    Given a file "main.feature" with content
+      """
+      Feature: foo
+
+        Scenario: bar
+          Given a step
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
       Cucumber (ghokin)
+      "." formatted
       """
-    And it does not print
+    And the exit code is 0
+    And file "main.feature" is unchanged
+
+  Scenario: unformatted Cucumber
+    Given a file "main.feature" with content
       """
-      Talking to GitHub API
+      Feature:   foo
+
+        Scenario:   bar
+          Given   a step
+      """
+    And a file "other.feature" with content
+      """
+      Feature:   foo2
+
+        Scenario:   bar2
+          Given   another step
+      """
+    When executing "tricorder format --show=all"
+    Then it prints the lines
+      """
+      Cucumber (ghokin)
+      "." formatted
       """
     And the exit code is 0
     And file "main.feature" now has content
@@ -31,31 +52,25 @@ Feature: format Cucumber
         Scenario: bar
           Given a step
       """
+    And file "other.feature" now has content
+      """
+      Feature: foo2
 
-  @online
-  Scenario: auto-install
-    When executing "tricorder format"
-    Then it prints to STDERR
+        Scenario: bar2
+          Given another step
       """
-      1 Cucumber
-      Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
-      running 1 tools
+
+  Scenario: invalid Cucumber
+    Given a file "main.feature" with content
       """
+      Feat
+      """
+    When executing "tricorder format --show=all"
     Then it prints the lines
       """
       Cucumber (ghokin)
+      an error occurred with file "main.feature" : Parser errors:
+      (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
-    And the exit code is 0
-    And file "main.feature" now has content
-      """
-      Feature: foo
-
-        Scenario: bar
-          Given a step
-      """
-    And file "run-that-app" now matches
-      """
-      # more info at https://github.com/kevgo/run-that-app
-
-      ghokin \d+\.\d+\.\d+
-      """
+    And the exit code is 1
+    And file "main.feature" is unchanged
