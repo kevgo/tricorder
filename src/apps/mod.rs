@@ -1,5 +1,6 @@
 pub mod biome;
 pub mod checkstyle;
+pub mod delete_empty_folders;
 pub mod gherkin_lint;
 pub mod ghokin;
 pub mod gofumpt;

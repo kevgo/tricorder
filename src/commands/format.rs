@@ -1,3 +1,4 @@
+use crate::apps::delete_empty_folders;
 use crate::cli::input::RunArgs;
 use crate::cli::output::print_metadata;
 use crate::domain::Result;
@@ -11,6 +12,9 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let mut executables = Vec::new();
+    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+        executables.push(delete_empty_folders);
+    }
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
             if let Some(executable) = formatter.format_command(stack)? {
