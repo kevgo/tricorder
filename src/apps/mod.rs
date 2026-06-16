@@ -37,7 +37,7 @@ pub(crate) fn get_rta_command(
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
-                    command,
+                    command: command.into(),
                 }));
             }
             Err(err) => match err {
