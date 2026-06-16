@@ -11,12 +11,13 @@ impl Tool for GolangciLint {
 }
 
 impl Checker for GolangciLint {
-    fn check_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
-        get_rta_command(&GetCheckCmdArgs {
+    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+        let executable = get_rta_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::GolangCiLint {},
             args: vec![S("run")],
             version: None,
-        })
+        })?;
+        Ok(executable.map(conc::Runnable::Single))
     }
 }

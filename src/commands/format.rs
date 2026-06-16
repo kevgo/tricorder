@@ -10,14 +10,14 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     if stacks.is_empty() {
         eprintln!("no stacks found");
     }
-    let mut executables = Vec::new();
+    let mut runnables = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
-        executables.push(delete_empty_folders);
+        runnables.push(conc::Runnable::Single(delete_empty_folders));
     }
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
-            if let Some(executable) = formatter.format_command(stack)? {
-                executables.push(executable);
+            if let Some(runnable) = formatter.format_command(stack)? {
+                runnables.push(runnable);
             } else {
                 // this app is not available for this platform --> don't run it
             }
@@ -25,13 +25,13 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     }
     if args.show == crate::cli::input::Show::All {
         print_metadata(&stacks, file_count);
-        eprintln!("running {} tools", executables.len());
+        eprintln!("running {} tools", runnables.len());
     }
-    if executables.is_empty() {
+    if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        executables,
+        runnables,
         error_on_output: false,
         show: args.show.into(),
         stderr_to_stdout: true,

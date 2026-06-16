@@ -12,15 +12,15 @@ impl Tool for Checkstyle {
 }
 
 impl Checker for Checkstyle {
-    fn check_command(&self, _stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
+    fn check_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",
             );
             return Ok(None);
         }
-        Ok(Some(conc::shell_executable(format!(
-            "{BINARY} {CONFIG_ARG} ."
+        Ok(Some(conc::Runnable::Single(conc::shell_executable(
+            format!("{BINARY} {CONFIG_ARG} ."),
         ))))
     }
 }

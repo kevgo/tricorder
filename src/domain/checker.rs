@@ -4,5 +4,5 @@ use crate::domain::{DetectedStack, Tool, UserError};
 pub trait Checker: Tool {
     /// Provides the shell command to run this for the given `PopulatedStack`.
     /// The checker should only check the files in that instance, not all the files it is aware of.
-    fn check_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError>;
+    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
 }
