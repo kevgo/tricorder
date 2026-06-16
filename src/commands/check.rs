@@ -12,24 +12,24 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
     if args.show == Show::All {
         print_metadata(&stacks, file_count);
     }
-    let mut executables = Vec::new();
+    let mut runnables = Vec::new();
     for stack in &stacks {
         for checker in stack.stack.checkers() {
-            if let Some(executable) = checker.check_command(stack)? {
-                executables.push(executable);
+            if let Some(executable) = checker.check_commands(stack)? {
+                runnables.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it
             }
         }
     }
     if args.show == Show::All {
-        eprintln!("running {} tools", executables.len());
+        eprintln!("running {} tools", runnables.len());
     }
-    if executables.is_empty() {
+    if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        executables,
+        runnables,
         error_on_output: false,
         show: args.show.into(),
         stderr_to_stdout: true,

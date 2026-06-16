@@ -85,6 +85,7 @@ Feature: format multiple stacks
       TypeScript (biome)
       CSS (biome)
       Python (ruff)
+      Python (ruff)
       delete-empty-folders
       """
     And file "main.css" now has content

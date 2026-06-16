@@ -324,7 +324,11 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let stdout = String::from_utf8_lossy(&stripped);
     let mut have = stdout.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
-    assert!(compare_result.success(), "{}", compare_result.message());
+    assert!(
+        compare_result.success(),
+        "{}\nHAVE:\n{stdout}",
+        compare_result.message()
+    );
 }
 
 #[then(expr = "the exit code is {int}")]

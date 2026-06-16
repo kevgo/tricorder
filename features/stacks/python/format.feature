@@ -62,9 +62,36 @@ Feature: format Python
       """
       delete-empty-folders
       Python (ruff)
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
-      error: Failed to parse other.py:1:7: missing closing quote in string literal
+      invalid-syntax: missing closing quote in string literal
+       --> main.py:1:7
+        |
+      1 | print("
+        |       ^
+        |
+
+      invalid-syntax: unexpected EOF while parsing
+       --> main.py:2:1
+        |
+      1 | print("
+        |        ^
+        |
+
+      invalid-syntax: missing closing quote in string literal
+       --> other.py:1:7
+        |
+      1 | print("
+        |       ^
+        |
+
+      invalid-syntax: unexpected EOF while parsing
+       --> other.py:2:1
+        |
+      1 | print("
+        |        ^
+        |
+
+      Found 4 errors.
       """
-    And the exit code is 2
+    And the exit code is 1
     And file "main.py" is unchanged
     And file "other.py" is unchanged
