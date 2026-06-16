@@ -43,19 +43,26 @@ Feature: format multiple good stacks
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (fix)
+      All checks passed!
+      """
+    And it prints the block
+      """
+      Python (format)
+      1 file left unchanged
       """
     And all files are unchanged
 
+  @this
   Scenario: --show=names
     When executing "tricorder format --show=names"
     Then it prints only these lines in any order
       """
-      TypeScript (biome)
-      CSS (biome)
-      Python (ruff)
-      Python (ruff)
       delete-empty-folders
+      Python (fix)
+      Python (format)
+      CSS (biome)
+      TypeScript (biome)
       """
     And all files are unchanged
 
