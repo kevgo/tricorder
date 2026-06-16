@@ -50,7 +50,11 @@ impl Checker for Ruff {
             executables.push(executable);
         }
 
-        Ok(Some(conc::Runnable::Sequence(executables)))
+        if executables.is_empty() {
+            Ok(None)
+        } else {
+            Ok(Some(conc::Runnable::Sequence(executables)))
+        }
     }
 }
 
@@ -94,6 +98,10 @@ impl Formatter for Ruff {
             executables.push(executable);
         }
 
-        Ok(Some(conc::Runnable::Sequence(executables)))
+        if executables.is_empty() {
+            Ok(None)
+        } else {
+            Ok(Some(conc::Runnable::Sequence(executables)))
+        }
     }
 }
