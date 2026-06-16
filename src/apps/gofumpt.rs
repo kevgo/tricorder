@@ -1,4 +1,4 @@
-use crate::apps::{GetCheckCmdArgs, get_rta_command};
+use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
 
@@ -18,7 +18,7 @@ impl Formatter for Gofumpt {
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }
-        let executable = get_rta_command(&GetCheckCmdArgs {
+        let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Gofumpt {},
             args,
