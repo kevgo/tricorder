@@ -68,7 +68,7 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check formatting)
       Would reformat: main.py
       1 file would be reformatted
       """
@@ -91,7 +91,7 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check formatting)
       Would reformat: main.py
       1 file would be reformatted
       """

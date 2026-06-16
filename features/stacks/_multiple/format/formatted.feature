@@ -53,7 +53,6 @@ Feature: format multiple good stacks
       """
     And all files are unchanged
 
-  @this
   Scenario: --show=names
     When executing "tricorder format --show=names"
     Then it prints only these lines in any order
