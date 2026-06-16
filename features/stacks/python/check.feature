@@ -16,10 +16,12 @@ Feature: check Python
       print("Hello, other!")
       """
     When executing "tricorder check --show=all"
-    Then it prints the block
+    Then it prints
       """
-      Python (ruff)
+      Python (check formatting)
       2 files already formatted
+      Python (lint)
+      All checks passed!
       """
     And the exit code is 0
     And file "main.py" is unchanged
@@ -35,9 +37,9 @@ Feature: check Python
       print   ("Hello, other!")
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints
       """
-      Python (ruff)
+      Python (check formatting)
       Would reformat: main.py
       Would reformat: other.py
       2 files would be reformatted
@@ -58,7 +60,7 @@ Feature: check Python
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Python (ruff)
+      Python (check formatting)
       error: Failed to parse main.py:1:7: missing closing quote in string literal
       error: Failed to parse other.py:1:7: missing closing quote in string literal
       """
