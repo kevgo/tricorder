@@ -55,6 +55,7 @@ Feature: check multiple stacks
       TypeScript (biome)
       CSS (biome)
       Python (ruff)
+      Python (ruff)
       """
     And it prints nothing to STDERR
     And all files are unchanged

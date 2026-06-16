@@ -11,33 +11,35 @@ impl Tool for Rumdl {
 }
 
 impl Checker for Rumdl {
-    fn check_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
+    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }
-        get_rta_command(&GetCheckCmdArgs {
+        let executable = get_rta_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Rumdl {},
             args,
             version: None,
-        })
+        })?;
+        Ok(executable.map(conc::Runnable::Single))
     }
 }
 
 impl Formatter for Rumdl {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Executable>, UserError> {
+    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fmt"));
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }
-        get_rta_command(&GetCheckCmdArgs {
+        let executable = get_rta_command(&GetCheckCmdArgs {
             name: format!("{} ({})", &stack.stack.name(), self.name()),
             app: &rta::applications::Rumdl {},
             args,
             version: None,
-        })
+        })?;
+        Ok(executable.map(conc::Runnable::Single))
     }
 }

@@ -255,9 +255,9 @@ dependencies = [
 
 [[package]]
 name = "concurrent_shell_commands"
-version = "0.4.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ceb8317928fb4bb434314ed1ed8a38e9816ce0dc67e75041f62360e9092ad715"
+checksum = "465e49471909fd7cb695fd33ef41343f46e2c6f4cf10b0a8443d03bff599d5ce"
 dependencies = [
  "colored 3.1.1",
 ]
