@@ -1,5 +1,10 @@
 # Tricorder changelog
 
+## 0.0.2 (2026-06-16)
+
+- Ruff runs both the formatter and linter
+- always runs the `delete-empty-folder` fixer
+
 ## 0.0.1 (2026-06-15)
 
 - commands: check, format, init
