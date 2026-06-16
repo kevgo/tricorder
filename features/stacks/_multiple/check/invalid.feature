@@ -65,7 +65,7 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check format)
       error: Failed to parse main.py:1:7: missing closing quote in string literal
       """
     And all files are unchanged
@@ -87,7 +87,7 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check format)
       error: Failed to parse main.py:1:7: missing closing quote in string literal
       """
     And all files are unchanged
@@ -99,7 +99,7 @@ Feature: check multiple stacks with invalid code
       """
       CSS (biome)
       TypeScript (biome)
-      Python (ruff)
+      Python (check format)
       """
     And it prints the block
       """
