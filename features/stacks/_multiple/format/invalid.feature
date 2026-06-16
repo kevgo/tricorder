@@ -101,7 +101,6 @@ Feature: format multiple stacks with invalid code
       """
     And all files are unchanged
 
-  @this
   Scenario: --show=failed
     When executing "tricorder format --show=failed"
     Then it prints nothing to STDERR
@@ -113,7 +112,21 @@ Feature: format multiple stacks with invalid code
       """
     And it prints the block
       """
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      invalid-syntax: missing closing quote in string literal
+       --> main.py:1:7
+        |
+      1 | print("
+        |       ^
+        |
+
+      invalid-syntax: unexpected EOF while parsing
+       --> main.py:2:1
+        |
+      1 | print("
+        |        ^
+        |
+
+      Found 2 errors.
       """
     And it prints the block
       """
