@@ -56,7 +56,13 @@ Feature: format multiple stacks
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (fix)
+      All checks passed!
+      """
+    And it prints the block
+      """
+      Python (format)
+      1 file reformatted
       """
     And file "main.css" now has content
       """
@@ -82,11 +88,11 @@ Feature: format multiple stacks
       """
     And it prints only these lines in any order
       """
+      delete-empty-folders
+      Python (fix)
+      Python (format)
       TypeScript (biome)
       CSS (biome)
-      Python (ruff)
-      Python (ruff)
-      delete-empty-folders
       """
     And file "main.css" now has content
       """

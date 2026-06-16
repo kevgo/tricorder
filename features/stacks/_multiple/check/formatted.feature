@@ -43,8 +43,13 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check format)
       1 file already formatted
+      """
+    And it prints the block
+      """
+      Python (lint)
+      All checks passed!
       """
     And all files are unchanged
 
@@ -54,8 +59,8 @@ Feature: check multiple stacks
       """
       TypeScript (biome)
       CSS (biome)
-      Python (ruff)
-      Python (ruff)
+      Python (check format)
+      Python (lint)
       """
     And it prints nothing to STDERR
     And all files are unchanged
