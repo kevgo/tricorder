@@ -104,7 +104,7 @@ Feature: check multiple stacks with unformatted files
       """
       CSS (biome)
       TypeScript (biome)
-      Python (ruff)
+      Python (check formatting)
       """
     And it prints the block
       """
