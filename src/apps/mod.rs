@@ -17,7 +17,7 @@ use rta::applications::AppDefinition;
 /// Provides the RTA command to run the given RTA App.
 /// Installs the app if needed.
 pub(crate) fn get_rta_command(
-    args: &GetCheckCmdArgs<'_>,
+    args: &GetRTACmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
     // try twice to get the command:
     // - first to get the command
@@ -57,7 +57,7 @@ pub(crate) fn get_rta_command(
     Ok(None)
 }
 
-pub struct GetCheckCmdArgs<'a> {
+pub struct GetRTACmdArgs<'a> {
     name: String,
     app: &'a dyn AppDefinition,
     args: Vec<String>,
