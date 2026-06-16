@@ -25,7 +25,7 @@ impl Checker for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (check formatting)", &stack.stack.name()),
+            name: format!("{} (check format)", &stack.stack.name()),
             app: &rta::applications::Ruff {},
             args,
             version: None,

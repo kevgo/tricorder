@@ -43,7 +43,7 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      Python (check formatting)
+      Python (check format)
       1 file already formatted
       """
     And it prints the block
@@ -59,7 +59,7 @@ Feature: check multiple stacks
       """
       TypeScript (biome)
       CSS (biome)
-      Python (check formatting)
+      Python (check format)
       Python (lint)
       """
     And it prints nothing to STDERR

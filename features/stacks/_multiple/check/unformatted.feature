@@ -68,7 +68,7 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (check formatting)
+      Python (check format)
       Would reformat: main.py
       1 file would be reformatted
       """
@@ -91,7 +91,7 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (check formatting)
+      Python (check format)
       Would reformat: main.py
       1 file would be reformatted
       """
@@ -104,7 +104,7 @@ Feature: check multiple stacks with unformatted files
       """
       CSS (biome)
       TypeScript (biome)
-      Python (check formatting)
+      Python (check format)
       """
     And it prints the block
       """
