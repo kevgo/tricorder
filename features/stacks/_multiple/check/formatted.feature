@@ -43,8 +43,13 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      Python (ruff)
+      Python (check formatting)
       1 file already formatted
+      """
+    And it prints the block
+      """
+      Python (lint)
+      All checks passed!
       """
     And all files are unchanged
 

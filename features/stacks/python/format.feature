@@ -16,9 +16,13 @@ Feature: format Python
       print("Hello, other!")
       """
     When executing "tricorder format --show=all"
-    Then it prints the block
+    Then it prints
       """
-      Python (ruff)
+      delete-empty-folders
+      Python (fix)
+      All checks passed!
+      Python (format)
+      2 files left unchanged
       """
     And the exit code is 0
     And file "main.py" is unchanged
@@ -34,9 +38,13 @@ Feature: format Python
       print   ("Hello, other!")
       """
     When executing "tricorder format --show=all"
-    Then it prints the lines
+    Then it prints
       """
-      Python (ruff)
+      delete-empty-folders
+      Python (fix)
+      All checks passed!
+      Python (format)
+      2 files reformatted
       """
     And the exit code is 0
     And file "main.py" now has content
@@ -61,7 +69,7 @@ Feature: format Python
     Then it prints
       """
       delete-empty-folders
-      Python (ruff)
+      Python (fix)
       invalid-syntax: missing closing quote in string literal
        --> main.py:1:7
         |
