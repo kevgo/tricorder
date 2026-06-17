@@ -1,6 +1,5 @@
 Feature: custom linters
 
-  @this
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
@@ -36,8 +35,9 @@ Feature: custom linters
       exit 1
       """
     When executing "tricorder check --show=all"
-    Then it prints
+    Then it prints the block
       """
+      linters/check.sh
       custom linter 1 failed
       """
     Then the exit code is 1
