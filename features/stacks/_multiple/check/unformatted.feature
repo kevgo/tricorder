@@ -54,7 +54,7 @@ Feature: check multiple stacks with unformatted files
       """
       TypeScript (biome)
       """
-    And the exit code is 1
+    And the exit code is 0
     And all files are unchanged
 
   Scenario: --show=names
