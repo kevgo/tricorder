@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: check, format, init, help]
+        [subcommands: check, postgenerate, fix, precommit, init, help]
 
       Usage: tricorder <COMMAND>
 
@@ -22,10 +22,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        check   Run all checkers and linters for every detected stack
-        format  Run all formatters for all stacks
-        init    Install Claude Code / Code Puppy hooks for this project
-        help    Print this message or the help of the given subcommand(s)
+        check  Run all code quality checks [aliases: postgenerate]
+        fix    Auto-fix all code quality issues [aliases: precommit]
+        init   Install coding agent hooks for this project
+        help   Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -42,10 +42,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        check   Run all checkers and linters for every detected stack
-        format  Run all formatters for all stacks
-        init    Install Claude Code / Code Puppy hooks for this project
-        help    Print this message or the help of the given subcommand(s)
+        check  Run all code quality checks [aliases: postgenerate]
+        fix    Auto-fix all code quality issues [aliases: precommit]
+        init   Install coding agent hooks for this project
+        help   Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -62,10 +62,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        check   Run all checkers and linters for every detected stack
-        format  Run all formatters for all stacks
-        init    Install Claude Code / Code Puppy hooks for this project
-        help    Print this message or the help of the given subcommand(s)
+        check  Run all code quality checks [aliases: postgenerate]
+        fix    Auto-fix all code quality issues [aliases: precommit]
+        init   Install coding agent hooks for this project
+        help   Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help

@@ -13,7 +13,7 @@ Feature: don't format files in .gitignore
       """
       #      this file will get ignored
       """
-    When executing "tricorder format"
+    When executing "tricorder fix"
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """

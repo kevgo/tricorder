@@ -11,7 +11,7 @@ Feature: format TOML
       """
       key = "value"
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       TOML (taplo)
@@ -28,7 +28,7 @@ Feature: format TOML
       """
       key =     "other"
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       TOML (taplo)
@@ -48,7 +48,7 @@ Feature: format TOML
       """
       key = "
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       TOML (taplo)

@@ -13,7 +13,7 @@ Feature: format CSS
       \tcolor: red;
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       CSS (biome)
@@ -34,7 +34,7 @@ Feature: format CSS
         color : blue ;
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       CSS (biome)
@@ -60,7 +60,7 @@ Feature: format CSS
         col
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       CSS (biome)

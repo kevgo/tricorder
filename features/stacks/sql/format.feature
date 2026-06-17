@@ -15,7 +15,7 @@ Feature: format SQL
       """
       select id, name from two
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       SQL (sqlfmt)
@@ -34,7 +34,7 @@ Feature: format SQL
       """
       SELECT            id, name FROM two
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       SQL (sqlfmt)
@@ -62,7 +62,7 @@ Feature: format SQL
       """
       SELECT FROM "
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       SQL (sqlfmt)
@@ -82,7 +82,7 @@ Feature: format SQL
       """
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       no stacks found

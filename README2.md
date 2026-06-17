@@ -167,7 +167,7 @@ Stacks are auto-detected — there's no config file to maintain.
 
 ## Roadmap
 
-- `tricorder format`: a write-mode that applies every safe auto-fix
+- `tricorder fix`: a write-mode that applies every safe auto-fix
   so the agent doesn't have to round-trip findings it could resolve
   mechanically.
 - Structured JSON output (`--json`, `--output`) for richer agent digests

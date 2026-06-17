@@ -20,7 +20,7 @@ Feature: format multiple stacks with invalid code
       """
 
   Scenario: default visibility
-    When executing "tricorder format"
+    When executing "tricorder fix"
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
@@ -59,7 +59,7 @@ Feature: format multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=all
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -81,7 +81,7 @@ Feature: format multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder format --show=names"
+    When executing "tricorder fix --show=names"
     Then it prints nothing to STDERR
     And it prints the lines
       """
@@ -116,7 +116,7 @@ Feature: format multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder format --show=failed"
+    When executing "tricorder fix --show=failed"
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """

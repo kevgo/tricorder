@@ -22,7 +22,7 @@ pub enum Command {
     #[command(visible_alias = "precommit")]
     Fix(RunArgs),
 
-    /// Install Claude Code / Code Puppy hooks for this project
+    /// Install coding agent hooks for this project
     Init(InitArgs),
 }
 
