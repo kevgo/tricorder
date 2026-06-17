@@ -106,6 +106,17 @@ The scripts are short, readable, and yours to modify.
 They no-op silently when Tricorder isn't installed,
 so committing `.claude/` never breaks a teammate's setup.
 
+## Custom linters
+
+You can define custom linters in a config file `tricorder.toml`.
+
+```toml
+linters.custom = [
+  "linters/one.sh",
+  "linters/two.go",
+]
+```
+
 ## CI
 
 The same `tricorder check` exit code feeds straight into CI.
