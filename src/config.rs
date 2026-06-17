@@ -103,9 +103,8 @@ linters = {}
     }
 
     mod custom_linters {
-        use big_s::S;
-
         use crate::config::{Config, Linters};
+        use big_s::S;
 
         #[test]
         fn empty() {
