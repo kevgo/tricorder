@@ -32,7 +32,7 @@ Feature: custom linters
       """
       #!/usr/bin/env bash
       echo "custom linter 1 failed"
-      exit 1
+      exit 4
       """
     When executing "tricorder check --show=all"
     Then it prints the block
@@ -40,4 +40,4 @@ Feature: custom linters
       linters/check.sh
       custom linter 1 failed
       """
-    Then the exit code is 1
+    Then the exit code is 4
