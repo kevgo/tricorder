@@ -51,7 +51,7 @@ mod tests {
         use crate::config::Config;
 
         #[test]
-        fn parse_custom_linters() {
+        fn custom_linters_defined() {
             let text = r#"
 linters.custom = [
   "linters/check-files.sh",
@@ -63,6 +63,15 @@ linters.custom = [
                 config.custom_linters(),
                 &["linters/check-files.sh", "linters/check-tests"]
             );
+        }
+
+        #[test]
+        fn custom_linters_empty() {
+            let text = r#"
+linters.custom = []
+"#;
+            let config: Config = toml::from_str(text).unwrap();
+            assert!(config.custom_linters().is_empty());
         }
 
         #[test]
