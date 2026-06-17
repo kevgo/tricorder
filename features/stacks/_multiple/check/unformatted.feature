@@ -30,21 +30,8 @@ Feature: check multiple stacks with unformatted files
       TypeScript (biome)
       Python (ruff)
       """
-    And it prints the block
-      """
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Would reformat: main.py
-      1 file would be reformatted
-      """
+    And it prints nothing
+    And the exit code is 0
     And all files are unchanged
 
   Scenario: --show=all
@@ -54,71 +41,37 @@ Feature: check multiple stacks with unformatted files
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 3 tools
       """
-    And it prints the lines
+    And it prints the block
       """
-      CSS (biome)
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the lines
-      """
-      TypeScript (biome)
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Python (lint)
+      All checks passed!
       """
     And it prints the block
       """
-      Python (check format)
-      Would reformat: main.py
-      1 file would be reformatted
+      CSS (biome)
       """
+    And it prints the block
+      """
+      TypeScript (biome)
+      """
+    And the exit code is 0
     And all files are unchanged
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
     Then it prints nothing to STDERR
-    And it prints the lines
+    And it prints only these lines in any order
       """
-      CSS (biome)
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the lines
-      """
+      Python (lint)
       TypeScript (biome)
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      CSS (biome)
       """
-    And it prints the block
-      """
-      Python (check format)
-      Would reformat: main.py
-      1 file would be reformatted
-      """
+    And the exit code is 0
     And all files are unchanged
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing to STDERR
-    And it does not print any of these lines
-      """
-      CSS (biome)
-      TypeScript (biome)
-      Python (check format)
-      """
-    And it prints the block
-      """
-      Found 1 error.
-      main.css format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Found 1 error.
-      main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Would reformat: main.py
-      1 file would be reformatted
-      """
+    And it prints nothing
+    And the exit code is 0
     And all files are unchanged

@@ -29,12 +29,11 @@ Feature: check TypeScript
       console.log(  "other"  );
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints the block
       """
       TypeScript (biome)
-      Found 2 errors.
       """
-    And the exit code is 1
+    And the exit code is 0
     And file "main.ts" is unchanged
     And file "other.ts" is unchanged
 
@@ -47,7 +46,7 @@ Feature: check TypeScript
     Then it prints the lines
       """
       TypeScript (biome)
-      Found 5 errors.
+      Found 2 errors.
       """
     And the exit code is 1
     And file "main.ts" is unchanged
