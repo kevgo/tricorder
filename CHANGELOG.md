@@ -1,5 +1,16 @@
 # Tricorder changelog
 
+## 0.0.3 (2026-06-17)
+
+- Removed checking for formatting from `tricorder check`.
+  Given that not all stacks support format checking,
+  and there are custom formatters,
+  the only way to guarantee correct formatting is to run `tricorder fix`.
+- Renamed `tricorder format` to `tricorder fix` because it formats
+  and also fixes code smells.
+- `tricorder postgenerate` for running inside the agentic loop.
+- `tricorder precommit` for running inside Git's precommit hook.
+
 ## 0.0.2 (2026-06-16)
 
 - Ruff runs both the formatter and linter
