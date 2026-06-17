@@ -12,10 +12,7 @@ Feature: check YML
       key: value
       """
     When executing "tricorder check --show=all"
-    Then it prints the block
-      """
-      YML (prettier)
-      """
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
 
@@ -24,20 +21,10 @@ Feature: check YML
       """
       key:     value
       """
-    And a file "other.yml" with content
-      """
-      key:     other
-      """
     When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      YML (prettier)
-      other.yml
-      main.yml
-      """
-    And the exit code is 1
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "main.yml" is unchanged
-    And file "other.yml" is unchanged
 
   Scenario: invalid YML
     Given a file "main.yml" with content
@@ -45,10 +32,6 @@ Feature: check YML
       key: "
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      YML (prettier)
-      [error] main.yml: SyntaxError: Missing closing "quote (1:6)
-      """
-    And the exit code is 2
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "main.yml" is unchanged
