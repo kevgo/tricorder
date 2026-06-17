@@ -6,7 +6,7 @@ Feature: install all SQL tools
       """
       SELECT    id, name FROM one
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/uv/releases/latest) ... ok

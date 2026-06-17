@@ -14,7 +14,7 @@ Feature: format Cucumber
         Scenario: bar
           Given a step
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Cucumber (ghokin)
@@ -38,7 +38,7 @@ Feature: format Cucumber
         Scenario:   bar2
           Given   another step
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Cucumber (ghokin)
@@ -65,7 +65,7 @@ Feature: format Cucumber
       """
       Feat
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Cucumber (ghokin)

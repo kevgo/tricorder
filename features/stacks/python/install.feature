@@ -6,7 +6,7 @@ Feature: install all Python tools
       """
       print    ("Hello, world!")
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok

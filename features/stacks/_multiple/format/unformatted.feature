@@ -22,7 +22,7 @@ Feature: format multiple stacks
       """
 
   Scenario: default visibility
-    When executing "tricorder format"
+    When executing "tricorder fix"
     Then it prints nothing
     And file "main.py" now has content
       """
@@ -40,7 +40,7 @@ Feature: format multiple stacks
       """
 
   Scenario: --show=all
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -80,7 +80,7 @@ Feature: format multiple stacks
       """
 
   Scenario: --show=names
-    When executing "tricorder format --show=names"
+    When executing "tricorder fix --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -110,7 +110,7 @@ Feature: format multiple stacks
       """
 
   Scenario: --show=failed
-    When executing "tricorder format --show=failed"
+    When executing "tricorder fix --show=failed"
     Then it prints nothing
     And file "main.css" now has content
       """

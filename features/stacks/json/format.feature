@@ -11,7 +11,7 @@ Feature: format JSON
       """
       { "key": "value" }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       JSON (prettier)
@@ -24,7 +24,7 @@ Feature: format JSON
       """
       {"key":"value"}
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       JSON (prettier)
@@ -40,7 +40,7 @@ Feature: format JSON
       """
       { "key":
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       JSON (prettier)

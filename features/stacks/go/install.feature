@@ -15,7 +15,7 @@ Feature: install all Go tools
       	fmt.Println(    "Hello, world!")
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/mvdan/gofumpt/releases/latest) ... ok
