@@ -96,9 +96,10 @@ linters = {}
         }
 
         #[test]
-        fn parse_empty_config() {
-            let config: Config = toml::from_str("").unwrap();
-            assert_eq!(config.custom_linters(), &[] as &[String]);
+        fn empty() {
+            let have: Config = toml::from_str("").unwrap();
+            let want = Config { linters: None };
+            assert_eq!(have, want);
         }
     }
 
