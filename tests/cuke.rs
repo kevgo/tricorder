@@ -73,6 +73,38 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     });
 }
 
+#[given(expr = "an executable file {string} with content")]
+async fn an_executable_file_with_content(
+    world: &mut TricorderWorld,
+    step: &Step,
+    filename: String,
+) {
+    let content = step.docstring.as_ref().unwrap();
+    let content = content.replace("\\t", "\t");
+    let content = content[1..].to_string();
+    let filepath = world.dir.path().join(&filename);
+    let parent = filepath.parent().unwrap();
+    if parent != world.dir.path() {
+        fs::create_dir_all(parent)
+            .await
+            .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
+    }
+    fs::write(&filepath, content.as_bytes())
+        .await
+        .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let mut perms = fs::metadata(&filepath).await.unwrap().permissions();
+        perms.set_mode(0o755);
+        fs::set_permissions(&filepath, perms).await.unwrap();
+    }
+    world.original_files.push(ExistingFile {
+        name: filename,
+        content,
+    });
+}
+
 #[when(expr = "inspect the workspace")]
 async fn inspect_workspace(world: &mut TricorderWorld) {
     // print visibly to the user even though this runs inside Cucumber

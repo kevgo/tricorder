@@ -1,5 +1,6 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
+use crate::config::Config;
 use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
@@ -21,6 +22,10 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
                 // this app is not available for this platform --> don't run it
             }
         }
+    }
+    let config = Config::load()?;
+    for linter in config.custom_linters() {
+        runnables.push(conc::Runnable::Single(conc::shell_executable(linter)));
     }
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
