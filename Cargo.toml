@@ -16,6 +16,8 @@ conc = { package = "concurrent_shell_commands", version = "0.5.0" }
 ignore = "0.4.26"
 itertools = "0.14.0"
 rta = { package = "run-that-app", version = "0.38.0" }
+serde = { version = "1.0.228", features = ["derive"] }
+toml = "1.1.2"
 which = "8.0.3"
 
 [dev-dependencies]
