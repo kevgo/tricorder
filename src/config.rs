@@ -48,9 +48,8 @@ impl Config {
 mod tests {
 
     mod parse {
-        use big_s::S;
-
         use crate::config::{Config, Linters};
+        use big_s::S;
 
         #[test]
         fn custom_linters_defined() {
