@@ -13,7 +13,7 @@ impl Tool for Biome {
 impl Checker for Biome {
     fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
-        args.push(S("check"));
+        args.push(S("lint"));
         for file in &stack.files {
             args.push(file.to_string_lossy().to_string());
         }
