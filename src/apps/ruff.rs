@@ -12,9 +12,6 @@ impl Tool for Ruff {
 
 impl Checker for Ruff {
     fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
-        let mut executables = Vec::with_capacity(2);
-
-        // run "ruff check"
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         for file in &stack.files {
@@ -26,15 +23,10 @@ impl Checker for Ruff {
             args,
             version: None,
         })?;
-        if let Some(executable) = executable {
-            executables.push(executable);
-        }
-
-        if executables.is_empty() {
-            Ok(None)
-        } else {
-            Ok(Some(conc::Runnable::Sequence(executables)))
-        }
+        let Some(executable) = executable else {
+            return Ok(None);
+        };
+        Ok(Some(conc::Runnable::Single(executable)))
     }
 }
 
