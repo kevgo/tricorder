@@ -70,9 +70,7 @@ linters.custom = [
 
         #[test]
         fn custom_linters_empty() {
-            let give = r#"
-linters.custom = []
-"#;
+            let give = "linters.custom = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 linters: Some(Linters {
@@ -84,9 +82,7 @@ linters.custom = []
 
         #[test]
         fn custom_linters_undefined() {
-            let give = r#"
-linters = {}
-"#;
+            let give = "linters = {}";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 linters: Some(Linters { custom: None }),
