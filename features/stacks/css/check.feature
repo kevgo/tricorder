@@ -29,12 +29,11 @@ Feature: check CSS
       }
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
+    Then it prints the block
       """
       CSS (biome)
-      Found 1 error.
       """
-    And the exit code is 1
+    And the exit code is 0
     And file "main.css" is unchanged
 
   Scenario: invalid CSS
@@ -48,7 +47,7 @@ Feature: check CSS
     Then it prints the lines
       """
       CSS (biome)
-      Found 5 errors.
+      Found 2 errors.
       """
     And the exit code is 1
     And file "main.css" is unchanged

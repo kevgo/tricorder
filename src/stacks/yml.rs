@@ -15,7 +15,7 @@ impl Stack for Yml {
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Prettier {})]
+        vec![]
     }
 
     fn formatters(&self) -> Vec<Box<dyn Formatter>> {

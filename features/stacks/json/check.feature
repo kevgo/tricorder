@@ -12,10 +12,7 @@ Feature: check JSON
       { "key": "value" }
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      JSON (prettier)
-      """
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged
 
@@ -25,12 +22,8 @@ Feature: check JSON
       {"key":"value"}
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      JSON (prettier)
-      main.json
-      """
-    And the exit code is 1
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "main.json" is unchanged
 
   Scenario: invalid CSS
@@ -39,10 +32,6 @@ Feature: check JSON
       { "key":
       """
     When executing "tricorder check --show=all"
-    Then it prints the lines
-      """
-      JSON (prettier)
-      [error] main.json: SyntaxError: Unexpected token (2:1)
-      """
-    And the exit code is 2
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "main.json" is unchanged

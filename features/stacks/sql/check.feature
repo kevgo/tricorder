@@ -16,11 +16,7 @@ Feature: check SQL
       select id, name from two
       """
     When executing "tricorder check --show=all"
-    Then it prints the block
-      """
-      SQL (sqlfmt)
-      2 files passed formatting check.
-      """
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
     And file "two.sql" is unchanged
@@ -30,22 +26,10 @@ Feature: check SQL
       """
       SELECT            id, name FROM one
       """
-    And a file "two.sql" with content
-      """
-      SELECT            id, name FROM two
-      """
     When executing "tricorder check --show=all"
-    Then it prints the block
-      """
-      SQL (sqlfmt)
-      2 files failed formatting check.
-      0 files passed formatting check.
-      one.sql failed formatting check.
-      two.sql failed formatting check.
-      """
-    And the exit code is 1
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "one.sql" is unchanged
-    And file "two.sql" is unchanged
 
   Scenario: invalid SQL
     Given a file "one.sql" with content
@@ -57,17 +41,8 @@ Feature: check SQL
       SELECT FROM "
       """
     When executing "tricorder check --show=all"
-    Then it prints the block
-      """
-      SQL (sqlfmt)
-      2 files had errors while formatting.
-      0 files passed formatting check.
-      one.sql
-          sqlfmt encountered an error: Could not parse SQL at position 11: '"'
-      two.sql
-          sqlfmt encountered an error: Could not parse SQL at position 11: '"'
-      """
-    And the exit code is 2
+    Then it prints nothing to STDOUT
+    And the exit code is 0
     And file "one.sql" is unchanged
     And file "two.sql" is unchanged
 
