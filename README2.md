@@ -113,7 +113,7 @@ You can define custom linters in a config file `tricorder.toml`.
 ```toml
 linters.custom = [
   "linters/one.sh",
-  "linters/two.go",
+  "linters/two.py",
 ]
 ```
 
