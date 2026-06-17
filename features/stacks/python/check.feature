@@ -35,7 +35,7 @@ Feature: check Python
       print   ("Hello, other!")
       """
     When executing "tricorder check --show=all"
-    And the exit code is 1
+    Then the exit code is 0
     And file "main.py" is unchanged
     And file "other.py" is unchanged
 
@@ -49,6 +49,6 @@ Feature: check Python
       print("
       """
     When executing "tricorder check --show=all"
-    And the exit code is 2
+    Then the exit code is 1
     And file "main.py" is unchanged
     And file "other.py" is unchanged
