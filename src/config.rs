@@ -2,15 +2,13 @@ use crate::domain::{Result, UserError};
 use serde::Deserialize;
 use std::fs;
 
-const CONFIG_FILE: &str = "tricorder.toml";
+const CONFIG_FILENAME: &str = "tricorder.toml";
 
-/// the content of the optional `tricorder.toml` config file
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
     pub linters: Option<Linters>,
 }
 
-/// the `[linters]` section of `tricorder.toml`
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Linters {
     /// custom linter commands to run in addition to the auto-detected ones
@@ -18,30 +16,31 @@ pub struct Linters {
 }
 
 impl Config {
-    /// Reads and parses `tricorder.toml` in the current directory.
-    /// Returns the default (empty) config if the file does not exist.
     pub fn load() -> Result<Self> {
-        let text = match fs::read_to_string(CONFIG_FILE) {
+        let text = match fs::read_to_string(CONFIG_FILENAME) {
             Ok(text) => text,
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(Self::default()),
             Err(err) => {
-                return Err(UserError::Cli {
-                    msg: format!("cannot read {CONFIG_FILE}: {err}"),
+                return Err(UserError::Config {
+                    msg: format!("cannot read {CONFIG_FILENAME}: {err}"),
                 });
             }
         };
-        toml::from_str(&text).map_err(|err| UserError::Cli {
-            msg: format!("cannot parse {CONFIG_FILE}: {err}"),
+        toml::from_str(&text).map_err(|err| UserError::Config {
+            msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })
     }
 
-    /// provides the list of custom linter commands, or an empty slice if none are configured
+    /// provides the custom linter commands
     #[must_use]
     pub fn custom_linters(&self) -> &[String] {
-        self.linters
-            .as_ref()
-            .and_then(|l| l.custom.as_deref())
-            .unwrap_or_default()
+        let Some(linters) = &self.linters else {
+            return &[];
+        };
+        let Some(custom) = &linters.custom else {
+            return &[];
+        };
+        custom
     }
 }
 
@@ -68,5 +67,16 @@ linters.custom = [
     fn parse_empty_config() {
         let config: Config = toml::from_str("").unwrap();
         assert_eq!(config.custom_linters(), &[] as &[String]);
+    }
+
+    mod custom_linters {
+        use super::*;
+
+        #[test]
+        fn empty() {
+            let config = Config { linters: None };
+            let have = config.custom_linters();
+            assert_eq!(have, &[] as &[String]);
+        }
     }
 }

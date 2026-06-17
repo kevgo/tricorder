@@ -6,6 +6,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
     Cli { msg: String },
+    Config { msg: String },
     Rta { err: rta::error::UserError },
 }
 
@@ -13,6 +14,7 @@ impl UserError {
     pub fn print(self) {
         match self {
             UserError::Cli { msg } => println!("{msg}"),
+            UserError::Config { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }
     }
