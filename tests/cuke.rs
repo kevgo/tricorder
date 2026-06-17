@@ -79,8 +79,7 @@ async fn an_executable_file_with_content(
     step: &Step,
     filename: String,
 ) {
-    let content = step.docstring.as_ref().unwrap();
-    let content = content[1..].to_string();
+    let content = step.docstring.as_ref().unwrap()[1..].to_string();
     let filepath = world.dir.path().join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir.path() {
