@@ -6,7 +6,7 @@ Feature: install all TOML tools
       """
       key =      "value"
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok

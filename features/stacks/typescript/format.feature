@@ -11,7 +11,7 @@ Feature: format TypeScript
       """
       console.log("hello");
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       TypeScript (biome)
@@ -28,7 +28,7 @@ Feature: format TypeScript
       """
       console.log(  "other"  );
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       TypeScript (biome)
@@ -48,7 +48,7 @@ Feature: format TypeScript
       """
       console.log("
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       TypeScript (biome)

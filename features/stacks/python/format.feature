@@ -15,7 +15,7 @@ Feature: format Python
       """
       print("Hello, other!")
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints
       """
       delete-empty-folders
@@ -37,7 +37,7 @@ Feature: format Python
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints
       """
       delete-empty-folders
@@ -65,7 +65,7 @@ Feature: format Python
       """
       print("
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints
       """
       delete-empty-folders

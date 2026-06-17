@@ -60,7 +60,7 @@ Tricorder runs all applicable type checkers, linters, and tests,
 and the agent fixes every reported issue.
 This enforces defect-free, smell-free output before anything gets committed.
 
-**Before committing:** A Git pre-commit hook runs `tricorder format`.
+**Before committing:** A Git pre-commit hook runs `tricorder fix`.
 Every repo ends up in canonical style,
 which also makes writing custom linters significantly easier.
 

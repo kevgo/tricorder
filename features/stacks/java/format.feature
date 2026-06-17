@@ -9,7 +9,7 @@ Feature: format Java
           }
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       1 Java
@@ -27,7 +27,7 @@ Feature: format Java
       }
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       1 Java
@@ -45,7 +45,7 @@ Feature: format Java
           }
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
       1 Java

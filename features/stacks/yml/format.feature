@@ -11,7 +11,7 @@ Feature: format YML
       """
       key: value
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       YML (prettier)
@@ -28,7 +28,7 @@ Feature: format YML
       """
       key:     other
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       YML (prettier)
@@ -48,7 +48,7 @@ Feature: format YML
       """
       key: "
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       YML (prettier)

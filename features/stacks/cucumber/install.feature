@@ -9,7 +9,7 @@ Feature: install all Cucumber tools
         Scenario:   bar
           Given a step
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok

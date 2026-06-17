@@ -11,7 +11,7 @@ Feature: format Markdown
       """
       # Hello
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)
@@ -24,7 +24,7 @@ Feature: format Markdown
       """
       #     Hello
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)
@@ -43,7 +43,7 @@ Feature: format Markdown
 
       [e
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Markdown (rumdl)

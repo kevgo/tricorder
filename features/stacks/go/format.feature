@@ -23,7 +23,7 @@ Feature: format Go
       	fmt.Println("Hello, world!")
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       Go (gofumpt)
@@ -48,7 +48,7 @@ Feature: format Go
       	fmt.Println(    "Hello, other!")
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       Go (gofumpt)
@@ -86,7 +86,7 @@ Feature: format Go
       	fmt.Println("
       }
       """
-    When executing "tricorder format --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
       Go (gofumpt)
