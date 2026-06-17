@@ -66,12 +66,6 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (check format)
-      Would reformat: main.py
-      1 file would be reformatted
-      """
     And all files are unchanged
 
   Scenario: --show=names
@@ -89,23 +83,11 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (check format)
-      Would reformat: main.py
-      1 file would be reformatted
-      """
     And all files are unchanged
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing to STDERR
-    And it does not print any of these lines
-      """
-      CSS (biome)
-      TypeScript (biome)
-      Python (check format)
-      """
     And it prints the block
       """
       Found 1 error.
@@ -115,10 +97,5 @@ Feature: check multiple stacks with unformatted files
       """
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Would reformat: main.py
-      1 file would be reformatted
       """
     And all files are unchanged

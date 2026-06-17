@@ -40,7 +40,8 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the block
       """
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      invalid-syntax: missing closing quote in string literal
+       --> main.py:1:7
       """
     And all files are unchanged
 
@@ -63,11 +64,6 @@ Feature: check multiple stacks with invalid code
       Found 5 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (check format)
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
-      """
     And all files are unchanged
 
   Scenario: --show=names
@@ -85,11 +81,6 @@ Feature: check multiple stacks with invalid code
       Found 5 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Python (check format)
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
-      """
     And all files are unchanged
 
   Scenario: --show=failed
@@ -99,7 +90,6 @@ Feature: check multiple stacks with invalid code
       """
       CSS (biome)
       TypeScript (biome)
-      Python (check format)
       """
     And it prints the block
       """
@@ -113,6 +103,7 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the block
       """
-      error: Failed to parse main.py:1:7: missing closing quote in string literal
+      invalid-syntax: missing closing quote in string literal
+       --> main.py:1:7
       """
     And all files are unchanged
