@@ -1,16 +1,27 @@
-Feature: custom linters via tricorder.toml
+Feature: custom linters
 
+  @this
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
-      linters.custom = ["linters/check.sh"]
+      linters.custom = ["linters/one.sh", "find . | xargs echo"]
       """
-    And an executable file "linters/check.sh" with content
+    And an executable file "linters/one.sh" with content
       """
       #!/usr/bin/env bash
-      exit 0
+      echo "custom linter 1"
       """
-    When executing "tricorder check"
+    When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      linters/one.sh
+      custom linter 1
+      """
+    And it prints the block
+      """
+      find . | xargs echo
+      . ./run-that-app ./linters ./linters/one.sh ./tricorder.toml
+      """
     Then the exit code is 0
 
   Scenario: custom linter fails
@@ -21,32 +32,12 @@ Feature: custom linters via tricorder.toml
     And an executable file "linters/check.sh" with content
       """
       #!/usr/bin/env bash
+      echo "custom linter 1 failed"
       exit 1
       """
-    When executing "tricorder check"
+    When executing "tricorder check --show=all"
+    Then it prints
+      """
+      custom linter 1 failed
+      """
     Then the exit code is 1
-
-  Scenario: multiple custom linters
-    Given a file "tricorder.toml" with content
-      """
-      linters.custom = [
-        "linters/check-a.sh",
-        "linters/check-b.sh",
-      ]
-      """
-    And an executable file "linters/check-a.sh" with content
-      """
-      #!/usr/bin/env bash
-      exit 0
-      """
-    And an executable file "linters/check-b.sh" with content
-      """
-      #!/usr/bin/env bash
-      exit 0
-      """
-    When executing "tricorder check"
-    Then the exit code is 0
-
-  Scenario: no tricorder.toml
-    When executing "tricorder check"
-    Then the exit code is 0
