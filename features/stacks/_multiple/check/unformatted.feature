@@ -40,11 +40,7 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
-    And it prints the block
-      """
-      Would reformat: main.py
-      1 file would be reformatted
-      """
+    And the exit code is 1
     And all files are unchanged
 
   Scenario: --show=all
@@ -66,6 +62,7 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
+    And the exit code is 1
     And all files are unchanged
 
   Scenario: --show=names
@@ -83,6 +80,7 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
+    And the exit code is 1
     And all files are unchanged
 
   Scenario: --show=failed
@@ -98,4 +96,5 @@ Feature: check multiple stacks with unformatted files
       Found 1 error.
       main.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
+    And the exit code is 1
     And all files are unchanged
