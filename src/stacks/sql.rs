@@ -14,7 +14,7 @@ impl Stack for Sql {
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Sqlfmt {})]
+        vec![]
     }
 
     fn formatters(&self) -> Vec<Box<dyn Formatter>> {
