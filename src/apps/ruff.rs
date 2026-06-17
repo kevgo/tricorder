@@ -14,26 +14,6 @@ impl Checker for Ruff {
     fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut executables = Vec::with_capacity(2);
 
-        // NOTE: Ruff has separate commands for formatting and linting
-        // until https://github.com/astral-sh/ruff/issues/8232 ships.
-
-        // run "ruff format --check"
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
-        args.push(S("format"));
-        args.push(S("--check"));
-        for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
-        }
-        let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (check format)", &stack.stack.name()),
-            app: &rta::applications::Ruff {},
-            args,
-            version: None,
-        })?;
-        if let Some(executable) = executable {
-            executables.push(executable);
-        }
-
         // run "ruff check"
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
