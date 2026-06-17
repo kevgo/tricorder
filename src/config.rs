@@ -70,6 +70,8 @@ linters.custom = [
     }
 
     mod custom_linters {
+        use big_s::S;
+
         use super::*;
 
         #[test]
@@ -77,6 +79,18 @@ linters.custom = [
             let config = Config { linters: None };
             let have = config.custom_linters();
             assert_eq!(have, &[] as &[String]);
+        }
+
+        #[test]
+        fn defined() {
+            let config = Config {
+                linters: Some(Linters {
+                    custom: Some(vec![S("linters/one.sh"), S("linters/two.sh")]),
+                }),
+            };
+            let have = config.custom_linters();
+            let want = &["linters/one.sh", "linters/two.sh"];
+            assert_eq!(have, want);
         }
     }
 }
