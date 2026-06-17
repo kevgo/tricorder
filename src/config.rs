@@ -46,33 +46,36 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
-    #[test]
-    fn parse_custom_linters() {
-        let text = r#"
+    mod parse {
+        use crate::config::Config;
+
+        #[test]
+        fn parse_custom_linters() {
+            let text = r#"
 linters.custom = [
   "linters/check-files.sh",
   "linters/check-tests",
 ]
 "#;
-        let config: Config = toml::from_str(text).unwrap();
-        assert_eq!(
-            config.custom_linters(),
-            &["linters/check-files.sh", "linters/check-tests"]
-        );
-    }
+            let config: Config = toml::from_str(text).unwrap();
+            assert_eq!(
+                config.custom_linters(),
+                &["linters/check-files.sh", "linters/check-tests"]
+            );
+        }
 
-    #[test]
-    fn parse_empty_config() {
-        let config: Config = toml::from_str("").unwrap();
-        assert_eq!(config.custom_linters(), &[] as &[String]);
+        #[test]
+        fn parse_empty_config() {
+            let config: Config = toml::from_str("").unwrap();
+            assert_eq!(config.custom_linters(), &[] as &[String]);
+        }
     }
 
     mod custom_linters {
         use big_s::S;
 
-        use super::*;
+        use crate::config::{Config, Linters};
 
         #[test]
         fn empty() {

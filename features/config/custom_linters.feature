@@ -21,7 +21,7 @@ Feature: custom linters
       find . | xargs echo
       . ./run-that-app ./linters ./linters/one.sh ./tricorder.toml
       """
-    Then the exit code is 0
+    And the exit code is 0
 
   Scenario: custom linter fails
     Given a file "tricorder.toml" with content
@@ -40,4 +40,4 @@ Feature: custom linters
       linters/check.sh
       custom linter 1 failed
       """
-    Then the exit code is 4
+    And the exit code is 4

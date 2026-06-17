@@ -13,8 +13,7 @@ pub enum UserError {
 impl UserError {
     pub fn print(self) {
         match self {
-            UserError::Cli { msg } => println!("{msg}"),
-            UserError::Config { msg } => println!("{msg}"),
+            UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }
     }
