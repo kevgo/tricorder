@@ -107,14 +107,14 @@ linters = {}
         use big_s::S;
 
         #[test]
-        fn empty() {
+        fn none() {
             let config = Config { linters: None };
             let have = config.custom_linters();
             assert_eq!(have, &[] as &[String]);
         }
 
         #[test]
-        fn defined() {
+        fn some() {
             let config = Config {
                 linters: Some(Linters {
                     custom: Some(vec![S("linters/one.sh"), S("linters/two.sh")]),
