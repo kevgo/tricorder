@@ -2,6 +2,7 @@
 
 ## 0.0.3 (2026-06-17)
 
+- Support for custom linters in `tricorder.toml`.
 - Removed checking for formatting from `tricorder check`.
   Given that not all stacks support format checking,
   and there are custom formatters,
