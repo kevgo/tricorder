@@ -85,11 +85,14 @@ linters.custom = []
 
         #[test]
         fn custom_linters_undefined() {
-            let text = r#"
+            let give = r#"
 linters = {}
 "#;
-            let config: Config = toml::from_str(text).unwrap();
-            assert!(config.custom_linters().is_empty());
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                linters: Some(Linters { custom: None }),
+            };
+            assert_eq!(have, want);
         }
 
         #[test]
