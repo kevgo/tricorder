@@ -54,13 +54,13 @@ mod tests {
 
         #[test]
         fn custom_linters_defined() {
-            let text = r#"
+            let give = r#"
 linters.custom = [
   "linters/check-files.sh",
   "linters/check-tests",
 ]
 "#;
-            let have: Config = toml::from_str(text).unwrap();
+            let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 linters: Some(Linters {
                     custom: Some(vec![S("linters/check-files.sh"), S("linters/check-tests")]),
@@ -71,11 +71,16 @@ linters.custom = [
 
         #[test]
         fn custom_linters_empty() {
-            let text = r#"
+            let give = r#"
 linters.custom = []
 "#;
-            let config: Config = toml::from_str(text).unwrap();
-            assert!(config.custom_linters().is_empty());
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                linters: Some(Linters {
+                    custom: Some(vec![]),
+                }),
+            };
+            assert_eq!(have, want);
         }
 
         #[test]
