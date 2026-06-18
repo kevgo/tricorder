@@ -5,8 +5,13 @@ Feature: check Python
       """
       ruff 0.15.16
       """
+    And a file "pyrightconfig.json" with content
+      """
+      {}
+      """
 
-  Scenario: valid JSON
+  @this
+  Scenario: valid Python
     Given a file "main.py" with content
       """
       print("Hello, world!")

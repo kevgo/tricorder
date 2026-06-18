@@ -1,3 +1,4 @@
+use crate::apps::pyright::Pyright;
 use crate::apps::ruff::Ruff;
 use crate::domain::{Checker, Fixer, Stack, StackType};
 use std::path::Path;
@@ -14,7 +15,7 @@ impl Stack for Python {
     }
 
     fn checkers(&self) -> Vec<Box<dyn Checker>> {
-        vec![Box::new(Ruff {})]
+        vec![Box::new(Pyright {}), Box::new(Ruff {})]
     }
 
     fn formatters(&self) -> Vec<Box<dyn Fixer>> {
