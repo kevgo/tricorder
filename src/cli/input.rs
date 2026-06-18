@@ -19,11 +19,13 @@ pub enum Command {
     Check(RunArgs),
 
     /// Auto-fix all code quality issues
-    #[command(visible_alias = "precommit")]
     Fix(RunArgs),
 
     /// Install coding agent hooks for this project
     Init(InitArgs),
+
+    /// Auto-fix before committing
+    PreCommit(RunArgs),
 }
 
 #[derive(clap::Args)]

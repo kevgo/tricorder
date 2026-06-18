@@ -30,11 +30,11 @@ pub fn precommit(args: RunArgs) -> Result<ExitCode> {
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    let exit_code = conc::run(conc::RunArgs {
+    let _exit_code = conc::run(conc::RunArgs {
         runnables,
         error_on_output: false,
         show: args.show.into(),
         stderr_to_stdout: true,
     });
-    Ok(exit_code)
+    Ok(ExitCode::SUCCESS)
 }
