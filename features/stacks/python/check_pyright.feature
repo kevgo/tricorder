@@ -1,4 +1,3 @@
-@online
 Feature: check Python
 
   Background:
@@ -27,7 +26,7 @@ Feature: check Python
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Python (lint)
+      Python (ruff check)
       All checks passed!
       """
     And it prints the block

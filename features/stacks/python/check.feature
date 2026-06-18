@@ -18,7 +18,7 @@ Feature: check Python
     When executing "tricorder check --show=all"
     Then it prints
       """
-      Python (lint)
+      Python (ruff check)
       All checks passed!
       """
     And the exit code is 0
