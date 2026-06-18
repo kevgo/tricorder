@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Gofumpt;
 
-impl Tool for Gofumpt {
-    fn name(&self) -> &'static str {
-        "gofumpt"
+impl Tool for Gofumpt {}
+
+impl Display for Gofumpt {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("gofumpt")
     }
 }
 
@@ -19,7 +22,7 @@ impl Formatter for Gofumpt {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Gofumpt {},
             args,
             version: None,

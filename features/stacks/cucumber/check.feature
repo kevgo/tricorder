@@ -61,7 +61,7 @@ Feature: check Cucumber
     When executing "tricorder check --show=all"
     Then it prints
       """
-      Cucumber (gherkin-lint)
+      Cucumber (Gherkin Lint)
       """
     And the exit code is 0
     And file "features/one.feature" is unchanged
@@ -77,7 +77,7 @@ Feature: check Cucumber
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Cucumber (gherkin-lint)
+      Cucumber (Gherkin Lint)
         4    Wrong indentation for "given", expected indentation level of 4, but got 12    indentation
       """
     And the exit code is 1
@@ -91,7 +91,7 @@ Feature: check Cucumber
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Cucumber (gherkin-lint)
+      Cucumber (Gherkin Lint)
         1    (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'    unexpected-error
       """
     And the exit code is 1

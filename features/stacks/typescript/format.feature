@@ -14,7 +14,7 @@ Feature: format TypeScript
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -31,7 +31,7 @@ Feature: format TypeScript
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" now has content
@@ -51,7 +51,7 @@ Feature: format TypeScript
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       Found 2 errors.
       """
     And the exit code is 1

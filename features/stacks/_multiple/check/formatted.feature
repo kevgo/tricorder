@@ -35,11 +35,11 @@ Feature: check multiple stacks
       """
     And it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And it prints the block
       """
@@ -52,8 +52,8 @@ Feature: check multiple stacks
     When executing "tricorder check --show=names"
     Then it prints only these lines in any order
       """
-      TypeScript (biome)
-      CSS (biome)
+      TypeScript (Biome)
+      CSS (Biome)
       Python (lint)
       """
     And it prints nothing to STDERR
