@@ -1,4 +1,4 @@
-Feature: format CSS
+Feature: fix CSS
 
   Background:
     Given a file "run-that-app" with content

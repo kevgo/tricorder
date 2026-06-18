@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Fixer, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -38,7 +38,7 @@ impl Checker for Ruff {
     }
 }
 
-impl Formatter for Ruff {
+impl Fixer for Ruff {
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut executables = Vec::with_capacity(2);
 
@@ -53,7 +53,7 @@ impl Formatter for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (fix)", &stack.stack),
+            name: format!("{} (ruff fix)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -69,7 +69,7 @@ impl Formatter for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (format)", &stack.stack),
+            name: format!("{} (ruff format)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,

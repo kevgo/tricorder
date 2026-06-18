@@ -1,4 +1,4 @@
-Feature: format YML
+Feature: fix YML
 
   Background:
     Given a file "run-that-app" with content
