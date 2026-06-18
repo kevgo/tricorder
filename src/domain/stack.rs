@@ -18,7 +18,7 @@ pub trait Stack {
 
 impl Display for Box<dyn Stack> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&self.stack_type().to_string())
+        write!(f, "{}", self.stack_type())
     }
 }
 
