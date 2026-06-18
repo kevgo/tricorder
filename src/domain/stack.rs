@@ -7,7 +7,7 @@ pub trait Stack {
     fn stack_type(&self) -> StackType;
 
     /// indicates whether the given file path is a part of this stack
-    fn has_file(&self, file: &Path) -> bool;
+    fn owns(&self, file: &Path) -> bool;
 
     /// all possible checkers for this stack
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
