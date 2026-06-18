@@ -9,7 +9,7 @@ impl Tool for GolangciLint {}
 
 impl Display for GolangciLint {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("GolangciLint")
+        f.write_str("golangci-lint")
     }
 }
 
