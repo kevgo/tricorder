@@ -10,7 +10,7 @@ impl Tool for Rumdl {}
 
 impl Display for Rumdl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("Rumdl")
+        f.write_str("rumdl")
     }
 }
 
