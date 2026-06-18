@@ -53,7 +53,7 @@ Feature: check Python with Pyright
       Python (ruff check)
       All checks passed!
       """
-    Then it prints the block
+    And it prints the block
       """
       Python (Pyright)
       0 errors, 0 warnings, 0 informations

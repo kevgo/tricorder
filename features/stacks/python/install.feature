@@ -6,7 +6,7 @@ Feature: install all Python tools
       """
       prettier-standalone 0.24.0
       """
-    Given a file "main.py" with content
+    And a file "main.py" with content
       """
       print    ("Hello, world!")
       """
