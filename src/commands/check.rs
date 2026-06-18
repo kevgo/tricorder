@@ -13,9 +13,9 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
     let mut runnables = Vec::new();
     for stack in &stacks {
         for checker in stack.stack.checkers() {
-            if !checker.is_enabled(&stacks) {
-                continue;
-            }
+            // if !checker.is_enabled(&stacks) {
+            //     continue;
+            // }
             if let Some(executable) = checker.check_commands(stack)? {
                 runnables.push(executable);
             } else {

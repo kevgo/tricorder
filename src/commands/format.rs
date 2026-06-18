@@ -13,6 +13,9 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
     }
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
+            // if !formatter.is_enabled(&stacks) {
+            //     continue;
+            // }
             if let Some(runnable) = formatter.format_command(stack)? {
                 runnables.push(runnable);
             } else {
