@@ -1,5 +1,4 @@
-@this
-Feature: fix Cucumber
+Feature: precommit Cucumber
 
   Background:
     Given a file "run-that-app" with content
