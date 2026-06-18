@@ -1,18 +1,22 @@
 use std::path::{Path, PathBuf};
 
+#[derive(Default)]
 pub struct Files(Vec<PathBuf>);
 
 impl Files {
+    #[must_use]
     pub fn new() -> Self {
         Self(vec![])
     }
 
+    #[must_use]
     pub fn contains(&self, file: &str) -> bool {
         self.0.iter().any(|f| f == file)
     }
 
+    #[must_use]
     pub fn contains_any(&self, files: &[&str]) -> bool {
-        let files = files.iter().map(|f| Path::new(f)).collect::<Vec<_>>();
+        let files = files.iter().map(Path::new).collect::<Vec<_>>();
         for file in self {
             for want_file in &files {
                 if file == want_file {
@@ -23,10 +27,12 @@ impl Files {
         false
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
 
+    #[must_use]
     pub fn len(&self) -> usize {
         self.0.len()
     }
