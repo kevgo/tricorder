@@ -10,6 +10,7 @@ mod python;
 mod sql;
 mod toml;
 mod typescript;
+mod unknown;
 mod yml;
 
 pub use css::Css;
@@ -23,6 +24,7 @@ pub use python::Python;
 pub use sql::Sql;
 pub use toml::Toml;
 pub use typescript::Typescript;
+pub use unknown::Unknown;
 pub use yml::Yml;
 
 /// provides all stacks that Tricorder supports
@@ -42,12 +44,13 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Typescript {}),
         Box::new(Yml {}),
         // keep-sorted end
+        Box::new(Unknown {}),
     ]
 }
 
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover() -> (Vec<DetectedStack>, usize) {
+pub fn discover() -> Vec<DetectedStack> {
     let all_stacks = all();
     let mut result: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -56,14 +59,12 @@ pub fn discover() -> (Vec<DetectedStack>, usize) {
             files: Files::new(),
         })
         .collect();
-    let mut file_count = 0;
     for entry in Walk::new("./") {
         let Ok(entry) = entry else { continue };
         let path = entry.path();
         if !path.is_file() {
             continue;
         }
-        file_count += 1;
         for stack in &mut result {
             if stack.stack.has_file(path) {
                 stack.files.push(path.to_owned());
@@ -71,11 +72,8 @@ pub fn discover() -> (Vec<DetectedStack>, usize) {
             }
         }
     }
-    (
-        result
-            .into_iter()
-            .filter(|stack| !stack.files.is_empty())
-            .collect(),
-        file_count,
-    )
+    result
+        .into_iter()
+        .filter(|stack| !stack.files.is_empty())
+        .collect()
 }

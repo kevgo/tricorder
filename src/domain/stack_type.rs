@@ -12,6 +12,7 @@ pub enum StackType {
     Sql,
     Toml,
     Typescript,
+    Unknown,
     Yml,
 }
 
@@ -28,6 +29,7 @@ impl Display for StackType {
             StackType::Sql => f.write_str("SQL"),
             StackType::Toml => f.write_str("TOML"),
             StackType::Typescript => f.write_str("TypeScript"),
+            StackType::Unknown => f.write_str("other"),
             StackType::Yml => f.write_str("YML"),
         }
     }

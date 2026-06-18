@@ -2,11 +2,7 @@ Feature: formatting a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder fix"
-    Then it prints nothing to STDOUT
-    And it prints to STDERR
-      """
-      no stacks found
-      """
+    Then it prints nothing
     And the exit code is 0
 
   Scenario: --show=all
@@ -17,7 +13,6 @@ Feature: formatting a codebase without any code
       """
     And it prints to STDERR
       """
-      no stacks found
       running 1 tools
       """
     And the exit code is 0
@@ -28,17 +23,10 @@ Feature: formatting a codebase without any code
       """
       delete-empty-folders
       """
-    And it prints to STDERR
-      """
-      no stacks found
-      """
+    And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=failed
     When executing "tricorder fix --show=failed"
-    Then it prints nothing to STDOUT
-    And it prints to STDERR
-      """
-      no stacks found
-      """
+    Then it prints nothing
     And the exit code is 0

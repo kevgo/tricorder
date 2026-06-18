@@ -54,7 +54,6 @@ Feature: check SQL
     When executing "tricorder check --show=all"
     Then it prints to STDERR
       """
-      no stacks found
       2 other
       running 0 tools
       """

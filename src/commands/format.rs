@@ -6,10 +6,7 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn format(args: RunArgs) -> Result<ExitCode> {
-    let (stacks, file_count) = stacks::discover();
-    if stacks.is_empty() {
-        eprintln!("no stacks found");
-    }
+    let stacks = stacks::discover();
     let mut runnables = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         runnables.push(conc::Runnable::Single(delete_empty_folders));
@@ -24,7 +21,7 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
         }
     }
     if args.show == crate::cli::input::Show::All {
-        print_metadata(&stacks, file_count);
+        print_metadata(&stacks);
         eprintln!("running {} tools", runnables.len());
     }
     if runnables.is_empty() {
