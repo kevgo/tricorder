@@ -1,3 +1,4 @@
+@online
 Feature: check Python
 
   Background:
@@ -57,7 +58,6 @@ Feature: check Python
     And file "main.py" is unchanged
     And file "other.py" is unchanged
 
-  @this
   Scenario: typecheck errors
     Given a file "main.py" with content
       """
