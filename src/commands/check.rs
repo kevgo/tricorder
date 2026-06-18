@@ -6,12 +6,12 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn check(args: RunArgs) -> Result<ExitCode> {
-    let (stacks, file_count) = stacks::discover();
+    let stacks = stacks::discover();
     if stacks.is_empty() {
         eprintln!("no stacks found");
     }
     if args.show == Show::All {
-        print_metadata(&stacks, file_count);
+        print_metadata(&stacks);
     }
     let mut runnables = Vec::new();
     for stack in &stacks {

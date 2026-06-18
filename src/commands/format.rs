@@ -6,7 +6,7 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn format(args: RunArgs) -> Result<ExitCode> {
-    let (stacks, file_count) = stacks::discover();
+    let stacks = stacks::discover();
     if stacks.is_empty() {
         eprintln!("no stacks found");
     }
@@ -24,7 +24,7 @@ pub fn format(args: RunArgs) -> Result<ExitCode> {
         }
     }
     if args.show == crate::cli::input::Show::All {
-        print_metadata(&stacks, file_count);
+        print_metadata(&stacks);
         eprintln!("running {} tools", runnables.len());
     }
     if runnables.is_empty() {
