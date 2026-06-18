@@ -1,3 +1,4 @@
+@this
 Feature: precommit CSS
 
   Background:
@@ -13,11 +14,8 @@ Feature: precommit CSS
       \tcolor: red;
       }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      CSS (Biome)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.css" is unchanged
 
@@ -34,11 +32,8 @@ Feature: precommit CSS
         color : blue ;
       }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      CSS (Biome)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.css" now has content
       """
@@ -60,10 +55,9 @@ Feature: precommit CSS
         col
       }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
+    When executing "tricorder precommit"
+    Then it prints the block
       """
-      CSS (Biome)
       Found 2 errors.
       """
     And the exit code is 0
