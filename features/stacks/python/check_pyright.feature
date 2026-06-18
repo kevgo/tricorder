@@ -5,7 +5,12 @@ Feature: check Python
       """
       ruff 0.15.16
       """
+    And a file "pyrightconfig.json" with content
+      """
+      {}
+      """
 
+  @this
   Scenario: valid Python
     Given a file "main.py" with content
       """
@@ -16,10 +21,15 @@ Feature: check Python
       print("Hello, other!")
       """
     When executing "tricorder check --show=all"
-    Then it prints
+    Then it prints the block
       """
       Python (lint)
       All checks passed!
+      """
+    And it prints the block
+      """
+      Python (Pyright)
+      xix
       """
     And the exit code is 0
     And file "main.py" is unchanged
