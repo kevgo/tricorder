@@ -25,7 +25,7 @@ pub enum Command {
     Init(InitArgs),
 
     /// Auto-fix before committing
-    PreCommit(RunArgs),
+    Precommit(RunArgs),
 }
 
 #[derive(clap::Args)]
