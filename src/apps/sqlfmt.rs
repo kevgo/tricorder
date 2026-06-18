@@ -10,7 +10,7 @@ impl Tool for Sqlfmt {}
 
 impl Display for Sqlfmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("Sqlfmt")
+        f.write_str("sqlfmt")
     }
 }
 
