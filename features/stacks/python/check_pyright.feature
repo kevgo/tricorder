@@ -1,4 +1,4 @@
-Feature: check Python
+Feature: check Python with Pyright
 
   Background:
     Given a file "run-that-app" with content
@@ -14,7 +14,7 @@ Feature: check Python
       """
     And I ran "tools/rta uv tool install pyright"
 
-  Scenario: valid Python
+  Scenario: valid Python with Pyright
     Given a file "main.py" with content
       """
       print("Hello, world!")
@@ -93,6 +93,11 @@ Feature: check Python
       print("
       """
     When executing "tricorder check --show=all"
+    Then it prints the block
+      """
+      Python (ruff check)
+      invalid-syntax: unexpected EOF while parsing
+      """
     Then it prints the lines
       """
       Python (Pyright)
