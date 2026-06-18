@@ -4,14 +4,13 @@ use crate::domain::{
 };
 use big_s::S;
 use std::fmt::Display;
-use std::path::Path;
 
 pub struct Biome;
 
 impl Tool for Biome {
     fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        detected_stacks.has_file(StackType::Json, Path::new("biome.json"))
-            || detected_stacks.has_file(StackType::Json, Path::new("biome.jsonc"))
+        detected_stacks.has_file(StackType::Json, "biome.json")
+            || detected_stacks.has_file(StackType::Unknown, "biome.jsonc")
     }
 }
 
