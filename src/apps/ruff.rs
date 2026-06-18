@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, Formatter, Stack, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Ruff;
 
-impl Tool for Ruff {
-    fn name(&self) -> &'static str {
-        "ruff"
+impl Tool for Ruff {}
+
+impl Display for Ruff {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Ruff")
     }
 }
 

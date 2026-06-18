@@ -14,7 +14,7 @@ Feature: format JSON
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      JSON (prettier)
+      JSON (Prettier)
       """
     And the exit code is 0
     And file "main.json" is unchanged
@@ -27,7 +27,7 @@ Feature: format JSON
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      JSON (prettier)
+      JSON (Prettier)
       """
     And the exit code is 0
     And file "main.json" now has content
@@ -43,7 +43,7 @@ Feature: format JSON
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      JSON (prettier)
+      JSON (Prettier)
       [error] main.json: SyntaxError: Unexpected token (2:1)
       """
     And the exit code is 2

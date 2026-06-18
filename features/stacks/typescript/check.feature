@@ -14,7 +14,7 @@ Feature: check TypeScript
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -31,7 +31,7 @@ Feature: check TypeScript
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -45,7 +45,7 @@ Feature: check TypeScript
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       Found 2 errors.
       """
     And the exit code is 1

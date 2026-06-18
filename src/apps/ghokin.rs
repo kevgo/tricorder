@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Ghokin;
 
-impl Tool for Ghokin {
-    fn name(&self) -> &'static str {
-        "ghokin"
+impl Tool for Ghokin {}
+
+impl Display for Ghokin {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Ghokin")
     }
 }
 
@@ -17,7 +20,7 @@ impl Formatter for Ghokin {
         args.push(S("replace"));
         args.push(S("."));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Ghokin {},
             args,
             version: None,

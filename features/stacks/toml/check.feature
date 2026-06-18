@@ -14,7 +14,7 @@ Feature: check TOML
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      TOML (taplo)
+      TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -27,7 +27,7 @@ Feature: check TOML
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      TOML (taplo)
+      TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -44,7 +44,7 @@ Feature: check TOML
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      TOML (taplo)
+      TOML (Taplo)
       error: invalid TOML
       """
     And the exit code is 1

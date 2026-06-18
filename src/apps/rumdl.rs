@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Rumdl;
 
-impl Tool for Rumdl {
-    fn name(&self) -> &'static str {
-        "rumdl"
+impl Tool for Rumdl {}
+
+impl Display for Rumdl {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("rumdl")
     }
 }
 
@@ -18,7 +21,7 @@ impl Checker for Rumdl {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Rumdl {},
             args,
             version: None,
@@ -35,7 +38,7 @@ impl Formatter for Rumdl {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Rumdl {},
             args,
             version: None,

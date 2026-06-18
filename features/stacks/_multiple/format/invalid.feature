@@ -24,8 +24,8 @@ Feature: format multiple stacks with invalid code
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (biome)
-      TypeScript (biome)
+      CSS (Biome)
+      TypeScript (Biome)
       Python (ruff)
       """
     And it prints the block
@@ -67,13 +67,13 @@ Feature: format multiple stacks with invalid code
       """
     And it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
@@ -103,13 +103,13 @@ Feature: format multiple stacks with invalid code
       """
     And it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
@@ -120,8 +120,8 @@ Feature: format multiple stacks with invalid code
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (biome)
-      TypeScript (biome)
+      CSS (Biome)
+      TypeScript (Biome)
       Python (ruff)
       """
     And it prints the block
