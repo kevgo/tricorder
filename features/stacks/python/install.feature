@@ -16,30 +16,28 @@ Feature: install all Python tools
         "typeCheckingMode": "strict"
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder check --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       """
     And it prints the block
       """
-      Python (ruff fix)
+      Python (ruff check)
       All checks passed!
       """
     And it prints the block
       """
-      Python (ruff format)
-      1 file reformatted
+      Python (Pyright)
+      0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
-    And file "main.py" now has content
-      """
-      print("Hello, world!")
-      """
+    And file "main.py" is unchanged
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
 
       prettier-standalone 0.24.0
       ruff \d+\.\d+\.\d+
+      uv \d+\.\d+\.\d+
       """
