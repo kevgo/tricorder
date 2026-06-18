@@ -5,7 +5,11 @@ use std::fmt::Display;
 
 pub struct Gofumpt;
 
-impl Tool for Gofumpt {}
+impl Tool for Gofumpt {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+    }
+}
 
 impl Display for Gofumpt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

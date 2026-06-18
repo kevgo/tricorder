@@ -5,7 +5,15 @@ use std::fmt::Display;
 
 pub struct GherkinLint;
 
-impl Tool for GherkinLint {}
+impl Tool for GherkinLint {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+        // let Some(other_stack) = detected_stacks.with_type(StackType::Unknown) else {
+        //     return false;
+        // };
+        // other_stack.files.contains(".gherkin-lintrc")
+    }
+}
 
 impl Display for GherkinLint {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

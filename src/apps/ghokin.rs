@@ -5,7 +5,11 @@ use std::fmt::Display;
 
 pub struct Ghokin;
 
-impl Tool for Ghokin {}
+impl Tool for Ghokin {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+    }
+}
 
 impl Display for Ghokin {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
