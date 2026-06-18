@@ -7,9 +7,6 @@ use std::process::ExitCode;
 
 pub fn format(args: RunArgs) -> Result<ExitCode> {
     let stacks = stacks::discover();
-    if stacks.is_empty() {
-        eprintln!("no stacks found");
-    }
     let mut runnables = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         runnables.push(conc::Runnable::Single(delete_empty_folders));
