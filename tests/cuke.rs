@@ -120,8 +120,13 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
         .output()
         .await
         .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
-    println!("1111111111111111111111111111111111111111111111");
-    println!("output: {}", String::from_utf8_lossy(&output.stdout));
+    assert!(
+        output.status.success(),
+        "command failed with {}\n\nOUTPUT:\n{}{}",
+        output.status.code().unwrap(),
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr),
+    );
 }
 
 #[when(expr = "inspect the workspace")]

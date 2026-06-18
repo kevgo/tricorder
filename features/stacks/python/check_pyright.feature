@@ -4,6 +4,7 @@ Feature: check Python
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
+      uv 0.11.21
       """
     And a file "pyrightconfig.json" with content
       """
@@ -32,7 +33,7 @@ Feature: check Python
     And it prints the block
       """
       Python (Pyright)
-      xix
+      0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
     And file "main.py" is unchanged
