@@ -26,8 +26,8 @@ Feature: check multiple stacks with unformatted files
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (biome)
-      TypeScript (biome)
+      CSS (Biome)
+      TypeScript (Biome)
       Python (ruff)
       """
     And it prints nothing
@@ -48,11 +48,11 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And it prints the block
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And the exit code is 0
     And all files are unchanged
@@ -63,8 +63,8 @@ Feature: check multiple stacks with unformatted files
     And it prints only these lines in any order
       """
       Python (lint)
-      TypeScript (biome)
-      CSS (biome)
+      TypeScript (Biome)
+      CSS (Biome)
       """
     And the exit code is 0
     And all files are unchanged

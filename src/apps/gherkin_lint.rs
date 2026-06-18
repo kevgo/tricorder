@@ -9,7 +9,7 @@ impl Tool for GherkinLint {}
 
 impl Display for GherkinLint {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("GherkinLint")
+        f.write_str("Gherkin Lint")
     }
 }
 
