@@ -1,5 +1,5 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Checker, Formatter, Stack, StackType};
+use crate::domain::{Checker, Fixer, Stack, StackType};
 use std::path::Path;
 
 pub struct Json;
@@ -17,7 +17,7 @@ impl Stack for Json {
         vec![]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Formatter>> {
+    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
         vec![Box::new(Prettier {})]
     }
 }

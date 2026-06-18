@@ -1,4 +1,4 @@
-Feature: display statistics about the codebase
+Feature: display statistics about the codebase when fixing
 
   Scenario: multiple stacks
     Given a file "run-that-app" with content

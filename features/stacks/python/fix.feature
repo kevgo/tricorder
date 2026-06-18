@@ -1,4 +1,4 @@
-Feature: format Python
+Feature: fix Python
 
   Background:
     Given a file "run-that-app" with content
@@ -19,9 +19,9 @@ Feature: format Python
     Then it prints
       """
       delete-empty-folders
-      Python (fix)
+      Python (ruff fix)
       All checks passed!
-      Python (format)
+      Python (ruff format)
       2 files left unchanged
       """
     And the exit code is 0
@@ -41,9 +41,9 @@ Feature: format Python
     Then it prints
       """
       delete-empty-folders
-      Python (fix)
+      Python (ruff fix)
       All checks passed!
-      Python (format)
+      Python (ruff format)
       2 files reformatted
       """
     And the exit code is 0
@@ -69,7 +69,7 @@ Feature: format Python
     Then it prints
       """
       delete-empty-folders
-      Python (fix)
+      Python (ruff fix)
       invalid-syntax: missing closing quote in string literal
        --> main.py:1:7
         |

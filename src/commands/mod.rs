@@ -1,7 +1,7 @@
 mod check;
-mod format;
+mod fix;
 mod init;
 
 pub use check::check;
-pub use format::format;
+pub use fix::fix;
 pub use init::init;

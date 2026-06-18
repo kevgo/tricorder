@@ -1,4 +1,4 @@
-Feature: format multiple stacks with invalid code
+Feature: fix multiple stacks with invalid code
 
   Background:
     Given a file "run-that-app" with content
@@ -122,7 +122,8 @@ Feature: format multiple stacks with invalid code
       """
       CSS (Biome)
       TypeScript (Biome)
-      Python (ruff)
+      Python (ruff fix)
+      Python (ruff format)
       """
     And it prints the block
       """
