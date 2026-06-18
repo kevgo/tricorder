@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Fixer, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -36,7 +36,7 @@ impl Checker for Biome {
     }
 }
 
-impl Formatter for Biome {
+impl Fixer for Biome {
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));

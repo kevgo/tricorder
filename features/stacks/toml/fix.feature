@@ -1,4 +1,4 @@
-Feature: format TOML
+Feature: fix TOML
 
   Background:
     Given a file "run-that-app" with content

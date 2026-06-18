@@ -1,4 +1,4 @@
-Feature: format multiple stacks
+Feature: fix multiple stacks
 
   Background:
     Given a file "run-that-app" with content
@@ -56,12 +56,12 @@ Feature: format multiple stacks
       """
     And it prints the block
       """
-      Python (fix)
+      Python (ruff fix)
       All checks passed!
       """
     And it prints the block
       """
-      Python (format)
+      Python (ruff format)
       1 file reformatted
       """
     And file "main.css" now has content
@@ -89,8 +89,8 @@ Feature: format multiple stacks
     And it prints only these lines in any order
       """
       delete-empty-folders
-      Python (fix)
-      Python (format)
+      Python (ruff fix)
+      Python (ruff format)
       TypeScript (Biome)
       CSS (Biome)
       """

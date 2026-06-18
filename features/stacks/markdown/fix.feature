@@ -1,4 +1,4 @@
-Feature: format Markdown
+Feature: fix Markdown
 
   Background:
     Given a file "run-that-app" with content

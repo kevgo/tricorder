@@ -1,4 +1,4 @@
-Feature: format JSON
+Feature: fix JSON
 
   Background:
     Given a file "run-that-app" with content

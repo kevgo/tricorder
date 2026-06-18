@@ -1,4 +1,4 @@
-Feature: format SQL
+Feature: fix SQL
 
   Background:
     Given a file "run-that-app" with content

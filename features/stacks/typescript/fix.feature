@@ -1,4 +1,4 @@
-Feature: format TypeScript
+Feature: fix TypeScript
 
   Background:
     Given a file "run-that-app" with content
