@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use crate::domain::{Files, Stack, StackType};
 
 /// A stack that was detected in the workspace,
@@ -10,6 +12,17 @@ pub struct DetectedStack {
 pub struct DetectedStacks(Vec<DetectedStack>);
 
 impl DetectedStacks {
+    pub fn has_file(&self, stack_type: StackType, file: &Path) -> bool {
+        let Some(stack) = self.with_type(stack_type) else {
+            return false;
+        };
+        stack.files.contains(file)
+    }
+
+    pub fn has_stack_type(&self, stack_type: StackType) -> bool {
+        self.0.iter().any(|s| s.stack.stack_type() == stack_type)
+    }
+
     pub fn with_type(&self, stack_type: StackType) -> Option<&DetectedStack> {
         self.0.iter().find(|s| s.stack.stack_type() == stack_type)
     }

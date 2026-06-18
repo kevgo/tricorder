@@ -8,7 +8,7 @@ const CONFIG_ARG: &str = "-c /google_checks.xml";
 
 impl Tool for Checkstyle {
     fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        detected_stacks.with_type(StackType::Java).is_some()
+        detected_stacks.has_stack_type(StackType::Java)
     }
 }
 

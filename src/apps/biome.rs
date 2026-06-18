@@ -10,13 +10,8 @@ pub struct Biome;
 
 impl Tool for Biome {
     fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        // get the JSON stack
-        let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
-            return false;
-        };
-        json_stack
-            .files
-            .contains_any(&[Path::new("biome.json"), &Path::new("biome.jsonc")])
+        detected_stacks.has_file(StackType::Json, Path::new("biome.json"))
+            || detected_stacks.has_file(StackType::Json, Path::new("biome.jsonc"))
     }
 }
 
