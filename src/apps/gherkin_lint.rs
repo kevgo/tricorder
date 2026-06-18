@@ -1,16 +1,17 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, StackType, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct GherkinLint;
 
 impl Tool for GherkinLint {
-    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
-            return false;
-        };
-        json_stack.files.contains(".gherkin-lintrc")
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+        // let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
+        //     return false;
+        // };
+        // json_stack.files.contains(".gherkin-lintrc")
     }
 }
 

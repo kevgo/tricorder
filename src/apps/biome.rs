@@ -1,16 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{
-    Checker, DetectedStack, DetectedStacks, Formatter, StackType, Tool, UserError,
-};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Biome;
 
 impl Tool for Biome {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        detected_stacks.has_file(StackType::Json, "biome.json")
-            || detected_stacks.has_file(StackType::Unknown, "biome.jsonc")
+    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
+        true
+        // detected_stacks.has_file(StackType::Json, "biome.json")
+        //     || detected_stacks.has_file(StackType::Unknown, "biome.jsonc")
     }
 }
 

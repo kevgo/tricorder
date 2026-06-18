@@ -1,18 +1,19 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, StackType, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Ruff;
 
 impl Tool for Ruff {
-    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
-            return false;
-        };
-        toml_stack
-            .files
-            .contains_any(&["ruff.toml", "ruff.toml.json"])
+    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
+        true
+        // let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
+        //     return false;
+        // };
+        // toml_stack
+        //     .files
+        //     .contains_any(&["ruff.toml", "ruff.toml.json"])
     }
 }
 

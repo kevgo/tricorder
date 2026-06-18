@@ -1,12 +1,12 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Taplo;
 
 impl Tool for Taplo {
-    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
         true
     }
 }

@@ -1,30 +1,31 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, StackType, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct GolangciLint;
 
 impl Tool for GolangciLint {
-    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        if let Some(yml_stack) = detected_stacks.with_type(StackType::Yml)
-            && yml_stack
-                .files
-                .contains_any(&[".golangci.yml", ".golangci.yaml"])
-        {
-            return true;
-        }
-        if let Some(toml_stack) = detected_stacks.with_type(StackType::Toml)
-            && toml_stack.files.contains(".golangci.toml")
-        {
-            return true;
-        }
-        if let Some(json_stack) = detected_stacks.with_type(StackType::Json)
-            && json_stack.files.contains(".golangci.json")
-        {
-            return true;
-        }
-        false
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+        // if let Some(yml_stack) = detected_stacks.with_type(StackType::Yml)
+        //     && yml_stack
+        //         .files
+        //         .contains_any(&[".golangci.yml", ".golangci.yaml"])
+        // {
+        //     return true;
+        // }
+        // if let Some(toml_stack) = detected_stacks.with_type(StackType::Toml)
+        //     && toml_stack.files.contains(".golangci.toml")
+        // {
+        //     return true;
+        // }
+        // if let Some(json_stack) = detected_stacks.with_type(StackType::Json)
+        //     && json_stack.files.contains(".golangci.json")
+        // {
+        //     return true;
+        // }
+        // false
     }
 }
 
