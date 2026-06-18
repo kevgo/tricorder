@@ -1,12 +1,12 @@
 use crate::apps::taplo::Taplo;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Toml;
 
 impl Stack for Toml {
-    fn name(&self) -> &'static str {
-        "TOML"
+    fn stack_type(&self) -> StackType {
+        StackType::Toml
     }
 
     fn has_file(&self, file: &Path) -> bool {

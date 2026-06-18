@@ -1,12 +1,12 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Typescript;
 
 impl Stack for Typescript {
-    fn name(&self) -> &'static str {
-        "TypeScript"
+    fn stack_type(&self) -> StackType {
+        StackType::Typescript
     }
 
     fn has_file(&self, file: &Path) -> bool {

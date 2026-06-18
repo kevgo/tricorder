@@ -19,7 +19,7 @@ impl Formatter for Prettier {
             args.push(file_str);
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack.name(), self.name()),
+            name: format!("{} ({})", &stack.stack, self.name()),
             app: &rta::applications::PrettierStandalone {},
             args,
             version: None,

@@ -25,7 +25,7 @@ impl Checker for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (lint)", &stack.stack.name()),
+            name: format!("{} (lint)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -52,7 +52,7 @@ impl Formatter for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (fix)", &stack.stack.name()),
+            name: format!("{} (fix)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -68,7 +68,7 @@ impl Formatter for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (format)", &stack.stack.name()),
+            name: format!("{} (format)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,

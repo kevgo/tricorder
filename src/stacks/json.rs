@@ -1,12 +1,12 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Json;
 
 impl Stack for Json {
-    fn name(&self) -> &'static str {
-        "JSON"
+    fn stack_type(&self) -> StackType {
+        StackType::Json
     }
 
     fn has_file(&self, file: &Path) -> bool {
