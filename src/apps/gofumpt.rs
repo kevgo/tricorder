@@ -9,7 +9,7 @@ impl Tool for Gofumpt {}
 
 impl Display for Gofumpt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("Gofumpt")
+        f.write_str("gofumpt")
     }
 }
 
