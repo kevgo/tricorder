@@ -15,12 +15,8 @@ Feature: precommit SQL
       """
       select id, name from two
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the block
-      """
-      SQL (sqlfmt)
-      2 files left unchanged.
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "one.sql" is unchanged
     And file "two.sql" is unchanged
@@ -34,15 +30,8 @@ Feature: precommit SQL
       """
       SELECT            id, name FROM two
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the block
-      """
-      SQL (sqlfmt)
-      2 files formatted.
-      0 files left unchanged.
-      one.sql formatted.
-      two.sql formatted.
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "one.sql" now has content
       """
@@ -62,10 +51,9 @@ Feature: precommit SQL
       """
       SELECT FROM "
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the block
+    When executing "tricorder precommit"
+    Then it prints
       """
-      SQL (sqlfmt)
       2 files had errors while formatting.
       0 files left unchanged.
       one.sql
