@@ -43,7 +43,7 @@ Feature: check multiple stacks
       """
     And it prints the block
       """
-      Python (lint)
+      Python (ruff check)
       All checks passed!
       """
     And all files are unchanged
@@ -54,7 +54,7 @@ Feature: check multiple stacks
       """
       TypeScript (Biome)
       CSS (Biome)
-      Python (lint)
+      Python (ruff check)
       """
     And it prints nothing to STDERR
     And all files are unchanged
