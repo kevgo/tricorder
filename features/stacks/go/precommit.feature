@@ -23,11 +23,8 @@ Feature: precommit Go
       	fmt.Println("Hello, world!")
       }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      Go (gofumpt)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.go" is unchanged
 
@@ -48,13 +45,8 @@ Feature: precommit Go
       	fmt.Println(    "Hello, other!")
       }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the block
-      """
-      Go (gofumpt)
-      other.go
-      main.go
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.go" now has content
       """
@@ -86,10 +78,9 @@ Feature: precommit Go
       	fmt.Println("
       }
       """
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit"
     Then it prints the block
       """
-      Go (gofumpt)
       main.go:4:14: string literal not terminated
       """
     And the exit code is 0

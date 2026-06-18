@@ -11,11 +11,8 @@ Feature: precommit JSON
       """
       { "key": "value" }
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      JSON (Prettier)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.json" is unchanged
 
@@ -24,11 +21,8 @@ Feature: precommit JSON
       """
       {"key":"value"}
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      JSON (Prettier)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.json" now has content
       """
@@ -40,10 +34,9 @@ Feature: precommit JSON
       """
       { "key":
       """
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit"
     Then it prints the block
       """
-      JSON (Prettier)
       [error] main.json: SyntaxError: Unexpected token (2:1)
       """
     And the exit code is 0
