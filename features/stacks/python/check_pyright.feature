@@ -98,7 +98,7 @@ Feature: check Python with Pyright
       Python (ruff check)
       invalid-syntax: unexpected EOF while parsing
       """
-    Then it prints the lines
+    And it prints the lines
       """
       Python (Pyright)
       5 errors, 0 warnings, 0 informations
