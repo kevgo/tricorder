@@ -1,12 +1,12 @@
 use crate::apps::checkstyle::Checkstyle;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Java;
 
 impl Stack for Java {
-    fn name(&self) -> &'static str {
-        "Java"
+    fn stack_type(&self) -> StackType {
+        StackType::Java
     }
 
     fn has_file(&self, file: &Path) -> bool {

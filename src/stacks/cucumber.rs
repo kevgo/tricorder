@@ -1,13 +1,13 @@
 use crate::apps::gherkin_lint::GherkinLint;
 use crate::apps::ghokin::Ghokin;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Cucumber;
 
 impl Stack for Cucumber {
-    fn name(&self) -> &'static str {
-        "Cucumber"
+    fn stack_type(&self) -> StackType {
+        StackType::Cucumber
     }
 
     fn has_file(&self, file: &Path) -> bool {

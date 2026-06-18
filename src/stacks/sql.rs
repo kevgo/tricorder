@@ -1,12 +1,12 @@
 use crate::apps::sqlfmt::Sqlfmt;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Sql;
 
 impl Stack for Sql {
-    fn name(&self) -> &'static str {
-        "SQL"
+    fn stack_type(&self) -> StackType {
+        StackType::Sql
     }
 
     fn has_file(&self, file: &Path) -> bool {

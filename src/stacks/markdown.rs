@@ -1,12 +1,12 @@
 use crate::apps::rumdl::Rumdl;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Markdown;
 
 impl Stack for Markdown {
-    fn name(&self) -> &'static str {
-        "Markdown"
+    fn stack_type(&self) -> StackType {
+        StackType::Markdown
     }
 
     // TODO: rename to "matches"

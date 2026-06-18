@@ -1,12 +1,12 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Css;
 
 impl Stack for Css {
-    fn name(&self) -> &'static str {
-        "CSS"
+    fn stack_type(&self) -> StackType {
+        StackType::Css
     }
 
     fn has_file(&self, file: &Path) -> bool {
