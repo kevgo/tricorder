@@ -103,6 +103,27 @@ async fn an_executable_file_with_content(
     });
 }
 
+#[given(expr = "I ran {string}")]
+async fn i_ran(world: &mut TricorderWorld, command: String) {
+    let mut args = command.split_ascii_whitespace();
+    let executable = args.next().expect("executable is required");
+    assert!(executable == "tools/rta", "can only execute 'tools/rta'");
+    let cwd = env::current_dir().expect("cannot determine the current directory");
+    let mut absolute_path = cwd.join("tools").join("rta");
+    if std::env::consts::OS == "windows" {
+        absolute_path.set_extension("exe");
+    }
+    let mut cmd = Command::new(absolute_path);
+    cmd.args(args);
+    cmd.current_dir(world.dir.path());
+    let output = cmd
+        .output()
+        .await
+        .unwrap_or_else(|_| panic!("cannot find the '{executable}' executable"));
+    println!("1111111111111111111111111111111111111111111111");
+    println!("output: {}", String::from_utf8_lossy(&output.stdout));
+}
+
 #[when(expr = "inspect the workspace")]
 async fn inspect_workspace(world: &mut TricorderWorld) {
     // print visibly to the user even though this runs inside Cucumber
@@ -117,8 +138,6 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
-    // wait for 1 second
-    // tokio::time::sleep(Duration::from_secs(1)).await;
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
     let cwd = env::current_dir().expect("cannot determine the current directory");

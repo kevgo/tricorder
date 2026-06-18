@@ -11,7 +11,7 @@ Feature: check Python
         "typeCheckingMode": "strict"
       }
       """
-    And I ran "uv tool install pyright"
+    And I ran "tools/rta uv tool install pyright"
 
   @this
   Scenario: valid Python
