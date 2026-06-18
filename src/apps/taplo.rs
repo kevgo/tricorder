@@ -5,7 +5,11 @@ use std::fmt::Display;
 
 pub struct Taplo;
 
-impl Tool for Taplo {}
+impl Tool for Taplo {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+    }
+}
 
 impl Display for Taplo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

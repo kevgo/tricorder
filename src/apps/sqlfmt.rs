@@ -5,7 +5,11 @@ use std::fmt::Display;
 
 pub struct Sqlfmt;
 
-impl Tool for Sqlfmt {}
+impl Tool for Sqlfmt {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+    }
+}
 
 impl Display for Sqlfmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
