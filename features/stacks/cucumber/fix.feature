@@ -1,4 +1,4 @@
-Feature: format Cucumber
+Feature: fix Cucumber
 
   Background:
     Given a file "run-that-app" with content

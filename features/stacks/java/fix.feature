@@ -1,4 +1,4 @@
-Feature: format Java
+Feature: fix Java
 
   Scenario: valid Java
     Given a file "Main.java" with content

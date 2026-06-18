@@ -1,4 +1,4 @@
-Feature: format multiple stacks with invalid code
+Feature: fix multiple stacks with invalid code
 
   Background:
     Given a file "run-that-app" with content

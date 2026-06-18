@@ -1,4 +1,4 @@
-Feature: format multiple good stacks
+Feature: fix multiple good stacks
 
   Background:
     Given a file "run-that-app" with content

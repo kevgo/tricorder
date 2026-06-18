@@ -1,4 +1,4 @@
-Feature: don't format files in .gitignore
+Feature: don't fix files in .gitignore
 
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content

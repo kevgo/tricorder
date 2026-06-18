@@ -1,4 +1,4 @@
-Feature: format Python
+Feature: fix Python
 
   Background:
     Given a file "run-that-app" with content
