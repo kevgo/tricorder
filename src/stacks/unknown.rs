@@ -24,7 +24,7 @@ impl Stack for Unknown {
 #[cfg(test)]
 mod tests {
     use crate::domain::Stack;
-    use crate::stacks::Toml;
+    use crate::stacks::Unknown;
     use maplit::hashmap;
     use std::path::Path;
 
@@ -33,11 +33,12 @@ mod tests {
         let tests = hashmap! {
             "main.toml" => true,
             "src/dir/main.toml" => true,
-            "other.txt" => false,
+            "other.txt" => true,
+            ".prettierrc" => true,
         };
-        let toml = Toml {};
+        let unknown = Unknown {};
         for (give, want) in tests {
-            let have = toml.has_file(Path::new(give));
+            let have = unknown.has_file(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
