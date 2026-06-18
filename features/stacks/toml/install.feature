@@ -13,7 +13,7 @@ Feature: install all TOML tools
       """
     And it prints the lines
       """
-      TOML (taplo)
+      TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content
@@ -23,6 +23,6 @@ Feature: install all TOML tools
     And file "run-that-app" now matches
       """
       # more info at https://github.com/kevgo/run-that-app
-
+      
       taplo \d+\.\d+\.\d+
       """

@@ -46,7 +46,7 @@ fix: ${RTA}  # runs all linters and auto-fixes
 	cargo clippy --fix --allow-dirty
 	cargo +nightly fmt
 	$(RUMDL) fmt
-	$(TAPLO) format
+	$(Taplo) format
 	make --no-print-directory ghokin
 	make --no-print-directory keep-sorted
 
@@ -65,7 +65,7 @@ lint: ${RTA}  # lints the main codebase concurrently
 	cargo clippy --test=cuke --all-features -- --deny=warnings
 	$(RUMDL) check
 	${GHERKIN_LINT}
-	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
+	# $(Taplo) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
 
 setup: setup-ci  # install development dependencies on this computer
 	cargo install cargo-machete --locked
