@@ -1,5 +1,11 @@
 # Tricorder changelog
 
+## 0.0.4 (2026-06-18)
+
+- tool: Pyright runs only if file `pyrightconfig.json` exists
+- updates `delete-empty-folders` to v0.0.2
+- the new `tricorder precommit` command never fails even if the code is invalid
+
 ## 0.0.3 (2026-06-17)
 
 - Support for custom linters in `tricorder.toml`.
