@@ -24,7 +24,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn has_stack_type(&self, stack_type: StackType) -> bool {
+    pub fn contains_stack(&self, stack_type: StackType) -> bool {
         self.0.iter().any(|s| s.stack.stack_type() == stack_type)
     }
 
