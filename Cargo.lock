@@ -393,6 +393,8 @@ dependencies = [
  "ref-cast",
  "regex",
  "sealed",
+ "serde",
+ "serde_json",
  "smart-default",
 ]
 
