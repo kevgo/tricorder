@@ -9,7 +9,7 @@ impl Stack for Json {
         StackType::Json
     }
 
-    fn has_file(&self, file: &Path) -> bool {
+    fn owns(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "json")
     }
 
@@ -38,7 +38,7 @@ mod tests {
         };
         let json = Json {};
         for (give, want) in tests {
-            let have = json.has_file(Path::new(give));
+            let have = json.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
