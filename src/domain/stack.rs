@@ -1,11 +1,11 @@
-use crate::domain::{Checker, Formatter};
+use crate::domain::{Checker, Formatter, StackType};
 use std::fmt::Display;
 use std::path::{Path, PathBuf};
 
 /// a language stack that Tricorder supports
 pub trait Stack {
     /// the name of the stack
-    fn name(&self) -> &str;
+    fn stack_type(&self) -> StackType;
 
     /// indicates whether the given file path is a part of this stack
     fn has_file(&self, file: &Path) -> bool;
@@ -19,7 +19,7 @@ pub trait Stack {
 
 impl Display for Box<dyn Stack> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.name())
+        f.write_str(&self.stack_type().to_string())
     }
 }
 
