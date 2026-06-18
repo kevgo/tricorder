@@ -17,12 +17,7 @@ impl Files {
     #[must_use]
     pub fn contains_any(&self, files: &[&str]) -> bool {
         let files = files.iter().map(PathBuf::from).collect::<Vec<_>>();
-        for file in self {
-            if files.contains(file) {
-                return true;
-            }
-        }
-        false
+        self.0.iter().any(|file| files.contains(file))
     }
 
     #[must_use]
