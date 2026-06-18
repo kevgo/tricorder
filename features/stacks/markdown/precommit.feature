@@ -11,11 +11,8 @@ Feature: precommit Markdown
       """
       # Hello
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      Markdown (rumdl)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.md" is unchanged
 
@@ -24,10 +21,9 @@ Feature: precommit Markdown
       """
       #     Hello
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
+    When executing "tricorder precommit"
+    Then it prints the block
       """
-      Markdown (rumdl)
       main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
     And the exit code is 0
@@ -43,10 +39,7 @@ Feature: precommit Markdown
 
       [e
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      Markdown (rumdl)
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.md" is unchanged

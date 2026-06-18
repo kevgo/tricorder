@@ -15,15 +15,8 @@ Feature: precommit Python
       """
       print("Hello, other!")
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints
-      """
-      delete-empty-folders
-      Python (ruff fix)
-      All checks passed!
-      Python (ruff format)
-      2 files left unchanged
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.py" is unchanged
     And file "other.py" is unchanged
@@ -37,15 +30,8 @@ Feature: precommit Python
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints
-      """
-      delete-empty-folders
-      Python (ruff fix)
-      All checks passed!
-      Python (ruff format)
-      2 files reformatted
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.py" now has content
       """
@@ -65,11 +51,9 @@ Feature: precommit Python
       """
       print("
       """
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit"
     Then it prints
       """
-      delete-empty-folders
-      Python (ruff fix)
       invalid-syntax: missing closing quote in string literal
        --> main.py:1:7
         |
