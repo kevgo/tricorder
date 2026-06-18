@@ -10,7 +10,7 @@ impl Stack for Cucumber {
         StackType::Cucumber
     }
 
-    fn has_file(&self, file: &Path) -> bool {
+    fn owns(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "feature")
     }
 
@@ -39,7 +39,7 @@ mod tests {
         };
         let css = Cucumber {};
         for (give, want) in tests {
-            let have = css.has_file(Path::new(give));
+            let have = css.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

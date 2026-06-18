@@ -9,7 +9,7 @@ impl Stack for Sql {
         StackType::Sql
     }
 
-    fn has_file(&self, file: &Path) -> bool {
+    fn owns(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "sql")
     }
 
@@ -39,7 +39,7 @@ mod tests {
         };
         let sql = Sql {};
         for (give, want) in tests {
-            let have = sql.has_file(Path::new(give));
+            let have = sql.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

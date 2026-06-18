@@ -66,7 +66,7 @@ pub fn discover() -> Vec<DetectedStack> {
             continue;
         }
         for stack in &mut result {
-            if stack.stack.has_file(path) {
+            if stack.stack.owns(path) {
                 stack.files.push(path.to_owned());
                 break;
             }
