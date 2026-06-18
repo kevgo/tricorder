@@ -1,4 +1,4 @@
-@this
+@online
 Feature: install all Python tools
 
   Scenario: not installed
