@@ -19,5 +19,6 @@ fn inner() -> tricorder::domain::Result<ExitCode> {
         Command::Check(args) => tricorder::commands::check(args),
         Command::Fix(args) => tricorder::commands::fix(args),
         Command::Init(args) => tricorder::commands::init(&args),
+        Command::Precommit(args) => tricorder::commands::precommit(args),
     }
 }
