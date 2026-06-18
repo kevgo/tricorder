@@ -17,7 +17,7 @@ impl DetectedStacks {
 
     #[must_use]
     pub fn contains_file(&self, stack_type: StackType, file: &str) -> bool {
-        let Some(stack) = self.with_type(stack_type) else {
+        let Some(stack) = self.get_stack(stack_type) else {
             return false;
         };
         stack.files.contains(file)
@@ -39,7 +39,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn with_type(&self, stack_type: StackType) -> Option<&DetectedStack> {
+    pub fn get_stack(&self, stack_type: StackType) -> Option<&DetectedStack> {
         self.0.iter().find(|s| s.stack.stack_type() == stack_type)
     }
 }
