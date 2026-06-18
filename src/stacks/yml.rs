@@ -1,12 +1,12 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Yml;
 
 impl Stack for Yml {
-    fn name(&self) -> &'static str {
-        "YML"
+    fn stack_type(&self) -> StackType {
+        StackType::Yml
     }
 
     fn has_file(&self, file: &Path) -> bool {

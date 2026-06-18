@@ -18,7 +18,7 @@ impl Checker for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack.name(), self.name()),
+            name: format!("{} ({})", &stack.stack, self.name()),
             app: &rta::applications::Taplo {},
             args,
             version: None,
@@ -35,7 +35,7 @@ impl Formatter for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack.name(), self.name()),
+            name: format!("{} ({})", &stack.stack, self.name()),
             app: &rta::applications::Taplo {},
             args,
             version: None,

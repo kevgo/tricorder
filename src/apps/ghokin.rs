@@ -17,7 +17,7 @@ impl Formatter for Ghokin {
         args.push(S("replace"));
         args.push(S("."));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack.name(), self.name()),
+            name: format!("{} ({})", &stack.stack, self.name()),
             app: &rta::applications::Ghokin {},
             args,
             version: None,
