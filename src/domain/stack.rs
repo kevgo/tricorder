@@ -4,16 +4,15 @@ use std::path::{Path, PathBuf};
 
 /// a language stack that Tricorder supports
 pub trait Stack {
-    /// the name of the stack
     fn stack_type(&self) -> StackType;
 
     /// indicates whether the given file path is a part of this stack
     fn has_file(&self, file: &Path) -> bool;
 
-    /// provides all checkers that Tricorder can run for this stack
+    /// all possible checkers for this stack
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
 
-    /// provides all formatters that Tricorder can run for this stack
+    /// all possible formatters for this stack
     fn formatters(&self) -> Vec<Box<dyn Formatter>>;
 }
 
