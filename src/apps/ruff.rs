@@ -8,11 +8,6 @@ pub struct Ruff;
 impl Tool for Ruff {
     fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
         true
-        // let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
-        //     return false;
-        // };
-        // toml_stack
-        //     .files
         //     .contains_any(&["ruff.toml", "ruff.toml.json"])
     }
 }
