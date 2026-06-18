@@ -2,7 +2,6 @@ use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
-use std::path::Path;
 
 pub struct GherkinLint;
 
@@ -11,7 +10,7 @@ impl Tool for GherkinLint {
         let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
             return false;
         };
-        json_stack.files.contains(Path::new(".gherkin-lintrc"))
+        json_stack.files.contains(".gherkin-lintrc")
     }
 }
 

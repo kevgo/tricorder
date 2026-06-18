@@ -1,11 +1,20 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, Stack, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, Formatter, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Ruff;
 
-impl Tool for Ruff {}
+impl Tool for Ruff {
+    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
+            return false;
+        };
+        toml_stack
+            .files
+            .contains_any(&["ruff.toml", "ruff.toml.json"])
+    }
+}
 
 impl Display for Ruff {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -14,14 +23,7 @@ impl Display for Ruff {
 }
 
 impl Checker for Ruff {
-    fn check_commands(
-        &self,
-        stack: &DetectedStack,
-        all_stacks: &[DetectedStack],
-    ) -> Result<Option<conc::Runnable>, UserError> {
-        // determine if Ruff is enabled
-        let python_stack = all_stacks.iter().any(|s| s.stack.name() == "Python");
-
+    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         for file in &stack.files {

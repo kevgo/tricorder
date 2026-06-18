@@ -2,7 +2,6 @@ use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
-use std::path::Path;
 
 pub struct GolangciLint;
 
@@ -11,18 +10,18 @@ impl Tool for GolangciLint {
         if let Some(yml_stack) = detected_stacks.with_type(StackType::Yml) {
             if yml_stack
                 .files
-                .contains_any(&[Path::new(".golangci.yml"), Path::new(".golangci.yaml")])
+                .contains_any(&[".golangci.yml", ".golangci.yaml"])
             {
                 return true;
             }
         }
         if let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) {
-            if toml_stack.files.contains(&Path::new(".golangci.toml")) {
+            if toml_stack.files.contains(".golangci.toml") {
                 return true;
             }
         }
         if let Some(json_stack) = detected_stacks.with_type(StackType::Json) {
-            if json_stack.files.contains(&Path::new(".golangci.json")) {
+            if json_stack.files.contains(".golangci.json") {
                 return true;
             }
         }
