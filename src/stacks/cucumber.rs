@@ -37,9 +37,9 @@ mod tests {
             "src/features/login.feature" => true,
             "other.txt" => false,
         };
-        let css = Cucumber {};
+        let cucumber = Cucumber {};
         for (give, want) in tests {
-            let have = css.owns(Path::new(give));
+            let have = cucumber.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
