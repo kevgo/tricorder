@@ -16,7 +16,7 @@ Feature: install all Cucumber tools
       """
     And it prints the lines
       """
-      Cucumber (ghokin)
+      Cucumber (Ghokin)
       "." formatted
       """
     And the exit code is 0
