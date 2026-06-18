@@ -11,7 +11,7 @@ impl Files {
 
     #[must_use]
     pub fn contains(&self, file: &str) -> bool {
-        self.0.iter().any(|f| f == file)
+        self.0.contains(&PathBuf::from(file))
     }
 
     #[must_use]
