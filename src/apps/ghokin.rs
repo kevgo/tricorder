@@ -1,13 +1,13 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Formatter, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Ghokin;
 
 impl Tool for Ghokin {
-    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        detected_stacks.with_type(StackType::Cucumber).is_some()
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
     }
 }
 

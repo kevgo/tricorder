@@ -1,4 +1,4 @@
-use crate::domain::{Checker, DetectedStack, DetectedStacks, StackType, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Tool, UserError};
 use std::fmt::Display;
 
 pub struct Checkstyle;
@@ -7,8 +7,8 @@ const BINARY: &str = "checkstyle";
 const CONFIG_ARG: &str = "-c /google_checks.xml";
 
 impl Tool for Checkstyle {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        detected_stacks.has_stack_type(StackType::Java)
+    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
+        true
     }
 }
 

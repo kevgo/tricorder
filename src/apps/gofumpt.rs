@@ -1,13 +1,13 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Formatter, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Gofumpt;
 
 impl Tool for Gofumpt {
-    fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        detected_stacks.with_type(StackType::Go).is_some()
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
     }
 }
 

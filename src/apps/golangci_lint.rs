@@ -8,10 +8,25 @@ pub struct GolangciLint;
 
 impl Tool for GolangciLint {
     fn is_enabled(&self, detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
-            return false;
-        };
-        json_stack.files.contains(Path::new("golangci.json"))
+        if let Some(yml_stack) = detected_stacks.with_type(StackType::Yml) {
+            if yml_stack
+                .files
+                .contains_any(&[Path::new(".golangci.yml"), Path::new(".golangci.yaml")])
+            {
+                return true;
+            }
+        }
+        if let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) {
+            if toml_stack.files.contains(&Path::new(".golangci.toml")) {
+                return true;
+            }
+        }
+        if let Some(json_stack) = detected_stacks.with_type(StackType::Json) {
+            if json_stack.files.contains(&Path::new(".golangci.json")) {
+                return true;
+            }
+        }
+        false
     }
 }
 
