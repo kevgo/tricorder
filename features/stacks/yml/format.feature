@@ -6,6 +6,7 @@ Feature: format YML
       prettier-standalone 0.24.0
       """
 
+  @this
   Scenario: valid YML
     Given a file "main.yml" with content
       """

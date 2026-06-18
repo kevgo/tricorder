@@ -42,9 +42,9 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Sql {}),
         Box::new(Toml {}),
         Box::new(Typescript {}),
-        Box::new(Unknown {}),
         Box::new(Yml {}),
         // keep-sorted end
+        Box::new(Unknown {}),
     ]
 }
 
