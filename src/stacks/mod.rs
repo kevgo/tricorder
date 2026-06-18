@@ -1,4 +1,4 @@
-use crate::domain::{DetectedStack, Files, Stack};
+use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
 
 mod css;
 mod cucumber;
@@ -50,9 +50,9 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover() -> Vec<DetectedStack> {
+pub fn discover() -> DetectedStacks {
     let all_stacks = all();
-    let mut result: Vec<DetectedStack> = all_stacks
+    let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
         .map(|stack| DetectedStack {
             stack,
@@ -65,15 +65,16 @@ pub fn discover() -> Vec<DetectedStack> {
         if !path.is_file() {
             continue;
         }
-        for stack in &mut result {
-            if stack.stack.has_file(path) {
-                stack.files.push(path.to_owned());
+        for detected_stack in &mut detected_stacks {
+            if detected_stack.stack.has_file(path) {
+                detected_stack.files.push(path.to_owned());
                 break;
             }
         }
     }
-    result
+    let non_empty = detected_stacks
         .into_iter()
         .filter(|stack| !stack.files.is_empty())
-        .collect()
+        .collect();
+    DetectedStacks::new(non_empty)
 }

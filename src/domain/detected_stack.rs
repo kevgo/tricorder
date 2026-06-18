@@ -11,6 +11,11 @@ pub struct DetectedStacks(Vec<DetectedStack>);
 
 impl DetectedStacks {
     #[must_use]
+    pub fn new(stacks: Vec<DetectedStack>) -> Self {
+        Self(stacks)
+    }
+
+    #[must_use]
     pub fn has_file(&self, stack_type: StackType, file: &str) -> bool {
         let Some(stack) = self.with_type(stack_type) else {
             return false;
@@ -21,6 +26,16 @@ impl DetectedStacks {
     #[must_use]
     pub fn has_stack_type(&self, stack_type: StackType) -> bool {
         self.0.iter().any(|s| s.stack.stack_type() == stack_type)
+    }
+
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.0.len()
     }
 
     #[must_use]
