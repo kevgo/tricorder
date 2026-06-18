@@ -122,7 +122,8 @@ Feature: fix multiple stacks with invalid code
       """
       CSS (Biome)
       TypeScript (Biome)
-      Python (ruff)
+      Python (ruff fix)
+      Python (ruff format)
       """
     And it prints the block
       """
