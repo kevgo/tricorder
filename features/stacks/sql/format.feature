@@ -85,7 +85,6 @@ Feature: format SQL
     When executing "tricorder fix --show=all"
     Then it prints to STDERR
       """
-      no stacks found
       2 other
       running 1 tools
       """
