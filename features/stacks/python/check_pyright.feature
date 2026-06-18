@@ -7,8 +7,11 @@ Feature: check Python
       """
     And a file "pyrightconfig.json" with content
       """
-      {}
+      {
+        "typeCheckingMode": "strict"
+      }
       """
+    And I ran "uv tool install pyright"
 
   @this
   Scenario: valid Python
