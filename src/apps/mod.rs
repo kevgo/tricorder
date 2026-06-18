@@ -6,6 +6,7 @@ pub mod ghokin;
 pub mod gofumpt;
 pub mod golangci_lint;
 pub mod prettier;
+pub mod pyright;
 pub mod ruff;
 pub mod rumdl;
 pub mod sqlfmt;
