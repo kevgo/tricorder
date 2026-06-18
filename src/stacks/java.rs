@@ -9,7 +9,7 @@ impl Stack for Java {
         StackType::Java
     }
 
-    fn has_file(&self, file: &Path) -> bool {
+    fn owns(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "java")
     }
 
@@ -40,7 +40,7 @@ mod tests {
         };
         let java = Java {};
         for (give, want) in tests {
-            let have = java.has_file(Path::new(give));
+            let have = java.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

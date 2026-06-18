@@ -9,7 +9,7 @@ impl Stack for Typescript {
         StackType::Typescript
     }
 
-    fn has_file(&self, file: &Path) -> bool {
+    fn owns(&self, file: &Path) -> bool {
         file.extension()
             .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
     }
@@ -42,7 +42,7 @@ mod tests {
         };
         let typescript = Typescript {};
         for (give, want) in tests {
-            let have = typescript.has_file(Path::new(give));
+            let have = typescript.owns(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

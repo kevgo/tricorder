@@ -66,7 +66,7 @@ pub fn discover() -> DetectedStacks {
             continue;
         }
         for detected_stack in &mut detected_stacks {
-            if detected_stack.stack.has_file(path) {
+            if detected_stack.stack.owns(path) {
                 detected_stack.files.push(path.to_owned());
                 break;
             }
