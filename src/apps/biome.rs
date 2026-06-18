@@ -1,17 +1,22 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, StackType, Tool, UserError};
+use crate::domain::{
+    Checker, DetectedStack, DetectedStacks, Formatter, StackType, Tool, UserError,
+};
 use big_s::S;
 use std::fmt::Display;
+use std::path::Path;
 
 pub struct Biome;
 
 impl Tool for Biome {
-    fn is_enabled(&self, detected_stacks: &[DetectedStack]) -> bool {
+    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
         // get the JSON stack
-        let Some(json_stack) = detected_stacks
-            .iter()
-            .find(|s| s.stack.stack_type() == StackType::Json);
-        json_stack.is_some()
+        let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
+            return false;
+        };
+        json_stack
+            .files
+            .contains_any(&[Path::new("biome.json"), &Path::new("biome.jsonc")])
     }
 }
 

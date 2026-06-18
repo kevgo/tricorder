@@ -1,4 +1,4 @@
-use crate::domain::{DetectedStack, Stack};
+use crate::domain::{DetectedStack, Files, Stack};
 
 mod css;
 mod cucumber;
@@ -53,7 +53,7 @@ pub fn discover() -> (Vec<DetectedStack>, usize) {
         .into_iter()
         .map(|stack| DetectedStack {
             stack,
-            files: vec![],
+            files: Files::new(),
         })
         .collect();
     let mut file_count = 0;

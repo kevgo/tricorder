@@ -1,14 +1,19 @@
-use crate::domain::Stack;
-use std::path::PathBuf;
+use crate::domain::{Files, Stack, StackType};
 
 /// A stack that was detected in the workspace,
 /// and the workspace files belonging to it.
 pub struct DetectedStack {
     pub stack: Box<dyn Stack>,
-    pub files: Vec<PathBuf>,
+    pub files: Files,
 }
 
 pub struct DetectedStacks(Vec<DetectedStack>);
+
+impl DetectedStacks {
+    pub fn with_type(&self, stack_type: StackType) -> Option<&DetectedStack> {
+        self.0.iter().find(|s| s.stack.stack_type() == stack_type)
+    }
+}
 
 impl IntoIterator for DetectedStacks {
     type Item = DetectedStack;

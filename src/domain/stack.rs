@@ -1,6 +1,6 @@
 use crate::domain::{Checker, Formatter, StackType};
 use std::fmt::Display;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// a language stack that Tricorder supports
 pub trait Stack {
