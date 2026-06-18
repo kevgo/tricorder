@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Fixer, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -40,7 +40,7 @@ impl Checker for Rumdl {
     }
 }
 
-impl Formatter for Rumdl {
+impl Fixer for Rumdl {
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fmt"));

@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Formatter, Tool, UserError};
+use crate::domain::{DetectedStack, Fixer, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -17,7 +17,7 @@ impl Display for Sqlfmt {
     }
 }
 
-impl Formatter for Sqlfmt {
+impl Fixer for Sqlfmt {
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 5);
         args.push(S("tool"));

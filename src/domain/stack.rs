@@ -1,4 +1,4 @@
-use crate::domain::{Checker, Formatter, StackType};
+use crate::domain::{Checker, Fixer, StackType};
 use std::fmt::Display;
 use std::path::Path;
 
@@ -13,7 +13,7 @@ pub trait Stack {
     fn checkers(&self) -> Vec<Box<dyn Checker>>;
 
     /// all possible formatters for this stack
-    fn formatters(&self) -> Vec<Box<dyn Formatter>>;
+    fn formatters(&self) -> Vec<Box<dyn Fixer>>;
 }
 
 impl Display for Box<dyn Stack> {
