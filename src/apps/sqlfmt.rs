@@ -1,8 +1,7 @@
-use std::fmt::Display;
-
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Sqlfmt;
 
