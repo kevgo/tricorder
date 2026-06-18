@@ -6,6 +6,6 @@ pub trait Formatter: Tool {
     /// The formatter can look at the files in `all_stacks` to determine if it should run.
     /// If it runs, the formatter should only format the files in the given `DetectedStack`,
     /// not find all the files to check by itself.
-    /// This allows us to run all formatters in parallel.
+    /// This allows running all formatters in parallel.
     fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
 }
