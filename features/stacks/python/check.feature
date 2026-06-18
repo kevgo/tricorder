@@ -6,7 +6,7 @@ Feature: check Python
       ruff 0.15.16
       """
 
-  Scenario: valid JSON
+  Scenario: valid Python
     Given a file "main.py" with content
       """
       print("Hello, world!")
