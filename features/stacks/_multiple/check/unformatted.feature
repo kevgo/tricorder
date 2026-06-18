@@ -43,7 +43,7 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (lint)
+      Python (ruff check)
       All checks passed!
       """
     And it prints the block
@@ -62,7 +62,7 @@ Feature: check multiple stacks with unformatted files
     Then it prints nothing to STDERR
     And it prints only these lines in any order
       """
-      Python (lint)
+      Python (ruff check)
       TypeScript (Biome)
       CSS (Biome)
       """
