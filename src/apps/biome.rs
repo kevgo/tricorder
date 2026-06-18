@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, Formatter, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -8,10 +8,10 @@ pub struct Biome;
 impl Tool for Biome {
     fn is_enabled(&self, detected_stacks: &[DetectedStack]) -> bool {
         // get the JSON stack
-        let json_stack = detected_stacks
+        let Some(json_stack) = detected_stacks
             .iter()
             .find(|s| s.stack.stack_type() == StackType::Json);
-        todo!()
+        json_stack.is_some()
     }
 }
 
