@@ -9,6 +9,6 @@ pub fn format_command() -> Result<Option<conc::Executable>, UserError> {
         name: S("delete-empty-folders"),
         app: &rta::applications::DeleteEmptyFolders {},
         args: vec![],
-        version: Some(rta::Version::from("0.0.1")),
+        version: Some(rta::Version::from("0.0.2")),
     })
 }
