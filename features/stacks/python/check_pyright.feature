@@ -50,6 +50,11 @@ Feature: check Python
     When executing "tricorder check --show=all"
     Then it prints the block
       """
+      Python (ruff check)
+      All checks passed!
+      """
+    Then it prints the block
+      """
       Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
