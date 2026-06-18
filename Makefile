@@ -46,7 +46,7 @@ fix: ${RTA}  # runs all linters and auto-fixes
 	cargo clippy --fix --allow-dirty
 	cargo +nightly fmt
 	$(RUMDL) fmt
-	$(Taplo) format
+	$(TAPLO) format
 	make --no-print-directory ghokin
 	make --no-print-directory keep-sorted
 
