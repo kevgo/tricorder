@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct GherkinLint;
 
-impl Tool for GherkinLint {
-    fn name(&self) -> &'static str {
-        "gherkin-lint"
+impl Tool for GherkinLint {}
+
+impl Display for GherkinLint {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("GherkinLint")
     }
 }
 
@@ -20,7 +23,7 @@ impl Checker for GherkinLint {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Npm {},
             args,
             version: None,

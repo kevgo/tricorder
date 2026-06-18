@@ -1,12 +1,16 @@
+use std::fmt::Display;
+
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{Checker, DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
 
 pub struct Taplo;
 
-impl Tool for Taplo {
-    fn name(&self) -> &'static str {
-        "taplo"
+impl Tool for Taplo {}
+
+impl Display for Taplo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Taplo")
     }
 }
 
@@ -18,7 +22,7 @@ impl Checker for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,
@@ -35,7 +39,7 @@ impl Formatter for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,
