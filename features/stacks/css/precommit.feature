@@ -1,4 +1,3 @@
-@this
 Feature: precommit CSS
 
   Background:
