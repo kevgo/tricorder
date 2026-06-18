@@ -16,7 +16,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn has_file(&self, stack_type: StackType, file: &str) -> bool {
+    pub fn contains_file(&self, stack_type: StackType, file: &str) -> bool {
         let Some(stack) = self.with_type(stack_type) else {
             return false;
         };
