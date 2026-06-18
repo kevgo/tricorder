@@ -35,11 +35,11 @@ Feature: format multiple good stacks
       """
     And it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And it prints the lines
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And it prints the block
       """
@@ -60,8 +60,8 @@ Feature: format multiple good stacks
       delete-empty-folders
       Python (fix)
       Python (format)
-      CSS (biome)
-      TypeScript (biome)
+      CSS (Biome)
+      TypeScript (Biome)
       """
     And all files are unchanged
 

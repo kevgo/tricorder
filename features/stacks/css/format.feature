@@ -16,7 +16,7 @@ Feature: format CSS
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -37,7 +37,7 @@ Feature: format CSS
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" now has content
@@ -63,7 +63,7 @@ Feature: format CSS
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      CSS (biome)
+      CSS (Biome)
       Found 2 errors.
       """
     And the exit code is 1

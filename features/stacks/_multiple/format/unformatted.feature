@@ -48,11 +48,11 @@ Feature: format multiple stacks
       """
     And it prints the block
       """
-      TypeScript (biome)
+      TypeScript (Biome)
       """
     And it prints the block
       """
-      CSS (biome)
+      CSS (Biome)
       """
     And it prints the block
       """
@@ -91,8 +91,8 @@ Feature: format multiple stacks
       delete-empty-folders
       Python (fix)
       Python (format)
-      TypeScript (biome)
-      CSS (biome)
+      TypeScript (Biome)
+      CSS (Biome)
       """
     And file "main.css" now has content
       """

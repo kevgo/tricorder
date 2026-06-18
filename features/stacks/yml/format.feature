@@ -14,7 +14,7 @@ Feature: format YML
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      YML (prettier)
+      YML (Prettier)
       """
     And the exit code is 0
     And file "main.yml" is unchanged
@@ -31,7 +31,7 @@ Feature: format YML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      YML (prettier)
+      YML (Prettier)
       """
     And the exit code is 0
     And file "main.yml" now has content
@@ -51,7 +51,7 @@ Feature: format YML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      YML (prettier)
+      YML (Prettier)
       [error] main.yml: SyntaxError: Missing closing "quote (1:6)
       """
     And the exit code is 2

@@ -1,12 +1,15 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, Formatter, Tool, UserError};
 use big_s::S;
+use std::fmt::Display;
 
 pub struct Prettier;
 
-impl Tool for Prettier {
-    fn name(&self) -> &'static str {
-        "prettier"
+impl Tool for Prettier {}
+
+impl Display for Prettier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Prettier")
     }
 }
 
@@ -19,7 +22,7 @@ impl Formatter for Prettier {
             args.push(file_str);
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({})", &stack.stack, self.name()),
+            name: format!("{} ({self})", &stack.stack),
             app: &rta::applications::PrettierStandalone {},
             args,
             version: None,

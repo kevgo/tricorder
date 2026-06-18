@@ -14,7 +14,7 @@ Feature: format TOML
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      TOML (taplo)
+      TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -31,7 +31,7 @@ Feature: format TOML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TOML (taplo)
+      TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content
@@ -51,7 +51,7 @@ Feature: format TOML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TOML (taplo)
+      TOML (Taplo)
       ERROR operation failed error=some files were not formatted due to syntax errors
       """
     And the exit code is 1
