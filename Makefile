@@ -65,7 +65,7 @@ lint: ${RTA}  # lints the main codebase concurrently
 	cargo clippy --test=cuke --all-features -- --deny=warnings
 	$(RUMDL) check
 	${GHERKIN_LINT}
-	# $(Taplo) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
+	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
 
 setup: setup-ci  # install development dependencies on this computer
 	cargo install cargo-machete --locked
