@@ -1,12 +1,12 @@
 use crate::apps::ruff::Ruff;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Python;
 
 impl Stack for Python {
-    fn name(&self) -> &'static str {
-        "Python"
+    fn stack_type(&self) -> StackType {
+        StackType::Python
     }
 
     fn has_file(&self, file: &Path) -> bool {

@@ -1,13 +1,13 @@
 use crate::apps::gofumpt::Gofumpt;
 use crate::apps::golangci_lint::GolangciLint;
-use crate::domain::{Checker, Formatter, Stack};
+use crate::domain::{Checker, Formatter, Stack, StackType};
 use std::path::Path;
 
 pub struct Go;
 
 impl Stack for Go {
-    fn name(&self) -> &'static str {
-        "Go"
+    fn stack_type(&self) -> StackType {
+        StackType::Go
     }
 
     fn has_file(&self, file: &Path) -> bool {
