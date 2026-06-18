@@ -14,12 +14,8 @@ Feature: precommit Cucumber
         Scenario: bar
           Given a step
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      Cucumber (Ghokin)
-      "." formatted
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.feature" is unchanged
 
@@ -38,12 +34,8 @@ Feature: precommit Cucumber
         Scenario:   bar2
           Given   another step
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
-      """
-      Cucumber (Ghokin)
-      "." formatted
-      """
+    When executing "tricorder precommit"
+    Then it prints nothing
     And the exit code is 0
     And file "main.feature" now has content
       """
@@ -65,10 +57,9 @@ Feature: precommit Cucumber
       """
       Feat
       """
-    When executing "tricorder precommit --show=all"
-    Then it prints the lines
+    When executing "tricorder precommit"
+    Then it prints
       """
-      Cucumber (Ghokin)
       an error occurred with file "main.feature" : Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
