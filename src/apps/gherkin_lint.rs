@@ -8,10 +8,10 @@ pub struct GherkinLint;
 impl Tool for GherkinLint {
     fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
         true
-        // let Some(json_stack) = detected_stacks.with_type(StackType::Json) else {
+        // let Some(other_stack) = detected_stacks.with_type(StackType::Unknown) else {
         //     return false;
         // };
-        // json_stack.files.contains(".gherkin-lintrc")
+        // other_stack.files.contains(".gherkin-lintrc")
     }
 }
 
