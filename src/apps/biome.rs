@@ -7,6 +7,10 @@ pub struct Biome;
 
 impl Tool for Biome {
     fn is_enabled(&self, detected_stacks: &[DetectedStack]) -> bool {
+        // get the JSON stack
+        let json_stack = detected_stacks
+            .iter()
+            .find(|s| s.stack.stack_type() == StackType::Json);
         todo!()
     }
 }
