@@ -6,9 +6,5 @@ pub trait Checker: Tool {
     /// The checker can look at the files in all_stacks to determine if it should run.
     /// If it runs, the checker should only check the files in the given DetectedStack,
     /// not find all the files to check by itself.
-    fn check_commands(
-        &self,
-        stack: &DetectedStack,
-        all_stacks: &[DetectedStack],
-    ) -> Result<Option<conc::Runnable>, UserError>;
+    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
 }

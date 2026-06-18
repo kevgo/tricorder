@@ -5,7 +5,11 @@ use std::fmt::Display;
 
 pub struct Biome;
 
-impl Tool for Biome {}
+impl Tool for Biome {
+    fn is_enabled(&self, detected_stacks: &[DetectedStack]) -> bool {
+        todo!()
+    }
+}
 
 impl Display for Biome {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
