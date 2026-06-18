@@ -48,6 +48,7 @@ test = false    # don't run this as part of "cargo test"
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
 missing_errors_doc = "allow"
+into_iter_without_iter = "allow"
 
 [lints.rust]
 unsafe_code = "forbid"

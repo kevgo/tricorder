@@ -1,11 +1,21 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Formatter, Tool, UserError};
+use crate::domain::{Checker, DetectedStack, DetectedStacks, Formatter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Rumdl;
 
-impl Tool for Rumdl {}
+impl Tool for Rumdl {
+    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
+        true
+        // let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
+        //     return false;
+        // };
+        // toml_stack
+        //     .files
+        //     .contains_any(&["rumdl.toml", ".rumdl.toml", ".config/rumdl.toml"])
+    }
+}
 
 impl Display for Rumdl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -5,7 +5,29 @@ use std::fmt::Display;
 
 pub struct GolangciLint;
 
-impl Tool for GolangciLint {}
+impl Tool for GolangciLint {
+    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
+        true
+        // if let Some(yml_stack) = detected_stacks.with_type(StackType::Yml)
+        //     && yml_stack
+        //         .files
+        //         .contains_any(&[".golangci.yml", ".golangci.yaml"])
+        // {
+        //     return true;
+        // }
+        // if let Some(toml_stack) = detected_stacks.with_type(StackType::Toml)
+        //     && toml_stack.files.contains(".golangci.toml")
+        // {
+        //     return true;
+        // }
+        // if let Some(json_stack) = detected_stacks.with_type(StackType::Json)
+        //     && json_stack.files.contains(".golangci.json")
+        // {
+        //     return true;
+        // }
+        // false
+    }
+}
 
 impl Display for GolangciLint {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

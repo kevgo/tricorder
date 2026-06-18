@@ -1,6 +1,6 @@
 use crate::domain::{Checker, Formatter, StackType};
 use std::fmt::Display;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// a language stack that Tricorder supports
 pub trait Stack {
@@ -20,11 +20,4 @@ impl Display for Box<dyn Stack> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.stack_type())
     }
-}
-
-/// A stack that was detected in the workspace,
-/// and the workspace files belonging to it.
-pub struct DetectedStack {
-    pub stack: Box<dyn Stack>,
-    pub files: Vec<PathBuf>,
 }

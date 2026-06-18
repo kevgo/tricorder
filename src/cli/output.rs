@@ -1,7 +1,7 @@
-use crate::domain::DetectedStack;
+use crate::domain::DetectedStacks;
 use itertools::Itertools;
 
-pub fn print_metadata(stacks: &[DetectedStack]) {
+pub fn print_metadata(stacks: &DetectedStacks) {
     let mut texts = Vec::with_capacity(stacks.len());
     for stack in stacks {
         texts.push(format!("{} {}", stack.files.len(), stack.stack));
