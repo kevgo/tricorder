@@ -1,5 +1,5 @@
 use crate::apps::delete_empty_folders;
-use crate::cli::input::RunArgs;
+use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
 use crate::domain::Result;
 use crate::stacks;
@@ -42,7 +42,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
             runnables.push(runnable);
         }
     }
-    if args.show == crate::cli::input::Show::All {
+    if args.show == Show::All {
         print_metadata(&stacks);
         eprintln!("running {tool_count} tools");
     }
