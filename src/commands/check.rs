@@ -1,6 +1,6 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::config::Config;
+use crate::config::{Config, CustomLinter};
 use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
@@ -23,12 +23,12 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
             }
         }
     }
-    let config = Config::load()?;
-    if let Some(custom_linters) = config.custom_linters {
-        for _linter in custom_linters {
+    let Config { custom_linters } = Config::load()?;
+    if let Some(custom_linters) = custom_linters {
+        for CustomLinter { name, command } in custom_linters {
             runnables.push(conc::Runnable::Single(conc::Executable {
-                name: todo!(),
-                command: todo!(),
+                name: name.unwrap_or(command.clone()),
+                command: conc::shell_command(&command),
             }));
         }
     }

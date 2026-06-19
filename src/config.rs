@@ -37,6 +37,13 @@ pub struct CustomLinter {
     pub command: String,
 }
 
+impl CustomLinter {
+    #[must_use]
+    pub fn name(self) -> String {
+        self.name.unwrap_or(self.command.clone())
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -120,6 +127,23 @@ command = "linters/check-tests",
             };
             let have = config.custom_linters();
             assert_eq!(have, &linters);
+        }
+    }
+
+    mod custom_linter {
+        mod name {
+            use crate::config::CustomLinter;
+            use big_s::S;
+
+            #[test]
+            fn name() {
+                let linter = CustomLinter {
+                    name: None,
+                    command: S("one.sh"),
+                };
+                let have = linter.name();
+                assert_eq!(have, "one.sh");
+            }
         }
     }
 }
