@@ -23,7 +23,7 @@ which = "8.0.3"
 [dev-dependencies]
 contains_lines = "0.0.1"
 test_helpers = { path = "test_helpers" }
-cucumber = { version = "0.23", features = ["libtest"] }
+cucumber = "0.23.0"
 itertools = "0.14.0"
 maplit = "1.0.2"
 mio = "1.2.1"
