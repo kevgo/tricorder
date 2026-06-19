@@ -5,7 +5,7 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn fix(args: RunArgs) -> Result<ExitCode> {
+pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let stacks = stacks::discover();
     let mut runnables = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {

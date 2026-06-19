@@ -35,7 +35,7 @@ pub struct RunArgs {
     pub show: Show,
 }
 
-#[derive(Clone, PartialEq, ValueEnum)]
+#[derive(Clone, Copy, PartialEq, ValueEnum)]
 pub enum Show {
     /// all commands and their output
     All,
