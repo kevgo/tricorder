@@ -22,6 +22,7 @@ contest: ${RTA}
 	$(CONTEST)
 
 cuke: build-release ${RTA}  # runs all end-to-end tests
+	$(RTA) --install biome@2.4.0
 	$(RTA) --install rumdl@0.2.14
 	$(RTA) --install delete-empty-folders@0.0.2
 	$(RTA) --install prettier-standalone@0.24.0
