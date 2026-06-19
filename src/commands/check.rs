@@ -5,7 +5,7 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn check(args: RunArgs) -> Result<ExitCode> {
+pub fn check(args: &RunArgs) -> Result<ExitCode> {
     let stacks = stacks::discover();
     if args.show == Show::All {
         print_metadata(&stacks);
