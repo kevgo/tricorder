@@ -49,7 +49,7 @@ Feature: fix Go
       }
       """
     When executing "tricorder fix --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
       Go (gofumpt)
       other.go
