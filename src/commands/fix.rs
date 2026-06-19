@@ -1,8 +1,9 @@
 use crate::apps::delete_empty_folders;
-use crate::cli::input::RunArgs;
+use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::domain::Result;
+use crate::domain::{Result, StackType};
 use crate::stacks;
+use std::collections::HashMap;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
@@ -28,26 +29,30 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // run the other formatters
     let stacks = stacks::discover();
-    let mut runnables = Vec::new();
+    let mut executables: HashMap<StackType, Vec<conc::Executable>> = HashMap::new();
     for stack in &stacks {
+        let stack_executables = executables
+            .entry(stack.stack.stack_type())
+            .or_insert(Vec::new());
         for formatter in stack.stack.formatters() {
             if !formatter.is_enabled(&stacks) {
                 continue;
             }
-            let Some(runnable) = formatter.format_command(stack)? else {
-                // this app is not available for this platform --> don't run it
-                continue;
-            };
-            tool_count += 1;
-            runnables.push(runnable);
+            let formatter_executables = formatter.format_commands(stack)?;
+            tool_count += formatter_executables.len();
+            stack_executables.extend(formatter_executables);
         }
     }
-    if args.show == crate::cli::input::Show::All {
+    if args.show == Show::All {
         print_metadata(&stacks);
         eprintln!("running {tool_count} tools");
     }
-    if runnables.is_empty() {
+    if executables.is_empty() {
         return Ok(ExitCode::SUCCESS);
+    }
+    let mut runnables = Vec::with_capacity(executables.len());
+    for (_stack_type, stack_executables) in executables {
+        runnables.push(conc::Runnable::Sequence(stack_executables));
     }
     Ok(conc::run(conc::RunArgs {
         runnables,
