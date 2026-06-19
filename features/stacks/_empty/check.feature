@@ -2,7 +2,8 @@ Feature: checking a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder check"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=all
@@ -16,10 +17,12 @@ Feature: checking a codebase without any code
 
   Scenario: --show=names
     When executing "tricorder check --show=names"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
     And the exit code is 0

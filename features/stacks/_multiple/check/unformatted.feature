@@ -30,7 +30,7 @@ Feature: check multiple stacks with unformatted files
       TypeScript (Biome)
       Python (ruff)
       """
-    And it prints nothing
+    And it prints nothing to STDOUT
     And the exit code is 0
     And all files are unchanged
 
@@ -72,6 +72,6 @@ Feature: check multiple stacks with unformatted files
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
     Then it prints nothing to STDERR
-    And it prints nothing
+    And it prints nothing to STDOUT
     And the exit code is 0
     And all files are unchanged

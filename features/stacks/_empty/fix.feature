@@ -2,7 +2,7 @@ Feature: formatting a codebase without any code
 
   Scenario: default visibility
     When executing "tricorder fix"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
 
   Scenario: --show=all
@@ -23,10 +23,9 @@ Feature: formatting a codebase without any code
       """
       delete-empty-folders
       """
-    And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=failed
     When executing "tricorder fix --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0

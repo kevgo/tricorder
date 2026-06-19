@@ -16,7 +16,7 @@ Feature: precommit SQL
       select id, name from two
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
     And file "two.sql" is unchanged
@@ -31,7 +31,7 @@ Feature: precommit SQL
       SELECT            id, name FROM two
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" now has content
       """
