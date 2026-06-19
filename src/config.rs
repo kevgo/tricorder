@@ -6,6 +6,7 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
+    #[serde(alias = "custom-linters")]
     pub custom_linters: Option<Vec<CustomLinter>>,
 }
 
