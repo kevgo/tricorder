@@ -24,8 +24,13 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
         }
     }
     let config = Config::load()?;
-    for linter in config.custom_linters() {
-        runnables.push(conc::Runnable::Single(conc::shell_executable(linter)));
+    if let Some(custom_linters) = config.custom_linters {
+        for _linter in custom_linters {
+            runnables.push(conc::Runnable::Single(conc::Executable {
+                name: todo!(),
+                command: todo!(),
+            }));
+        }
     }
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
