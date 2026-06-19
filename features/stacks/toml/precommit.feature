@@ -52,7 +52,7 @@ Feature: precommit TOML
     Then it prints the lines
       """
       TOML (Taplo)
-      ERROR operation failed error=some files were not formatted due to syntax errors
+      error: invalid TOML
       """
     And the exit code is 0
     And file "main.toml" is unchanged
