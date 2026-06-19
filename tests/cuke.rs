@@ -450,12 +450,7 @@ impl DotWriter {
                         Some(path) => format!("{}:{}", path.display(), step.position.line),
                         None => format!("line {}", step.position.line),
                     };
-                    self.step_failures.push(format!(
-                        "    Step: {} {} ({})\n    Error: {err}",
-                        step.keyword.trim(),
-                        step.value,
-                        location,
-                    ));
+                    self.step_failures.push(format!("{}\n\n{err}", location));
                 }
             }
             event::Scenario::Finished => {

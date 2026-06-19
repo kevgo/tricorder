@@ -52,7 +52,7 @@ Feature: fix TOML
     Then it prints the lines
       """
       TOML (Taplo)
-      error: invalid TOML
+      error: invalid TOML2
       """
     And the exit code is 1
     And file "main.toml" is unchanged
