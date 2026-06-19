@@ -6,10 +6,10 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
-    #[serde(alias = "custom-linters")]
+    #[serde(alias = "custom-fixes")]
     pub custom_fixes: Option<Vec<CustomFixer>>,
 
-    #[serde(alias = "custom-fixes")]
+    #[serde(alias = "custom-linters")]
     pub custom_linters: Option<Vec<CustomLinter>>,
 }
 
@@ -87,7 +87,7 @@ command = "linters/check-tests"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
-stack = "python"
+stack = "Python"
 
 [[custom-fixes]]
 name = "sort alphabetically"
