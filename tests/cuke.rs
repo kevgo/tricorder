@@ -504,6 +504,7 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                         );
                     }
                     event::Feature::Rule(_, rule_ev) => {
+                        #[allow(clippy::collapsible_match)]
                         if let event::Rule::Scenario(scenario, ev) = rule_ev {
                             self.handle_scenario_ev(
                                 &feature.name,
