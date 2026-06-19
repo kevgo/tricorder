@@ -55,6 +55,10 @@ Feature: fix Go
       other.go
       main.go
       """
+    Then it prints the lines
+      """
+      other.go
+      """
     And the exit code is 0
     And file "main.go" now has content
       """
