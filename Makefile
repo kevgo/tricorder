@@ -25,6 +25,7 @@ cuke: build-release ${RTA}  # runs all end-to-end tests
 	$(RTA) --install rumdl@0.2.14
 	$(RTA) --install delete-empty-folders@0.0.2
 	$(RTA) --install prettier-standalone@0.24.0
+	$(RTA) --install ruff@0.15.16
 	$(RTA) uv@0.11.20 tool run --from shandy-sqlfmt sqlfmt 2> /dev/null
 	cargo test --test=cuke -- -t "not @online"
 
