@@ -39,6 +39,7 @@ tokio = { version = "1.52.3", features = [
   "rt",
   "time",
 ] }
+rand = "0.10.1"
 
 [[test]]
 name = "cuke"   # the filename of the test

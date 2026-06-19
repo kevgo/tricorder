@@ -20,8 +20,11 @@ use tokio::process::Command;
 #[derive(Debug, World)]
 #[world(init = Self::new)]
 struct TricorderWorld {
+    /// need to hold on to this to keep the tempdir alive
+    tempdir: tempfile::TempDir,
+
     /// the directory containing the test files for the current scenario
-    dir: tempfile::TempDir,
+    dir: PathBuf,
 
     original_files: Vec<ExistingFile>,
 
@@ -34,8 +37,13 @@ struct TricorderWorld {
 
 impl TricorderWorld {
     fn new() -> Self {
+        let tempdir = tempfile::tempdir().unwrap();
+        let random = rand::random_range(0..u64::MAX).to_string();
+        let dir = tempdir.path().join(random);
+        std::fs::create_dir(&dir).unwrap();
         Self {
-            dir: tempfile::tempdir().unwrap(),
+            tempdir,
+            dir,
             original_files: Vec::new(),
             output: None,
             feature_path: None,
@@ -62,9 +70,9 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     let content = step.docstring.as_ref().unwrap();
     let content = content.replace("\\t", "\t");
     let content = content[1..].to_string();
-    let filepath = world.dir.path().join(&filename);
+    let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
-    if parent != world.dir.path() {
+    if parent != world.dir {
         fs::create_dir_all(parent)
             .await
             .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
@@ -85,9 +93,9 @@ async fn an_executable_file_with_content(
     filename: String,
 ) {
     let content = step.docstring.as_ref().unwrap()[1..].to_string();
-    let filepath = world.dir.path().join(&filename);
+    let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
-    if parent != world.dir.path() {
+    if parent != world.dir {
         fs::create_dir_all(parent)
             .await
             .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
@@ -120,7 +128,7 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
     }
     let mut cmd = Command::new(absolute_path);
     cmd.args(args);
-    cmd.current_dir(world.dir.path());
+    cmd.current_dir(&world.dir);
     let output = cmd
         .output()
         .await
@@ -138,9 +146,9 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
 async fn inspect_workspace(world: &mut TricorderWorld) {
     // print visibly to the user even though this runs inside Cucumber
     // repeating a few times to break out of the cucumber formatter that deletes the current line
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
-    println!("workspace: {}", world.dir.path().display());
+    println!("workspace: {}", world.dir.display());
+    println!("workspace: {}", world.dir.display());
+    println!("workspace: {}", world.dir.display());
     // pause for 1 minute
     tokio::time::sleep(Duration::from_hours(1)).await;
 }
@@ -157,7 +165,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     }
     let mut cmd = Command::new(absolute_path);
     cmd.args(args);
-    cmd.current_dir(world.dir.path());
+    cmd.current_dir(&world.dir);
     let output = cmd
         .output()
         .await
@@ -168,7 +176,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
 #[then("all files are unchanged")]
 async fn all_files_unchanged(world: &mut TricorderWorld) {
     for original in &world.original_files {
-        let filepath = world.dir.path().join(&original.name);
+        let filepath = world.dir.join(&original.name);
         let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
             panic!(
                 "cannot read file '{}', which should still exist",
@@ -192,7 +200,7 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
         .iter()
         .find(|f| f.name == filename)
         .expect("file not found in original files");
-    let filepath = world.dir.path().join(&original.name);
+    let filepath = world.dir.join(&original.name);
     let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
         panic!(
             "cannot read file '{}', which should still exist",
@@ -212,7 +220,7 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
 async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str();
     let want = want.replace("\\t", "\t");
-    let filepath = world.dir.path().join(&filename);
+    let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
@@ -220,7 +228,7 @@ async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: Str
 #[then(expr = "file {string} now matches")]
 async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.path().join(&filename);
+    let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     assert!(
         Regex::new(want).unwrap().is_match(have.trim()),
@@ -397,7 +405,7 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
 
 #[then(expr = "there is no file {string}")]
 fn no_file(world: &mut TricorderWorld, want: String) {
-    let filepath = world.dir.path().join(&want);
+    let filepath = world.dir.join(&want);
     assert!(
         !filepath.exists(),
         "file '{want}' should not exist but does",
