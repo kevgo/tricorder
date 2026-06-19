@@ -57,6 +57,7 @@ mod tests {
             let give = r#"
 [[custom-linter]]
 command = "linters/check-files.sh"
+xxxxx
 
 [[custom-linter]]
 name = "custom linter 2"
