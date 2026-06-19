@@ -23,7 +23,7 @@ Feature: check multiple stacks
 
   Scenario: default visibility
     When executing "tricorder check"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And all files are unchanged
 
   Scenario: --show=all
@@ -61,5 +61,5 @@ Feature: check multiple stacks
 
   Scenario: --show=failed
     When executing "tricorder check --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And all files are unchanged

@@ -49,11 +49,18 @@ Feature: fix Go
       }
       """
     When executing "tricorder fix --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
       Go (gofumpt)
-      other.go
       main.go
+      """
+    And it prints the lines
+      """
+      other.go
+      """
+    And it prints the lines
+      """
+      other.go
       """
     And the exit code is 0
     And file "main.go" now has content

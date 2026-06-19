@@ -23,7 +23,7 @@ Feature: fix multiple good stacks
 
   Scenario: default visibility
     When executing "tricorder fix"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And all files are unchanged
 
   Scenario: --show=all
@@ -67,5 +67,5 @@ Feature: fix multiple good stacks
 
   Scenario: --show=failed
     When executing "tricorder fix --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And all files are unchanged

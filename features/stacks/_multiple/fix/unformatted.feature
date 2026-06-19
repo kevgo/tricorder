@@ -23,7 +23,7 @@ Feature: fix multiple stacks
 
   Scenario: default visibility
     When executing "tricorder fix"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And file "main.py" now has content
       """
       print("hello")
@@ -111,7 +111,7 @@ Feature: fix multiple stacks
 
   Scenario: --show=failed
     When executing "tricorder fix --show=failed"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And file "main.css" now has content
       """
       p {

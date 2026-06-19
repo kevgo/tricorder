@@ -10,7 +10,7 @@ Feature: precommit Java
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "Main.java" is unchanged
 
@@ -24,7 +24,7 @@ Feature: precommit Java
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "Main.java" is unchanged
 

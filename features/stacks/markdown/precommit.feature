@@ -12,7 +12,7 @@ Feature: precommit Markdown
       # Hello
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" is unchanged
 
@@ -22,7 +22,7 @@ Feature: precommit Markdown
       #     Hello
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" now has content
       """
@@ -37,6 +37,6 @@ Feature: precommit Markdown
       [e
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" is unchanged
