@@ -6,11 +6,27 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn fix(args: RunArgs) -> Result<ExitCode> {
+    let show: conc::Show = args.show.into();
+    let error_on_output = false;
+    let stderr_to_stdout = true;
+
+    // Run the global formatters because they apply to all files
+    // and can therefore interfere with the other formatters.
+    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+        let exit_code = conc::run(conc::RunArgs {
+            runnables: vec![conc::Runnable::Single(delete_empty_folders)],
+            error_on_output,
+            show,
+            stderr_to_stdout,
+        });
+        if exit_code != ExitCode::SUCCESS {
+            return Ok(exit_code);
+        }
+    }
+
+    // run the other formatters
     let stacks = stacks::discover();
     let mut runnables = Vec::new();
-    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
-        runnables.push(conc::Runnable::Single(delete_empty_folders));
-    }
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
             if !formatter.is_enabled(&stacks) {
@@ -30,11 +46,10 @@ pub fn fix(args: RunArgs) -> Result<ExitCode> {
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    let exit_code = conc::run(conc::RunArgs {
+    Ok(conc::run(conc::RunArgs {
         runnables,
-        error_on_output: false,
-        show: args.show.into(),
-        stderr_to_stdout: true,
-    });
-    Ok(exit_code)
+        error_on_output,
+        show,
+        stderr_to_stdout,
+    }))
 }
