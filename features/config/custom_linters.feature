@@ -3,22 +3,27 @@ Feature: custom linters
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
-      linters.custom = ["linters/one.sh", "find . | sort | xargs echo"]
+      [[custom_linters]]
+      command = "linters/one.sh"
+
+      [[custom_linters]]
+      name = "list all files"
+      command = "find . | sort | xargs echo"
       """
     And an executable file "linters/one.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom linter 1"
+      echo "custom linter is running"
       """
     When executing "tricorder check --show=all"
     Then it prints the block
       """
       linters/one.sh
-      custom linter 1
+      custom linter is running
       """
     And it prints the block
       """
-      find . | sort | xargs echo
+      list all files
       . ./linters ./linters/one.sh ./run-that-app ./tricorder.toml
       """
     And the exit code is 0
@@ -26,18 +31,19 @@ Feature: custom linters
   Scenario: custom linter fails
     Given a file "tricorder.toml" with content
       """
-      linters.custom = ["linters/check.sh"]
+      [[custom_linters]]
+      command = "linters/fail.sh"
       """
-    And an executable file "linters/check.sh" with content
+    And an executable file "linters/fail.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom linter 1 failed"
+      echo "custom linter failed"
       exit 4
       """
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      linters/check.sh
-      custom linter 1 failed
+      linters/fail.sh
+      custom linter failed
       """
     And the exit code is 4
