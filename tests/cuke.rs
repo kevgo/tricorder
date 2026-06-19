@@ -264,17 +264,6 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
     pretty::assert_eq!(stdout.trim(), want);
 }
 
-#[then("it prints nothing")]
-fn it_prints_nothing(world: &mut TricorderWorld) {
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    pretty::assert_eq!(stdout, "", "unexpected STDOUT content");
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    pretty::assert_eq!(stderr, "", "unexpected STDERR content");
-}
-
 #[then("it prints nothing to STDOUT")]
 fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
     let Some(output) = &world.output else {

@@ -12,7 +12,7 @@ Feature: precommit JSON
       { "key": "value" }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged
 
@@ -22,7 +22,7 @@ Feature: precommit JSON
       {"key":"value"}
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" now has content
       """

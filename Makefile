@@ -21,16 +21,16 @@ build-release:	# builds the codebase in release mode
 contest: ${RTA}
 	$(CONTEST)
 
-cuke: build-release  # runs all end-to-end tests
+cuke: build-release ${RTA}  # runs all end-to-end tests
 	cargo test --test=cuke -- -t "not @online"
 
-cuke-update: build-release  # updates the end-to-end tests
+cuke-update: build-release ${RTA}  # updates the end-to-end tests
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
 
-cuke-all: build-release  # runs the online end-to-end tests
+cuke-all: build-release ${RTA}  # runs the online end-to-end tests
 	cargo test --test=cuke
 
-cukethis: build-release  # runs only end-to-end tests with a @this tag
+cukethis: build-release ${RTA}  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 
 .PHONY: demo

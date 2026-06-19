@@ -15,7 +15,7 @@ Feature: precommit Cucumber
           Given a step
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.feature" is unchanged
 
@@ -35,7 +35,7 @@ Feature: precommit Cucumber
           Given   another step
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.feature" now has content
       """
