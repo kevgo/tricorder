@@ -426,6 +426,7 @@ impl DotWriter {
     fn handle_scenario_ev(
         &mut self,
         feature_name: &str,
+        feature_path: Option<&std::path::Path>,
         scenario_name: &str,
         ev: event::Scenario<TricorderWorld>,
     ) {
@@ -437,10 +438,15 @@ impl DotWriter {
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
                 if let event::Step::Failed(_, _, _, err) = step_ev {
+                    let location = match feature_path {
+                        Some(path) => format!("{}:{}", path.display(), step.position.line),
+                        None => format!("line {}", step.position.line),
+                    };
                     self.step_failures.push(format!(
-                        "    Step: {} {}\n    Error: {err}",
+                        "    Step: {} {} ({})\n    Error: {err}",
                         step.keyword.trim(),
                         step.value,
+                        location,
                     ));
                 }
             }
@@ -477,11 +483,21 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
             Ok(Event { value, .. }) => match value {
                 event::Cucumber::Feature(feature, feat_ev) => match feat_ev {
                     event::Feature::Scenario(scenario, ev) => {
-                        self.handle_scenario_ev(&feature.name, &scenario.name, ev.event);
+                        self.handle_scenario_ev(
+                            &feature.name,
+                            feature.path.as_deref(),
+                            &scenario.name,
+                            ev.event,
+                        );
                     }
                     event::Feature::Rule(_, rule_ev) => match rule_ev {
                         event::Rule::Scenario(scenario, ev) => {
-                            self.handle_scenario_ev(&feature.name, &scenario.name, ev.event);
+                            self.handle_scenario_ev(
+                                &feature.name,
+                                feature.path.as_deref(),
+                                &scenario.name,
+                                ev.event,
+                            );
                         }
                         _ => {}
                     },
