@@ -55,7 +55,7 @@ Feature: fix Go
       other.go
       main.go
       """
-    Then it prints the lines
+    And it prints the lines
       """
       other.go
       """
