@@ -548,7 +548,7 @@ async fn main() {
             Box::pin(async {})
         })
         .with_writer(DotWriter::new(Arc::clone(&had_failures)).normalized())
-        .run_and_exit("features")
+        .run("features")
         .await;
     if snapshots::enabled() {
         snapshots::flush();
