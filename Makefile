@@ -54,11 +54,11 @@ ghokin: ${RTA}  # format the Cucumber tests
 	${GHOKIN} fmt replace features/
 
 help:  # prints all available targets
-	@grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 keep-sorted: ${RTA}
-	@$(RTA) --install ripgrep
-	@$(KEEPSORTED) $(shell $(RTA) ripgrep -l --hidden 'keep-sorted end' ./ --glob '!{.git,Makefile}')
+	$(RTA) --install ripgrep
+	$(KEEPSORTED) $(shell $(RTA) ripgrep -l --hidden 'keep-sorted end' ./ --glob '!{.git,Makefile}')
 
 lint: ${RTA}  # lints the main codebase concurrently
 	cargo clippy --all-targets --all-features -- --deny=warnings
@@ -76,7 +76,7 @@ setup-ci:
 	rustup component add rustfmt --toolchain nightly
 
 setup-githooks: ${RTA}  ## installs the Git pre-commit to auto-format
-	@$(LEFTHOOK) install
+	$(LEFTHOOK) install
 
 ps: test fix  ## pitstop
 
@@ -95,8 +95,10 @@ update: ${RTA}  # updates all dependencies
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
 
 ${RTA}:
-	@rm -f tools/rta*
-	@(cd tools && curl https://raw.githubusercontent.com/kevgo/run-that-app/main/download.sh | sh -s -- --version ${RUN_THAT_APP_VERSION} --name rta@${RUN_THAT_APP_VERSION})
+	rm -f tools/rta*
+	(cd tools && curl https://raw.githubusercontent.com/kevgo/run-that-app/main/download.sh | sh -s -- --version ${RUN_THAT_APP_VERSION} --name rta@${RUN_THAT_APP_VERSION})
+	ln -s rta@$(RUN_THAT_APP_VERSION) tools/rta
+
 
 .DEFAULT_GOAL := help
 .SILENT:
