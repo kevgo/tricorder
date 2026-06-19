@@ -5,8 +5,8 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn fix(args: RunArgs) -> Result<ExitCode> {
-    let show: conc::Show = args.show.into();
+pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+    let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
