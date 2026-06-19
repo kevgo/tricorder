@@ -21,7 +21,7 @@ use tokio::process::Command;
 #[world(init = Self::new)]
 struct TricorderWorld {
     /// need to hold on to this to keep the tempdir alive
-    tempdir: tempfile::TempDir,
+    _tempdir: tempfile::TempDir,
 
     /// the directory containing the test files for the current scenario
     dir: PathBuf,
@@ -42,7 +42,7 @@ impl TricorderWorld {
         let dir = tempdir.path().join(random);
         std::fs::create_dir(&dir).unwrap();
         Self {
-            tempdir,
+            _tempdir: tempdir,
             dir,
             original_files: Vec::new(),
             output: None,
