@@ -1,13 +1,12 @@
 Feature: custom linters
 
-  @this
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
-      [[custom_linter]]
+      [[custom_linters]]
       command = "linters/one.sh"
 
-      [[custom_linter]]
+      [[custom_linters]]
       name = "list all files"
       command = "find . | sort | xargs echo"
       """
@@ -32,7 +31,7 @@ Feature: custom linters
   Scenario: custom linter fails
     Given a file "tricorder.toml" with content
       """
-      [[custom_linter]]
+      [[custom_linters]]
       command = "linters/fail.sh"
       """
     And an executable file "linters/fail.sh" with content
