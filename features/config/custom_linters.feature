@@ -3,7 +3,7 @@ Feature: custom linters
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
-      linters.custom = ["linters/one.sh", "find . | xargs echo"]
+      linters.custom = ["linters/one.sh", "find . | sort | xargs echo"]
       """
     And an executable file "linters/one.sh" with content
       """
@@ -18,8 +18,8 @@ Feature: custom linters
       """
     And it prints the block
       """
-      find . | xargs echo
-      . ./run-that-app ./linters ./linters/one.sh ./tricorder.toml
+      find . | sort | xargs echo
+      . ./linters ./linters/one.sh ./run-that-app ./tricorder.toml
       """
     And the exit code is 0
 
