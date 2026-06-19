@@ -1,5 +1,11 @@
 # Tricorder changelog
 
+## 0.0.5 (2026-06-19)
+
+- simplified config file format
+- executes delete-empty-folders separately before the other fixers
+  because it isn't stack specific
+
 ## 0.0.4 (2026-06-18)
 
 - the new `tricorder precommit` command never fails even if the code is invalid
