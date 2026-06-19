@@ -42,6 +42,7 @@ Feature: precommit SQL
       select id, name from two
       """
 
+  @this
   Scenario: invalid SQL
     Given a file "one.sql" with content
       """

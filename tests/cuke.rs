@@ -409,7 +409,7 @@ async fn main() {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
         })
-        .run("features")
+        .run_and_exit("features")
         .await;
     if snapshots::enabled() {
         snapshots::flush();
