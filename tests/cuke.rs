@@ -503,8 +503,8 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                             ev.event,
                         );
                     }
-                    event::Feature::Rule(_, rule_ev) => match rule_ev {
-                        event::Rule::Scenario(scenario, ev) => {
+                    event::Feature::Rule(_, rule_ev) => {
+                        if let event::Rule::Scenario(scenario, ev) = rule_ev {
                             self.handle_scenario_ev(
                                 &feature.name,
                                 feature.path.as_deref(),
@@ -512,8 +512,7 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                                 ev.event,
                             );
                         }
-                        _ => {}
-                    },
+                    }
                     _ => {}
                 },
                 event::Cucumber::Finished => {
