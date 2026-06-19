@@ -1,6 +1,7 @@
+use serde::Deserialize;
 use std::fmt::Display;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq, Hash)]
 pub enum StackType {
     Css,
     Cucumber,

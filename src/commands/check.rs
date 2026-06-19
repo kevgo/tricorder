@@ -23,7 +23,10 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
             }
         }
     }
-    let Config { custom_linters } = Config::load()?;
+    let Config {
+        custom_linters,
+        custom_fixes: _,
+    } = Config::load()?;
     if let Some(custom_linters) = custom_linters {
         for CustomLinter { name, command } in custom_linters {
             runnables.push(conc::Runnable::Single(conc::Executable {
