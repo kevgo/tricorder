@@ -447,7 +447,15 @@ impl DotWriter {
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
                 if let event::Step::Failed(_, _, _, err) = step_ev {
                     let location = match feature_path {
-                        Some(path) => format!("{}:{}", path.display(), step.position.line),
+                        Some(path) => {
+                            let display_path = std::env::current_dir()
+                                .ok()
+                                .and_then(|cwd| {
+                                    path.strip_prefix(&cwd).ok().map(|p| p.to_path_buf())
+                                })
+                                .unwrap_or_else(|| path.to_path_buf());
+                            format!("{}:{}", display_path.display(), step.position.line)
+                        }
                         None => format!("line {}", step.position.line),
                     };
                     self.step_failures.push(format!("{}\n\n{err}", location));
