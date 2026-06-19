@@ -23,7 +23,7 @@ contest: ${RTA}
 
 cuke: build-release ${RTA}  # runs all end-to-end tests
 	$(RTA) --install-all
-	$(RTA) uv tool run --from shandy-sqlfmt sqlfmt
+	$(RTA) uv@0.11.20 tool run --from shandy-sqlfmt sqlfmt 2> /dev/null
 	cargo test --test=cuke -- -t "not @online"
 
 cuke-update: build-release ${RTA}  # updates the end-to-end tests
