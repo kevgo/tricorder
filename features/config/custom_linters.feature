@@ -1,5 +1,6 @@
 Feature: custom linters
 
+  @this
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """

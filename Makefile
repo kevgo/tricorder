@@ -11,11 +11,9 @@ RUMDL        = $(RTA) rumdl
 TAPLO        = $(RTA) taplo
 
 build:  # builds the codebase
-	rm -rf tmp
 	cargo build
 
 build-release:	# builds the codebase in release mode
-	rm -rf tmp
 	cargo build --release
 
 contest: ${RTA}
