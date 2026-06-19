@@ -6,13 +6,8 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
-    pub linters: Option<Linters>,
-}
-
-#[derive(Debug, Default, Deserialize, PartialEq)]
-pub struct Linters {
-    /// custom linter commands to run in addition to the auto-detected ones
-    pub custom: Option<Vec<String>>,
+    #[serde(alias = "custom-linters")]
+    pub custom_linters: Option<Vec<CustomLinter>>,
 }
 
 impl Config {
@@ -31,16 +26,22 @@ impl Config {
         })
     }
 
-    /// provides the custom linter commands
     #[must_use]
-    pub fn custom_linters(&self) -> &[String] {
-        let Some(linters) = &self.linters else {
-            return &[];
-        };
-        let Some(custom) = &linters.custom else {
-            return &[];
-        };
-        custom
+    pub fn custom_linters(&self) -> &[CustomLinter] {
+        self.custom_linters.as_deref().unwrap_or_default()
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+pub struct CustomLinter {
+    pub name: Option<String>,
+    pub command: String,
+}
+
+impl CustomLinter {
+    #[must_use]
+    pub fn name(self) -> String {
+        self.name.unwrap_or(self.command.clone())
     }
 }
 
@@ -48,44 +49,41 @@ impl Config {
 mod tests {
 
     mod parse {
-        use crate::config::{Config, Linters};
+        use crate::config::{Config, CustomLinter};
         use big_s::S;
 
         #[test]
         fn custom_linters_defined() {
             let give = r#"
-linters.custom = [
-  "linters/check-files.sh",
-  "linters/check-tests",
-]
+[[custom-linters]]
+command = "linters/check-files.sh"
+
+[[custom-linters]]
+name = "custom linter 2"
+command = "linters/check-tests"
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
-                linters: Some(Linters {
-                    custom: Some(vec![S("linters/check-files.sh"), S("linters/check-tests")]),
-                }),
+                custom_linters: Some(vec![
+                    CustomLinter {
+                        name: None,
+                        command: S("linters/check-files.sh"),
+                    },
+                    CustomLinter {
+                        name: Some(S("custom linter 2")),
+                        command: S("linters/check-tests"),
+                    },
+                ]),
             };
             assert_eq!(have, want);
         }
 
         #[test]
         fn custom_linters_empty() {
-            let give = "linters.custom = []";
+            let give = "custom-linters = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
-                linters: Some(Linters {
-                    custom: Some(vec![]),
-                }),
-            };
-            assert_eq!(have, want);
-        }
-
-        #[test]
-        fn custom_linters_undefined() {
-            let give = "linters = {}";
-            let have: Config = toml::from_str(give).unwrap();
-            let want = Config {
-                linters: Some(Linters { custom: None }),
+                custom_linters: Some(vec![]),
             };
             assert_eq!(have, want);
         }
@@ -93,32 +91,60 @@ linters.custom = [
         #[test]
         fn empty() {
             let have: Config = toml::from_str("").unwrap();
-            let want = Config { linters: None };
+            let want = Config {
+                custom_linters: None,
+            };
             assert_eq!(have, want);
         }
     }
 
     mod custom_linters {
-        use crate::config::{Config, Linters};
+        use crate::config::{Config, CustomLinter};
         use big_s::S;
 
         #[test]
         fn none() {
-            let config = Config { linters: None };
+            let config = Config {
+                custom_linters: None,
+            };
             let have = config.custom_linters();
-            assert_eq!(have, &[] as &[String]);
+            assert_eq!(have, &[] as &[CustomLinter]);
         }
 
         #[test]
         fn some() {
+            let linters = vec![
+                CustomLinter {
+                    name: None,
+                    command: S("linters/one.sh"),
+                },
+                CustomLinter {
+                    name: None,
+                    command: S("linters/two.sh"),
+                },
+            ];
             let config = Config {
-                linters: Some(Linters {
-                    custom: Some(vec![S("linters/one.sh"), S("linters/two.sh")]),
-                }),
+                custom_linters: Some(linters.clone()),
             };
             let have = config.custom_linters();
-            let want = &["linters/one.sh", "linters/two.sh"];
-            assert_eq!(have, want);
+            assert_eq!(have, &linters);
+        }
+    }
+
+    mod custom_linter {
+        mod name {
+            use crate::config::CustomLinter;
+            use big_s::S;
+
+            #[test]
+            fn name() {
+                let linter = CustomLinter {
+                    name: None,
+                    command: S("one.sh"),
+                };
+                let have = linter.name();
+                assert_eq!(have, "one.sh");
+            }
         }
     }
 }

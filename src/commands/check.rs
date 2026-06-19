@@ -1,11 +1,11 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::config::Config;
+use crate::config::{Config, CustomLinter};
 use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn check(args: RunArgs) -> Result<ExitCode> {
+pub fn check(args: &RunArgs) -> Result<ExitCode> {
     let stacks = stacks::discover();
     if args.show == Show::All {
         print_metadata(&stacks);
@@ -23,9 +23,14 @@ pub fn check(args: RunArgs) -> Result<ExitCode> {
             }
         }
     }
-    let config = Config::load()?;
-    for linter in config.custom_linters() {
-        runnables.push(conc::Runnable::Single(conc::shell_executable(linter)));
+    let Config { custom_linters } = Config::load()?;
+    if let Some(custom_linters) = custom_linters {
+        for CustomLinter { name, command } in custom_linters {
+            runnables.push(conc::Runnable::Single(conc::Executable {
+                name: name.unwrap_or(command.clone()),
+                command: conc::shell_command(&command),
+            }));
+        }
     }
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
