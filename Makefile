@@ -22,6 +22,7 @@ contest: ${RTA}
 	$(CONTEST)
 
 cuke: build-release ${RTA}  # runs all end-to-end tests
+	$(RTA) --install-all
 	cargo test --test=cuke -- -t "not @online"
 
 cuke-update: build-release ${RTA}  # updates the end-to-end tests
