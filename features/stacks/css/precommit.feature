@@ -14,7 +14,7 @@ Feature: precommit CSS
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.css" is unchanged
 
@@ -32,7 +32,7 @@ Feature: precommit CSS
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.css" now has content
       """

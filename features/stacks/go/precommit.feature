@@ -24,7 +24,7 @@ Feature: precommit Go
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.go" is unchanged
 
@@ -46,7 +46,7 @@ Feature: precommit Go
       }
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.go" now has content
       """

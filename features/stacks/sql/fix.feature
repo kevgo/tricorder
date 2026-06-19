@@ -16,7 +16,7 @@ Feature: fix SQL
       select id, name from two
       """
     When executing "tricorder fix --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
       SQL (sqlfmt)
       2 files left unchanged.

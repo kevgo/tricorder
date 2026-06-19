@@ -16,7 +16,7 @@ Feature: precommit Python
       print("Hello, other!")
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.py" is unchanged
     And file "other.py" is unchanged
@@ -31,7 +31,7 @@ Feature: precommit Python
       print   ("Hello, other!")
       """
     When executing "tricorder precommit"
-    Then it prints nothing
+    Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.py" now has content
       """
