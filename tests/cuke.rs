@@ -2,10 +2,15 @@
 
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
-use cucumber::{World, given, then, when};
+use cucumber::{Event, World, WriterExt as _, event, given, then, when, writer};
 use regex::Regex;
+use std::io::{self, Write as _};
 use std::path::PathBuf;
 use std::process::Output;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, Ordering},
+};
 use std::time::Duration;
 use std::{env, str};
 use test_helpers::snapshots;
@@ -399,8 +404,112 @@ fn no_file(world: &mut TricorderWorld, want: String) {
     );
 }
 
+struct DotWriter {
+    had_failures: Arc<AtomicBool>,
+    current_feature: String,
+    current_scenario: String,
+    step_failures: Vec<String>,
+    all_failures: Vec<(String, String, Vec<String>)>,
+}
+
+impl DotWriter {
+    fn new(had_failures: Arc<AtomicBool>) -> Self {
+        Self {
+            had_failures,
+            current_feature: String::new(),
+            current_scenario: String::new(),
+            step_failures: Vec::new(),
+            all_failures: Vec::new(),
+        }
+    }
+
+    fn handle_scenario_ev(
+        &mut self,
+        feature_name: &str,
+        scenario_name: &str,
+        ev: event::Scenario<TricorderWorld>,
+    ) {
+        match ev {
+            event::Scenario::Started => {
+                self.current_feature = feature_name.to_owned();
+                self.current_scenario = scenario_name.to_owned();
+                self.step_failures.clear();
+            }
+            event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
+                if let event::Step::Failed(_, _, _, err) = step_ev {
+                    self.step_failures.push(format!(
+                        "    Step: {} {}\n    Error: {err}",
+                        step.keyword.trim(),
+                        step.value,
+                    ));
+                }
+            }
+            event::Scenario::Finished => {
+                if self.step_failures.is_empty() {
+                    print!("\x1b[32m.\x1b[0m");
+                } else {
+                    print!("\x1b[31mF\x1b[0m");
+                    self.had_failures.store(true, Ordering::SeqCst);
+                    self.all_failures.push((
+                        self.current_feature.clone(),
+                        self.current_scenario.clone(),
+                        self.step_failures.drain(..).collect(),
+                    ));
+                }
+                io::stdout().flush().unwrap();
+            }
+            _ => {}
+        }
+    }
+}
+
+impl writer::NonTransforming for DotWriter {}
+
+impl cucumber::Writer<TricorderWorld> for DotWriter {
+    type Cli = cucumber::cli::Empty;
+
+    async fn handle_event(
+        &mut self,
+        ev: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
+        _cli: &Self::Cli,
+    ) {
+        match ev {
+            Ok(Event { value, .. }) => match value {
+                event::Cucumber::Feature(feature, feat_ev) => match feat_ev {
+                    event::Feature::Scenario(scenario, ev) => {
+                        self.handle_scenario_ev(&feature.name, &scenario.name, ev.event);
+                    }
+                    event::Feature::Rule(_, rule_ev) => match rule_ev {
+                        event::Rule::Scenario(scenario, ev) => {
+                            self.handle_scenario_ev(&feature.name, &scenario.name, ev.event);
+                        }
+                        _ => {}
+                    },
+                    _ => {}
+                },
+                event::Cucumber::Finished => {
+                    println!();
+                    if !self.all_failures.is_empty() {
+                        println!("\n\x1b[1;31mFailures:\x1b[0m\n");
+                        for (i, (feat, scen, msgs)) in self.all_failures.iter().enumerate() {
+                            println!("\x1b[1m{}. {} / {}\x1b[0m", i + 1, feat, scen);
+                            for msg in msgs {
+                                println!("{msg}");
+                            }
+                            println!();
+                        }
+                    }
+                }
+                _ => {}
+            },
+            Err(e) => eprintln!("Error: {e}"),
+        }
+    }
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
+    let had_failures = Arc::new(AtomicBool::new(false));
     TricorderWorld::cucumber()
         // setting max_concurrent_scenarios to 1 causes more fluent output
         // and doesn't seem to have a performance impact
@@ -409,9 +518,13 @@ async fn main() {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
         })
+        .with_writer(DotWriter::new(Arc::clone(&had_failures)).normalized())
         .run("features")
         .await;
     if snapshots::enabled() {
         snapshots::flush();
+    }
+    if had_failures.load(Ordering::SeqCst) {
+        std::process::exit(1);
     }
 }
