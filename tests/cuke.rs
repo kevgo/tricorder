@@ -440,8 +440,8 @@ impl DotWriter {
     ) {
         match ev {
             event::Scenario::Started => {
-                self.current_feature = feature_name.to_owned();
-                self.current_scenario = scenario_name.to_owned();
+                feature_name.clone_into(&mut self.current_feature);
+                scenario_name.clone_into(&mut self.current_scenario);
                 self.step_failures.clear();
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
@@ -451,14 +451,16 @@ impl DotWriter {
                             let display_path = std::env::current_dir()
                                 .ok()
                                 .and_then(|cwd| {
-                                    path.strip_prefix(&cwd).ok().map(|p| p.to_path_buf())
+                                    path.strip_prefix(&cwd)
+                                        .ok()
+                                        .map(std::path::Path::to_path_buf)
                                 })
                                 .unwrap_or_else(|| path.to_path_buf());
                             format!("{}:{}", display_path.display(), step.position.line)
                         }
                         None => format!("line {}", step.position.line),
                     };
-                    self.step_failures.push(format!("{}\n\n{err}", location));
+                    self.step_failures.push(format!("{location}\n\n{err}"));
                 }
             }
             event::Scenario::Finished => {
