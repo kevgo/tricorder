@@ -56,11 +56,11 @@ mod tests {
         fn custom_linters_defined() {
             let give = r#"
 [[custom-linters]]
-command = "linters/check-files.sh",
+command = "linters/check-files.sh"
 
 [[custom-linters]]
 name = "custom linter 2"
-command = "linters/check-tests",
+command = "linters/check-tests"
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
