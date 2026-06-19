@@ -34,12 +34,12 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
             if !formatter.is_enabled(&stacks) {
                 continue;
             }
-            if let Some(runnable) = formatter.format_command(stack)? {
-                tool_count += 1;
-                runnables.push(runnable);
-            } else {
+            let Some(runnable) = formatter.format_command(stack)? else {
                 // this app is not available for this platform --> don't run it
-            }
+                continue;
+            };
+            tool_count += 1;
+            runnables.push(runnable);
         }
     }
     if args.show == crate::cli::input::Show::All {
