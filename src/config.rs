@@ -6,7 +6,7 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
-    #[serde(alias = "custom-linters")]
+    #[serde(alias = "custom-linter")]
     pub custom_linters: Option<Vec<CustomLinter>>,
 }
 
@@ -55,10 +55,10 @@ mod tests {
         #[test]
         fn custom_linters_defined() {
             let give = r#"
-[[custom-linters]]
+[[custom-linter]]
 command = "linters/check-files.sh"
 
-[[custom-linters]]
+[[custom-linter]]
 name = "custom linter 2"
 command = "linters/check-tests"
 "#;
@@ -80,7 +80,7 @@ command = "linters/check-tests"
 
         #[test]
         fn custom_linters_empty() {
-            let give = "custom-linters = []";
+            let give = "custom-linter = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 custom_linters: Some(vec![]),
