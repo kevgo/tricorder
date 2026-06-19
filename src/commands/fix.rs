@@ -9,10 +9,12 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
+    let mut tool_count = 0;
 
     // Run the global formatters because they apply to all files
     // and can therefore interfere with the other formatters.
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+        tool_count += 1;
         let exit_code = conc::run(conc::RunArgs {
             runnables: vec![conc::Runnable::Single(delete_empty_folders)],
             error_on_output,
@@ -33,6 +35,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
                 continue;
             }
             if let Some(runnable) = formatter.format_command(stack)? {
+                tool_count += 1;
                 runnables.push(runnable);
             } else {
                 // this app is not available for this platform --> don't run it
@@ -41,7 +44,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }
     if args.show == crate::cli::input::Show::All {
         print_metadata(&stacks);
-        eprintln!("running {} tools", runnables.len());
+        eprintln!("running {tool_count} tools");
     }
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
