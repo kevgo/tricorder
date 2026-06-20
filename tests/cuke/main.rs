@@ -1,5 +1,7 @@
 #![allow(clippy::needless_pass_by_value)]
 
+mod world;
+
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::{Event, World, WriterExt as _, event, given, then, when, writer};
@@ -16,59 +18,7 @@ use std::time::Duration;
 use test_helpers::snapshots;
 use tokio::fs;
 use tokio::process::Command;
-
-#[derive(Debug, World)]
-#[world(init = Self::new)]
-struct TricorderWorld {
-    /// need to hold on to this to keep the tempdir alive
-    _tempdir: tempfile::TempDir,
-
-    /// the directory containing the test files for the current scenario
-    dir: PathBuf,
-
-    /// the current working directory
-    cwd: PathBuf,
-
-    original_files: Vec<ExistingFile>,
-
-    /// the result of running Tricorder
-    output: Option<Output>,
-
-    /// path to the .feature file of the currently running scenario
-    feature_path: Option<PathBuf>,
-}
-
-impl TricorderWorld {
-    fn new() -> Self {
-        let tempdir = tempfile::tempdir().unwrap();
-        let random = rand::random_range(0..u64::MAX).to_string();
-        let dir = tempdir.path().join(random);
-        std::fs::create_dir(&dir).unwrap();
-        let cwd = std::env::current_dir().unwrap();
-        Self {
-            _tempdir: tempdir,
-            cwd,
-            dir,
-            original_files: Vec::new(),
-            output: None,
-            feature_path: None,
-        }
-    }
-
-    /// provides the exit code of the Atlanta run
-    fn exit_code(&self) -> i32 {
-        match &self.output {
-            Some(result) => result.status.code().unwrap(),
-            None => panic!(),
-        }
-    }
-}
-
-#[derive(Debug)]
-struct ExistingFile {
-    name: String,
-    content: String,
-}
+use world::{ExistingFile, TricorderWorld};
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {

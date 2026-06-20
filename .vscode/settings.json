@@ -3,7 +3,7 @@
     "features/**/*.feature"
   ],
   "cucumber.glue": [
-    "tests/cuke.rs"
+    "tests/cuke/main.rs"
   ],
   "diffEditor.codeLens": true
 }
