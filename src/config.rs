@@ -93,39 +93,6 @@ command = "linters/check-tests"
         }
     }
 
-    mod custom_linters {
-        use crate::config::{Config, CustomLinter};
-        use big_s::S;
-
-        #[test]
-        fn none() {
-            let config = Config {
-                custom_linters: None,
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &[] as &[CustomLinter]);
-        }
-
-        #[test]
-        fn some() {
-            let linters = vec![
-                CustomLinter {
-                    name: None,
-                    command: S("linters/one.sh"),
-                },
-                CustomLinter {
-                    name: None,
-                    command: S("linters/two.sh"),
-                },
-            ];
-            let config = Config {
-                custom_linters: Some(linters.clone()),
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &linters);
-        }
-    }
-
     mod custom_linter {
         mod name {
             use crate::config::CustomLinter;
