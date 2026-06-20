@@ -468,7 +468,11 @@ impl DotWriter {
                     .push(format!("{which} hook failed\n\n{msg}"));
             }
             event::Scenario::Finished => {
-                print!("\x1b[32m.\x1b[0m");
+                if self.step_failures.is_empty() {
+                    print!("\x1b[32m.\x1b[0m");
+                } else {
+                    print!("\x1b[31mF\x1b[0m");
+                }
                 io::stdout().flush().unwrap();
                 if !self.step_failures.is_empty() {
                     self.had_failures.store(true, Ordering::SeqCst);
