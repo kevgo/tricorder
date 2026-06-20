@@ -14,6 +14,5 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: make setup
-      - run: make test
-      - run: make fix
+      - run: make unit lint cuke-slow
       - run: git diff HEAD --exit-code --color
