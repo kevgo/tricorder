@@ -402,10 +402,14 @@ fn no_file(world: &mut TricorderWorld, want: String) {
 }
 
 struct DotWriter {
+    /// thread-safe access to the global error flag for the app's exit code
     had_failures: Arc<AtomicBool>,
+    /// cache of the current feature name, to be used for the failure message
     current_feature: String,
+    /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
     step_failures: Vec<String>,
+    /// all encountered failures, to be printed at the end
     all_failures: Vec<(String, String, Vec<String>)>,
 }
 
@@ -462,10 +466,9 @@ impl DotWriter {
                     .push(format!("{which} hook failed\n\n{msg}"));
             }
             event::Scenario::Finished => {
-                if self.step_failures.is_empty() {
-                    print!("\x1b[32m.\x1b[0m");
-                } else {
-                    print!("\x1b[31mF\x1b[0m");
+                print!("\x1b[32m.\x1b[0m");
+                io::stdout().flush().unwrap();
+                if !self.step_failures.is_empty() {
                     self.had_failures.store(true, Ordering::SeqCst);
                     self.all_failures.push((
                         self.current_feature.clone(),
@@ -473,7 +476,6 @@ impl DotWriter {
                         self.step_failures.drain(..).collect(),
                     ));
                 }
-                io::stdout().flush().unwrap();
             }
             _ => {}
         }
