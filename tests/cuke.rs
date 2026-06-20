@@ -452,6 +452,15 @@ impl DotWriter {
                     self.step_failures.push(format!("{location}\n\n{err}"));
                 }
             }
+            event::Scenario::Hook(which, event::Hook::Failed(_, info)) => {
+                let msg = (*info)
+                    .downcast_ref::<String>()
+                    .map(String::as_str)
+                    .or_else(|| (*info).downcast_ref::<&str>().copied())
+                    .unwrap_or("(could not resolve panic payload)");
+                self.step_failures
+                    .push(format!("{which} hook failed\n\n{msg}"));
+            }
             event::Scenario::Finished => {
                 if self.step_failures.is_empty() {
                     print!("\x1b[32m.\x1b[0m");
