@@ -414,7 +414,7 @@ struct DotWriter {
     /// Error conditions
     had_failures: Arc<AtomicBool>,
     /// collects all encountered failures in all steps, to be printed at the end
-    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
+    // TODO: if all scenarios run in parallel this won't be thread-safe and probably should be an ARC.
     all_failures: Vec<String>,
     /// cache of the current feature name, to be used for the failure message
     current_feature: String,
