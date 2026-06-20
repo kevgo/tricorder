@@ -418,6 +418,9 @@ struct DotWriter {
     current_scenario: String,
     /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
+    /// tracks whether any step in the current scenario was skipped; used to
+    /// detect undefined steps (which emit Skipped rather than Failed)
+    had_skipped_step: bool,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
     all_failures: Vec<Failure>,
@@ -436,6 +439,7 @@ impl DotWriter {
             current_feature: String::new(),
             current_scenario: String::new(),
             step_failures: Vec::new(),
+            had_skipped_step: false,
             all_failures: Vec::new(),
         }
     }
@@ -452,21 +456,28 @@ impl DotWriter {
                 feature_name.clone_into(&mut self.current_feature);
                 scenario_name.clone_into(&mut self.current_scenario);
                 self.step_failures.clear();
+                self.had_skipped_step = false;
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
-                if let event::Step::Failed(_, _, world, err) = step_ev {
-                    let location = match feature_path {
-                        Some(path) => {
-                            let cwd = match world {
-                                Some(world) => world.cwd.clone(),
-                                None => std::env::current_dir().unwrap(),
-                            };
-                            let display_path = path.strip_prefix(&cwd).unwrap_or(path);
-                            format!("{}:{}", display_path.display(), step.position.line)
-                        }
-                        None => format!("line {}", step.position.line),
-                    };
-                    self.step_failures.push(format!("{location}\n\n{err}"));
+                match step_ev {
+                    event::Step::Failed(_, _, world, err) => {
+                        let location = match feature_path {
+                            Some(path) => {
+                                let cwd = match world {
+                                    Some(world) => world.cwd.clone(),
+                                    None => std::env::current_dir().unwrap(),
+                                };
+                                let display_path = path.strip_prefix(&cwd).unwrap_or(path);
+                                format!("{}:{}", display_path.display(), step.position.line)
+                            }
+                            None => format!("line {}", step.position.line),
+                        };
+                        self.step_failures.push(format!("{location}\n\n{err}"));
+                    }
+                    event::Step::Skipped => {
+                        self.had_skipped_step = true;
+                    }
+                    _ => {}
                 }
             }
             event::Scenario::Hook(which, event::Hook::Failed(_, info)) => {
@@ -479,6 +490,10 @@ impl DotWriter {
                     .push(format!("{which} hook failed\n\n{msg}"));
             }
             event::Scenario::Finished => {
+                if self.step_failures.is_empty() && self.had_skipped_step {
+                    self.step_failures
+                        .push("scenario has undefined or unimplemented steps".to_string());
+                }
                 if self.step_failures.is_empty() {
                     print!("{GREEN}.{RESET}");
                 } else {

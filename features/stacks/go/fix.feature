@@ -12,7 +12,9 @@ Feature: fix Go
       golangci-lint 2.12.2
       """
 
+  @this
   Scenario: valid Go
+    Given foo
     Given a file "main.go" with content
       """
       package main
