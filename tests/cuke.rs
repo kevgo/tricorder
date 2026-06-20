@@ -410,8 +410,12 @@ const CYAN: &str = "\x1b[36m";
 const RESET: &str = "\x1b[0m";
 
 struct DotWriter {
-    /// thread-safe access to the global error flag for the app's exit code
+    /// Thread-safe access to the global error flag for the app's exit code.
+    /// Error conditions
     had_failures: Arc<AtomicBool>,
+    /// collects all encountered failures in all steps, to be printed at the end
+    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
+    all_failures: Vec<String>,
     /// cache of the current feature name, to be used for the failure message
     current_feature: String,
     /// cache of the current scenario name, to be used for the failure message
@@ -420,9 +424,6 @@ struct DotWriter {
     step_failures: Vec<String>,
     /// tracks whether any step in the current scenario was skipped
     has_skipped_step: bool,
-    /// collects all encountered failures in all steps, to be printed at the end
-    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
-    all_failures: Vec<String>,
 }
 
 impl DotWriter {
@@ -497,15 +498,16 @@ impl DotWriter {
             event::Scenario::Finished => {
                 if self.has_skipped_step {
                     print!("{CYAN}S{RESET}");
-                    self.had_failures.store(true, Ordering::SeqCst);
                 } else if self.step_failures.is_empty() {
                     print!("{GREEN}.{RESET}");
                 } else {
                     print!("{RED}F{RESET}");
-                    self.had_failures.store(true, Ordering::SeqCst);
                 }
-                self.all_failures.append(&mut self.step_failures);
                 io::stdout().flush().unwrap();
+                if !self.step_failures.is_empty() {
+                    self.had_failures.store(true, Ordering::SeqCst);
+                    self.all_failures.append(&mut self.step_failures);
+                }
             }
             _ => {}
         }
