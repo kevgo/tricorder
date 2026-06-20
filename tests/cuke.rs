@@ -7,12 +7,12 @@ use regex::Regex;
 use std::io::{self, Write as _};
 use std::path::PathBuf;
 use std::process::Output;
+use std::str;
 use std::sync::{
     Arc,
     atomic::{AtomicBool, Ordering},
 };
 use std::time::Duration;
-use std::{env, str};
 use test_helpers::snapshots;
 use tokio::fs;
 use tokio::process::Command;
@@ -25,6 +25,9 @@ struct TricorderWorld {
 
     /// the directory containing the test files for the current scenario
     dir: PathBuf,
+
+    /// the current working directory
+    cwd: PathBuf,
 
     original_files: Vec<ExistingFile>,
 
@@ -41,8 +44,10 @@ impl TricorderWorld {
         let random = rand::random_range(0..u64::MAX).to_string();
         let dir = tempdir.path().join(random);
         std::fs::create_dir(&dir).unwrap();
+        let cwd = std::env::current_dir().unwrap();
         Self {
             _tempdir: tempdir,
+            cwd,
             dir,
             original_files: Vec::new(),
             output: None,
@@ -121,8 +126,7 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tools/rta", "can only execute 'tools/rta'");
-    let cwd = env::current_dir().expect("cannot determine the current directory");
-    let mut absolute_path = cwd.join("tools").join("rta");
+    let mut absolute_path = world.cwd.join("tools").join("rta");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
@@ -158,8 +162,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
-    let cwd = env::current_dir().expect("cannot determine the current directory");
-    let mut absolute_path = cwd.join("target/release/tricorder");
+    let mut absolute_path = world.cwd.join("target/release/tricorder");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
@@ -535,7 +538,7 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                                 scenario,
                                 messages,
                             } = failure;
-                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1,);
+                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1);
                             for message in messages {
                                 println!("{message}");
                             }
