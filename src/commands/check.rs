@@ -6,11 +6,19 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn check(args: &RunArgs) -> Result<ExitCode> {
+    // step 1: load the config
+    let Config { custom_linters } = Config::load()?;
+
+    // step 2: discover the stacks
     let stacks = stacks::discover();
     if args.show == Show::All {
         print_metadata(&stacks);
     }
+
+    // step 3: determine the runnables
     let mut runnables = Vec::new();
+
+    // step 3.1: determine the linters for the stacks
     for stack in &stacks {
         for checker in stack.stack.checkers() {
             if !checker.is_enabled(&stacks) {
@@ -23,7 +31,8 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
             }
         }
     }
-    let Config { custom_linters } = Config::load()?;
+
+    // step 3.2: determine the runnables for the custom linters
     if let Some(custom_linters) = custom_linters {
         for CustomLinter { name, command } in custom_linters {
             runnables.push(conc::Runnable::Single(conc::Executable {
@@ -32,6 +41,8 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
             }));
         }
     }
+
+    // step 4: run the runnables and exit
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }

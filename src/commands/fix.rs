@@ -6,10 +6,14 @@ use crate::stacks;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+    // step 1: load the config
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let mut tool_count = 0;
+
+    // step 2: discover the stacks
+    let stacks = stacks::discover();
 
     // Run the global formatters because they apply to all files
     // and can therefore interfere with the other formatters.
@@ -27,7 +31,6 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // run the other formatters
-    let stacks = stacks::discover();
     let mut runnables = Vec::new();
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
