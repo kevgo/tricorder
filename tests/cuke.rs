@@ -407,10 +407,16 @@ const RESET: &str = "\x1b[0m";
 const BOLD: &str = "\x1b[1m";
 
 struct DotWriter {
+    /// thread-safe access to the global error flag for the app's exit code
     had_failures: Arc<AtomicBool>,
+    /// cache of the current feature name, to be used for the failure message
     current_feature: String,
+    /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
+    /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
+    /// collects all encountered failures in all steps, to be printed at the end
+    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
     all_failures: Vec<(String, String, Vec<String>)>,
 }
 
