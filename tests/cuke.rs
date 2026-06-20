@@ -533,6 +533,17 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
     ) {
         match event {
             Ok(Event { value, .. }) => match value {
+                event::Cucumber::ParsingFinished {
+                    features: _,
+                    rules: _,
+                    scenarios: _,
+                    steps: _,
+                    parser_errors,
+                } => {
+                    if parser_errors > 0 {
+                        self.had_failures.store(true, Ordering::SeqCst);
+                    }
+                }
                 event::Cucumber::Feature(feature, feat_ev) => match feat_ev {
                     event::Feature::Scenario(scenario, ev) => {
                         self.handle_scenario_ev(
@@ -560,17 +571,6 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                         println!("\n");
                     } else {
                         println!();
-                    }
-                }
-                event::Cucumber::ParsingFinished {
-                    features: _,
-                    rules: _,
-                    scenarios: _,
-                    steps: _,
-                    parser_errors,
-                } => {
-                    if parser_errors > 0 {
-                        self.had_failures.store(true, Ordering::SeqCst);
                     }
                 }
                 event::Cucumber::Started => {}
