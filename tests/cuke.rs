@@ -401,6 +401,11 @@ fn no_file(world: &mut TricorderWorld, want: String) {
     );
 }
 
+const RED: &str = "\x1b[31m";
+const GREEN: &str = "\x1b[32m";
+const RESET: &str = "\x1b[0m";
+const BOLD: &str = "\x1b[1m";
+
 struct DotWriter {
     /// thread-safe access to the global error flag for the app's exit code
     had_failures: Arc<AtomicBool>,
@@ -469,12 +474,9 @@ impl DotWriter {
             }
             event::Scenario::Finished => {
                 if self.step_failures.is_empty() {
-                    print!("\x1b[32m.\x1b[0m");
+                    print!("{GREEN}.{RESET}");
                 } else {
-                    print!("\x1b[31mF\x1b[0m");
-                }
-                io::stdout().flush().unwrap();
-                if !self.step_failures.is_empty() {
+                    print!("{RED}F{RESET}");
                     self.had_failures.store(true, Ordering::SeqCst);
                     self.all_failures.push((
                         self.current_feature.clone(),
@@ -482,6 +484,7 @@ impl DotWriter {
                         self.step_failures.drain(..).collect(),
                     ));
                 }
+                io::stdout().flush().unwrap();
             }
             _ => {}
         }
@@ -525,9 +528,9 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                 event::Cucumber::Finished => {
                     println!();
                     if !self.all_failures.is_empty() {
-                        println!("\n\x1b[1;31mFailures:\x1b[0m\n");
+                        println!("\n{RED}Failures:{RESET}\n");
                         for (i, (feat, scen, msgs)) in self.all_failures.iter().enumerate() {
-                            println!("\x1b[1m{}. {} / {}\x1b[0m", i + 1, feat, scen);
+                            println!("{BOLD}{cnt}. {feat} / {scen}{RESET}", cnt = i + 1);
                             for msg in msgs {
                                 println!("{msg}");
                             }
