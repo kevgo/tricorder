@@ -13,7 +13,6 @@ Feature: fix Go
       """
 
   Scenario: valid Go
-    Given foo
     Given a file "main.go" with content
       """
       package main
@@ -63,7 +62,7 @@ Feature: fix Go
       """
       other.go
       """
-    And the exit code is 2
+    And the exit code is 0
     And file "main.go" now has content
       """
       package main

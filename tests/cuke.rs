@@ -477,11 +477,10 @@ impl DotWriter {
                             None => format!("line {}", step.position.line),
                         };
                         self.has_skipped_step = true;
-                        let message = format!(
+                        self.step_failures.push(format!(
                             "{location}  unimplemented step '{}{}'",
                             &step.keyword, &step.value
-                        );
-                        self.step_failures.push(message);
+                        ));
                     }
                     _ => {}
                 }
