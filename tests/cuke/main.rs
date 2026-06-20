@@ -16,7 +16,6 @@ use std::sync::{
 };
 use test_helpers::snapshots;
 use tokio::fs;
-use tokio::process::Command;
 use world::TricorderWorld;
 
 #[then("all files are unchanged")]
