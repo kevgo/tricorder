@@ -410,17 +410,26 @@ const CYAN: &str = "\x1b[36m";
 const RESET: &str = "\x1b[0m";
 
 struct DotWriter {
-    /// Thread-safe access to the global error flag for the app's exit code.
+    /// Thread-safe access to the global error flag used to signal the exit code
+    /// to the application running Cucumber using this custom formatter.
+    ///
+    /// This flag is all the application needs to know to exit properly.
+    /// Printing error messages is a responsibility of the formatter,
+    /// so the error messages don't get exposed to the application.
     had_failures: Arc<AtomicBool>,
-    /// collects all encountered failures in all steps, to be printed at the end
-    // TODO: if all scenarios run in parallel this won't be thread-safe and probably should be an ARC.
+
+    /// All failures encountered in all steps, to be printed at the end
     all_failures: Vec<String>,
+
     /// cache of the current feature name, to be used for the failure message
     current_feature: String,
+
     /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
+
     /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
+
     /// tracks whether any step in the current scenario was skipped
     has_skipped_step: bool,
 }
