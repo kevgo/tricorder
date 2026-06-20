@@ -562,7 +562,18 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                         println!();
                     }
                 }
-                _ => {}
+                event::Cucumber::ParsingFinished {
+                    features: _,
+                    rules: _,
+                    scenarios: _,
+                    steps: _,
+                    parser_errors,
+                } => {
+                    if parser_errors > 0 {
+                        self.had_failures.store(true, Ordering::SeqCst);
+                    }
+                }
+                event::Cucumber::Started => {}
             },
             Err(e) => eprintln!("Error: {e}"),
         }
