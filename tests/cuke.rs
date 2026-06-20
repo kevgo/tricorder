@@ -406,6 +406,7 @@ fn no_file(world: &mut TricorderWorld, want: String) {
 
 const RED: &str = "\x1b[31m";
 const GREEN: &str = "\x1b[32m";
+const CYAN: &str = "\x1b[36m";
 const RESET: &str = "\x1b[0m";
 const BOLD: &str = "\x1b[1m";
 
@@ -417,10 +418,9 @@ struct DotWriter {
     /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
     /// collects all the problems that happen in the current step
-    step_failures: Vec<String>,
-    /// tracks whether any step in the current scenario was skipped; used to
-    /// detect undefined steps (which emit Skipped rather than Failed)
-    had_skipped_step: bool,
+    step_failures: Vec<Failure>,
+    /// tracks whether any step in the current scenario was skipped
+    has_skipped_step: bool,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
     all_failures: Vec<Failure>,
@@ -439,7 +439,7 @@ impl DotWriter {
             current_feature: String::new(),
             current_scenario: String::new(),
             step_failures: Vec::new(),
-            had_skipped_step: false,
+            has_skipped_step: false,
             all_failures: Vec::new(),
         }
     }
@@ -456,7 +456,7 @@ impl DotWriter {
                 feature_name.clone_into(&mut self.current_feature);
                 scenario_name.clone_into(&mut self.current_scenario);
                 self.step_failures.clear();
-                self.had_skipped_step = false;
+                self.has_skipped_step = false;
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
                 match step_ev {
@@ -472,10 +472,29 @@ impl DotWriter {
                             }
                             None => format!("line {}", step.position.line),
                         };
-                        self.step_failures.push(format!("{location}\n\n{err}"));
+                        self.step_failures.push(Failure {
+                            feature: self.current_feature.clone(),
+                            scenario: self.current_scenario.clone(),
+                            messages: vec![format!("{location}\n\n{err}")],
+                        });
                     }
                     event::Step::Skipped => {
-                        self.had_skipped_step = true;
+                        let location = match feature_path {
+                            Some(path) => {
+                                format!("{}:{}", path.display(), step.position.line)
+                            }
+                            None => format!("line {}", step.position.line),
+                        };
+                        self.has_skipped_step = true;
+                        let message = format!(
+                            "{location} unimplemented step '{}{}'",
+                            &step.keyword, &step.value
+                        );
+                        self.step_failures.push(Failure {
+                            feature: self.current_feature.clone(),
+                            scenario: self.current_scenario.clone(),
+                            messages: vec![message],
+                        });
                     }
                     _ => {}
                 }
@@ -486,25 +505,23 @@ impl DotWriter {
                     .map(String::as_str)
                     .or_else(|| (*info).downcast_ref::<&str>().copied())
                     .unwrap_or("(could not resolve panic payload)");
-                self.step_failures
-                    .push(format!("{which} hook failed\n\n{msg}"));
+                self.step_failures.push(Failure {
+                    feature: self.current_feature.clone(),
+                    scenario: self.current_scenario.clone(),
+                    messages: vec![format!("{which} hook failed\n\n{msg}")],
+                });
             }
             event::Scenario::Finished => {
-                if self.step_failures.is_empty() && self.had_skipped_step {
-                    self.step_failures
-                        .push("scenario has undefined or unimplemented steps".to_string());
-                }
-                if self.step_failures.is_empty() {
+                if self.has_skipped_step {
+                    print!("{CYAN}S{RESET}");
+                    self.had_failures.store(true, Ordering::SeqCst);
+                } else if self.step_failures.is_empty() {
                     print!("{GREEN}.{RESET}");
                 } else {
                     print!("{RED}F{RESET}");
                     self.had_failures.store(true, Ordering::SeqCst);
-                    self.all_failures.push(Failure {
-                        feature: self.current_feature.clone(),
-                        scenario: self.current_scenario.clone(),
-                        messages: self.step_failures.drain(..).collect(),
-                    });
                 }
+                self.all_failures.append(&mut self.step_failures);
                 io::stdout().flush().unwrap();
             }
             _ => {}
