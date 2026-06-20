@@ -1,7 +1,7 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomLinter};
-use crate::domain::Result;
+use crate::domain::{DetectedStacks, Result};
 use crate::stacks;
 use std::process::ExitCode;
 
@@ -16,12 +16,33 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: determine the runnables
+    let runnables = determine_runnables(&stacks, custom_linters)?;
+    if args.show == Show::All {
+        eprintln!("running {} tools", runnables.len());
+    }
+
+    // step 4: run the runnables
+    if runnables.is_empty() {
+        return Ok(ExitCode::SUCCESS);
+    }
+    Ok(conc::run(conc::RunArgs {
+        runnables,
+        error_on_output: false,
+        show: args.show.into(),
+        stderr_to_stdout: true,
+    }))
+}
+
+fn determine_runnables(
+    stacks: &DetectedStacks,
+    custom_linters: Option<Vec<CustomLinter>>,
+) -> Result<Vec<conc::Runnable>> {
     let mut runnables = Vec::new();
 
     // step 3.1: determine the linters for the stacks
-    for stack in &stacks {
+    for stack in stacks {
         for checker in stack.stack.checkers() {
-            if !checker.is_enabled(&stacks) {
+            if !checker.is_enabled(stacks) {
                 continue;
             }
             if let Some(executable) = checker.check_commands(stack)? {
@@ -41,19 +62,5 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
             }));
         }
     }
-
-    // step 4: run the runnables and exit
-    if args.show == Show::All {
-        eprintln!("running {} tools", runnables.len());
-    }
-    if runnables.is_empty() {
-        return Ok(ExitCode::SUCCESS);
-    }
-    let exit_code = conc::run(conc::RunArgs {
-        runnables,
-        error_on_output: false,
-        show: args.show.into(),
-        stderr_to_stdout: true,
-    });
-    Ok(exit_code)
+    Ok(runnables)
 }
