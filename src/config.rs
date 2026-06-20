@@ -25,11 +25,6 @@ impl Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })
     }
-
-    #[must_use]
-    pub fn custom_linters(&self) -> &[CustomLinter] {
-        self.custom_linters.as_deref().unwrap_or_default()
-    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
