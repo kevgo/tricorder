@@ -448,14 +448,8 @@ impl DotWriter {
                 if let event::Step::Failed(_, _, _, err) = step_ev {
                     let location = match feature_path {
                         Some(path) => {
-                            let display_path = std::env::current_dir()
-                                .ok()
-                                .and_then(|cwd| {
-                                    path.strip_prefix(&cwd)
-                                        .ok()
-                                        .map(std::path::Path::to_path_buf)
-                                })
-                                .unwrap_or_else(|| path.to_path_buf());
+                            let cwd = std::env::current_dir().unwrap();
+                            let display_path = path.strip_prefix(&cwd).unwrap_or(path);
                             format!("{}:{}", display_path.display(), step.position.line)
                         }
                         None => format!("line {}", step.position.line),
