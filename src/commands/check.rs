@@ -25,12 +25,13 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    Ok(conc::run(conc::RunArgs {
+    let exit_code = conc::run(conc::RunArgs {
         runnables,
         error_on_output: false,
         show: args.show.into(),
         stderr_to_stdout: true,
-    }))
+    });
+    Ok(exit_code)
 }
 
 fn determine_runnables(
