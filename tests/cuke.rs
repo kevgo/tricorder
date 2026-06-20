@@ -418,9 +418,6 @@ struct DotWriter {
     /// so the error messages don't get exposed to the application.
     had_failures: Arc<AtomicBool>,
 
-    /// All failures encountered in all steps, to be printed at the end
-    all_failures: Vec<String>,
-
     /// cache of the current feature name, to be used for the failure message
     current_feature: String,
 
@@ -442,7 +439,6 @@ impl DotWriter {
             current_scenario: String::new(),
             step_failures: Vec::new(),
             has_skipped_step: false,
-            all_failures: Vec::new(),
         }
     }
 
@@ -514,7 +510,10 @@ impl DotWriter {
                 io::stdout().flush().unwrap();
                 if !self.step_failures.is_empty() {
                     self.had_failures.store(true, Ordering::SeqCst);
-                    self.all_failures.append(&mut self.step_failures);
+                    println!("\n");
+                    for failure in &self.step_failures {
+                        println!("{failure}\n");
+                    }
                 }
             }
             _ => {}
@@ -556,15 +555,6 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     }
                     _ => {}
                 },
-                event::Cucumber::Finished => {
-                    println!();
-                    if !self.all_failures.is_empty() {
-                        println!("\n{RED}Failures:{RESET}\n");
-                        for message in &self.all_failures {
-                            println!("{message}\n");
-                        }
-                    }
-                }
                 _ => {}
             },
             Err(e) => eprintln!("Error: {e}"),
