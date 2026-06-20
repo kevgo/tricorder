@@ -7,8 +7,6 @@ use cucumber::gherkin::Step;
 use cucumber::{Event, World, WriterExt as _, event, given, then, when, writer};
 use regex::Regex;
 use std::io::{self, Write as _};
-use std::path::PathBuf;
-use std::process::Output;
 use std::str;
 use std::sync::{
     Arc,
