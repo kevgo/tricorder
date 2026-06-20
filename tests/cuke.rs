@@ -408,8 +408,9 @@ struct DotWriter {
     current_feature: String,
     /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
+    /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
-    /// all encountered failures, to be printed at the end
+    /// collects all encountered failures in all steps, to be printed at the end
     all_failures: Vec<(String, String, Vec<String>)>,
 }
 
