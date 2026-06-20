@@ -15,4 +15,5 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: make setup
       - run: make unit lint cuke-slow
+      - run: make fix
       - run: git diff HEAD --exit-code --color
