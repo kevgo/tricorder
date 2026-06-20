@@ -528,10 +528,10 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
 
     async fn handle_event(
         &mut self,
-        ev: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
+        event: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
         _cli: &Self::Cli,
     ) {
-        match ev {
+        match event {
             Ok(Event { value, .. }) => match value {
                 event::Cucumber::Feature(feature, feat_ev) => match feat_ev {
                     event::Feature::Scenario(scenario, ev) => {
@@ -559,7 +559,7 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     if self.had_failures.load(Ordering::SeqCst) {
                         println!("\n");
                     } else {
-                        println!("");
+                        println!();
                     }
                 }
                 _ => {}
