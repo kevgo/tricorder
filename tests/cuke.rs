@@ -555,6 +555,13 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     }
                     _ => {}
                 },
+                event::Cucumber::Finished => {
+                    if self.had_failures.load(Ordering::SeqCst) {
+                        println!("\n");
+                    } else {
+                        println!("");
+                    }
+                }
                 _ => {}
             },
             Err(e) => eprintln!("Error: {e}"),

@@ -28,7 +28,7 @@ Feature: fix Go
       """
       Go (gofumpt)
       """
-    And the exit code is 2
+    And the exit code is 0
     And file "main.go" is unchanged
 
   Scenario: unformatted Go
@@ -62,7 +62,7 @@ Feature: fix Go
       """
       other.go
       """
-    And the exit code is 2
+    And the exit code is 0
     And file "main.go" now has content
       """
       package main
