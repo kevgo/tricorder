@@ -585,8 +585,8 @@ async fn main() {
     let had_failures = Arc::new(AtomicBool::new(false));
     TricorderWorld::cucumber()
         // setting max_concurrent_scenarios to 1 causes sequential running of tests,
-        // which helps avoid concurrent installation of tools when no tools are installed,
-        // for example on CI.
+        // which helps avoid concurrent installation of third-party apps
+        // when none are installed, for example on CI.
         .max_concurrent_scenarios(1)
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);
