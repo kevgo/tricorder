@@ -26,10 +26,10 @@ cuke-slow: build-release ${RTA}  # runs the end-to-end tests that take a long ti
 	cargo test --test=cuke -- -t "not @online" --concurrency 1
 
 cuke-update: build-release ${RTA}  # updates the end-to-end tests
-	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke
+	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke --concurrency 1
 
 cuke-all: build-release ${RTA}  # runs the online end-to-end tests
-	cargo test --test=cuke
+	cargo test --test=cuke --concurrency 1
 
 cukethis: build-release ${RTA}  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
