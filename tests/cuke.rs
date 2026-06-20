@@ -471,9 +471,6 @@ impl DotWriter {
                     print!("{GREEN}.{RESET}");
                 } else {
                     print!("{RED}F{RESET}");
-                }
-                io::stdout().flush().unwrap();
-                if !self.step_failures.is_empty() {
                     self.had_failures.store(true, Ordering::SeqCst);
                     self.all_failures.push((
                         self.current_feature.clone(),
