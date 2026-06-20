@@ -4,7 +4,7 @@ Feature: check Python with Pyright
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
-      uv 0.11.21
+      uv 0.11.20
       """
     And a file "pyrightconfig.json" with content
       """
