@@ -417,7 +417,13 @@ struct DotWriter {
     step_failures: Vec<String>,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
-    all_failures: Vec<(String, String, Vec<String>)>,
+    all_failures: Vec<Failure>,
+}
+
+struct Failure {
+    feature: String,
+    scenario: String,
+    messages: Vec<String>,
 }
 
 impl DotWriter {
@@ -472,11 +478,11 @@ impl DotWriter {
                 } else {
                     print!("{RED}F{RESET}");
                     self.had_failures.store(true, Ordering::SeqCst);
-                    self.all_failures.push((
-                        self.current_feature.clone(),
-                        self.current_scenario.clone(),
-                        self.step_failures.drain(..).collect(),
-                    ));
+                    self.all_failures.push(Failure {
+                        feature: self.current_feature.clone(),
+                        scenario: self.current_scenario.clone(),
+                        messages: self.step_failures.drain(..).collect(),
+                    });
                 }
                 io::stdout().flush().unwrap();
             }
@@ -523,10 +529,15 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     println!();
                     if !self.all_failures.is_empty() {
                         println!("\n{RED}Failures:{RESET}\n");
-                        for (i, (feat, scen, msgs)) in self.all_failures.iter().enumerate() {
-                            println!("{BOLD}{cnt}. {feat} / {scen}{RESET}", cnt = i + 1);
-                            for msg in msgs {
-                                println!("{msg}");
+                        for (i, failure) in self.all_failures.iter().enumerate() {
+                            let Failure {
+                                feature,
+                                scenario,
+                                messages,
+                            } = failure;
+                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1,);
+                            for message in messages {
+                                println!("{message}");
                             }
                             println!();
                         }

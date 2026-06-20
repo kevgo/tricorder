@@ -1,3 +1,4 @@
+@this
 Feature: fix Go
 
   Background:
@@ -26,7 +27,7 @@ Feature: fix Go
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Go (gofumpt)
+      Go (gofumpt)2
       """
     And the exit code is 0
     And file "main.go" is unchanged
