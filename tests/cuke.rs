@@ -411,6 +411,7 @@ struct DotWriter {
     /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
     /// collects all encountered failures in all steps, to be printed at the end
+    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
     all_failures: Vec<(String, String, Vec<String>)>,
 }
 
