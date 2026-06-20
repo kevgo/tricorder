@@ -481,13 +481,15 @@ impl DotWriter {
                     event::Step::Skipped => {
                         let location = match feature_path {
                             Some(path) => {
-                                format!("{}:{}", path.display(), step.position.line)
+                                let cwd = std::env::current_dir().unwrap();
+                                let display_path = path.strip_prefix(&cwd).unwrap_or(path);
+                                format!("{}:{}", display_path.display(), step.position.line)
                             }
                             None => format!("line {}", step.position.line),
                         };
                         self.has_skipped_step = true;
                         let message = format!(
-                            "{location} unimplemented step '{}{}'",
+                            "{location}  unimplemented step '{}{}'",
                             &step.keyword, &step.value
                         );
                         self.step_failures.push(Failure {
