@@ -406,27 +406,29 @@ fn no_file(world: &mut TricorderWorld, want: String) {
 
 const RED: &str = "\x1b[31m";
 const GREEN: &str = "\x1b[32m";
+const CYAN: &str = "\x1b[36m";
 const RESET: &str = "\x1b[0m";
-const BOLD: &str = "\x1b[1m";
 
 struct DotWriter {
-    /// thread-safe access to the global error flag for the app's exit code
+    /// Thread-safe access to the global error flag used to signal the exit code
+    /// to the application running Cucumber using this custom formatter.
+    ///
+    /// This flag is all the application needs to know to exit properly.
+    /// Printing error messages is a responsibility of the formatter,
+    /// so the error messages don't get exposed to the application.
     had_failures: Arc<AtomicBool>,
+
     /// cache of the current feature name, to be used for the failure message
     current_feature: String,
+
     /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
+
     /// collects all the problems that happen in the current step
     step_failures: Vec<String>,
-    /// collects all encountered failures in all steps, to be printed at the end
-    // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
-    all_failures: Vec<Failure>,
-}
 
-struct Failure {
-    feature: String,
-    scenario: String,
-    messages: Vec<String>,
+    /// tracks whether any step in the current scenario was skipped
+    has_skipped_step: bool,
 }
 
 impl DotWriter {
@@ -436,7 +438,7 @@ impl DotWriter {
             current_feature: String::new(),
             current_scenario: String::new(),
             step_failures: Vec::new(),
-            all_failures: Vec::new(),
+            has_skipped_step: false,
         }
     }
 
@@ -452,21 +454,40 @@ impl DotWriter {
                 feature_name.clone_into(&mut self.current_feature);
                 scenario_name.clone_into(&mut self.current_scenario);
                 self.step_failures.clear();
+                self.has_skipped_step = false;
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
-                if let event::Step::Failed(_, _, world, err) = step_ev {
-                    let location = match feature_path {
-                        Some(path) => {
-                            let cwd = match world {
-                                Some(world) => world.cwd.clone(),
-                                None => std::env::current_dir().unwrap(),
-                            };
-                            let display_path = path.strip_prefix(&cwd).unwrap_or(path);
-                            format!("{}:{}", display_path.display(), step.position.line)
-                        }
-                        None => format!("line {}", step.position.line),
-                    };
-                    self.step_failures.push(format!("{location}\n\n{err}"));
+                match step_ev {
+                    event::Step::Failed(_, _, world, err) => {
+                        let location = match feature_path {
+                            Some(path) => {
+                                let cwd = match world {
+                                    Some(world) => world.cwd.clone(),
+                                    None => std::env::current_dir().unwrap(),
+                                };
+                                let display_path = path.strip_prefix(&cwd).unwrap_or(path);
+                                format!("{}:{}", display_path.display(), step.position.line)
+                            }
+                            None => format!("line {}", step.position.line),
+                        };
+                        self.step_failures.push(format!("{location}\n\n{err}"));
+                    }
+                    event::Step::Skipped => {
+                        let location = match feature_path {
+                            Some(path) => {
+                                let cwd = std::env::current_dir().unwrap();
+                                let display_path = path.strip_prefix(&cwd).unwrap_or(path);
+                                format!("{}:{}", display_path.display(), step.position.line)
+                            }
+                            None => format!("line {}", step.position.line),
+                        };
+                        self.has_skipped_step = true;
+                        self.step_failures.push(format!(
+                            "{location}  unimplemented step '{}{}'",
+                            &step.keyword, &step.value
+                        ));
+                    }
+                    _ => {}
                 }
             }
             event::Scenario::Hook(which, event::Hook::Failed(_, info)) => {
@@ -479,18 +500,21 @@ impl DotWriter {
                     .push(format!("{which} hook failed\n\n{msg}"));
             }
             event::Scenario::Finished => {
-                if self.step_failures.is_empty() {
+                if self.has_skipped_step {
+                    print!("{CYAN}S{RESET}");
+                } else if self.step_failures.is_empty() {
                     print!("{GREEN}.{RESET}");
                 } else {
                     print!("{RED}F{RESET}");
-                    self.had_failures.store(true, Ordering::SeqCst);
-                    self.all_failures.push(Failure {
-                        feature: self.current_feature.clone(),
-                        scenario: self.current_scenario.clone(),
-                        messages: self.step_failures.drain(..).collect(),
-                    });
                 }
                 io::stdout().flush().unwrap();
+                if !self.step_failures.is_empty() {
+                    self.had_failures.store(true, Ordering::SeqCst);
+                    println!("\n");
+                    for failure in &self.step_failures {
+                        println!("{failure}\n");
+                    }
+                }
             }
             _ => {}
         }
@@ -504,11 +528,22 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
 
     async fn handle_event(
         &mut self,
-        ev: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
+        event: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
         _cli: &Self::Cli,
     ) {
-        match ev {
+        match event {
             Ok(Event { value, .. }) => match value {
+                event::Cucumber::ParsingFinished {
+                    features: _,
+                    rules: _,
+                    scenarios: _,
+                    steps: _,
+                    parser_errors,
+                } => {
+                    if parser_errors > 0 {
+                        self.had_failures.store(true, Ordering::SeqCst);
+                    }
+                }
                 event::Cucumber::Feature(feature, feat_ev) => match feat_ev {
                     event::Feature::Scenario(scenario, ev) => {
                         self.handle_scenario_ev(
@@ -532,24 +567,13 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     _ => {}
                 },
                 event::Cucumber::Finished => {
-                    println!();
-                    if !self.all_failures.is_empty() {
-                        println!("\n{RED}Failures:{RESET}\n");
-                        for (i, failure) in self.all_failures.iter().enumerate() {
-                            let Failure {
-                                feature,
-                                scenario,
-                                messages,
-                            } = failure;
-                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1);
-                            for message in messages {
-                                println!("{message}");
-                            }
-                            println!();
-                        }
+                    if self.had_failures.load(Ordering::SeqCst) {
+                        println!("\n");
+                    } else {
+                        println!();
                     }
                 }
-                _ => {}
+                event::Cucumber::Started => {}
             },
             Err(e) => eprintln!("Error: {e}"),
         }
@@ -560,8 +584,9 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
 async fn main() {
     let had_failures = Arc::new(AtomicBool::new(false));
     TricorderWorld::cucumber()
-        // setting max_concurrent_scenarios to 1 causes more fluent output
-        // and doesn't seem to have a performance impact
+        // setting max_concurrent_scenarios to 1 causes sequential running of tests,
+        // which helps avoid concurrent installation of third-party apps
+        // when none are installed, for example on CI.
         .max_concurrent_scenarios(1)
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);
