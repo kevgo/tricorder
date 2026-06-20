@@ -21,6 +21,7 @@ struct TricorderWorld {
     /// the directory containing the test files for the current scenario
     dir: PathBuf,
 
+    /// the current working directory
     cwd: PathBuf,
 
     original_files: Vec<ExistingFile>,
