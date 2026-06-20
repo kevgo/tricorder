@@ -454,10 +454,13 @@ impl DotWriter {
                 self.step_failures.clear();
             }
             event::Scenario::Step(step, step_ev) | event::Scenario::Background(step, step_ev) => {
-                if let event::Step::Failed(_, _, _, err) = step_ev {
+                if let event::Step::Failed(_, _, world, err) = step_ev {
                     let location = match feature_path {
                         Some(path) => {
-                            let cwd = std::env::current_dir().unwrap();
+                            let cwd = match world {
+                                Some(world) => world.cwd.clone(),
+                                None => std::env::current_dir().unwrap(),
+                            };
                             let display_path = path.strip_prefix(&cwd).unwrap_or(path);
                             format!("{}:{}", display_path.display(), step.position.line)
                         }
