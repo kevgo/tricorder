@@ -408,7 +408,6 @@ const RED: &str = "\x1b[31m";
 const GREEN: &str = "\x1b[32m";
 const CYAN: &str = "\x1b[36m";
 const RESET: &str = "\x1b[0m";
-const BOLD: &str = "\x1b[1m";
 
 struct DotWriter {
     /// thread-safe access to the global error flag for the app's exit code
@@ -418,18 +417,12 @@ struct DotWriter {
     /// cache of the current scenario name, to be used for the failure message
     current_scenario: String,
     /// collects all the problems that happen in the current step
-    step_failures: Vec<Failure>,
+    step_failures: Vec<String>,
     /// tracks whether any step in the current scenario was skipped
     has_skipped_step: bool,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
-    all_failures: Vec<Failure>,
-}
-
-struct Failure {
-    feature: String,
-    scenario: String,
-    messages: Vec<String>,
+    all_failures: Vec<String>,
 }
 
 impl DotWriter {
@@ -472,11 +465,7 @@ impl DotWriter {
                             }
                             None => format!("line {}", step.position.line),
                         };
-                        self.step_failures.push(Failure {
-                            feature: self.current_feature.clone(),
-                            scenario: self.current_scenario.clone(),
-                            messages: vec![format!("{location}\n\n{err}")],
-                        });
+                        self.step_failures.push(format!("{location}\n\n{err}"));
                     }
                     event::Step::Skipped => {
                         let location = match feature_path {
@@ -492,11 +481,7 @@ impl DotWriter {
                             "{location}  unimplemented step '{}{}'",
                             &step.keyword, &step.value
                         );
-                        self.step_failures.push(Failure {
-                            feature: self.current_feature.clone(),
-                            scenario: self.current_scenario.clone(),
-                            messages: vec![message],
-                        });
+                        self.step_failures.push(message);
                     }
                     _ => {}
                 }
@@ -507,11 +492,8 @@ impl DotWriter {
                     .map(String::as_str)
                     .or_else(|| (*info).downcast_ref::<&str>().copied())
                     .unwrap_or("(could not resolve panic payload)");
-                self.step_failures.push(Failure {
-                    feature: self.current_feature.clone(),
-                    scenario: self.current_scenario.clone(),
-                    messages: vec![format!("{which} hook failed\n\n{msg}")],
-                });
+                self.step_failures
+                    .push(format!("{which} hook failed\n\n{msg}"));
             }
             event::Scenario::Finished => {
                 if self.has_skipped_step {
@@ -569,17 +551,8 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     println!();
                     if !self.all_failures.is_empty() {
                         println!("\n{RED}Failures:{RESET}\n");
-                        for (i, failure) in self.all_failures.iter().enumerate() {
-                            let Failure {
-                                feature,
-                                scenario,
-                                messages,
-                            } = failure;
-                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1);
-                            for message in messages {
-                                println!("{message}");
-                            }
-                            println!();
+                        for message in &self.all_failures {
+                            println!("{message}\n");
                         }
                     }
                 }
