@@ -7,12 +7,12 @@ use regex::Regex;
 use std::io::{self, Write as _};
 use std::path::PathBuf;
 use std::process::Output;
+use std::str;
 use std::sync::{
     Arc,
     atomic::{AtomicBool, Ordering},
 };
 use std::time::Duration;
-use std::{env, str};
 use test_helpers::snapshots;
 use tokio::fs;
 use tokio::process::Command;
@@ -25,6 +25,9 @@ struct TricorderWorld {
 
     /// the directory containing the test files for the current scenario
     dir: PathBuf,
+
+    /// the current working directory
+    cwd: PathBuf,
 
     original_files: Vec<ExistingFile>,
 
@@ -41,8 +44,10 @@ impl TricorderWorld {
         let random = rand::random_range(0..u64::MAX).to_string();
         let dir = tempdir.path().join(random);
         std::fs::create_dir(&dir).unwrap();
+        let cwd = std::env::current_dir().unwrap();
         Self {
             _tempdir: tempdir,
+            cwd,
             dir,
             original_files: Vec::new(),
             output: None,
@@ -121,8 +126,7 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tools/rta", "can only execute 'tools/rta'");
-    let cwd = env::current_dir().expect("cannot determine the current directory");
-    let mut absolute_path = cwd.join("tools").join("rta");
+    let mut absolute_path = world.cwd.join("tools").join("rta");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
@@ -158,8 +162,7 @@ async fn executing(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
-    let cwd = env::current_dir().expect("cannot determine the current directory");
-    let mut absolute_path = cwd.join("target/release/tricorder");
+    let mut absolute_path = world.cwd.join("target/release/tricorder");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
@@ -417,7 +420,13 @@ struct DotWriter {
     step_failures: Vec<String>,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: this isn't thread-safe. When running in parallel, this should be an ARC to a global vector.
-    all_failures: Vec<(String, String, Vec<String>)>,
+    all_failures: Vec<Failure>,
+}
+
+struct Failure {
+    feature: String,
+    scenario: String,
+    messages: Vec<String>,
 }
 
 impl DotWriter {
@@ -448,14 +457,8 @@ impl DotWriter {
                 if let event::Step::Failed(_, _, _, err) = step_ev {
                     let location = match feature_path {
                         Some(path) => {
-                            let display_path = std::env::current_dir()
-                                .ok()
-                                .and_then(|cwd| {
-                                    path.strip_prefix(&cwd)
-                                        .ok()
-                                        .map(std::path::Path::to_path_buf)
-                                })
-                                .unwrap_or_else(|| path.to_path_buf());
+                            let cwd = std::env::current_dir().unwrap();
+                            let display_path = path.strip_prefix(&cwd).unwrap_or(path);
                             format!("{}:{}", display_path.display(), step.position.line)
                         }
                         None => format!("line {}", step.position.line),
@@ -478,11 +481,11 @@ impl DotWriter {
                 } else {
                     print!("{RED}F{RESET}");
                     self.had_failures.store(true, Ordering::SeqCst);
-                    self.all_failures.push((
-                        self.current_feature.clone(),
-                        self.current_scenario.clone(),
-                        self.step_failures.drain(..).collect(),
-                    ));
+                    self.all_failures.push(Failure {
+                        feature: self.current_feature.clone(),
+                        scenario: self.current_scenario.clone(),
+                        messages: self.step_failures.drain(..).collect(),
+                    });
                 }
                 io::stdout().flush().unwrap();
             }
@@ -529,10 +532,15 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
                     println!();
                     if !self.all_failures.is_empty() {
                         println!("\n{RED}Failures:{RESET}\n");
-                        for (i, (feat, scen, msgs)) in self.all_failures.iter().enumerate() {
-                            println!("{BOLD}{cnt}. {feat} / {scen}{RESET}", cnt = i + 1);
-                            for msg in msgs {
-                                println!("{msg}");
+                        for (i, failure) in self.all_failures.iter().enumerate() {
+                            let Failure {
+                                feature,
+                                scenario,
+                                messages,
+                            } = failure;
+                            println!("{BOLD}{}. {feature} / {scenario}{RESET}", i + 1);
+                            for message in messages {
+                                println!("{message}");
                             }
                             println!();
                         }
