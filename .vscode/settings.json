@@ -3,6 +3,9 @@
     "features/**/*.feature"
   ],
   "cucumber.glue": [
-    "tests/cuke.rs"
-  ]
+    "tests/cuke/given_steps.rs",
+    "tests/cuke/then_steps.rs",
+    "tests/cuke/when_steps.rs"
+  ],
+  "diffEditor.codeLens": true
 }
