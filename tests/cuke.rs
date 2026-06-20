@@ -411,7 +411,6 @@ const RESET: &str = "\x1b[0m";
 
 struct DotWriter {
     /// Thread-safe access to the global error flag for the app's exit code.
-    /// Error conditions
     had_failures: Arc<AtomicBool>,
     /// collects all encountered failures in all steps, to be printed at the end
     // TODO: if all scenarios run in parallel this won't be thread-safe and probably should be an ARC.
