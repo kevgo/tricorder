@@ -531,7 +531,7 @@ async fn main() {
     TricorderWorld::cucumber()
         // setting max_concurrent_scenarios to 1 causes more fluent output
         // and doesn't seem to have a performance impact
-        // .max_concurrent_scenarios(1)
+        .max_concurrent_scenarios(1)
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})

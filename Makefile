@@ -20,19 +20,6 @@ contest: ${RTA}
 	$(CONTEST)
 
 cuke: build-release ${RTA}  # runs all end-to-end tests
-	$(RTA) --install biome@2.4.0
-	$(RTA) --install rumdl@0.2.14
-	$(RTA) --install delete-empty-folders@0.0.2
-	$(RTA) --install npm@26.3.0
-	$(RTA) --install ghokin@3.9.0
-	$(RTA) --install gofumpt@0.10.0
-	$(RTA) --install golangci-lint@2.12.2
-	$(RTA) --install prettier-standalone@0.24.0
-	$(RTA) --install ruff@0.15.16
-	$(RTA) --install taplo@0.10.0
-	$(RTA) uv@0.11.20 tool run --from shandy-sqlfmt sqlfmt 2> /dev/null
-	$(RTA) uv@0.11.20 tool run -- pyright 2> /dev/null
-	$(RTA) npm@26.3.0 exec -- gherkin-lint -h > /dev/null
 	cargo test --test=cuke -- -t "not @online"
 
 cuke-update: build-release ${RTA}  # updates the end-to-end tests
