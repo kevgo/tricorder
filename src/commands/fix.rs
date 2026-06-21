@@ -10,7 +10,6 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
         global,
         stack_specific,
     } = determine_runnables(args)?;
-
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
@@ -23,12 +22,13 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
-    Ok(conc::run(conc::RunArgs {
+    let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,
         show,
         stderr_to_stdout,
-    }))
+    });
+    Ok(exit_code)
 }
 
 pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
@@ -40,13 +40,13 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         print_metadata(&stacks);
     }
 
-    // global formatters
+    // step 3.1 global formatters
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(conc::Runnable::Single(delete_empty_folders));
     }
 
-    // stack-specific formatters
+    // step 3.2 stack-specific formatters
     let mut stack_specific = Vec::new();
     for stack in &stacks {
         for formatter in stack.stack.formatters() {
