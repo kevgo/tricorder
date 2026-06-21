@@ -1,11 +1,5 @@
 Feature: don't check files in .gitignore
 
-  Background:
-    Given a file "run-that-app" with content
-      """
-      delete-empty-folders 0.0.2
-      """
-
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content
       """
@@ -18,6 +12,10 @@ Feature: don't check files in .gitignore
     And a file "main.py" with content
       """
       # this file will get ignored
+      """
+    And a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
       """
     When executing "tricorder check"
     Then it prints nothing to STDOUT
