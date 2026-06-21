@@ -5,7 +5,6 @@ use crate::config::Config;
 use crate::domain::{Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
-use std::collections::HashMap;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
@@ -36,7 +35,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     // step 1: load the config
-    let config = Config::load()?;
+    let _config = Config::load()?;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -46,30 +45,31 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 
     // step 3.1 global fixers
     let mut global = Vec::new();
-    let mut tool_count = 0;
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(conc::Runnable::Single(delete_empty_folders));
-        tool_count += 1;
     }
 
     // step 3.2 stack-specific fixers
     let stacks = stacks::discover();
-    let mut executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
+    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in &stacks {
-        let stack_executables = executables
+        let stack_executables = stack_executables
             .entry(stack.stack.stack_type())
-            .or_insert(Vec::new());
+            .or_default();
         for formatter in stack.stack.formatters() {
             if !formatter.is_enabled(&stacks) {
                 continue;
             }
             let formatter_executables = formatter.format_commands(stack)?;
-            tool_count += formatter_executables.len();
             stack_executables.extend(formatter_executables);
         }
     }
+    let mut stack_specific = Vec::new();
+    for (_stack_type, stack_executables) in stack_executables {
+        stack_specific.push(conc::Runnable::Sequence(stack_executables));
+    }
     if args.show == Show::All {
-        eprintln!("running {tool_count} tools");
+        eprintln!("running {} tools", global.len() + stack_specific.len());
     }
     Ok(Runnables {
         global,
