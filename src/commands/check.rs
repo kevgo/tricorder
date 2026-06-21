@@ -1,43 +1,30 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomLinter};
-use crate::domain::Result;
+use crate::domain::{DetectedStacks, Result};
 use crate::stacks;
 use std::process::ExitCode;
 
 pub fn check(args: &RunArgs) -> Result<ExitCode> {
-    let stacks = stacks::discover();
-    if args.show == Show::All {
-        print_metadata(&stacks);
-    }
-    let mut runnables = Vec::new();
-    for stack in &stacks {
-        for checker in stack.stack.checkers() {
-            if !checker.is_enabled(&stacks) {
-                continue;
-            }
-            if let Some(executable) = checker.check_commands(stack)? {
-                runnables.push(executable);
-            } else {
-                // this app is not available for this platform --> don't run it
-            }
-        }
-    }
+    // step 1: load the config
     let Config {
         custom_linters,
         custom_fixes: _,
     } = Config::load()?;
-    if let Some(custom_linters) = custom_linters {
-        for CustomLinter { name, command } in custom_linters {
-            runnables.push(conc::Runnable::Single(conc::Executable {
-                name: name.unwrap_or(command.clone()),
-                command: conc::shell_command(&command),
-            }));
-        }
+
+    // step 2: discover the stacks
+    let stacks = stacks::discover();
+    if args.show == Show::All {
+        print_metadata(&stacks);
     }
+
+    // step 3: determine the runnables
+    let runnables = determine_runnables(&stacks, custom_linters)?;
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
+
+    // step 4: run the runnables
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
@@ -48,4 +35,36 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
         stderr_to_stdout: true,
     });
     Ok(exit_code)
+}
+
+fn determine_runnables(
+    stacks: &DetectedStacks,
+    custom_linters: Option<Vec<CustomLinter>>,
+) -> Result<Vec<conc::Runnable>> {
+    let mut result = Vec::new();
+
+    // step 3.1: determine the linters for the stacks
+    for stack in stacks {
+        for checker in stack.stack.checkers() {
+            if !checker.is_enabled(stacks) {
+                continue;
+            }
+            if let Some(executable) = checker.check_commands(stack)? {
+                result.push(executable);
+            } else {
+                // this app is not available for this platform --> don't run it
+            }
+        }
+    }
+
+    // step 3.2: determine the runnables for the custom linters
+    if let Some(custom_linters) = custom_linters {
+        for CustomLinter { name, command } in custom_linters {
+            result.push(conc::Runnable::Single(conc::Executable {
+                name: name.unwrap_or(command.clone()),
+                command: conc::shell_command(&command),
+            }));
+        }
+    }
+    Ok(result)
 }

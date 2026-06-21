@@ -28,16 +28,6 @@ impl Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })
     }
-
-    #[must_use]
-    pub fn custom_linters(&self) -> &[CustomLinter] {
-        self.custom_linters.as_deref().unwrap_or_default()
-    }
-
-    #[must_use]
-    pub fn custom_fixes(&self) -> &[CustomFixer] {
-        self.custom_fixes.as_deref().unwrap_or_default()
-    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -140,78 +130,6 @@ command = "fixes/sort.py"
                 custom_fixes: None,
             };
             assert_eq!(have, want);
-        }
-    }
-
-    mod custom_linters {
-        use crate::config::{Config, CustomLinter};
-        use big_s::S;
-
-        #[test]
-        fn none() {
-            let config = Config {
-                custom_linters: None,
-                custom_fixes: None,
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &[] as &[CustomLinter]);
-        }
-
-        #[test]
-        fn some() {
-            let linters = vec![
-                CustomLinter {
-                    name: None,
-                    command: S("linters/one.sh"),
-                },
-                CustomLinter {
-                    name: None,
-                    command: S("linters/two.sh"),
-                },
-            ];
-            let config = Config {
-                custom_linters: Some(linters.clone()),
-                custom_fixes: None,
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &linters);
-        }
-    }
-
-    mod custom_fixes {
-        use crate::config::{Config, CustomFixer};
-        use big_s::S;
-
-        #[test]
-        fn none() {
-            let config = Config {
-                custom_linters: None,
-                custom_fixes: None,
-            };
-            let have = config.custom_fixes();
-            assert_eq!(have, &[] as &[CustomFixer]);
-        }
-
-        #[test]
-        fn some() {
-            let fixes = vec![
-                CustomFixer {
-                    name: None,
-                    command: S("linters/one.sh"),
-                    stack: None,
-                },
-                CustomFixer {
-                    name: None,
-                    command: S("linters/two.sh"),
-                    stack: None,
-                },
-            ];
-            let config = Config {
-                custom_linters: None,
-                custom_fixes: Some(fixes.clone()),
-            };
-            let have = config.custom_fixes();
-            assert_eq!(have, &fixes);
         }
     }
 
