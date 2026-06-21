@@ -10,6 +10,7 @@ edition = "2024"
 description = "The all-in-one DevEx tool."
 
 [dependencies]
+ahash = "0.8.12"
 big_s = "1.0.2"
 clap = { version = "4.6.1", features = ["derive"] }
 conc = { package = "concurrent_shell_commands", version = "0.5.0" }
@@ -22,15 +23,16 @@ which = "8.0.3"
 
 [dev-dependencies]
 contains_lines = "0.0.1"
-test_helpers = { path = "test_helpers" }
 cucumber = "0.23.0"
 itertools = "0.14.0"
 maplit = "1.0.2"
 mio = "1.2.1"
 pretty = { package = "pretty_assertions", version = "1.4.1" }
+rand = "0.10.1"
 regex = "1.12.4"
 strip-ansi-escapes = "0.2.1"
 tempfile = "3.27.0"
+test_helpers = { path = "test_helpers" }
 tokio = { version = "1.52.3", features = [
   "fs",
   "io-util",
@@ -38,8 +40,7 @@ tokio = { version = "1.52.3", features = [
   "process",
   "rt",
   "time",
-] }
-rand = "0.10.1"
+]}
 
 [[test]]
 name = "cuke"   # the filename of the test

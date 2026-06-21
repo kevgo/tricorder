@@ -1,8 +1,10 @@
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
+use crate::config::Config;
 use crate::domain::{Result, StackType};
 use crate::stacks;
+use ahash::AHashMap;
 use std::collections::HashMap;
 use std::process::ExitCode;
 
@@ -34,6 +36,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     // step 1: load the config
+    let config = Config::load()?;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -41,15 +44,17 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         print_metadata(&stacks);
     }
 
-    // step 3.1 global formatters
+    // step 3.1 global fixers
     let mut global = Vec::new();
+    let mut tool_count = 0;
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(conc::Runnable::Single(delete_empty_folders));
+        tool_count += 1;
     }
 
-    // step 3.2 stack-specific formatters
+    // step 3.2 stack-specific fixers
     let stacks = stacks::discover();
-    let mut executables: HashMap<StackType, Vec<conc::Executable>> = HashMap::new();
+    let mut executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in &stacks {
         let stack_executables = executables
             .entry(stack.stack.stack_type())
@@ -64,7 +69,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         }
     }
     if args.show == Show::All {
-        eprintln!("running {} tools", global.len() + stack_specific.len());
+        eprintln!("running {tool_count} tools");
     }
     Ok(Runnables {
         global,

@@ -7,10 +7,7 @@ use std::process::ExitCode;
 
 pub fn check(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
-    let Config {
-        custom_linters,
-        custom_fixes: _,
-    } = Config::load()?;
+    let config = Config::load()?;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -19,7 +16,7 @@ pub fn check(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: determine the runnables
-    let runnables = determine_runnables(&stacks, custom_linters)?;
+    let runnables = determine_runnables(&stacks, config.custom_linters)?;
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
