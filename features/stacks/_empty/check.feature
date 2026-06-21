@@ -1,5 +1,11 @@
 Feature: checking a codebase without any code
 
+  Background:
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+
   Scenario: default visibility
     When executing "tricorder check"
     Then it prints nothing to STDOUT
@@ -11,6 +17,7 @@ Feature: checking a codebase without any code
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """
+      1 other
       running 0 tools
       """
     And the exit code is 0

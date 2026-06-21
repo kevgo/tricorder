@@ -4,6 +4,7 @@ Feature: check Cucumber
     Given a file "run-that-app" with content
       """
       npm 26.3.0
+      delete-empty-folders 0.0.2
       """
     And a file ".gherkin-lintrc" with content
       """
