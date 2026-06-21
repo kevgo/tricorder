@@ -67,22 +67,16 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 
     // step 3.3 custom fixers
     if let Some(custom_fixes) = config.custom_fixes {
-        for custom_fix in custom_fixes {
-            if let Some(stack) = custom_fix.stack {
-                let name = custom_fix
-                    .name
-                    .unwrap_or_else(|| custom_fix.command.clone());
-                let executable = conc::Executable {
-                    name,
-                    command: conc::shell_command(&custom_fix.command),
-                };
+        for fix in custom_fixes {
+            let executable = conc::Executable {
+                name: fix.name.unwrap_or_else(|| fix.command.clone()),
+                command: conc::shell_command(&fix.command),
+            };
+            if let Some(stack) = fix.stack {
                 let stack_executables = stack_executables.entry(stack).or_default();
                 stack_executables.push(executable);
             } else {
-                global.push(conc::Executable {
-                    name: custom_fix.name.unwrap_or(custom_fix.command.clone()),
-                    command: conc::shell_command(&custom_fix.command),
-                });
+                global.push(executable);
             }
         }
     }
