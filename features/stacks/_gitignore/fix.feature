@@ -1,5 +1,11 @@
 Feature: don't fix files in .gitignore
 
+  Background:
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content
       """
