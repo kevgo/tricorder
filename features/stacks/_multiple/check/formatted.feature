@@ -5,6 +5,7 @@ Feature: check multiple stacks
       """
       biome 2.4.0
       ruff 0.15.16
+      delete-empty-folders 0.0.2
       """
     And a file "main.py" with content
       """

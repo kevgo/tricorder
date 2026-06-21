@@ -4,6 +4,7 @@ Feature: fix Cucumber
     Given a file "run-that-app" with content
       """
       ghokin 3.9.0
+      delete-empty-folders 0.0.2
       """
 
   Scenario: valid Cucumber
