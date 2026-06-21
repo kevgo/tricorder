@@ -4,6 +4,7 @@ Feature: fix Markdown
     Given a file "run-that-app" with content
       """
       rumdl 0.2.14
+      delete-empty-folders 0.0.2
       """
 
   Scenario: valid Markdown

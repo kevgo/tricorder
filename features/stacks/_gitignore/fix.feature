@@ -13,6 +13,10 @@ Feature: don't fix files in .gitignore
       """
       #      this file will get ignored
       """
+    And a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
     When executing "tricorder fix"
     Then it prints nothing to STDOUT
     And the exit code is 0

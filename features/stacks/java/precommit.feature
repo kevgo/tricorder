@@ -1,5 +1,11 @@
 Feature: precommit Java
 
+  Background:
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+
   Scenario: valid Java
     Given a file "Main.java" with content
       """
@@ -40,7 +46,7 @@ Feature: precommit Java
     When executing "tricorder precommit --show=all"
     Then it prints to STDERR
       """
-      1 Java
+      1 Java, 1 other
       running 2 tools
       """
     And the exit code is 0
