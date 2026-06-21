@@ -16,7 +16,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let error_on_output = false;
     let stderr_to_stdout = true;
     let exit_code = conc::run(conc::RunArgs {
-        runnables: global,
+        runnables: vec![global],
         error_on_output,
         stderr_to_stdout,
         show,
@@ -35,7 +35,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     // step 1: load the config
-    let _config = Config::load()?;
+    let config = Config::load()?;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -46,7 +46,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     // step 3.1 global fixers
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
-        global.push(conc::Runnable::Single(delete_empty_folders));
+        global.push(delete_empty_folders);
     }
 
     // step 3.2 stack-specific fixers
@@ -64,6 +64,30 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
             stack_executables.extend(formatter_executables);
         }
     }
+
+    // step 3.3 custom fixers
+    if let Some(custom_fixes) = config.custom_fixes {
+        for custom_fix in custom_fixes {
+            if let Some(stack) = custom_fix.stack {
+                let name = custom_fix
+                    .name
+                    .unwrap_or_else(|| custom_fix.command.clone());
+                let executable = conc::Executable {
+                    name,
+                    command: conc::shell_command(&custom_fix.command),
+                };
+                let stack_executables = stack_executables.entry(stack).or_default();
+                stack_executables.push(executable);
+            } else {
+                global.push(conc::Executable {
+                    name: custom_fix.name.unwrap_or(custom_fix.command.clone()),
+                    command: conc::shell_command(&custom_fix.command),
+                });
+            }
+        }
+    }
+
+    // step 4: convert to runnables and return
     let mut stack_specific = Vec::new();
     for (_stack_type, stack_executables) in stack_executables {
         stack_specific.push(conc::Runnable::Sequence(stack_executables));
@@ -72,14 +96,14 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         eprintln!("running {} tools", global.len() + stack_specific.len());
     }
     Ok(Runnables {
-        global,
+        global: conc::Runnable::Sequence(global),
         stack_specific,
     })
 }
 
 pub struct Runnables {
     /// formatters that affect all files
-    pub global: Vec<conc::Runnable>,
+    pub global: conc::Runnable,
 
     /// formatters that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,
