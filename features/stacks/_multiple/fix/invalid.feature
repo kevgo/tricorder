@@ -63,7 +63,7 @@ Feature: fix multiple stacks with invalid code
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 4 tools
+      running 5 tools
       """
     And it prints the lines
       """

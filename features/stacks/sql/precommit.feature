@@ -74,7 +74,7 @@ Feature: precommit SQL
     Then it prints to STDERR
       """
       2 other
-      running 1 tools
+      running 2 tools
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged

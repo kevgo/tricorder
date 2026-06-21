@@ -13,7 +13,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java
-      running 1 tools
+      running 2 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -31,7 +31,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java
-      running 1 tools
+      running 2 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -49,7 +49,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java
-      running 1 tools
+      running 2 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
