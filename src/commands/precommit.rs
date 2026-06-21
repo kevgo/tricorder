@@ -11,15 +11,12 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let exit_code = conc::run(conc::RunArgs {
+    let _exit_code = conc::run(conc::RunArgs {
         runnables: global,
         error_on_output,
         stderr_to_stdout,
         show,
     });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
-    }
     let _exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,
