@@ -1,5 +1,13 @@
 Feature: custom fixes
 
+  Background:
+    Given a file "run-that-app" with content
+      """
+      taplo 0.10.0
+      delete-empty-folders 0.0.2
+      """
+
+  @this
   Scenario: custom fixes run after the stack-specific ones, in the order defined
     Given a file "tricorder.toml" with content
       """
@@ -30,11 +38,6 @@ Feature: custom fixes
       """
       #!/usr/bin/env bash
       echo "TOML fix 2 is running"
-      """
-    Given a file "run-that-app" with content
-      """
-      taplo 0.10.0
-      delete-empty-folders 0.0.2
       """
     When executing "tricorder fix --show=all"
     Then it prints the lines

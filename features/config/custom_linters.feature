@@ -1,5 +1,12 @@
 Feature: custom linters
 
+  Background:
+    Given a file "run-that-app" with content
+      """
+      taplo 0.10.0
+      delete-empty-folders 0.0.2
+      """
+
   Scenario: custom linter passes
     Given a file "tricorder.toml" with content
       """
@@ -14,10 +21,6 @@ Feature: custom linters
       """
       #!/usr/bin/env bash
       echo "custom linter is running"
-      """
-    Given a file "run-that-app" with content
-      """
-      taplo 0.10.0
       """
     When executing "tricorder check --show=all"
     Then it prints the block
