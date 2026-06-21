@@ -40,7 +40,7 @@ tokio = { version = "1.52.3", features = [
   "process",
   "rt",
   "time",
-]}
+] }
 
 [[test]]
 name = "cuke"   # the filename of the test
