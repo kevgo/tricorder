@@ -4,6 +4,7 @@ Feature: fix TOML
     Given a file "run-that-app" with content
       """
       taplo 0.10.0
+      delete-empty-folders 0.0.2
       """
 
   Scenario: valid TOML

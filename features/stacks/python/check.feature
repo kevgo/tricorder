@@ -4,6 +4,7 @@ Feature: check Python
     Given a file "run-that-app" with content
       """
       ruff 0.15.16
+      delete-empty-folders 0.0.2
       """
 
   Scenario: valid Python

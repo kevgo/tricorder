@@ -4,6 +4,7 @@ Feature: fix SQL
     Given a file "run-that-app" with content
       """
       uv 0.11.20
+      delete-empty-folders 0.0.2
       """
 
   Scenario: valid SQL

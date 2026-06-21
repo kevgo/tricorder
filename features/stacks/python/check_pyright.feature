@@ -5,6 +5,7 @@ Feature: check Python with Pyright
       """
       ruff 0.15.16
       uv 0.11.20
+      delete-empty-folders 0.0.2
       """
     And a file "pyrightconfig.json" with content
       """
