@@ -1,29 +1,16 @@
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::domain::{DetectedStacks, Result};
+use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
-    // step 1: load the config
-
-    // step 2: discover the stacks
-    let stacks = stacks::discover();
-    if args.show == Show::All {
-        print_metadata(&stacks);
-    }
-
-    // step 3: determine the runnables
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(&stacks)?;
-    if args.show == Show::All {
-        eprintln!("running {} tools", global.len() + stack_specific.len());
-    }
+    } = determine_runnables(args)?;
 
-    // step 4: run the runnables
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
@@ -44,7 +31,15 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }))
 }
 
-fn determine_runnables(stacks: &DetectedStacks) -> Result<Runnables> {
+pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
+    // step 1: load the config
+
+    // step 2: discover the stacks
+    let stacks = stacks::discover();
+    if args.show == Show::All {
+        print_metadata(&stacks);
+    }
+
     // global formatters
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -53,9 +48,9 @@ fn determine_runnables(stacks: &DetectedStacks) -> Result<Runnables> {
 
     // stack-specific formatters
     let mut stack_specific = Vec::new();
-    for stack in stacks {
+    for stack in &stacks {
         for formatter in stack.stack.formatters() {
-            if !formatter.is_enabled(stacks) {
+            if !formatter.is_enabled(&stacks) {
                 continue;
             }
             if let Some(runnable) = formatter.format_command(stack)? {
@@ -63,16 +58,19 @@ fn determine_runnables(stacks: &DetectedStacks) -> Result<Runnables> {
             }
         }
     }
+    if args.show == Show::All {
+        eprintln!("running {} tools", global.len() + stack_specific.len());
+    }
     Ok(Runnables {
         global,
         stack_specific,
     })
 }
 
-struct Runnables {
+pub struct Runnables {
     /// formatters that affect all files
-    global: Vec<conc::Runnable>,
+    pub global: Vec<conc::Runnable>,
 
     /// formatters that affect stack-specific files
-    stack_specific: Vec<conc::Runnable>,
+    pub stack_specific: Vec<conc::Runnable>,
 }
