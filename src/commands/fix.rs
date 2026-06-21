@@ -15,19 +15,15 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: determine the runnables
-    let runnables = determine_runnables(&stacks)?;
-    if args.show == Show::All {
-        eprintln!("running {} tools", runnables.len());
-    }
-
-    // step 4: run the runnables
-    if runnables.is_empty() {
-        return Ok(ExitCode::SUCCESS);
-    }
     let Runnables {
         global,
         stack_specific,
-    } = runnables;
+    } = determine_runnables(&stacks)?;
+    if args.show == Show::All {
+        eprintln!("running {} tools", global.len() + stack_specific.len());
+    }
+
+    // step 4: run the runnables
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
@@ -79,14 +75,4 @@ struct Runnables {
 
     /// formatters that affect stack-specific files
     stack_specific: Vec<conc::Runnable>,
-}
-
-impl Runnables {
-    pub fn is_empty(&self) -> bool {
-        self.global.is_empty() && self.stack_specific.is_empty()
-    }
-
-    pub fn len(&self) -> usize {
-        self.global.len() + self.stack_specific.len()
-    }
 }
