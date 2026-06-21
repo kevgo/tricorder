@@ -1,4 +1,4 @@
-@onlinec
+@online
 Feature: check Cucumber
 
   Background:
