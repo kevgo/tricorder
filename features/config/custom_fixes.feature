@@ -34,6 +34,7 @@ Feature: custom fixes
     Given a file "run-that-app" with content
       """
       taplo 0.10.0
+      delete-empty-folders 0.0.2
       """
     When executing "tricorder fix --show=all"
     Then it prints the lines
