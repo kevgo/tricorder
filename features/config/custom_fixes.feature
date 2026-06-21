@@ -7,7 +7,6 @@ Feature: custom fixes
       delete-empty-folders 0.0.2
       """
 
-  @this
   Scenario: custom fixes run after the stack-specific ones, in the order defined
     Given a file "tricorder.toml" with content
       """
