@@ -1,11 +1,12 @@
 Feature: custom fixes
 
-  @this
-  Scenario: custom fix passes
+  Scenario: custom fixes run after the stack-specific ones, in the order defined
     Given a file "tricorder.toml" with content
       """
       [[custom_fixes]]
       command = "fixes/one.sh"
+      name = "my custom fix"
+      stack = "Toml"
 
       [[custom_fixes]]
       name = "sort alphabetically"
@@ -16,44 +17,13 @@ Feature: custom fixes
       #!/usr/bin/env bash
       echo "custom fix is running"
       """
-    When executing "tricorder check --show=all"
-    Then it prints the block
+    When executing "tricorder fix --show=all"
+    Then it prints the lines
       """
-      fixes/one.sh
-      custom fix is running
-      """
-    And it prints the block
-      """
+      delete-empty-folders
       sort alphabetically
-      . ./fixes ./fixes/one.sh ./run-that-app ./tricorder.toml
-      """
-    And the exit code is 0
-
-  Scenario: custom fix passes
-    Given a file "tricorder.toml" with content
-      """
-      [[custom_fixes]]
-      command = "fixes/one.sh"
-
-      [[custom_fixes]]
-      name = "sort alphabetically"
-      command = "find . | sort | xargs echo"
-      """
-    And an executable file "fixes/one.sh" with content
-      """
-      #!/usr/bin/env bash
-      echo "custom fix is running"
-      """
-    When executing "tricorder check --show=all"
-    Then it prints the block
-      """
-      fixes/one.sh
-      custom fix is running
-      """
-    And it prints the block
-      """
-      sort alphabetically
-      . ./fixes ./fixes/one.sh ./run-that-app ./tricorder.toml
+      TOML (Taplo)
+      my custom fix
       """
     And the exit code is 0
 
