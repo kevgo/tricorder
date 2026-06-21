@@ -20,7 +20,7 @@ Feature: formatting a codebase without any code
     And it prints to STDERR
       """
       1 other
-      running 1 tools
+      running 2 tools
       """
     And the exit code is 0
 

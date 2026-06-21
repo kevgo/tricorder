@@ -48,7 +48,9 @@ Feature: custom fixes
       global fix 2 running
       TOML (Taplo)
       my custom fix for TOML 1
+      TOML fix 1 is running
       my custom fix for TOML 2
+      TOML fix 2 is running
       """
     And the exit code is 0
 

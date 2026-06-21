@@ -19,7 +19,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java, 1 other
-      running 2 tools
+      running 3 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -37,7 +37,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java, 1 other
-      running 2 tools
+      running 3 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
@@ -55,7 +55,7 @@ Feature: fix Java
     Then it prints to STDERR
       """
       1 Java, 1 other
-      running 2 tools
+      running 3 tools
       """
     And the exit code is 0
     And file "Main.java" is unchanged
