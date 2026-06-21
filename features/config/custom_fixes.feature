@@ -4,26 +4,48 @@ Feature: custom fixes
     Given a file "tricorder.toml" with content
       """
       [[custom_fixes]]
-      command = "fixes/one.sh"
-      name = "my custom fix"
+      command = "fixes/toml-1.sh"
+      name = "my custom fix for TOML 1"
       stack = "Toml"
 
       [[custom_fixes]]
-      name = "sort alphabetically"
-      command = "find . | sort | xargs echo"
+      command = "fixes/toml-2.sh"
+      name = "my custom fix for TOML 2"
+      stack = "Toml"
+
+      [[custom_fixes]]
+      name = "my global fix 1"
+      command = "echo global fix 1 running"
+
+      [[custom_fixes]]
+      name = "my global fix 2"
+      command = "echo global fix 2 running"
       """
-    And an executable file "fixes/one.sh" with content
+    And an executable file "fixes/toml-1.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom fix is running"
+      echo "TOML fix 1 is running"
+      """
+    And an executable file "fixes/toml-2.sh" with content
+      """
+      #!/usr/bin/env bash
+      echo "TOML fix 2 is running"
+      """
+    Given a file "run-that-app" with content
+      """
+      taplo 0.10.0
       """
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       delete-empty-folders
-      sort alphabetically
+      my global fix 1
+      global fix 1 running
+      my global fix 2
+      global fix 2 running
       TOML (Taplo)
-      my custom fix
+      my custom fix for TOML 1
+      my custom fix for TOML 2
       """
     And the exit code is 0
 
