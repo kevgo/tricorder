@@ -25,11 +25,6 @@ impl Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })
     }
-
-    #[must_use]
-    pub fn custom_linters(&self) -> &[CustomLinter] {
-        self.custom_linters.as_deref().unwrap_or_default()
-    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -95,39 +90,6 @@ command = "linters/check-tests"
                 custom_linters: None,
             };
             assert_eq!(have, want);
-        }
-    }
-
-    mod custom_linters {
-        use crate::config::{Config, CustomLinter};
-        use big_s::S;
-
-        #[test]
-        fn none() {
-            let config = Config {
-                custom_linters: None,
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &[] as &[CustomLinter]);
-        }
-
-        #[test]
-        fn some() {
-            let linters = vec![
-                CustomLinter {
-                    name: None,
-                    command: S("linters/one.sh"),
-                },
-                CustomLinter {
-                    name: None,
-                    command: S("linters/two.sh"),
-                },
-            ];
-            let config = Config {
-                custom_linters: Some(linters.clone()),
-            };
-            let have = config.custom_linters();
-            assert_eq!(have, &linters);
         }
     }
 
