@@ -70,7 +70,7 @@ command = "linters/check-tests"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
-stack = "Python"
+stack = "python"
 
 [[custom-fixes]]
 name = "sort alphabetically"
