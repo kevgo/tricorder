@@ -1,4 +1,4 @@
-use crate::domain::{Result, UserError};
+use crate::domain::{Result, StackType, UserError};
 use serde::Deserialize;
 use std::fs;
 
@@ -6,6 +6,9 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
+    #[serde(alias = "custom-fixes")]
+    pub custom_fixes: Option<Vec<CustomFixer>>,
+
     #[serde(alias = "custom-linters")]
     pub custom_linters: Option<Vec<CustomLinter>>,
 }
@@ -28,6 +31,13 @@ impl Config {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+pub struct CustomFixer {
+    pub name: Option<String>,
+    pub command: String,
+    pub stack: Option<StackType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct CustomLinter {
     pub name: Option<String>,
     pub command: String,
@@ -44,7 +54,8 @@ impl CustomLinter {
 mod tests {
 
     mod parse {
-        use crate::config::{Config, CustomLinter};
+        use crate::config::{Config, CustomFixer, CustomLinter};
+        use crate::domain::StackType;
         use big_s::S;
 
         #[test]
@@ -56,9 +67,29 @@ command = "linters/check-files.sh"
 [[custom-linters]]
 name = "custom linter 2"
 command = "linters/check-tests"
+
+[[custom-fixes]]
+command = "fixes/organize.py"
+stack = "python"
+
+[[custom-fixes]]
+name = "sort alphabetically"
+command = "fixes/sort.py"
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
+                custom_fixes: Some(vec![
+                    CustomFixer {
+                        name: None,
+                        command: S("fixes/organize.py"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomFixer {
+                        name: Some(S("sort alphabetically")),
+                        command: S("fixes/sort.py"),
+                        stack: None,
+                    },
+                ]),
                 custom_linters: Some(vec![
                     CustomLinter {
                         name: None,
@@ -70,15 +101,16 @@ command = "linters/check-tests"
                     },
                 ]),
             };
-            assert_eq!(have, want);
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn custom_linters_empty() {
-            let give = "custom-linters = []";
+            let give = "custom-linters = []\ncustom-fixes = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 custom_linters: Some(vec![]),
+                custom_fixes: Some(vec![]),
             };
             assert_eq!(have, want);
         }
@@ -87,6 +119,46 @@ command = "linters/check-tests"
         fn empty() {
             let have: Config = toml::from_str("").unwrap();
             let want = Config {
+                custom_linters: None,
+                custom_fixes: None,
+            };
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn case_insensitive_stack_type() {
+            let give = r#"
+[[custom-fixes]]
+command = "echo lowercase"
+stack = "python"
+
+[[custom-fixes]]
+command = "echo uppercase"
+stack = "PYTHON"
+
+[[custom-fixes]]
+command = "echo mixed case"
+stack = "PyThOn"
+			"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_fixes: Some(vec![
+                    CustomFixer {
+                        name: None,
+                        command: S("echo lowercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomFixer {
+                        name: None,
+                        command: S("echo uppercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomFixer {
+                        name: None,
+                        command: S("echo mixed case"),
+                        stack: Some(StackType::Python),
+                    },
+                ]),
                 custom_linters: None,
             };
             assert_eq!(have, want);

@@ -18,7 +18,7 @@ impl Display for Prettier {
 }
 
 impl Fixer for Prettier {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--write"));
         for stack_file in &stack.files {
@@ -31,6 +31,6 @@ impl Fixer for Prettier {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.into_iter().collect())
     }
 }

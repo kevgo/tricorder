@@ -1,6 +1,9 @@
+use serde_with::DeserializeFromStr;
 use std::fmt::Display;
+use strum::EnumString;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, DeserializeFromStr, PartialEq, Eq, Hash, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum StackType {
     Css,
     Cucumber,

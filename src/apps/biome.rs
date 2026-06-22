@@ -37,7 +37,7 @@ impl Checker for Biome {
 }
 
 impl Fixer for Biome {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--write"));
@@ -50,6 +50,6 @@ impl Fixer for Biome {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.into_iter().collect())
     }
 }
