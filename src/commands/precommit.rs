@@ -12,7 +12,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let error_on_output = false;
     let stderr_to_stdout = true;
     let _exit_code = conc::run(conc::RunArgs {
-        runnables: global,
+        runnables: vec![global],
         error_on_output,
         stderr_to_stdout,
         show,

@@ -1,8 +1,10 @@
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::domain::Result;
+use crate::config::Config;
+use crate::domain::{Result, StackType};
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
@@ -14,7 +16,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let error_on_output = false;
     let stderr_to_stdout = true;
     let exit_code = conc::run(conc::RunArgs {
-        runnables: global,
+        runnables: vec![global],
         error_on_output,
         stderr_to_stdout,
         show,
@@ -33,6 +35,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     // step 1: load the config
+    let config = Config::load()?;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -40,36 +43,63 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         print_metadata(&stacks);
     }
 
-    // step 3.1 global formatters
+    // step 3.1 global fixers
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
-        global.push(conc::Runnable::Single(delete_empty_folders));
+        global.push(delete_empty_folders);
     }
 
-    // step 3.2 stack-specific formatters
-    let mut stack_specific = Vec::new();
+    // step 3.2 stack-specific fixers
+    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in &stacks {
+        let stack_executables = stack_executables
+            .entry(stack.stack.stack_type())
+            .or_default();
         for formatter in stack.stack.formatters() {
             if !formatter.is_enabled(&stacks) {
                 continue;
             }
-            if let Some(runnable) = formatter.format_command(stack)? {
-                stack_specific.push(runnable);
+            stack_executables.extend(formatter.format_commands(stack)?);
+        }
+    }
+
+    // step 3.3 custom fixers
+    if let Some(custom_fixes) = config.custom_fixes {
+        for fix in custom_fixes {
+            let executable = conc::Executable {
+                name: fix.name.unwrap_or_else(|| fix.command.clone()),
+                command: conc::shell_command(&fix.command),
+            };
+            if let Some(stack) = fix.stack {
+                let stack_executables = stack_executables.entry(stack).or_default();
+                stack_executables.push(executable);
+            } else {
+                global.push(executable);
             }
         }
     }
+
+    // step 4: convert to runnables and return
+    let mut stack_specific = Vec::new();
+    let mut stack_tool_count = 0;
+    for (_stack_type, stack_executables) in stack_executables {
+        if !stack_executables.is_empty() {
+            stack_tool_count += stack_executables.len();
+            stack_specific.push(conc::Runnable::Sequence(stack_executables));
+        }
+    }
     if args.show == Show::All {
-        eprintln!("running {} tools", global.len() + stack_specific.len());
+        eprintln!("running {} tools", global.len() + stack_tool_count);
     }
     Ok(Runnables {
-        global,
+        global: conc::Runnable::Sequence(global),
         stack_specific,
     })
 }
 
 pub struct Runnables {
     /// formatters that affect all files
-    pub global: Vec<conc::Runnable>,
+    pub global: conc::Runnable,
 
     /// formatters that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,

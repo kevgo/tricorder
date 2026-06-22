@@ -18,7 +18,7 @@ impl Display for Ghokin {
 }
 
 impl Fixer for Ghokin {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));
@@ -29,6 +29,6 @@ impl Fixer for Ghokin {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.into_iter().collect())
     }
 }
