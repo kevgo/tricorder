@@ -1,7 +1,10 @@
 use serde::Deserialize;
 use std::fmt::Display;
+use std::str::FromStr;
+use strum::EnumString;
 
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum StackType {
     Css,
     Cucumber,
@@ -15,6 +18,31 @@ pub enum StackType {
     Typescript,
     Unknown,
     Yml,
+}
+
+impl<'de> Deserialize<'de> for StackType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let s = String::deserialize(deserializer)?;
+        StackType::from_str(&s).map_err(|_| {
+            serde::de::Error::unknown_variant(
+                &s,
+                &[
+                    "Css",
+                    "Cucumber",
+                    "Go",
+                    "Java",
+                    "Json",
+                    "Markdown",
+                    "Python",
+                    "Sql",
+                    "Toml",
+                    "Typescript",
+                    "Unknown",
+                    "Yml",
+                ],
+            )
+        })
+    }
 }
 
 impl Display for StackType {
