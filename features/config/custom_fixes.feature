@@ -13,12 +13,12 @@ Feature: custom fixes
       [[custom_fixes]]
       command = "fixes/toml-1.sh"
       name = "my custom fix for TOML 1"
-      stack = "Toml"
+      stack = "toml"
 
       [[custom_fixes]]
       command = "fixes/toml-2.sh"
       name = "my custom fix for TOML 2"
-      stack = "Toml"
+      stack = "toml"
 
       [[custom_fixes]]
       name = "my global fix 1"
