@@ -50,7 +50,6 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     }
 
     // step 3.2 stack-specific fixers
-    let stacks = stacks::discover();
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in &stacks {
         let stack_executables = stack_executables
