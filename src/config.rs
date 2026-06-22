@@ -37,13 +37,6 @@ pub struct CustomFixer {
     pub stack: Option<StackType>,
 }
 
-impl CustomFixer {
-    #[must_use]
-    pub fn name(self) -> String {
-        self.name.unwrap_or(self.command.clone())
-    }
-}
-
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct CustomLinter {
     pub name: Option<String>,
