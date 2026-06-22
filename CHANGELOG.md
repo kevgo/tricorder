@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.6 (2026-06-22)
+
+- custom fixes
+
 ## 0.0.5 (2026-06-19)
 
 - simplified config file format
