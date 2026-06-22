@@ -131,6 +131,45 @@ command = "fixes/sort.py"
             };
             assert_eq!(have, want);
         }
+
+        #[test]
+        fn case_insensitive_stack_type() {
+            let give = r#"
+[[custom-fixes]]
+command = "echo lowercase"
+stack = "python"
+
+[[custom-fixes]]
+command = "echo uppercase"
+stack = "PYTHON"
+
+[[custom-fixes]]
+command = "echo mixed case"
+stack = "PyThOn"
+			"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_fixes: Some(vec![
+                    CustomFixer {
+                        name: None,
+                        command: S("echo lowercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomFixer {
+                        name: None,
+                        command: S("echo uppercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomFixer {
+                        name: None,
+                        command: S("echo mixed case"),
+                        stack: Some(StackType::Python),
+                    },
+                ]),
+                custom_linters: None,
+            };
+            assert_eq!(have, want);
+        }
     }
 
     mod custom_linter {
