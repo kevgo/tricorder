@@ -87,7 +87,7 @@ Feature: fix SQL
     Then it prints to STDERR
       """
       2 other
-      running 2 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "migration.<FILE EXTENSION>" is unchanged
