@@ -16,7 +16,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    let fix_runnables = fix::determine_runnables(args)?;
+    let fix_runnables = fix::determine_runnables(config.custom_fixes, &stacks, args)?;
     let lint_runnables = lint::determine_runnables(&stacks, config.custom_lints)?;
 
     let show = conc::Show::from(args.show);

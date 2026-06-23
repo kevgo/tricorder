@@ -1,17 +1,26 @@
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::config::Config;
-use crate::domain::{Result, StackType};
+use crate::config::{Config, CustomFix};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+    // step 1: load the config
+    let config = Config::load()?;
+
+    // step 2: discover the stacks
+    let stacks = stacks::discover();
+    if args.show == Show::All {
+        print_metadata(&stacks);
+    }
+
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(args)?;
+    } = determine_runnables(config.custom_fixes, &stacks, args)?;
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
@@ -33,16 +42,11 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
-    // step 1: load the config
-    let config = Config::load()?;
-
-    // step 2: discover the stacks
-    let stacks = stacks::discover();
-    if args.show == Show::All {
-        print_metadata(&stacks);
-    }
-
+pub fn determine_runnables(
+    custom_fixes: Option<Vec<CustomFix>>,
+    stacks: &DetectedStacks,
+    args: &RunArgs,
+) -> Result<Runnables> {
     // step 3 global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -51,12 +55,12 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 
     // step 4 stack-specific fixes
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
-    for stack in &stacks {
+    for stack in stacks {
         let stack_executables = stack_executables
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if !fix.is_enabled(&stacks) {
+            if !fix.is_enabled(stacks) {
                 continue;
             }
             stack_executables.extend(fix.fix_commands(stack)?);
@@ -64,7 +68,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     }
 
     // step 5 custom fixes
-    if let Some(custom_fixes) = config.custom_fixes {
+    if let Some(custom_fixes) = custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
                 name: fix.name.unwrap_or_else(|| fix.command.clone()),
