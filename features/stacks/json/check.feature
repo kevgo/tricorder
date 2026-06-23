@@ -1,4 +1,4 @@
-Feature: check JSON
+Feature: lint JSON
 
   Background:
     Given a file "run-that-app" with content
@@ -12,7 +12,7 @@ Feature: check JSON
       """
       { "key": "value" }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged
@@ -22,7 +22,7 @@ Feature: check JSON
       """
       {"key":"value"}
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged
@@ -32,7 +32,7 @@ Feature: check JSON
       """
       { "key":
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged

@@ -1,4 +1,4 @@
-Feature: check Python
+Feature: lint Python
 
   Background:
     Given a file "run-that-app" with content
@@ -16,10 +16,10 @@ Feature: check Python
       """
       print("Hello, other!")
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints
       """
-      check Python (ruff)
+      lint Python (ruff)
       All checks passed!
       """
     And the exit code is 0
@@ -35,7 +35,7 @@ Feature: check Python
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then the exit code is 0
     And file "main.py" is unchanged
     And file "other.py" is unchanged
@@ -49,7 +49,7 @@ Feature: check Python
       """
       print("
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then the exit code is 1
     And file "main.py" is unchanged
     And file "other.py" is unchanged

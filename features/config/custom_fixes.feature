@@ -66,7 +66,7 @@ Feature: custom fixes
       echo "custom linter failed"
       exit 4
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
       linters/fail.sh

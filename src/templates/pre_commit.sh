@@ -5,4 +5,4 @@
 # Re-run init --force to reset.
 
 command -v tricorder >/dev/null 2>&1 || exit 0
-tricorder check
+tricorder lint

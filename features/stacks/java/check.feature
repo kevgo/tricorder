@@ -1,4 +1,4 @@
-Feature: check Java
+Feature: lint Java
 
   Background:
     Given a file "run-that-app" with content
@@ -15,7 +15,7 @@ Feature: check Java
           }
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints to STDERR
       """
       1 Java, 1 other
@@ -34,7 +34,7 @@ Feature: check Java
       }
       }
       """
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle
@@ -51,7 +51,7 @@ Feature: check Java
           }
       }
       """
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle

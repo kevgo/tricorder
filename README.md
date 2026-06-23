@@ -55,7 +55,7 @@ Install:
 curl <https://repository.walmart.com/content/repositories/pangaea_snapshots/com/walmart/atlas/tricorder/install.sh > | sh
 ```
 
-**After code generation:** The agent runs `tricorder check`.
+**After code generation:** The agent runs `tricorder lint`.
 Tricorder runs all applicable type checkers, linters, and tests,
 and the agent fixes every reported issue.
 This enforces defect-free, smell-free output before anything gets committed.
