@@ -27,7 +27,7 @@ Feature: fix Go
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Go (gofumpt)
+      fix Go (gofumpt)
       """
     And the exit code is 0
     And file "main.go" is unchanged
@@ -52,7 +52,7 @@ Feature: fix Go
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Go (gofumpt)
+      fix Go (gofumpt)
       main.go
       """
     And it prints the lines
@@ -97,7 +97,7 @@ Feature: fix Go
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      Go (gofumpt)
+      fix Go (gofumpt)
       main.go:4:14: string literal not terminated
       """
     And the exit code is 2

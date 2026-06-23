@@ -41,12 +41,12 @@ Feature: custom fixes
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      delete-empty-folders
+      delete empty folders
       my global fix 1
       global fix 1 running
       my global fix 2
       global fix 2 running
-      TOML (Taplo)
+      fix TOML (Taplo)
       my custom fix for TOML 1
       TOML fix 1 is running
       my custom fix for TOML 2

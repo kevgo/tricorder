@@ -24,7 +24,7 @@ Feature: check Go
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Go (golangci-lint)
+      check Go (golangci-lint)
       """
     And the exit code is 0
     And file "main.go" is unchanged
@@ -41,7 +41,7 @@ Feature: check Go
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Go (golangci-lint)
+      check Go (golangci-lint)
       3 issues:
       """
     And the exit code is 1

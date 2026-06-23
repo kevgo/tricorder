@@ -19,10 +19,10 @@ Feature: fix Python
     When executing "tricorder fix --show=all"
     Then it prints
       """
-      delete-empty-folders
-      Python (ruff fix)
+      delete empty folders
+      fix Python (ruff)
       All checks passed!
-      Python (ruff format)
+      format Python (ruff)
       2 files left unchanged
       """
     And the exit code is 0
@@ -41,10 +41,10 @@ Feature: fix Python
     When executing "tricorder fix --show=all"
     Then it prints
       """
-      delete-empty-folders
-      Python (ruff fix)
+      delete empty folders
+      fix Python (ruff)
       All checks passed!
-      Python (ruff format)
+      format Python (ruff)
       2 files reformatted
       """
     And the exit code is 0
@@ -69,8 +69,8 @@ Feature: fix Python
     When executing "tricorder fix --show=all"
     Then it prints
       """
-      delete-empty-folders
-      Python (ruff fix)
+      delete empty folders
+      fix Python (ruff)
       invalid-syntax: missing closing quote in string literal
        --> main.py:1:7
         |

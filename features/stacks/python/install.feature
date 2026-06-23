@@ -23,12 +23,12 @@ Feature: install all Python tools
       """
     And it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      Python (Pyright)
+      check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0

@@ -13,7 +13,7 @@ Feature: install all CSS tools
       """
     And it prints the lines
       """
-      JSON (Prettier)
+      fix JSON (Prettier)
       """
     And the exit code is 0
     And file "main.json" now has content
