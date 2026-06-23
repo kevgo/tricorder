@@ -1,6 +1,6 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomLinter};
+use crate::config::{Config, CustomLint};
 use crate::domain::{DetectedStacks, Result};
 use crate::stacks;
 use std::process::ExitCode;
@@ -36,7 +36,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 
 fn determine_runnables(
     stacks: &DetectedStacks,
-    custom_linters: Option<Vec<CustomLinter>>,
+    custom_linters: Option<Vec<CustomLint>>,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
@@ -56,7 +56,7 @@ fn determine_runnables(
 
     // determine the runnables for the custom linters
     if let Some(custom_linters) = custom_linters {
-        for CustomLinter { name, command } in custom_linters {
+        for CustomLint { name, command } in custom_linters {
             result.push(conc::Runnable::Single(conc::Executable {
                 name: name.unwrap_or(command.clone()),
                 command: conc::shell_command(&command),
