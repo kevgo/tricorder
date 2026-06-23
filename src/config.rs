@@ -52,7 +52,7 @@ mod tests {
         use big_s::S;
 
         #[test]
-        fn custom_lints_defined() {
+        fn defined() {
             let give = r#"
 [[custom-lints]]
 command = "lints/one.sh"
@@ -98,7 +98,7 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn custom_lints_empty() {
+        fn empty() {
             let give = "custom-lints = []\ncustom-fixes = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -109,7 +109,7 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn empty() {
+        fn none() {
             let have: Config = toml::from_str("").unwrap();
             let want = Config {
                 custom_lints: None,
@@ -155,6 +155,32 @@ stack = "PyThOn"
                 custom_lints: None,
             };
             assert_eq!(have, want);
+        }
+
+        #[test]
+        fn name_allows_underscore() {
+            let give = r#"
+[[custom_lints]]
+name = "custom lint 1"
+command = "lints/one.sh"
+
+[[custom_fixes]]
+name = "custom fix 1"
+command = "fixes/one.sh"
+"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_lints: Some(vec![CustomLint {
+                    name: Some(S("custom lint 1")),
+                    command: S("lints/one.sh"),
+                }]),
+                custom_fixes: Some(vec![CustomFix {
+                    name: Some(S("custom fix 1")),
+                    command: S("fixes/one.sh"),
+                    stack: None,
+                }]),
+            };
+            pretty::assert_eq!(have, want);
         }
     }
 }

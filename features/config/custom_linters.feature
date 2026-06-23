@@ -10,10 +10,10 @@ Feature: custom lints
   Scenario: custom lint passes
     Given a file "tricorder.toml" with content
       """
-      [[custom_lints]]
+      [[custom-lints]]
       command = "lints/one.sh"
 
-      [[custom_lints]]
+      [[custom-lints]]
       name = "list all files"
       command = "find . | sort | xargs echo"
       """
@@ -38,7 +38,7 @@ Feature: custom lints
   Scenario: custom lint fails
     Given a file "tricorder.toml" with content
       """
-      [[custom_lints]]
+      [[custom-lints]]
       command = "lints/fail.sh"
       """
     And an executable file "lints/fail.sh" with content
