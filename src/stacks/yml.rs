@@ -1,5 +1,5 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Yml;
@@ -18,7 +18,7 @@ impl Stack for Yml {
         vec![]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Prettier {})]
     }
 }

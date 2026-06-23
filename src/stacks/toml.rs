@@ -1,5 +1,5 @@
 use crate::apps::taplo::Taplo;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Toml;
@@ -17,7 +17,7 @@ impl Stack for Toml {
         vec![Box::new(Taplo {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Taplo {})]
     }
 }

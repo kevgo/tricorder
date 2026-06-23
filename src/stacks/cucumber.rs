@@ -1,6 +1,6 @@
 use crate::apps::gherkin_lint::GherkinLint;
 use crate::apps::ghokin::Ghokin;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Cucumber;
@@ -18,7 +18,7 @@ impl Stack for Cucumber {
         vec![Box::new(GherkinLint {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Ghokin {})]
     }
 }

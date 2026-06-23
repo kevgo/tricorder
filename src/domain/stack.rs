@@ -1,4 +1,4 @@
-use crate::domain::{Fixer, Linter, StackType};
+use crate::domain::{Fix, Linter, StackType};
 use std::fmt::Display;
 use std::path::Path;
 
@@ -13,7 +13,7 @@ pub trait Stack {
     fn linters(&self) -> Vec<Box<dyn Linter>>;
 
     /// all possible formatters for this stack
-    fn formatters(&self) -> Vec<Box<dyn Fixer>>;
+    fn formatters(&self) -> Vec<Box<dyn Fix>>;
 }
 
 impl Display for Box<dyn Stack> {

@@ -1,6 +1,6 @@
 use crate::apps::pyright::Pyright;
 use crate::apps::ruff::Ruff;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Python;
@@ -18,7 +18,7 @@ impl Stack for Python {
         vec![Box::new(Pyright {}), Box::new(Ruff {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Ruff {})]
     }
 }

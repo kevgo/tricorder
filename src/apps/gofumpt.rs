@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Fixer, Tool, UserError};
+use crate::domain::{DetectedStack, Fix, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -17,8 +17,8 @@ impl Display for Gofumpt {
     }
 }
 
-impl Fixer for Gofumpt {
-    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+impl Fix for Gofumpt {
+    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("-l"));
         args.push(S("-w"));

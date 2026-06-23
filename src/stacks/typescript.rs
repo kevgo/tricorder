@@ -1,5 +1,5 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Typescript;
@@ -18,7 +18,7 @@ impl Stack for Typescript {
         vec![Box::new(Biome {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Biome {})]
     }
 }
