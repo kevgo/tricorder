@@ -55,11 +55,11 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         let stack_executables = stack_executables
             .entry(stack.stack.stack_type())
             .or_default();
-        for formatter in stack.stack.formatters() {
-            if !formatter.is_enabled(&stacks) {
+        for fix in stack.stack.fixes() {
+            if !fix.is_enabled(&stacks) {
                 continue;
             }
-            stack_executables.extend(formatter.fix_commands(stack)?);
+            stack_executables.extend(fix.fix_commands(stack)?);
         }
     }
 
@@ -98,9 +98,9 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 }
 
 pub struct Runnables {
-    /// formatters that affect all files
+    /// fixes that affect all files
     pub global: conc::Runnable,
 
-    /// formatters that affect stack-specific files
+    /// fixes that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,
 }

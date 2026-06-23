@@ -14,11 +14,11 @@ impl Stack for Python {
         file.extension().is_some_and(|ext| ext == "py")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Lint>> {
+    fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Pyright {}), Box::new(Ruff {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fix>> {
+    fn fixes(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Ruff {})]
     }
 }

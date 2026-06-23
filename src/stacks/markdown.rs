@@ -14,11 +14,11 @@ impl Stack for Markdown {
         file.extension().is_some_and(|ext| ext == "md")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Lint>> {
+    fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Rumdl {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fix>> {
+    fn fixes(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Rumdl {})]
     }
 }
