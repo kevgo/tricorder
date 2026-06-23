@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: lint, postgenerate, fix, init, precommit, help]
+        [subcommands: init, fix, lint, postgenerate, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -22,10 +22,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint       Run all code quality checks [aliases: postgenerate]
-        fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
-        precommit  Auto-fix before committing
+        fix        Repair all code quality issues
+        lint       Find all code quality issues [aliases: postgenerate]
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:
@@ -43,10 +43,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint       Run all code quality checks [aliases: postgenerate]
-        fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
-        precommit  Auto-fix before committing
+        fix        Repair all code quality issues
+        lint       Find all code quality issues [aliases: postgenerate]
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:
@@ -64,10 +64,10 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint       Run all code quality checks [aliases: postgenerate]
-        fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
-        precommit  Auto-fix before committing
+        fix        Repair all code quality issues
+        lint       Find all code quality issues [aliases: postgenerate]
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:
