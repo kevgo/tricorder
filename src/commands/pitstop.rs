@@ -9,6 +9,9 @@ use std::process::ExitCode;
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let show = conc::Show::from(args.show);
+    let error_on_output = false;
+    let stderr_to_stdout = true;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -16,12 +19,9 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
+    // step 3: discover all runnables
     let fix_runnables = fix::determine_runnables(config.custom_fixes, &stacks, args)?;
     let lint_runnables = lint::determine_runnables(&stacks, config.custom_lints)?;
-
-    let show = conc::Show::from(args.show);
-    let error_on_output = false;
-    let stderr_to_stdout = true;
 
     // step 3: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
@@ -45,7 +45,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 5: run the lints
+    // step 5: run all lints
     let exit_code = conc::run(conc::RunArgs {
         runnables: lint_runnables,
         error_on_output,
