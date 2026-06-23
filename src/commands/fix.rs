@@ -59,7 +59,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
             if !formatter.is_enabled(&stacks) {
                 continue;
             }
-            stack_executables.extend(formatter.format_commands(stack)?);
+            stack_executables.extend(formatter.fix_commands(stack)?);
         }
     }
 
