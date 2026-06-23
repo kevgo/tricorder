@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Linter, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -20,7 +20,7 @@ impl Display for Pyright {
     }
 }
 
-impl Linter for Pyright {
+impl Lint for Pyright {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 3);
         args.push(S("run"));

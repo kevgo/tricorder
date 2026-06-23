@@ -1,5 +1,5 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Typescript;
@@ -14,11 +14,11 @@ impl Stack for Typescript {
             .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Biome {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Biome {})]
     }
 }

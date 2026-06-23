@@ -1,5 +1,5 @@
 use crate::apps::sqlfmt::Sqlfmt;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Sql;
@@ -13,11 +13,11 @@ impl Stack for Sql {
         file.extension().is_some_and(|ext| ext == "sql")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Sqlfmt {})]
     }
 }

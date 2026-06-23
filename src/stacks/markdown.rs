@@ -1,5 +1,5 @@
 use crate::apps::rumdl::Rumdl;
-use crate::domain::{Fixer, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Markdown;
@@ -14,11 +14,11 @@ impl Stack for Markdown {
         file.extension().is_some_and(|ext| ext == "md")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Rumdl {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fixer>> {
+    fn formatters(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Rumdl {})]
     }
 }
