@@ -59,7 +59,7 @@ mod tests {
         use big_s::S;
 
         #[test]
-        fn custom_lints_defined() {
+        fn defined() {
             let give = r#"
 [[custom-lints]]
 command = "lints/one.sh"
@@ -105,7 +105,7 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn custom_lints_empty() {
+        fn empty() {
             let give = "custom-lints = []\ncustom-fixes = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -116,7 +116,7 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn empty() {
+        fn none() {
             let have: Config = toml::from_str("").unwrap();
             let want = Config {
                 custom_lints: None,
@@ -162,6 +162,34 @@ stack = "PyThOn"
                 custom_lints: None,
             };
             assert_eq!(have, want);
+        }
+
+        #[test]
+        fn name_variations() {
+            let give = r#"
+[[custom-lints]]
+name = "custom lint 1"
+command = "lints/one.sh"
+
+[[custom-lints]]
+name = "custom lint 2"
+command = "lints/two.sh"
+"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_lints: Some(vec![
+                    CustomLint {
+                        name: Some(S("custom lint 1")),
+                        command: S("lints/one.sh"),
+                    },
+                    CustomLint {
+                        name: Some(S("custom lint 2")),
+                        command: S("lints/two.sh"),
+                    },
+                ]),
+                custom_fixes: None,
+            };
+            pretty::assert_eq!(have, want);
         }
     }
 
