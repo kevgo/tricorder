@@ -14,20 +14,20 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Run all code quality checks
-    #[command(visible_alias = "postgenerate")]
-    Lint(RunArgs),
-
-    /// Auto-fix all code quality issues
-    Fix(RunArgs),
-
     /// Install coding agent hooks for this project
     Init(InitArgs),
+
+    /// Repair all code quality issues
+    Fix(RunArgs),
+
+    /// Find all code quality issues
+    #[command(visible_alias = "postgenerate")]
+    Lint(RunArgs),
 
     /// Run both fix and check commands
     PitStop(RunArgs),
 
-    /// Auto-fix before committing
+    /// Repair all code quality issues, never fails
     Precommit(RunArgs),
 }
 
