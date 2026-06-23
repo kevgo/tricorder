@@ -1,4 +1,4 @@
-Feature: custom linters
+Feature: custom lints
 
   Background:
     Given a file "run-that-app" with content
@@ -7,50 +7,50 @@ Feature: custom linters
       delete-empty-folders 0.0.2
       """
 
-  Scenario: custom linter passes
+  Scenario: custom lint passes
     Given a file "tricorder.toml" with content
       """
-      [[custom_linters]]
-      command = "linters/one.sh"
+      [[custom_lints]]
+      command = "lints/one.sh"
 
-      [[custom_linters]]
+      [[custom_lints]]
       name = "list all files"
       command = "find . | sort | xargs echo"
       """
-    And an executable file "linters/one.sh" with content
+    And an executable file "lints/one.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom linter is running"
+      echo "custom lint is running"
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      linters/one.sh
-      custom linter is running
+      lints/one.sh
+      custom lint is running
       """
     And it prints the block
       """
       list all files
-      . ./linters ./linters/one.sh ./run-that-app ./tricorder.toml
+      . ./lints ./lints/one.sh ./run-that-app ./tricorder.toml
       """
     And the exit code is 0
 
-  Scenario: custom linter fails
+  Scenario: custom lint fails
     Given a file "tricorder.toml" with content
       """
-      [[custom_linters]]
-      command = "linters/fail.sh"
+      [[custom_lints]]
+      command = "lints/fail.sh"
       """
-    And an executable file "linters/fail.sh" with content
+    And an executable file "lints/fail.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom linter failed"
+      echo "custom lint failed"
       exit 4
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      linters/fail.sh
-      custom linter failed
+      lints/fail.sh
+      custom lint failed
       """
     And the exit code is 4

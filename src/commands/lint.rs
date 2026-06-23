@@ -16,7 +16,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: determine the runnables
-    let runnables = determine_runnables(&stacks, config.custom_linters)?;
+    let runnables = determine_runnables(&stacks, config.custom_lints)?;
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -36,17 +36,17 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 
 fn determine_runnables(
     stacks: &DetectedStacks,
-    custom_linters: Option<Vec<CustomLint>>,
+    custom_lints: Option<Vec<CustomLint>>,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
-    // determine the linters for the stacks
+    // determine the lints for the stacks
     for stack in stacks {
-        for linter in stack.stack.lints() {
-            if !linter.is_enabled(stacks) {
+        for lint in stack.stack.lints() {
+            if !lint.is_enabled(stacks) {
                 continue;
             }
-            if let Some(executable) = linter.lint_commands(stack)? {
+            if let Some(executable) = lint.lint_commands(stack)? {
                 result.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it
@@ -54,9 +54,9 @@ fn determine_runnables(
         }
     }
 
-    // determine the runnables for the custom linters
-    if let Some(custom_linters) = custom_linters {
-        for CustomLint { name, command } in custom_linters {
+    // determine the runnables for the custom lints
+    if let Some(custom_lints) = custom_lints {
+        for CustomLint { name, command } in custom_lints {
             result.push(conc::Runnable::Single(conc::Executable {
                 name: name.unwrap_or(command.clone()),
                 command: conc::shell_command(&command),
