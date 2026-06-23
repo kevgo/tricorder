@@ -15,7 +15,7 @@ Feature: precommit TypeScript
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
-      TypeScript (Biome)
+      fix TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -32,7 +32,7 @@ Feature: precommit TypeScript
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
-      TypeScript (Biome)
+      fix TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" now has content
@@ -52,7 +52,7 @@ Feature: precommit TypeScript
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
-      TypeScript (Biome)
+      fix TypeScript (Biome)
       Found 2 errors.
       """
     And the exit code is 0

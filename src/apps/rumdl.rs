@@ -31,7 +31,7 @@ impl Checker for Rumdl {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
+            name: format!("check {} ({self})", &stack.stack),
             app: &rta::applications::Rumdl {},
             args,
             version: None,
@@ -48,7 +48,7 @@ impl Fixer for Rumdl {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
+            name: format!("fix {} ({self})", &stack.stack),
             app: &rta::applications::Rumdl {},
             args,
             version: None,

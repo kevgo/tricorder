@@ -31,7 +31,7 @@ impl Checker for GherkinLint {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
+            name: format!("check {} ({self})", &stack.stack),
             app: &rta::applications::Npm {},
             args,
             version: None,

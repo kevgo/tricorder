@@ -19,7 +19,7 @@ Feature: check Python
     When executing "tricorder check --show=all"
     Then it prints
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And the exit code is 0

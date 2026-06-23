@@ -18,7 +18,7 @@ Feature: fix Cucumber
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Cucumber (Ghokin)
+      fix Cucumber (Ghokin)
       "." formatted
       """
     And the exit code is 0
@@ -42,7 +42,7 @@ Feature: fix Cucumber
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Cucumber (Ghokin)
+      fix Cucumber (Ghokin)
       "." formatted
       """
     And the exit code is 0
@@ -69,7 +69,7 @@ Feature: fix Cucumber
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Cucumber (Ghokin)
+      fix Cucumber (Ghokin)
       an error occurred with file "main.feature" : Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """

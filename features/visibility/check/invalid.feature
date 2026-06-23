@@ -25,9 +25,9 @@ Feature: check multiple stacks with invalid code
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (Biome)
-      TypeScript (Biome)
-      Python (ruff)
+      check CSS (Biome)
+      check TypeScript (Biome)
+      check Python (ruff)
       """
     And it prints the block
       """
@@ -55,13 +55,13 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the lines
       """
-      CSS (Biome)
+      check CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      TypeScript (Biome)
+      check TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
@@ -72,13 +72,13 @@ Feature: check multiple stacks with invalid code
     Then it prints nothing to STDERR
     And it prints the lines
       """
-      CSS (Biome)
+      check CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      TypeScript (Biome)
+      check TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
@@ -89,8 +89,8 @@ Feature: check multiple stacks with invalid code
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (Biome)
-      TypeScript (Biome)
+      check CSS (Biome)
+      check TypeScript (Biome)
       """
     And it prints the block
       """
