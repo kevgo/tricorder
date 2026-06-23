@@ -42,7 +42,7 @@ demo:  # runs Tricorder in the "demo" folder
 install:
 	cargo install --path . --locked
 
-fix: ${RTA}  # runs all linters and auto-fixes
+fix: ${RTA}  # runs all lints and fixes
 	cargo +nightly fix --allow-dirty
 	cargo clippy --fix --allow-dirty
 	cargo +nightly fmt

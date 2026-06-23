@@ -7,10 +7,10 @@ const CONFIG_FILENAME: &str = "tricorder.toml";
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
     #[serde(alias = "custom-fixes")]
-    pub custom_fixes: Option<Vec<CustomFixer>>,
+    pub custom_fixes: Option<Vec<CustomFix>>,
 
-    #[serde(alias = "custom-linters")]
-    pub custom_linters: Option<Vec<CustomLinter>>,
+    #[serde(alias = "custom-lints")]
+    pub custom_lints: Option<Vec<CustomLint>>,
 }
 
 impl Config {
@@ -31,19 +31,19 @@ impl Config {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
-pub struct CustomFixer {
+pub struct CustomFix {
     pub name: Option<String>,
     pub command: String,
     pub stack: Option<StackType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
-pub struct CustomLinter {
+pub struct CustomLint {
     pub name: Option<String>,
     pub command: String,
 }
 
-impl CustomLinter {
+impl CustomLint {
     #[must_use]
     pub fn name(self) -> String {
         self.name.unwrap_or(self.command.clone())
@@ -54,19 +54,19 @@ impl CustomLinter {
 mod tests {
 
     mod parse {
-        use crate::config::{Config, CustomFixer, CustomLinter};
+        use crate::config::{Config, CustomFix, CustomLint};
         use crate::domain::StackType;
         use big_s::S;
 
         #[test]
-        fn custom_linters_defined() {
+        fn custom_lints_defined() {
             let give = r#"
-[[custom-linters]]
-command = "linters/one.sh"
+[[custom-lints]]
+command = "lints/one.sh"
 
-[[custom-linters]]
-name = "custom linter 2"
-command = "linters/two.sh"
+[[custom-lints]]
+name = "custom lint 2"
+command = "lints/two.sh"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
@@ -79,25 +79,25 @@ command = "fixes/sort.py"
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 custom_fixes: Some(vec![
-                    CustomFixer {
+                    CustomFix {
                         name: None,
                         command: S("fixes/organize.py"),
                         stack: Some(StackType::Python),
                     },
-                    CustomFixer {
+                    CustomFix {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                         stack: None,
                     },
                 ]),
-                custom_linters: Some(vec![
-                    CustomLinter {
+                custom_lints: Some(vec![
+                    CustomLint {
                         name: None,
-                        command: S("linters/one.sh"),
+                        command: S("lints/one.sh"),
                     },
-                    CustomLinter {
-                        name: Some(S("custom linter 2")),
-                        command: S("linters/two.sh"),
+                    CustomLint {
+                        name: Some(S("custom lint 2")),
+                        command: S("lints/two.sh"),
                     },
                 ]),
             };
@@ -105,11 +105,11 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn custom_linters_empty() {
-            let give = "custom-linters = []\ncustom-fixes = []";
+        fn custom_lints_empty() {
+            let give = "custom-lints = []\ncustom-fixes = []";
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
-                custom_linters: Some(vec![]),
+                custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
             };
             assert_eq!(have, want);
@@ -119,7 +119,7 @@ command = "fixes/sort.py"
         fn empty() {
             let have: Config = toml::from_str("").unwrap();
             let want = Config {
-                custom_linters: None,
+                custom_lints: None,
                 custom_fixes: None,
             };
             assert_eq!(have, want);
@@ -143,40 +143,40 @@ stack = "PyThOn"
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 custom_fixes: Some(vec![
-                    CustomFixer {
+                    CustomFix {
                         name: None,
                         command: S("echo lowercase"),
                         stack: Some(StackType::Python),
                     },
-                    CustomFixer {
+                    CustomFix {
                         name: None,
                         command: S("echo uppercase"),
                         stack: Some(StackType::Python),
                     },
-                    CustomFixer {
+                    CustomFix {
                         name: None,
                         command: S("echo mixed case"),
                         stack: Some(StackType::Python),
                     },
                 ]),
-                custom_linters: None,
+                custom_lints: None,
             };
             assert_eq!(have, want);
         }
     }
 
-    mod custom_linter {
+    mod custom_lint {
         mod name {
-            use crate::config::CustomLinter;
+            use crate::config::CustomLint;
             use big_s::S;
 
             #[test]
             fn name() {
-                let linter = CustomLinter {
+                let lint = CustomLint {
                     name: None,
                     command: S("one.sh"),
                 };
-                let have = linter.name();
+                let have = lint.name();
                 assert_eq!(have, "one.sh");
             }
         }

@@ -54,22 +54,22 @@ Feature: custom fixes
       """
     And the exit code is 0
 
-  Scenario: custom linter fails
+  Scenario: custom lint fails
     Given a file "tricorder.toml" with content
       """
-      [[custom_linters]]
-      command = "linters/fail.sh"
+      [[custom_lints]]
+      command = "lints/fail.sh"
       """
-    And an executable file "linters/fail.sh" with content
+    And an executable file "lints/fail.sh" with content
       """
       #!/usr/bin/env bash
-      echo "custom linter failed"
+      echo "custom lint failed"
       exit 4
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      linters/fail.sh
-      custom linter failed
+      lints/fail.sh
+      custom lint failed
       """
     And the exit code is 4
