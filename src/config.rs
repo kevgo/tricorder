@@ -62,11 +62,11 @@ mod tests {
         fn custom_linters_defined() {
             let give = r#"
 [[custom-linters]]
-command = "linters/check-files.sh"
+command = "linters/one.sh"
 
 [[custom-linters]]
 name = "custom linter 2"
-command = "linters/check-tests"
+command = "linters/two.sh"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
@@ -93,11 +93,11 @@ command = "fixes/sort.py"
                 custom_linters: Some(vec![
                     CustomLinter {
                         name: None,
-                        command: S("linters/check-files.sh"),
+                        command: S("linters/one.sh"),
                     },
                     CustomLinter {
                         name: Some(S("custom linter 2")),
-                        command: S("linters/check-tests"),
+                        command: S("linters/two.sh"),
                     },
                 ]),
             };

@@ -1,4 +1,4 @@
-Feature: check SQL
+Feature: lint SQL
 
   Background:
     Given a file "run-that-app" with content
@@ -16,7 +16,7 @@ Feature: check SQL
       """
       select id, name from two
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -27,7 +27,7 @@ Feature: check SQL
       """
       SELECT            id, name FROM one
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -41,7 +41,7 @@ Feature: check SQL
       """
       SELECT FROM "
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -52,7 +52,7 @@ Feature: check SQL
       """
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints to STDERR
       """
       2 other

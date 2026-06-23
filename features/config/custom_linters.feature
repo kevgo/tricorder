@@ -22,7 +22,7 @@ Feature: custom linters
       #!/usr/bin/env bash
       echo "custom linter is running"
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
       linters/one.sh
@@ -47,7 +47,7 @@ Feature: custom linters
       echo "custom linter failed"
       exit 4
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
       linters/fail.sh

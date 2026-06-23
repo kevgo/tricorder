@@ -9,7 +9,7 @@
 set -euo pipefail
 command -v tricorder >/dev/null 2>&1 || exit 0
 
-output=$(tricorder check 2>&1)
+output=$(tricorder lint 2>&1)
 ec=$?
 [ $ec -eq 0 ] && exit 0
 

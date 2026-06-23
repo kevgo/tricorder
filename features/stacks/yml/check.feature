@@ -1,4 +1,4 @@
-Feature: check YML
+Feature: lint YML
 
   Background:
     Given a file "run-that-app" with content
@@ -12,7 +12,7 @@ Feature: check YML
       """
       key: value
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
@@ -22,7 +22,7 @@ Feature: check YML
       """
       key:     value
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
@@ -32,7 +32,7 @@ Feature: check YML
       """
       key: "
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
