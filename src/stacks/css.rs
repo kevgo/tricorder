@@ -1,5 +1,5 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Css;
@@ -13,7 +13,7 @@ impl Stack for Css {
         file.extension().is_some_and(|ext| ext == "css")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![Box::new(Biome {})]
     }
 
