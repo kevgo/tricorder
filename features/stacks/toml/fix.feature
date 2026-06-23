@@ -15,7 +15,7 @@ Feature: fix TOML
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      TOML (Taplo)
+      fix TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -32,7 +32,7 @@ Feature: fix TOML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TOML (Taplo)
+      fix TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content
@@ -52,7 +52,7 @@ Feature: fix TOML
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      TOML (Taplo)
+      fix TOML (Taplo)
       error: invalid TOML
       """
     And the exit code is 1

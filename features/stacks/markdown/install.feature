@@ -13,7 +13,7 @@ Feature: install all Markdown tools
       """
     And it prints the lines
       """
-      Markdown (rumdl)
+      fix Markdown (rumdl)
       """
     And the exit code is 0
     And file "main.md" now has content

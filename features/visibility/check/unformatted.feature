@@ -27,9 +27,9 @@ Feature: check multiple stacks with unformatted files
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      CSS (Biome)
-      TypeScript (Biome)
-      Python (ruff)
+      check CSS (Biome)
+      check TypeScript (Biome)
+      check Python (ruff)
       """
     And it prints nothing to STDOUT
     And the exit code is 0
@@ -44,16 +44,16 @@ Feature: check multiple stacks with unformatted files
       """
     And it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      CSS (Biome)
+      check CSS (Biome)
       """
     And it prints the block
       """
-      TypeScript (Biome)
+      check TypeScript (Biome)
       """
     And the exit code is 0
     And all files are unchanged
@@ -63,9 +63,9 @@ Feature: check multiple stacks with unformatted files
     Then it prints nothing to STDERR
     And it prints only these lines in any order
       """
-      Python (ruff check)
-      TypeScript (Biome)
-      CSS (Biome)
+      check Python (ruff)
+      check TypeScript (Biome)
+      check CSS (Biome)
       """
     And the exit code is 0
     And all files are unchanged

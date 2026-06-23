@@ -27,12 +27,12 @@ Feature: check Python with Pyright
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      Python (Pyright)
+      check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
@@ -51,12 +51,12 @@ Feature: check Python with Pyright
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      Python (Pyright)
+      check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
@@ -77,7 +77,7 @@ Feature: check Python with Pyright
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Python (Pyright)
+      check Python (Pyright)
       2 errors, 0 warnings, 0 informations
       """
     And the exit code is 1
@@ -96,12 +96,12 @@ Feature: check Python with Pyright
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       invalid-syntax: unexpected EOF while parsing
       """
     And it prints the lines
       """
-      Python (Pyright)
+      check Python (Pyright)
       5 errors, 0 warnings, 0 informations
       """
     And the exit code is 1

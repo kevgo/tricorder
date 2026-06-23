@@ -15,7 +15,7 @@ Feature: formatting a codebase without any code
     When executing "tricorder fix --show=all"
     Then it prints
       """
-      delete-empty-folders
+      delete empty folders
       """
     And it prints to STDERR
       """
@@ -28,7 +28,7 @@ Feature: formatting a codebase without any code
     When executing "tricorder fix --show=names"
     Then it prints
       """
-      delete-empty-folders
+      delete empty folders
       """
     And the exit code is 0
 

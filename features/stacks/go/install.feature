@@ -22,7 +22,7 @@ Feature: install all Go tools
       """
     And it prints the block
       """
-      Go (gofumpt)
+      fix Go (gofumpt)
       main.go
       """
     And the exit code is 0
