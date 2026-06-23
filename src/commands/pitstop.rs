@@ -79,7 +79,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         }
     }
 
-    // step 6: stack-specific fixes
+    // step 6: run stack-specific formatters right after the fixes for that stack
 
     // step 7: convert to runnables and return
     let mut stack_specific = Vec::new();
