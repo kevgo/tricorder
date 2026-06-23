@@ -42,11 +42,11 @@ fn determine_runnables(
 
     // determine the linters for the stacks
     for stack in stacks {
-        for checker in stack.stack.checkers() {
-            if !checker.is_enabled(stacks) {
+        for linter in stack.stack.linters() {
+            if !linter.is_enabled(stacks) {
                 continue;
             }
-            if let Some(executable) = checker.check_commands(stack)? {
+            if let Some(executable) = linter.lint_commands(stack)? {
                 result.push(executable);
             } else {
                 // this app is not available for this platform --> don't run it

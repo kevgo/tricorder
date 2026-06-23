@@ -1,5 +1,5 @@
 use crate::apps::rumdl::Rumdl;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Markdown;
@@ -14,7 +14,7 @@ impl Stack for Markdown {
         file.extension().is_some_and(|ext| ext == "md")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![Box::new(Rumdl {})]
     }
 
