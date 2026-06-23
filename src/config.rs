@@ -43,13 +43,6 @@ pub struct CustomLint {
     pub command: String,
 }
 
-impl CustomLint {
-    #[must_use]
-    pub fn name(self) -> String {
-        self.name.unwrap_or(self.command.clone())
-    }
-}
-
 #[cfg(test)]
 mod tests {
 
@@ -162,23 +155,6 @@ stack = "PyThOn"
                 custom_lints: None,
             };
             assert_eq!(have, want);
-        }
-    }
-
-    mod custom_lint {
-        mod name {
-            use crate::config::CustomLint;
-            use big_s::S;
-
-            #[test]
-            fn name() {
-                let lint = CustomLint {
-                    name: None,
-                    command: S("one.sh"),
-                };
-                let have = lint.name();
-                assert_eq!(have, "one.sh");
-            }
         }
     }
 }
