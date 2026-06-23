@@ -1,4 +1,4 @@
-Feature: check multiple stacks with invalid code
+Feature: lint multiple stacks with invalid code
 
   Background:
     Given a file "run-that-app" with content
@@ -21,13 +21,13 @@ Feature: check multiple stacks with invalid code
       """
 
   Scenario: default visibility
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      check CSS (Biome)
-      check TypeScript (Biome)
-      check Python (ruff)
+      lint CSS (Biome)
+      lint TypeScript (Biome)
+      lint Python (ruff)
       """
     And it prints the block
       """
@@ -47,7 +47,7 @@ Feature: check multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=all
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -55,42 +55,42 @@ Feature: check multiple stacks with invalid code
       """
     And it prints the lines
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder check --show=names"
+    When executing "tricorder lint --show=names"
     Then it prints nothing to STDERR
     And it prints the lines
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       Found 1 error.
       main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And it prints the lines
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       Found 2 errors.
       main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder check --show=failed"
+    When executing "tricorder lint --show=failed"
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """
-      check CSS (Biome)
-      check TypeScript (Biome)
+      lint CSS (Biome)
+      lint TypeScript (Biome)
       """
     And it prints the block
       """

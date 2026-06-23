@@ -1,4 +1,4 @@
-Feature: check TypeScript
+Feature: lint TypeScript
 
   Background:
     Given a file "run-that-app" with content
@@ -12,10 +12,10 @@ Feature: check TypeScript
       """
       console.log("hello");
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -29,10 +29,10 @@ Feature: check TypeScript
       """
       console.log(  "other"  );
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" is unchanged
@@ -43,10 +43,10 @@ Feature: check TypeScript
       """
       console.log("
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       Found 2 errors.
       """
     And the exit code is 1

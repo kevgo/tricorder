@@ -4,8 +4,8 @@ use crate::domain::{DetectedStack, Tool, UserError};
 pub trait Linter: Tool {
     /// Provides the shell command to run this linter for the given `PopulatedStack`.
     /// The linter can look at the files in `all_stacks` to determine if it should run.
-    /// If it runs, the linter should only check the files in the given `DetectedStack`,
-    /// not find all the files to check by itself.
+    /// If it runs, the linter should only verify the files in the given `DetectedStack`,
+    /// not find all the files to lint by itself.
     /// This is for performance reasons. Finding files requires expensive OS calls.
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
 }

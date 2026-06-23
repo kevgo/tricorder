@@ -1,4 +1,4 @@
-Feature: check Go
+Feature: lint Go
 
   Background:
     Given a file "go.mod" with content
@@ -21,10 +21,10 @@ Feature: check Go
       	fmt.Println("Hello, world!")
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Go (golangci-lint)
+      lint Go (golangci-lint)
       """
     And the exit code is 0
     And file "main.go" is unchanged
@@ -38,10 +38,10 @@ Feature: check Go
       	fmt.Println("
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Go (golangci-lint)
+      lint Go (golangci-lint)
       3 issues:
       """
     And the exit code is 1

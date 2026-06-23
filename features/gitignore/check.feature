@@ -1,4 +1,4 @@
-Feature: don't check files in .gitignore
+Feature: ignore files in .gitignore
 
   Scenario: all Python files are ignored
     Given a file ".gitignore" with content
@@ -17,6 +17,6 @@ Feature: don't check files in .gitignore
       """
       delete-empty-folders 0.0.2
       """
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints nothing to STDOUT
     And the exit code is 0
