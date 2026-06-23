@@ -39,7 +39,7 @@ impl Checker for Ruff {
 }
 
 impl Fixer for Ruff {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut executables = Vec::with_capacity(2);
 
         // NOTE: Ruff has separate commands for formatting and linting
@@ -78,10 +78,6 @@ impl Fixer for Ruff {
             executables.push(executable);
         }
 
-        if executables.is_empty() {
-            Ok(None)
-        } else {
-            Ok(Some(conc::Runnable::Sequence(executables)))
-        }
+        Ok(executables)
     }
 }

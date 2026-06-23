@@ -18,7 +18,7 @@ impl Display for Sqlfmt {
 }
 
 impl Fixer for Sqlfmt {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 5);
         args.push(S("tool"));
         args.push(S("run"));
@@ -34,6 +34,6 @@ impl Fixer for Sqlfmt {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.into_iter().collect())
     }
 }
