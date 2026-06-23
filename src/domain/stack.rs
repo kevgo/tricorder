@@ -10,10 +10,10 @@ pub trait Stack {
     fn owns(&self, file: &Path) -> bool;
 
     /// all possible linters for this stack
-    fn linters(&self) -> Vec<Box<dyn Lint>>;
+    fn lints(&self) -> Vec<Box<dyn Lint>>;
 
     /// all possible formatters for this stack
-    fn formatters(&self) -> Vec<Box<dyn Fix>>;
+    fn fixes(&self) -> Vec<Box<dyn Fix>>;
 }
 
 impl Display for Box<dyn Stack> {

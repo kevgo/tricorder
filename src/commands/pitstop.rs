@@ -7,7 +7,7 @@ use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let Runnables {
         global,
         stack_specific,
@@ -78,6 +78,8 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
             }
         }
     }
+
+    // step 6: stack-specific checks
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();

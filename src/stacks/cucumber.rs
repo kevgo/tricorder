@@ -14,11 +14,11 @@ impl Stack for Cucumber {
         file.extension().is_some_and(|ext| ext == "feature")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Lint>> {
+    fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(GherkinLint {})]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fix>> {
+    fn fixes(&self) -> Vec<Box<dyn Fix>> {
         vec![Box::new(Ghokin {})]
     }
 }
