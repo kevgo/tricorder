@@ -1,5 +1,5 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Yml;
@@ -14,7 +14,7 @@ impl Stack for Yml {
             .is_some_and(|ext| ext == "yml" || ext == "yaml")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![]
     }
 

@@ -1,5 +1,5 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Typescript;
@@ -14,7 +14,7 @@ impl Stack for Typescript {
             .is_some_and(|ext| ext == "ts" || ext == "tsx" || ext == "js" || ext == "jsx")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![Box::new(Biome {})]
     }
 

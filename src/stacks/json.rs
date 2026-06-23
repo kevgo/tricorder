@@ -1,5 +1,5 @@
 use crate::apps::prettier::Prettier;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Json;
@@ -13,7 +13,7 @@ impl Stack for Json {
         file.extension().is_some_and(|ext| ext == "json")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![]
     }
 
