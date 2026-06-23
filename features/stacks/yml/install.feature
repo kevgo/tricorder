@@ -13,7 +13,7 @@ Feature: install all YML tools
       """
     And it prints the lines
       """
-      YML (Prettier)
+      fix YML (Prettier)
       """
     And the exit code is 0
     And file "main.yml" now has content

@@ -19,7 +19,7 @@ Feature: fix SQL
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      SQL (sqlfmt)
+      fix SQL (sqlfmt)
       2 files left unchanged.
       """
     And the exit code is 0
@@ -38,7 +38,7 @@ Feature: fix SQL
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      SQL (sqlfmt)
+      fix SQL (sqlfmt)
       2 files formatted.
       0 files left unchanged.
       one.sql formatted.
@@ -66,7 +66,7 @@ Feature: fix SQL
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      SQL (sqlfmt)
+      fix SQL (sqlfmt)
       2 files had errors while formatting.
       0 files left unchanged.
       one.sql

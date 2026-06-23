@@ -15,7 +15,7 @@ Feature: check Markdown
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Markdown (rumdl)
+      check Markdown (rumdl)
       """
     And the exit code is 0
     And file "main.md" is unchanged
@@ -28,7 +28,7 @@ Feature: check Markdown
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      Markdown (rumdl)
+      check Markdown (rumdl)
       main.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
       """
     And the exit code is 1
@@ -42,7 +42,7 @@ Feature: check Markdown
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      Markdown (rumdl)
+      check Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
     And the exit code is 1

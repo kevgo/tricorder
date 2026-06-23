@@ -13,7 +13,7 @@ Feature: install all SQL tools
       """
     And it prints the lines
       """
-      SQL (sqlfmt)
+      fix SQL (sqlfmt)
       """
     And the exit code is 0
     And file "one.sql" now has content

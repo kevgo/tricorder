@@ -24,7 +24,7 @@ impl Fixer for Ghokin {
         args.push(S("replace"));
         args.push(S("."));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
+            name: format!("fix {} ({self})", &stack.stack),
             app: &rta::applications::Ghokin {},
             args,
             version: None,
