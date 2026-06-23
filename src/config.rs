@@ -158,7 +158,7 @@ stack = "PyThOn"
         }
 
         #[test]
-        fn underscore() {
+        fn name_allows_underscore() {
             let give = r#"
 [[custom_lints]]
 name = "custom lint 1"
