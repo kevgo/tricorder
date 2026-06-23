@@ -1,4 +1,4 @@
-Feature: check multiple stacks
+Feature: lint multiple stacks
 
   Background:
     Given a file "run-that-app" with content
@@ -23,12 +23,12 @@ Feature: check multiple stacks
       """
 
   Scenario: default visibility
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints nothing to STDOUT
     And all files are unchanged
 
   Scenario: --show=all
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -36,31 +36,31 @@ Feature: check multiple stacks
       """
     And it prints the lines
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       """
     And it prints the lines
       """
-      check TypeScript (Biome)
+      lint TypeScript (Biome)
       """
     And it prints the block
       """
-      check Python (ruff)
+      lint Python (ruff)
       All checks passed!
       """
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder check --show=names"
+    When executing "tricorder lint --show=names"
     Then it prints only these lines in any order
       """
-      check TypeScript (Biome)
-      check CSS (Biome)
-      check Python (ruff)
+      lint TypeScript (Biome)
+      lint CSS (Biome)
+      lint Python (ruff)
       """
     And it prints nothing to STDERR
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder check --show=failed"
+    When executing "tricorder lint --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged

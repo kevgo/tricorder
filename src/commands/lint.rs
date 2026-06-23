@@ -5,7 +5,7 @@ use crate::domain::{DetectedStacks, Result};
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn check(args: &RunArgs) -> Result<ExitCode> {
+pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
 

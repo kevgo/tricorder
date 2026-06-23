@@ -16,19 +16,19 @@ Feature: install all Python tools
         "typeCheckingMode": "strict"
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok
       """
     And it prints the block
       """
-      check Python (ruff)
+      lint Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      check Python (Pyright)
+      type-check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0

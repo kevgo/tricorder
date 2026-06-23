@@ -1,4 +1,4 @@
-Feature: check CSS
+Feature: lint CSS
 
   Background:
     Given a file "run-that-app" with content
@@ -14,10 +14,10 @@ Feature: check CSS
       \tcolor: red;
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -29,10 +29,10 @@ Feature: check CSS
         color : red ;
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -44,10 +44,10 @@ Feature: check CSS
         col
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check CSS (Biome)
+      lint CSS (Biome)
       Found 2 errors.
       """
     And the exit code is 1

@@ -1,5 +1,5 @@
 @online
-Feature: check Cucumber
+Feature: lint Cucumber
 
   Background:
     Given a file "run-that-app" with content
@@ -60,10 +60,10 @@ Feature: check Cucumber
         Scenario: one
           Given a step
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints
       """
-      check Cucumber (Gherkin Lint)
+      lint Cucumber (Gherkin Lint)
       """
     And the exit code is 0
     And file "features/one.feature" is unchanged
@@ -76,10 +76,10 @@ Feature: check Cucumber
         Scenario: one
                   Given a step
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Cucumber (Gherkin Lint)
+      lint Cucumber (Gherkin Lint)
         4    Wrong indentation for "given", expected indentation level of 4, but got 12    indentation
       """
     And the exit code is 1
@@ -90,10 +90,10 @@ Feature: check Cucumber
       """
       Feat
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Cucumber (Gherkin Lint)
+      lint Cucumber (Gherkin Lint)
         1    (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'    unexpected-error
       """
     And the exit code is 1

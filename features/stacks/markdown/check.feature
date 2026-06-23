@@ -1,4 +1,4 @@
-Feature: check Markdown
+Feature: lint Markdown
 
   Background:
     Given a file "run-that-app" with content
@@ -12,10 +12,10 @@ Feature: check Markdown
       """
       # Hello
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Markdown (rumdl)
+      lint Markdown (rumdl)
       """
     And the exit code is 0
     And file "main.md" is unchanged
@@ -25,10 +25,10 @@ Feature: check Markdown
       """
       #     Hello
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check Markdown (rumdl)
+      lint Markdown (rumdl)
       main.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
       """
     And the exit code is 1
@@ -39,10 +39,10 @@ Feature: check Markdown
       """
       text
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Markdown (rumdl)
+      lint Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
     And the exit code is 1

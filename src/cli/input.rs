@@ -16,7 +16,7 @@ struct Cli {
 pub enum Command {
     /// Run all code quality checks
     #[command(visible_alias = "postgenerate")]
-    Check(RunArgs),
+    Lint(RunArgs),
 
     /// Auto-fix all code quality issues
     Fix(RunArgs),

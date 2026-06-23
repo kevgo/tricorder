@@ -37,7 +37,7 @@ cukethis: build-release ${RTA}  # runs only end-to-end tests with a @this tag
 .PHONY: demo
 demo:  # runs Tricorder in the "demo" folder
 	cargo build --release --quiet
-	(cd demo && ../target/release/tricorder check)
+	(cd demo && ../target/release/tricorder lint)
 
 install:
 	cargo install --path . --locked
