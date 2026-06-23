@@ -25,7 +25,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
-        precommit  Repair in Git precommit hook, never fails
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:
@@ -46,7 +46,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
-        precommit  Repair in Git precommit hook, never fails
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:
@@ -67,7 +67,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
-        precommit  Repair in Git precommit hook, never fails
+        precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
       Options:

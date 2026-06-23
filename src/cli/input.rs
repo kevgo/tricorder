@@ -24,7 +24,7 @@ pub enum Command {
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
 
-    /// Repair in Git precommit hook, never fails
+    /// Repair all code quality issues, never fails
     Precommit(RunArgs),
 }
 
