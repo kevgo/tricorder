@@ -1,4 +1,4 @@
-use crate::domain::{DetectedStack, DetectedStacks, Linter, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Lint, Tool, UserError};
 use std::fmt::Display;
 
 pub struct Checkstyle;
@@ -18,7 +18,7 @@ impl Display for Checkstyle {
     }
 }
 
-impl Linter for Checkstyle {
+impl Lint for Checkstyle {
     fn lint_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(

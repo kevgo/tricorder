@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Fixer, Linter, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -17,7 +17,7 @@ impl Display for Taplo {
     }
 }
 
-impl Linter for Taplo {
+impl Lint for Taplo {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
@@ -34,8 +34,8 @@ impl Linter for Taplo {
     }
 }
 
-impl Fixer for Taplo {
-    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+impl Fix for Taplo {
+    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("format"));
         for file in &stack.files {
