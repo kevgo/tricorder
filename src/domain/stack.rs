@@ -12,7 +12,7 @@ pub trait Stack {
     /// all possible linters for this stack
     fn lints(&self) -> Vec<Box<dyn Lint>>;
 
-    /// all possible formatters for this stack
+    /// all possible fixes for this stack
     fn fixes(&self) -> Vec<Box<dyn Fix>>;
 }
 
