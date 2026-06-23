@@ -42,7 +42,7 @@ fn determine_runnables(
 
     // determine the linters for the stacks
     for stack in stacks {
-        for linter in stack.stack.linters() {
+        for linter in stack.stack.lints() {
             if !linter.is_enabled(stacks) {
                 continue;
             }
