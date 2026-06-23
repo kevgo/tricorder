@@ -13,7 +13,7 @@ Feature: install all TOML tools
       """
     And it prints the lines
       """
-      TOML (Taplo)
+      fix TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content

@@ -17,7 +17,7 @@ Feature: check CSS
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      CSS (Biome)
+      check CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -32,7 +32,7 @@ Feature: check CSS
     When executing "tricorder check --show=all"
     Then it prints the block
       """
-      CSS (Biome)
+      check CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -47,7 +47,7 @@ Feature: check CSS
     When executing "tricorder check --show=all"
     Then it prints the lines
       """
-      CSS (Biome)
+      check CSS (Biome)
       Found 2 errors.
       """
     And the exit code is 1

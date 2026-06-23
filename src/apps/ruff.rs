@@ -26,7 +26,7 @@ impl Checker for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} (ruff check)", &stack.stack),
+            name: format!("check {} (ruff)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,

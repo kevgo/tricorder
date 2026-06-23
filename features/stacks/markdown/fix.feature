@@ -15,7 +15,7 @@ Feature: fix Markdown
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Markdown (rumdl)
+      fix Markdown (rumdl)
       """
     And the exit code is 0
     And file "main.md" is unchanged
@@ -28,7 +28,7 @@ Feature: fix Markdown
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Markdown (rumdl)
+      fix Markdown (rumdl)
       main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
     And the exit code is 0
@@ -47,7 +47,7 @@ Feature: fix Markdown
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      Markdown (rumdl)
+      fix Markdown (rumdl)
       """
     And the exit code is 0
     And file "main.md" is unchanged

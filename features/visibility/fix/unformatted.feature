@@ -49,20 +49,20 @@ Feature: fix multiple stacks
       """
     And it prints the block
       """
-      TypeScript (Biome)
+      fix TypeScript (Biome)
       """
     And it prints the block
       """
-      CSS (Biome)
+      fix CSS (Biome)
       """
     And it prints the block
       """
-      Python (ruff fix)
+      fix Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      Python (ruff format)
+      format Python (ruff)
       1 file reformatted
       """
     And file "main.css" now has content
@@ -89,11 +89,11 @@ Feature: fix multiple stacks
       """
     And it prints only these lines in any order
       """
-      delete-empty-folders
-      Python (ruff fix)
-      Python (ruff format)
-      TypeScript (Biome)
-      CSS (Biome)
+      delete empty folders
+      fix Python (ruff)
+      format Python (ruff)
+      fix TypeScript (Biome)
+      fix CSS (Biome)
       """
     And file "main.css" now has content
       """

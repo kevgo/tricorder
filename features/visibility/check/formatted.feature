@@ -36,15 +36,15 @@ Feature: check multiple stacks
       """
     And it prints the lines
       """
-      CSS (Biome)
+      check CSS (Biome)
       """
     And it prints the lines
       """
-      TypeScript (Biome)
+      check TypeScript (Biome)
       """
     And it prints the block
       """
-      Python (ruff check)
+      check Python (ruff)
       All checks passed!
       """
     And all files are unchanged
@@ -53,9 +53,9 @@ Feature: check multiple stacks
     When executing "tricorder check --show=names"
     Then it prints only these lines in any order
       """
-      TypeScript (Biome)
-      CSS (Biome)
-      Python (ruff check)
+      check TypeScript (Biome)
+      check CSS (Biome)
+      check Python (ruff)
       """
     And it prints nothing to STDERR
     And all files are unchanged

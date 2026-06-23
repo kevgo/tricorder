@@ -36,20 +36,20 @@ Feature: fix multiple good stacks
       """
     And it prints the lines
       """
-      CSS (Biome)
+      fix CSS (Biome)
       """
     And it prints the lines
       """
-      TypeScript (Biome)
+      fix TypeScript (Biome)
       """
     And it prints the block
       """
-      Python (ruff fix)
+      fix Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      Python (ruff format)
+      format Python (ruff)
       1 file left unchanged
       """
     And all files are unchanged
@@ -58,11 +58,11 @@ Feature: fix multiple good stacks
     When executing "tricorder fix --show=names"
     Then it prints only these lines in any order
       """
-      delete-empty-folders
-      Python (ruff fix)
-      Python (ruff format)
-      CSS (Biome)
-      TypeScript (Biome)
+      delete empty folders
+      fix Python (ruff)
+      format Python (ruff)
+      fix CSS (Biome)
+      fix TypeScript (Biome)
       """
     And all files are unchanged
 
