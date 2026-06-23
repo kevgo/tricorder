@@ -43,13 +43,13 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         print_metadata(&stacks);
     }
 
-    // step 3 global fixers
+    // step 3 global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(delete_empty_folders);
     }
 
-    // step 4 stack-specific fixers
+    // step 4 stack-specific fixes
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in &stacks {
         let stack_executables = stack_executables
@@ -63,7 +63,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         }
     }
 
-    // step 5 custom fixers
+    // step 5 custom fixes
     if let Some(custom_fixes) = config.custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
@@ -79,9 +79,9 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         }
     }
 
-    // step 6: stack-specific checks
+    // step 6: stack-specific fixes
 
-    // step 6: convert to runnables and return
+    // step 7: convert to runnables and return
     let mut stack_specific = Vec::new();
     let mut stack_tool_count = 0;
     for (_stack_type, stack_executables) in stack_executables {
@@ -100,9 +100,9 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 }
 
 pub struct Runnables {
-    /// formatters that affect all files
+    /// fixes that affect all files
     pub global: conc::Runnable,
 
-    /// formatters that affect stack-specific files
+    /// fixes that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,
 }
