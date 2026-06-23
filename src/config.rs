@@ -165,29 +165,27 @@ stack = "PyThOn"
         }
 
         #[test]
-        fn name_variations() {
+        fn underscore() {
             let give = r#"
-[[custom-lints]]
+[[custom_lints]]
 name = "custom lint 1"
 command = "lints/one.sh"
 
-[[custom-lints]]
-name = "custom lint 2"
-command = "lints/two.sh"
+[[custom_fixes]]
+name = "custom fix 1"
+command = "fixes/one.sh"
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
-                custom_lints: Some(vec![
-                    CustomLint {
-                        name: Some(S("custom lint 1")),
-                        command: S("lints/one.sh"),
-                    },
-                    CustomLint {
-                        name: Some(S("custom lint 2")),
-                        command: S("lints/two.sh"),
-                    },
-                ]),
-                custom_fixes: None,
+                custom_lints: Some(vec![CustomLint {
+                    name: Some(S("custom lint 1")),
+                    command: S("lints/one.sh"),
+                }]),
+                custom_fixes: Some(vec![CustomFix {
+                    name: Some(S("custom fix 1")),
+                    command: S("fixes/one.sh"),
+                    stack: None,
+                }]),
             };
             pretty::assert_eq!(have, want);
         }
