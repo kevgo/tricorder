@@ -12,11 +12,11 @@ impl Stack for Unknown {
         true
     }
 
-    fn linters(&self) -> Vec<Box<dyn Lint>> {
+    fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![]
     }
 
-    fn formatters(&self) -> Vec<Box<dyn Fix>> {
+    fn fixes(&self) -> Vec<Box<dyn Fix>> {
         vec![]
     }
 }
