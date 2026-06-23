@@ -34,7 +34,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-fn determine_runnables(
+pub fn determine_runnables(
     stacks: &DetectedStacks,
     custom_lints: Option<Vec<CustomLint>>,
 ) -> Result<Vec<conc::Runnable>> {
