@@ -10,21 +10,21 @@ Feature: custom fixes
   Scenario: custom fixes run after the stack-specific ones, in the order defined
     Given a file "tricorder.toml" with content
       """
-      [[custom_fixes]]
+      [[custom-fixes]]
       command = "fixes/toml-1.sh"
       name = "my custom fix for TOML 1"
       stack = "toml"
 
-      [[custom_fixes]]
+      [[custom-fixes]]
       command = "fixes/toml-2.sh"
       name = "my custom fix for TOML 2"
       stack = "toml"
 
-      [[custom_fixes]]
+      [[custom-fixes]]
       name = "my global fix 1"
       command = "echo global fix 1 running"
 
-      [[custom_fixes]]
+      [[custom-fixes]]
       name = "my global fix 2"
       command = "echo global fix 2 running"
       """
@@ -57,7 +57,7 @@ Feature: custom fixes
   Scenario: custom lint fails
     Given a file "tricorder.toml" with content
       """
-      [[custom_lints]]
+      [[custom-lints]]
       command = "lints/fail.sh"
       """
     And an executable file "lints/fail.sh" with content
