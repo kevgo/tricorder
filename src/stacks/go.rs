@@ -1,6 +1,6 @@
 use crate::apps::gofumpt::Gofumpt;
 use crate::apps::golangci_lint::GolangciLint;
-use crate::domain::{Fix, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Go;
@@ -14,7 +14,7 @@ impl Stack for Go {
         file.extension().is_some_and(|ext| ext == "go")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(GolangciLint {})]
     }
 

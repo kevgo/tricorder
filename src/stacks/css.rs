@@ -1,5 +1,5 @@
 use crate::apps::biome::Biome;
-use crate::domain::{Fix, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Css;
@@ -13,7 +13,7 @@ impl Stack for Css {
         file.extension().is_some_and(|ext| ext == "css")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Biome {})]
     }
 

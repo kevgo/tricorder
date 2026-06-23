@@ -1,4 +1,4 @@
-use crate::domain::{Fix, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Unknown;
@@ -12,7 +12,7 @@ impl Stack for Unknown {
         true
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![]
     }
 

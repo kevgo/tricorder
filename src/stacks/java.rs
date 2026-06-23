@@ -1,5 +1,5 @@
 use crate::apps::checkstyle::Checkstyle;
-use crate::domain::{Fix, Linter, Stack, StackType};
+use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
 pub struct Java;
@@ -13,7 +13,7 @@ impl Stack for Java {
         file.extension().is_some_and(|ext| ext == "java")
     }
 
-    fn linters(&self) -> Vec<Box<dyn Linter>> {
+    fn linters(&self) -> Vec<Box<dyn Lint>> {
         vec![Box::new(Checkstyle {})]
     }
 

@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Fix, Linter, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -18,7 +18,7 @@ impl Display for Ruff {
     }
 }
 
-impl Linter for Ruff {
+impl Lint for Ruff {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
