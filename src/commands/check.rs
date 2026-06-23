@@ -40,7 +40,7 @@ fn determine_runnables(
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
-    // step 3.1: determine the linters for the stacks
+    // determine the linters for the stacks
     for stack in stacks {
         for checker in stack.stack.checkers() {
             if !checker.is_enabled(stacks) {
@@ -54,7 +54,7 @@ fn determine_runnables(
         }
     }
 
-    // step 3.2: determine the runnables for the custom linters
+    // determine the runnables for the custom linters
     if let Some(custom_linters) = custom_linters {
         for CustomLinter { name, command } in custom_linters {
             result.push(conc::Runnable::Single(conc::Executable {
