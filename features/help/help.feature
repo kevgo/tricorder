@@ -22,7 +22,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint      Run all code quality checks [aliases: postgenerate]
+        lint       Run all code quality checks [aliases: postgenerate]
         fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
         precommit  Auto-fix before committing
@@ -43,7 +43,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint      Run all code quality checks [aliases: postgenerate]
+        lint       Run all code quality checks [aliases: postgenerate]
         fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
         precommit  Auto-fix before committing
@@ -64,7 +64,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        lint      Run all code quality checks [aliases: postgenerate]
+        lint       Run all code quality checks [aliases: postgenerate]
         fix        Auto-fix all code quality issues
         init       Install coding agent hooks for this project
         precommit  Auto-fix before committing
