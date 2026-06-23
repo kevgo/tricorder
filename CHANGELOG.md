@@ -1,5 +1,12 @@
 # Tricorder changelog
 
+## 0.0.7 (2026-06-23)
+
+- rename `tricorder check` to `tricorder lint` because it only runs linters
+  and doesn't verify formatting anymore
+- rename `[[custom-linters]]` in the config file to `[[custom-lints]]`
+- rename `[[custom-fixers]]` in the config file to `[[custom-fixes]]`
+
 ## 0.0.6 (2026-06-22)
 
 - custom fixes
