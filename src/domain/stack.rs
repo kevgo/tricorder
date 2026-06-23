@@ -1,4 +1,4 @@
-use crate::domain::{Checker, Fixer, StackType};
+use crate::domain::{Fixer, Linter, StackType};
 use std::fmt::Display;
 use std::path::Path;
 
@@ -9,8 +9,8 @@ pub trait Stack {
     /// indicates whether the given file path is a part of this stack
     fn owns(&self, file: &Path) -> bool;
 
-    /// all possible checkers for this stack
-    fn checkers(&self) -> Vec<Box<dyn Checker>>;
+    /// all possible linters for this stack
+    fn linters(&self) -> Vec<Box<dyn Linter>>;
 
     /// all possible formatters for this stack
     fn formatters(&self) -> Vec<Box<dyn Fixer>>;
