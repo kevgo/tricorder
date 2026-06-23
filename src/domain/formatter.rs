@@ -7,5 +7,6 @@ pub trait Fixer: Tool {
     /// If it runs, the formatter should only format the files in the given `DetectedStack`,
     /// not find all the files to check by itself.
     /// This allows running all formatters in parallel.
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
+    // TODO: rename to fix_commands
+    fn format_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError>;
 }
