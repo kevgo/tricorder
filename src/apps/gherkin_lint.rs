@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, Tool, UserError};
+use crate::domain::{DetectedStack, Linter, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -21,8 +21,8 @@ impl Display for GherkinLint {
     }
 }
 
-impl Checker for GherkinLint {
-    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+impl Linter for GherkinLint {
+    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 3);
         args.push(S("exec"));
         args.push(S("--yes"));

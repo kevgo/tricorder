@@ -1,4 +1,4 @@
-use crate::domain::{Checker, DetectedStack, DetectedStacks, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Linter, Tool, UserError};
 use std::fmt::Display;
 
 pub struct Checkstyle;
@@ -18,8 +18,8 @@ impl Display for Checkstyle {
     }
 }
 
-impl Checker for Checkstyle {
-    fn check_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+impl Linter for Checkstyle {
+    fn lint_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",

@@ -1,6 +1,6 @@
 use crate::apps::gherkin_lint::GherkinLint;
 use crate::apps::ghokin::Ghokin;
-use crate::domain::{Checker, Fixer, Stack, StackType};
+use crate::domain::{Fixer, Linter, Stack, StackType};
 use std::path::Path;
 
 pub struct Cucumber;
@@ -14,7 +14,7 @@ impl Stack for Cucumber {
         file.extension().is_some_and(|ext| ext == "feature")
     }
 
-    fn checkers(&self) -> Vec<Box<dyn Checker>> {
+    fn linters(&self) -> Vec<Box<dyn Linter>> {
         vec![Box::new(GherkinLint {})]
     }
 
