@@ -24,6 +24,9 @@ pub enum Command {
     /// Install coding agent hooks for this project
     Init(InitArgs),
 
+    /// Run both fix and check commands
+    PitStop(RunArgs),
+
     /// Auto-fix before committing
     Precommit(RunArgs),
 }
