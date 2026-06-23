@@ -27,7 +27,7 @@ impl Checker for Checkstyle {
             return Ok(None);
         }
         Ok(Some(conc::Runnable::Single(conc::shell_executable(
-            format!("check {BINARY} {CONFIG_ARG} ."),
+            format!("{BINARY} {CONFIG_ARG} ."),
         ))))
     }
 }
