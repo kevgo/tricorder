@@ -79,6 +79,8 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
         }
     }
 
+    // step 6: stack-specific checks
+
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
     let mut stack_tool_count = 0;
