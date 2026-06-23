@@ -1,4 +1,4 @@
-Feature: check TOML
+Feature: lint TOML
 
   Background:
     Given a file "run-that-app" with content
@@ -12,10 +12,10 @@ Feature: check TOML
       """
       key = "value"
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check TOML (Taplo)
+      lint TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -25,10 +25,10 @@ Feature: check TOML
       """
       key =     "value"
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check TOML (Taplo)
+      lint TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" is unchanged
@@ -42,10 +42,10 @@ Feature: check TOML
       """
       other = "
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check TOML (Taplo)
+      lint TOML (Taplo)
       error: invalid TOML
       """
     And the exit code is 1

@@ -7,13 +7,13 @@ Feature: checking a codebase without any code
       """
 
   Scenario: default visibility
-    When executing "tricorder check"
+    When executing "tricorder lint"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=all
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """
@@ -23,13 +23,13 @@ Feature: checking a codebase without any code
     And the exit code is 0
 
   Scenario: --show=names
-    When executing "tricorder check --show=names"
+    When executing "tricorder lint --show=names"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=failed
-    When executing "tricorder check --show=failed"
+    When executing "tricorder lint --show=failed"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0

@@ -60,7 +60,7 @@ cargo install --git https://github.com/kevgo/tricorder
 ## Usage
 
 ```sh
-tricorder check              # run every applicable linter
+tricorder lint              # run every applicable linter
 tricorder init               # install agentic hooks (see below)
 ```
 
@@ -119,12 +119,12 @@ linters.custom = [
 
 ## CI
 
-The same `tricorder check` exit code feeds straight into CI.
+The same `tricorder lint` exit code feeds straight into CI.
 A representative pipeline step:
 
 ```yaml
 - name: tricorder
-  run: tricorder check
+  run: tricorder lint
 ```
 
 Any non-zero exit fails the build,

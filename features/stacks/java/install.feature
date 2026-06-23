@@ -9,7 +9,7 @@ Feature: install all Java tools
           }
       }
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle

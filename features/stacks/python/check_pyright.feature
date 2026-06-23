@@ -1,4 +1,4 @@
-Feature: check Python with Pyright
+Feature: lint Python with Pyright
 
   Background:
     Given a file "run-that-app" with content
@@ -24,15 +24,15 @@ Feature: check Python with Pyright
       """
       print("Hello, other!")
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check Python (ruff)
+      lint Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      check Python (Pyright)
+      type-check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
@@ -48,15 +48,15 @@ Feature: check Python with Pyright
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check Python (ruff)
+      lint Python (ruff)
       All checks passed!
       """
     And it prints the block
       """
-      check Python (Pyright)
+      type-check Python (Pyright)
       0 errors, 0 warnings, 0 informations
       """
     And the exit code is 0
@@ -74,10 +74,10 @@ Feature: check Python with Pyright
       b: int = "text"
       print(b)
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      check Python (Pyright)
+      type-check Python (Pyright)
       2 errors, 0 warnings, 0 informations
       """
     And the exit code is 1
@@ -93,15 +93,15 @@ Feature: check Python with Pyright
       """
       print("
       """
-    When executing "tricorder check --show=all"
+    When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      check Python (ruff)
+      lint Python (ruff)
       invalid-syntax: unexpected EOF while parsing
       """
     And it prints the lines
       """
-      check Python (Pyright)
+      type-check Python (Pyright)
       5 errors, 0 warnings, 0 informations
       """
     And the exit code is 1

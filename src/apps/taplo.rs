@@ -25,7 +25,7 @@ impl Linter for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("check {} ({self})", &stack.stack),
+            name: format!("lint {} ({self})", &stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,
