@@ -38,7 +38,7 @@ impl Display for GolangciLint {
 impl Checker for GolangciLint {
     fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
+            name: format!("check {} ({self})", &stack.stack),
             app: &rta::applications::GolangCiLint {},
             args: vec![S("run")],
             version: None,
