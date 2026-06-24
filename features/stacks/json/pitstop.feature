@@ -23,16 +23,24 @@ Feature: pitstop JSON
       { "key": "value" }
       """
 
-  Scenario: invalid JSON
+  Scenario: unformatted JSON with lint errors
     Given a file "main.json" with content
       """
-      { "key":
+      {
+      "key":"value",
+      "key":"value",
+      }
       """
     When executing "tricorder pitstop --show=all"
     Then it prints the block
       """
       fix JSON (Prettier)
-      [error] main.json: SyntaxError: Unexpected token (2:1)
       """
-    And the exit code is 2
-    And file "main.json" is unchanged
+    And the exit code is 0
+    And file "main.json" now has content
+      """
+      {
+        "key": "value",
+        "key": "value"
+      }
+      """
