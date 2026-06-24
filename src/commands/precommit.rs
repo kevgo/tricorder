@@ -22,7 +22,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(config.custom_fixes, &stacks, args)?;
+    } = determine_runnables(config.custom_fixes, &stacks)?;
     let _exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,

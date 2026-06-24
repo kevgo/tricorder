@@ -23,7 +23,12 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(config.custom_fixes, &stacks, args)?;
+    } = determine_runnables(config.custom_fixes, &stacks)?;
+
+    if args.show == Show::All {
+        eprintln!("running {} tools", global.len());
+    }
+
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
@@ -45,7 +50,6 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_runnables(
     custom_fixes: Option<Vec<CustomFix>>,
     stacks: &DetectedStacks,
-    args: &RunArgs,
 ) -> Result<Runnables> {
     // step 3 global fixes
     let mut global = Vec::new();
@@ -85,15 +89,10 @@ pub fn determine_runnables(
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
-    let mut stack_tool_count = 0;
     for (_stack_type, stack_executables) in stack_executables {
         if !stack_executables.is_empty() {
-            stack_tool_count += stack_executables.len();
             stack_specific.push(conc::Runnable::Sequence(stack_executables));
         }
-    }
-    if args.show == Show::All {
-        eprintln!("running {} tools", global.len() + stack_tool_count);
     }
     Ok(Runnables {
         global: conc::Runnable::Sequence(global),
