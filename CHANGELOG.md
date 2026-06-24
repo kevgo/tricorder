@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.8 (2026-06-24)
+
+- `tricorder pitstop` command
+
 ## 0.0.7 (2026-06-23)
 
 - rename `tricorder check` to `tricorder lint` because it only runs linters
