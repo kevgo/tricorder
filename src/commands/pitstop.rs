@@ -22,14 +22,12 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 3: discover all runnables
     let fix_runnables = fix::determine_runnables(config.custom_fixes, &stacks)?;
     let lint_runnables = lint::determine_runnables(&stacks, config.custom_lints)?;
+    let runnable_count = fix_runnables.len() + lint_runnables.len();
     if args.show == Show::All {
-        eprintln!(
-            "running {} tools",
-            fix_runnables.len() + lint_runnables.len()
-        );
+        eprintln!("running {runnable_count} tools");
     }
 
-    // step 3: run the global fixes
+    // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![fix_runnables.global],
         error_on_output,
@@ -40,7 +38,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 4: run the stack-specific fixes
+    // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: fix_runnables.stack_specific,
         error_on_output,
@@ -51,7 +49,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 5: run all lints
+    // step 6: run all lints
     let exit_code = conc::run(conc::RunArgs {
         runnables: lint_runnables,
         error_on_output,
