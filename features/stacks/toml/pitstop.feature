@@ -32,7 +32,7 @@ Feature: fix TOML
       key = "other"
       """
 
-  Scenario: invalid TOML
+  Scenario: unformatted TOML with lint errors
     Given a file "main.toml" with content
       """
       key = 1
