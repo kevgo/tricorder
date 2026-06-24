@@ -83,6 +83,6 @@ Feature: pitstop multiple good stacks
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder fix --show=failed"
+    When executing "tricorder pitstop --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged
