@@ -15,7 +15,7 @@ Feature: pitstop Java
       }
       }
       """
-    When executing "tricorder lint"
+    When executing "tricorder pitstop"
     Then it prints to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle
@@ -32,7 +32,7 @@ Feature: pitstop Java
           }
       }
       """
-    When executing "tricorder lint"
+    When executing "tricorder pitstop"
     Then it prints to STDERR
       """
       checkstyle not found on PATH - skipping. Install with: brew install checkstyle
