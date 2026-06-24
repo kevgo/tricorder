@@ -22,6 +22,12 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 3: discover all runnables
     let fix_runnables = fix::determine_runnables(config.custom_fixes, &stacks)?;
     let lint_runnables = lint::determine_runnables(&stacks, config.custom_lints)?;
+    if args.show == Show::All {
+        eprintln!(
+            "running {} tools",
+            fix_runnables.len() + lint_runnables.len()
+        );
+    }
 
     // step 3: run the global fixes
     let exit_code = conc::run(conc::RunArgs {

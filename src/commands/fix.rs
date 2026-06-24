@@ -107,3 +107,9 @@ pub struct Runnables {
     /// fixes that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,
 }
+
+impl Runnables {
+    pub fn len(&self) -> usize {
+        self.global.len() + self.stack_specific.len()
+    }
+}
