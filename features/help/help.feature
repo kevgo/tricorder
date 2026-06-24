@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: init, fix, lint, postgenerate, precommit, help]
+        [subcommands: init, fix, lint, postgenerate, pitstop, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -25,6 +25,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
+        pitstop    Run fixes and lints
         precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
@@ -46,6 +47,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
+        pitstop    Run fixes and lints
         precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 
@@ -67,6 +69,7 @@ Feature: Displaying help
         init       Install coding agent hooks for this project
         fix        Repair all code quality issues
         lint       Find all code quality issues [aliases: postgenerate]
+        pitstop    Run fixes and lints
         precommit  Repair all code quality issues, never fails
         help       Print this message or the help of the given subcommand(s)
 

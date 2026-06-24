@@ -24,6 +24,9 @@ pub enum Command {
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
 
+    /// Run fixes and lints
+    Pitstop(RunArgs),
+
     /// Repair all code quality issues, never fails
     Precommit(RunArgs),
 }
