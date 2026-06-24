@@ -24,7 +24,7 @@ Feature: pitstop Markdown
       # Hello
       """
 
-  Scenario: Markdown with lint errors
+  Scenario: unformatted Markdown with lint errors
     Given a file "main.md" with content
       """
       one
