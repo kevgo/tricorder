@@ -28,13 +28,13 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         eprintln!("running {runnable_count} tools");
     }
     let Runnables {
-        global,
-        stack_specific,
+        global: global_fixes,
+        stack_specific: stack_specific_fixes,
     } = fix_runnables;
 
     // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global],
+        runnables: vec![global_fixes],
         error_on_output,
         stderr_to_stdout,
         show,
@@ -45,7 +45,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        runnables: stack_specific_fixes,
         error_on_output,
         show,
         stderr_to_stdout,
