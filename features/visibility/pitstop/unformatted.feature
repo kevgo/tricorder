@@ -1,4 +1,4 @@
-Feature: fix multiple stacks
+Feature: pitstop multiple unformatted stacks
 
   Background:
     Given a file "run-that-app" with content
@@ -23,7 +23,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: default visibility
-    When executing "tricorder fix"
+    When executing "tricorder pitstop"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And file "main.py" now has content
@@ -42,11 +42,15 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=all
-    When executing "tricorder fix --show=all"
+    When executing "tricorder pitstop --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 5 tools
+      """
+    And it prints the block
+      """
+      delete empty folders
       """
     And it prints the block
       """
@@ -66,6 +70,18 @@ Feature: fix multiple stacks
       format Python (ruff)
       1 file reformatted
       """
+    And it prints the block
+      """
+      lint Python (ruff)
+      """
+    And it prints the block
+      """
+      lint TypeScript (Biome)
+      """
+    And it prints the block
+      """
+      lint CSS (Biome)
+      """
     And file "main.css" now has content
       """
       p {
@@ -82,7 +98,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=names
-    When executing "tricorder fix --show=names"
+    When executing "tricorder pitstop --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -95,6 +111,9 @@ Feature: fix multiple stacks
       format Python (ruff)
       fix TypeScript (Biome)
       fix CSS (Biome)
+      lint Python (ruff)
+      lint TypeScript (Biome)
+      lint CSS (Biome)
       """
     And file "main.css" now has content
       """
@@ -112,7 +131,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=failed
-    When executing "tricorder fix --show=failed"
+    When executing "tricorder pitstop --show=failed"
     Then it prints nothing to STDOUT
     And file "main.css" now has content
       """
