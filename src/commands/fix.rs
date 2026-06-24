@@ -22,6 +22,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 3: discover all runnables
     let runnables = determine_fixes(config.custom_fixes, &stacks)?;
+    println!("runnables: {runnables:?}");
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -104,6 +105,7 @@ pub fn determine_fixes(
     })
 }
 
+#[derive(Debug)]
 pub struct Runnables {
     /// fixes that affect all files
     pub global: conc::Runnable,
@@ -114,6 +116,10 @@ pub struct Runnables {
 
 impl Runnables {
     pub fn len(&self) -> usize {
-        self.global.len() + self.stack_specific.len()
+        let mut result = self.global.len();
+        for x in &self.stack_specific {
+            result += x.len();
+        }
+        result
     }
 }
