@@ -8,6 +8,9 @@ use std::process::ExitCode;
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let show = conc::Show::from(args.show);
+    let error_on_output = false;
+    let stderr_to_stdout = true;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -27,9 +30,9 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
     let exit_code = conc::run(conc::RunArgs {
         runnables,
-        error_on_output: false,
-        show: args.show.into(),
-        stderr_to_stdout: true,
+        error_on_output,
+        show,
+        stderr_to_stdout,
     });
     Ok(exit_code)
 }

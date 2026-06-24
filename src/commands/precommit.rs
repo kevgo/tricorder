@@ -9,6 +9,9 @@ use std::process::ExitCode;
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let show = conc::Show::from(args.show);
+    let error_on_output = false;
+    let stderr_to_stdout = true;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -20,9 +23,6 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
         global,
         stack_specific,
     } = determine_runnables(config.custom_fixes, &stacks, args)?;
-    let show = conc::Show::from(args.show);
-    let error_on_output = false;
-    let stderr_to_stdout = true;
     let _exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
