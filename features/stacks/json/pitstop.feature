@@ -28,7 +28,7 @@ Feature: pitstop JSON
       """
       {
       "key":"value",
-      "key":"value",
+      "key":"value"
       }
       """
     When executing "tricorder pitstop --show=all"
