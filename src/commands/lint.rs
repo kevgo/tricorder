@@ -8,6 +8,9 @@ use std::process::ExitCode;
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let show = conc::Show::from(args.show);
+    let error_on_output = false;
+    let stderr_to_stdout = true;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
@@ -15,26 +18,26 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 3: determine the runnables
-    let runnables = determine_runnables(&stacks, config.custom_lints)?;
+    // step 3: discover all runnables
+    let runnables = determine_lints(&stacks, config.custom_lints)?;
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
 
-    // step 4: run the runnables
+    // step 4: run all lints
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
         runnables,
-        error_on_output: false,
-        show: args.show.into(),
-        stderr_to_stdout: true,
+        error_on_output,
+        show,
+        stderr_to_stdout,
     });
     Ok(exit_code)
 }
 
-fn determine_runnables(
+pub fn determine_lints(
     stacks: &DetectedStacks,
     custom_lints: Option<Vec<CustomLint>>,
 ) -> Result<Vec<conc::Runnable>> {

@@ -1,20 +1,36 @@
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::config::Config;
-use crate::domain::{Result, StackType};
+use crate::config::{Config, CustomFix};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
-    let Runnables {
-        global,
-        stack_specific,
-    } = determine_runnables(args)?;
+    // step 1: load the config
+    let config = Config::load()?;
     let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
+
+    // step 2: discover the stacks
+    let stacks = stacks::discover();
+    if args.show == Show::All {
+        print_metadata(&stacks);
+    }
+
+    // step 3: discover all runnables
+    let runnables = determine_fixes(config.custom_fixes, &stacks)?;
+    if args.show == Show::All {
+        eprintln!("running {} tools", runnables.len());
+    }
+    let Runnables {
+        global,
+        stack_specific,
+    } = runnables;
+
+    // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
@@ -24,6 +40,8 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
+
+    // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,
@@ -33,16 +51,10 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
-    // step 1: load the config
-    let config = Config::load()?;
-
-    // step 2: discover the stacks
-    let stacks = stacks::discover();
-    if args.show == Show::All {
-        print_metadata(&stacks);
-    }
-
+pub fn determine_fixes(
+    custom_fixes: Option<Vec<CustomFix>>,
+    stacks: &DetectedStacks,
+) -> Result<Runnables> {
     // step 3 global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -51,12 +63,12 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 
     // step 4 stack-specific fixes
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
-    for stack in &stacks {
+    for stack in stacks {
         let stack_executables = stack_executables
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if !fix.is_enabled(&stacks) {
+            if !fix.is_enabled(stacks) {
                 continue;
             }
             stack_executables.extend(fix.fix_commands(stack)?);
@@ -64,7 +76,7 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     }
 
     // step 5 custom fixes
-    if let Some(custom_fixes) = config.custom_fixes {
+    if let Some(custom_fixes) = custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
                 name: fix.name.unwrap_or_else(|| fix.command.clone()),
@@ -81,15 +93,10 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
-    let mut stack_tool_count = 0;
     for (_stack_type, stack_executables) in stack_executables {
         if !stack_executables.is_empty() {
-            stack_tool_count += stack_executables.len();
             stack_specific.push(conc::Runnable::Sequence(stack_executables));
         }
-    }
-    if args.show == Show::All {
-        eprintln!("running {} tools", global.len() + stack_tool_count);
     }
     Ok(Runnables {
         global: conc::Runnable::Sequence(global),
@@ -97,10 +104,21 @@ pub fn determine_runnables(args: &RunArgs) -> Result<Runnables> {
     })
 }
 
+#[derive(Debug)]
 pub struct Runnables {
     /// fixes that affect all files
     pub global: conc::Runnable,
 
     /// fixes that affect stack-specific files
     pub stack_specific: Vec<conc::Runnable>,
+}
+
+impl Runnables {
+    pub fn len(&self) -> usize {
+        let mut result = self.global.len();
+        for x in &self.stack_specific {
+            result += x.len();
+        }
+        result
+    }
 }
