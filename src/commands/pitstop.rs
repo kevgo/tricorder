@@ -1,5 +1,6 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
+use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
 use crate::domain::Result;
@@ -26,10 +27,14 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     if args.show == Show::All {
         eprintln!("running {runnable_count} tools");
     }
+    let Runnables {
+        global,
+        stack_specific,
+    } = fix_runnables;
 
     // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: vec![fix_runnables.global],
+        runnables: vec![global],
         error_on_output,
         stderr_to_stdout,
         show,
@@ -40,7 +45,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: fix_runnables.stack_specific,
+        runnables: stack_specific,
         error_on_output,
         show,
         stderr_to_stdout,
