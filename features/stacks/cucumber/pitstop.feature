@@ -51,23 +51,6 @@ Feature: pitstop Cucumber
       }
       """
 
-  Scenario: valid Cucumber
-    Given a file "main.feature" with content
-      """
-      Feature: foo
-
-        Scenario: bar
-          Given a step
-      """
-    When executing "tricorder pitstop --show=all"
-    Then it prints the lines
-      """
-      fix Cucumber (Ghokin)
-      "." formatted
-      """
-    And the exit code is 0
-    And file "main.feature" is unchanged
-
   Scenario: unformatted Cucumber
     Given a file "main.feature" with content
       """
@@ -106,17 +89,25 @@ Feature: pitstop Cucumber
           Given another step
       """
 
-  Scenario: invalid Cucumber
+  Scenario: Cucumber with lint error
     Given a file "main.feature" with content
       """
-      Feat
+      Feature:    foo
+
+          Given a step
       """
     When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      an error occurred with file "main.feature" : Parser errors:
-      (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
+      "." formatted
+      lint Cucumber (Gherkin Lint)
+        1    Feature file does not have any Scenarios    no-files-without-scenarios
       """
     And the exit code is 1
-    And file "main.feature" is unchanged
+    And file "main.feature" now has content
+      """
+      Feature: foo
+
+        Given a step
+      """

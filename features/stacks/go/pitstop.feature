@@ -1,4 +1,4 @@
-Feature: fix Go
+Feature: pitstop Go
 
   Background:
     Given a file "go.mod" with content
@@ -13,51 +13,22 @@ Feature: fix Go
       delete-empty-folders 0.0.2
       """
 
-  Scenario: valid Go
-    Given a file "main.go" with content
-      """
-      package main
-
-      import "fmt"
-
-      func main() {
-      	fmt.Println("Hello, world!")
-      }
-      """
-    When executing "tricorder fix --show=all"
-    Then it prints the lines
-      """
-      fix Go (gofumpt)
-      """
-    And the exit code is 0
-    And file "main.go" is unchanged
-
   Scenario: unformatted Go
     Given a file "main.go" with content
       """
       package main
       import "fmt"
       func main() {
-      	fmt.Println(    "Hello, world!")
+      fmt.Println("Hello")
       }
       """
-    And a file "other.go" with content
-      """
-      package other
-      import "fmt"
-      func main() {
-      	fmt.Println(    "Hello, other!")
-      }
-      """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
       fix Go (gofumpt)
       main.go
-      """
-    And it prints the lines
-      """
-      other.go
+      lint Go (golangci-lint)
+      0 issues.
       """
     And the exit code is 0
     And file "main.go" now has content
@@ -67,7 +38,48 @@ Feature: fix Go
       import "fmt"
 
       func main() {
-      	fmt.Println("Hello, world!")
+      \tfmt.Println("Hello")
+      }
+      """
+
+  Scenario: Go with lint errors
+    Given a file "main.go" with content
+      """
+      package main
+      import "fmt"
+      func main() {
+      	fmt.Printf(    "Hello")
+      }
+      """
+    Given a file "other.go" with content
+      """
+      package other
+      import "fmt"
+      func main() {
+      fmt.Printf(    "Other")
+      }
+      """
+    When executing "tricorder pitstop --show=all"
+    Then it prints the lines
+      """
+      fix Go (gofumpt)
+      main.go
+      lint Go (golangci-lint)
+      main.go:1: : found packages main (main.go) and other (other.go) in (typecheck)
+      """
+    And it prints the lines
+      """
+      other.go
+      """
+    And the exit code is 1
+    And file "main.go" now has content
+      """
+      package main
+
+      import "fmt"
+
+      func main() {
+      \tfmt.Printf("Hello")
       }
       """
     And file "other.go" now has content
@@ -77,24 +89,6 @@ Feature: fix Go
       import "fmt"
 
       func main() {
-      	fmt.Println("Hello, other!")
+      \tfmt.Printf("Other")
       }
       """
-
-  Scenario: invalid Go
-    Given a file "main.go" with content
-      """
-      package main
-      import "fmt"
-      func main() {
-      	fmt.Println("
-      }
-      """
-    When executing "tricorder fix --show=all"
-    Then it prints the block
-      """
-      fix Go (gofumpt)
-      main.go:4:14: string literal not terminated
-      """
-    And the exit code is 2
-    And file "main.go" is unchanged
