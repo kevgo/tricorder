@@ -43,18 +43,26 @@ Feature: pitstop CSS
       }
       """
 
+  @this
   Scenario: invalid CSS
     Given a file "main.css" with content
       """
       .foo {
-        col
+        colr: blue;
       }
       """
     When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
       fix CSS (Biome)
-      Found 2 errors.
+      lint CSS (Biome)
+      Found 1 error.
+        × Unknown property is not allowed.
       """
     And the exit code is 1
-    And file "main.css" is unchanged
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolr: blue;
+      }
+      """
