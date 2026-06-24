@@ -42,7 +42,7 @@ Feature: pitstop Go
       }
       """
 
-  Scenario: Go with lint errors
+  Scenario: unformatted Go with lint errors
     Given a file "main.go" with content
       """
       package main

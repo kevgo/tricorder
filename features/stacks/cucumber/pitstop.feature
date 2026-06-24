@@ -90,7 +90,7 @@ Feature: pitstop Cucumber
           Given another step
       """
 
-  Scenario: Cucumber with lint error
+  Scenario: unformatted Cucumber with lint error
     Given a file "main.feature" with content
       """
       Feature:    foo

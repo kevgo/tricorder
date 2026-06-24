@@ -28,7 +28,7 @@ Feature: pitstop CSS
       }
       """
 
-  Scenario: CSS with lint error
+  Scenario: unformatted CSS with lint error
     Given a file "main.css" with content
       """
       .foo {
