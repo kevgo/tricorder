@@ -24,6 +24,7 @@ Feature: pitstop Cucumber
     And the exit code is 0
     And file "main.feature" is unchanged
 
+  @this
   Scenario: unformatted Cucumber
     Given a file "main.feature" with content
       """
@@ -44,8 +45,9 @@ Feature: pitstop Cucumber
       """
       fix Cucumber (Ghokin)
       "." formatted
+      x
       """
-    And the exit code is 0
+    And the exit code is 1
     And file "main.feature" now has content
       """
       Feature: foo
