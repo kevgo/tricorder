@@ -25,7 +25,7 @@ pub enum Command {
     Lint(RunArgs),
 
     /// Run both fix and check commands
-    PitStop(RunArgs),
+    Pitstop(RunArgs),
 
     /// Repair all code quality issues, never fails
     Precommit(RunArgs),

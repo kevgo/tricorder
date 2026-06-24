@@ -7,7 +7,6 @@ Feature: pitstop CSS
       delete-empty-folders 0.0.2
       """
 
-  @this
   Scenario: valid CSS
     Given a file "main.css" with content
       """
@@ -19,7 +18,7 @@ Feature: pitstop CSS
     Then it prints the lines
       """
       fix CSS (Biome)
-      check CSS (Biome)
+      lint CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" is unchanged
@@ -37,7 +36,12 @@ Feature: pitstop CSS
       CSS (Biome)
       """
     And the exit code is 0
-    And file "main.css" is unchanged
+    And file "main.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
 
   Scenario: invalid CSS
     Given a file "main.css" with content
@@ -49,7 +53,7 @@ Feature: pitstop CSS
     When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
-      CSS (Biome)
+      fix CSS (Biome)
       Found 2 errors.
       """
     And the exit code is 1
