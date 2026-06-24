@@ -23,13 +23,13 @@ Feature: pitstop Java
     And the exit code is 0
     And file "Main.java" is unchanged
 
-  Scenario: invalid Java
+  Scenario: unformatted Java with lint errors
     Given a file "Main.java" with content
       """
       public class Main {
-          public static void main(String[] args) {
-              System.out.println("
-          }
+      public static void main(String[] args, int) {
+      System.out.println("");
+      }
       }
       """
     When executing "tricorder pitstop"
