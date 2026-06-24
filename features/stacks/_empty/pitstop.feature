@@ -13,23 +13,29 @@ Feature: pitstop for a codebase without any code
     And the exit code is 0
 
   Scenario: --show=all
-    When executing "tricorder check --show=all"
-    Then it prints nothing to STDOUT
+    When executing "tricorder pitstop --show=all"
+    Then it prints
+      """
+      delete empty folders
+      """
     And it prints to STDERR
       """
       1 other
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
 
   Scenario: --show=names
-    When executing "tricorder check --show=names"
-    Then it prints nothing to STDOUT
+    When executing "tricorder pitstop --show=names"
+    Then it prints
+      """
+      delete empty folders
+      """
     And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: --show=failed
-    When executing "tricorder check --show=failed"
+    When executing "tricorder pitstop --show=failed"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
