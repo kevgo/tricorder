@@ -51,7 +51,7 @@ Feature: pitstop Go
       	fmt.Printf(    "Hello")
       }
       """
-    Given a file "other.go" with content
+    And a file "other.go" with content
       """
       package other
       import "fmt"

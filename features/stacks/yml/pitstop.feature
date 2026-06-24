@@ -1,14 +1,12 @@
 Feature: pitstop YML
 
-  Background:
+  Scenario: unformatted YML
     Given a file "run-that-app" with content
       """
       prettier-standalone 0.24.0
       delete-empty-folders 0.0.2
       """
-
-  Scenario: unformatted YML
-    Given a file "main.yml" with content
+    And a file "main.yml" with content
       """
       key:     value
       """

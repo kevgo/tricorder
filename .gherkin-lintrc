@@ -29,7 +29,6 @@
   "no-examples-in-scenarios": "on",
   "no-files-without-scenarios": "on",
   "no-homogenous-tags": "on",
-  "no-multiple-empty-lines": "on",
   "no-partially-commented-tag-lines": "on",
   "no-scenario-outlines-without-examples": "on",
   "no-superfluous-tags": "on",
