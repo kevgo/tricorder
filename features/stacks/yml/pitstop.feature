@@ -1,0 +1,32 @@
+Feature: pitstop YML
+
+  Background:
+    Given a file "run-that-app" with content
+      """
+      prettier-standalone 0.24.0
+      delete-empty-folders 0.0.2
+      """
+
+  Scenario: unformatted YML
+    Given a file "main.yml" with content
+      """
+      key:     value
+      """
+    And a file "other.yml" with content
+      """
+      key:     other
+      """
+    When executing "tricorder pitstop --show=all"
+    Then it prints the lines
+      """
+      fix YML (Prettier)
+      """
+    And the exit code is 0
+    And file "main.yml" now has content
+      """
+      key: value
+      """
+    And file "other.yml" now has content
+      """
+      key: other
+      """
