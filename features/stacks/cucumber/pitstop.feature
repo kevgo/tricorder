@@ -1,3 +1,4 @@
+@online
 Feature: pitstop Cucumber
 
   Background:
