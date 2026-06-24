@@ -32,7 +32,7 @@ Feature: pitstop multiple good stacks
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 5 tools
+      running 8 tools
       """
     And it prints the lines
       """

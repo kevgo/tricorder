@@ -22,7 +22,6 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 3: discover all runnables
     let runnables = determine_fixes(config.custom_fixes, &stacks)?;
-    println!("runnables: {runnables:?}");
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
