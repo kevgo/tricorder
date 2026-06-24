@@ -1,4 +1,4 @@
-Feature: fix Markdown
+Feature: pitstop Markdown
 
   Background:
     Given a file "run-that-app" with content
@@ -7,25 +7,12 @@ Feature: fix Markdown
       delete-empty-folders 0.0.2
       """
 
-  Scenario: valid Markdown
-    Given a file "main.md" with content
-      """
-      # Hello
-      """
-    When executing "tricorder fix --show=all"
-    Then it prints the lines
-      """
-      fix Markdown (rumdl)
-      """
-    And the exit code is 0
-    And file "main.md" is unchanged
-
   Scenario: unformatted Markdown
     Given a file "main.md" with content
       """
       #     Hello
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -37,17 +24,27 @@ Feature: fix Markdown
       # Hello
       """
 
-  Scenario: invalid Markdown
+  Scenario: unformatted Markdown with lint errors
     Given a file "main.md" with content
       """
-      # hello
+      one
 
-      [e
+
+
+      two
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
       fix Markdown (rumdl)
+      main.md:1:1: [MD041] First line in file should be a level 1 heading
+      lint Markdown (rumdl)
+      main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
-    And the exit code is 0
-    And file "main.md" is unchanged
+    And the exit code is 1
+    And file "main.md" now has content
+      """
+      one
+
+      two
+      """
