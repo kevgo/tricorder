@@ -49,7 +49,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 6: run all lints
+    // step 6: run the lints
     let exit_code = conc::run(conc::RunArgs {
         runnables: lint_runnables,
         error_on_output,
