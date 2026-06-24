@@ -1,6 +1,6 @@
 use crate::cli::input::{RunArgs, Show};
 use crate::cli::output::print_metadata;
-use crate::commands::fix::{Runnables, determine_runnables};
+use crate::commands::fix::{Runnables, determine_fixes};
 use crate::config::Config;
 use crate::domain::Result;
 use crate::stacks;
@@ -19,16 +19,25 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
+    // step 3: discover all runnables
+    let runnables = determine_fixes(config.custom_fixes, &stacks)?;
+    if args.show == Show::All {
+        eprintln!("running {} tools", runnables.len());
+    }
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(config.custom_fixes, &stacks)?;
+    } = runnables;
+
+    // step 4: run the global fixes
     let _exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
         stderr_to_stdout,
         show,
     });
+
+    // step 5: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,

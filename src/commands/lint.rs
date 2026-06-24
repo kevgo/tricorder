@@ -18,13 +18,13 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 3: determine the runnables
-    let runnables = determine_runnables(&stacks, config.custom_lints)?;
+    // step 3: discover all runnables
+    let runnables = determine_lints(&stacks, config.custom_lints)?;
     if args.show == Show::All {
         eprintln!("running {} tools", runnables.len());
     }
 
-    // step 4: run the runnables
+    // step 4: run all lints
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
@@ -37,7 +37,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_runnables(
+pub fn determine_lints(
     stacks: &DetectedStacks,
     custom_lints: Option<Vec<CustomLint>>,
 ) -> Result<Vec<conc::Runnable>> {

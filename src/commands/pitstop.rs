@@ -20,8 +20,8 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let fix_runnables = fix::determine_runnables(config.custom_fixes, &stacks)?;
-    let lint_runnables = lint::determine_runnables(&stacks, config.custom_lints)?;
+    let fix_runnables = fix::determine_fixes(config.custom_fixes, &stacks)?;
+    let lint_runnables = lint::determine_lints(&stacks, config.custom_lints)?;
     let runnable_count = fix_runnables.len() + lint_runnables.len();
     if args.show == Show::All {
         eprintln!("running {runnable_count} tools");

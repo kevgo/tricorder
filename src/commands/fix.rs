@@ -20,15 +20,17 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
+    // step 3: discover all runnables
+    let runnables = determine_fixes(config.custom_fixes, &stacks)?;
+    if args.show == Show::All {
+        eprintln!("running {} tools", runnables.len());
+    }
     let Runnables {
         global,
         stack_specific,
-    } = determine_runnables(config.custom_fixes, &stacks)?;
+    } = runnables;
 
-    if args.show == Show::All {
-        eprintln!("running {} tools", global.len());
-    }
-
+    // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
@@ -38,6 +40,8 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
+
+    // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,
@@ -47,7 +51,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_runnables(
+pub fn determine_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     stacks: &DetectedStacks,
 ) -> Result<Runnables> {
