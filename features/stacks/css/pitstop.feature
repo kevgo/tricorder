@@ -15,9 +15,10 @@ Feature: pitstop CSS
       }
       """
     When executing "tricorder pitstop --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
-      CSS (Biome)
+      fix CSS (Biome)
+      lint CSS (Biome)
       """
     And the exit code is 0
     And file "main.css" now has content
