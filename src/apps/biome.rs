@@ -58,7 +58,7 @@ impl Fix for Biome {
         stack: &DetectedStack,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 3);
-        args.push(S("format"));
+        args.push(S("lint"));
         args.push(S("--write"));
         args.push(S("--unsafe"));
         for file in &stack.files {
