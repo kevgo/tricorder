@@ -33,4 +33,11 @@ impl Fix for Gofumpt {
         })?;
         Ok(executable.into_iter().collect())
     }
+
+    fn unsafe_fix_commands(
+        &self,
+        _stack: &DetectedStack,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        Ok(vec![])
+    }
 }

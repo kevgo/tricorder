@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: init, fix, lint, postgenerate, pitstop, precommit, help]
+        [subcommands: init, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -22,12 +22,13 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        init       Install coding agent hooks for this project
-        fix        Repair all code quality issues
-        lint       Find all code quality issues [aliases: postgenerate]
-        pitstop    Run fixes and lints
-        precommit  Repair all code quality issues, never fails
-        help       Print this message or the help of the given subcommand(s)
+        init        Install coding agent hooks for this project
+        fix         Repair all code quality issues
+        fix-unsafe  Advanced fixes that might break things
+        lint        Find all code quality issues [aliases: postgenerate]
+        pitstop     Run fixes and lints
+        precommit   Repair all code quality issues, never fails
+        help        Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -44,12 +45,13 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        init       Install coding agent hooks for this project
-        fix        Repair all code quality issues
-        lint       Find all code quality issues [aliases: postgenerate]
-        pitstop    Run fixes and lints
-        precommit  Repair all code quality issues, never fails
-        help       Print this message or the help of the given subcommand(s)
+        init        Install coding agent hooks for this project
+        fix         Repair all code quality issues
+        fix-unsafe  Advanced fixes that might break things
+        lint        Find all code quality issues [aliases: postgenerate]
+        pitstop     Run fixes and lints
+        precommit   Repair all code quality issues, never fails
+        help        Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -66,12 +68,13 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        init       Install coding agent hooks for this project
-        fix        Repair all code quality issues
-        lint       Find all code quality issues [aliases: postgenerate]
-        pitstop    Run fixes and lints
-        precommit  Repair all code quality issues, never fails
-        help       Print this message or the help of the given subcommand(s)
+        init        Install coding agent hooks for this project
+        fix         Repair all code quality issues
+        fix-unsafe  Advanced fixes that might break things
+        lint        Find all code quality issues [aliases: postgenerate]
+        pitstop     Run fixes and lints
+        precommit   Repair all code quality issues, never fails
+        help        Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help

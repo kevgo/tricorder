@@ -20,6 +20,9 @@ pub enum Command {
     /// Repair all code quality issues
     Fix(RunArgs),
 
+    /// Advanced fixes that might break things
+    FixUnsafe(RunArgs),
+
     /// Find all code quality issues
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
