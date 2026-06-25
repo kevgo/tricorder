@@ -80,4 +80,31 @@ impl Fix for Ruff {
 
         Ok(executables)
     }
+
+    fn unsafe_fix_commands(
+        &self,
+        stack: &DetectedStack,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let mut executables = Vec::with_capacity(2);
+
+        // run "ruff format --check"
+        let mut args = Vec::with_capacity(stack.files.len() + 3);
+        args.push(S("check"));
+        args.push(S("--fix"));
+        args.push(S("--unsafe-fixes"));
+        for file in &stack.files {
+            args.push(file.to_string_lossy().to_string());
+        }
+        let executable = get_rta_command(&GetRTACmdArgs {
+            name: format!("unsafe fix {} (ruff)", &stack.stack),
+            app: &rta::applications::Ruff {},
+            args,
+            version: None,
+        })?;
+        if let Some(executable) = executable {
+            executables.push(executable);
+        }
+
+        Ok(executables)
+    }
 }
