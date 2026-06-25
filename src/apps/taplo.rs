@@ -49,4 +49,23 @@ impl Fix for Taplo {
         })?;
         Ok(executable.into_iter().collect())
     }
+
+    fn unsafe_fix_commands(
+        &self,
+        stack: &DetectedStack,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let mut args = Vec::with_capacity(stack.files.len() + 2);
+        args.push(S("format"));
+        args.push(S("--force"));
+        for file in &stack.files {
+            args.push(file.to_string_lossy().to_string());
+        }
+        let executable = get_rta_command(&GetRTACmdArgs {
+            name: format!("force fix {} ({self})", &stack.stack),
+            app: &rta::applications::Taplo {},
+            args,
+            version: None,
+        })?;
+        Ok(executable.into_iter().collect())
+    }
 }
