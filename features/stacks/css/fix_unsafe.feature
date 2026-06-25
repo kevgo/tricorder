@@ -7,20 +7,39 @@ Feature: unsafe-fix CSS
       delete-empty-folders 0.0.2
       """
 
-  Scenario: valid CSS
+  @this
+  Scenario: fixable CSS
     Given a file "main.css" with content
       """
-      .foo {
-      \tcolor: red;
+      .style {
+        color: red !important;
       }
       """
-    When executing "tricorder fix --show=all"
+    And a file "biome.json" with content
+      """
+      {
+        "linter": {
+          "rules": {
+            "complexity": {
+              "noImportantStyles": "error"
+            }
+          }
+        }
+      }
+      """
+    When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
       fix CSS (Biome)
+      unsafe fix CSS (Biome)
       """
     And the exit code is 0
-    And file "main.css" is unchanged
+    And file "main.css" now has content
+      """
+      .style {
+      \tcolor: red;
+      }
+      """
 
   Scenario: unformatted CSS
     Given a file "main.css" with content
