@@ -24,7 +24,7 @@ Feature: unsafe-fix Python
 
   Scenario: fix-unsafe
     When executing "tricorder fix-unsafe --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
       unsafe fix Python (ruff)
       Found 1 error (1 fixed, 0 remaining).
