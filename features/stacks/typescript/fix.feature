@@ -57,17 +57,3 @@ Feature: fix TypeScript
       """
     And the exit code is 1
     And file "main.ts" is unchanged
-
-  Scenario: TypeScript that can only be fixed with --unsafe
-    Given a file "main.ts" with content
-      """
-      const name = "Alice";
-      const greeting = "Hello, " + name + "!";
-      """
-    When executing "tricorder fix --show=all"
-    Then it prints the lines
-      """
-      fix TypeScript (Biome)
-      """
-    And the exit code is 0
-    And file "main.ts" is unchanged

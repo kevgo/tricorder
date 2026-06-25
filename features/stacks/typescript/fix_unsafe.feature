@@ -6,13 +6,13 @@ Feature: unsafe-fix TypeScript
       biome 2.4.0
       delete-empty-folders 0.0.2
       """
-
-  Scenario: fixable TypeScript
     Given a file "main.ts" with content
       """
       const name = "Alice";
       const greeting = "Hello, " + name + "!";
       """
+
+  Scenario: fix-unsafe
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
@@ -25,3 +25,12 @@ Feature: unsafe-fix TypeScript
       const name = "Alice";
       const _greeting = `Hello, ${name}!`;
       """
+
+  Scenario: fix
+    When executing "tricorder fix --show=all"
+    Then it prints the lines
+      """
+      fix TypeScript (Biome)
+      """
+    And the exit code is 0
+    And file "main.ts" is unchanged
