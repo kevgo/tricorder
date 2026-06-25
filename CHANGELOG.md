@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.9 (2026-06-25)
+
+- `tricorder fix-unsafe` command
+
 ## 0.0.8 (2026-06-24)
 
 - `tricorder pitstop` command
