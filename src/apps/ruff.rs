@@ -62,7 +62,7 @@ impl Fix for Ruff {
             executables.push(executable);
         }
 
-        // run "ruff check"
+        // run "ruff format"
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("format"));
         for file in &stack.files {
@@ -97,6 +97,22 @@ impl Fix for Ruff {
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} (ruff)", &stack.stack),
+            app: &rta::applications::Ruff {},
+            args,
+            version: None,
+        })?;
+        if let Some(executable) = executable {
+            executables.push(executable);
+        }
+
+        // run "ruff format"
+        let mut args = Vec::with_capacity(stack.files.len() + 1);
+        args.push(S("format"));
+        for file in &stack.files {
+            args.push(file.to_string_lossy().to_string());
+        }
+        let executable = get_rta_command(&GetRTACmdArgs {
+            name: format!("format {} (ruff)", &stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,

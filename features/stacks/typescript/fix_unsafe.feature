@@ -6,7 +6,7 @@ Feature: unsafe-fix TypeScript
       biome 2.4.0
       delete-empty-folders 0.0.2
       """
-    Given a file "main.ts" with content
+    And a file "main.ts" with content
       """
       const name = "Alice";
       const greeting = "Hello, " + name + "!";
@@ -16,7 +16,6 @@ Feature: unsafe-fix TypeScript
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
-      fix TypeScript (Biome)
       unsafe fix TypeScript (Biome)
       """
     And the exit code is 0
