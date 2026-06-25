@@ -69,3 +69,30 @@ Feature: fix CSS
       """
     And the exit code is 1
     And file "main.css" is unchanged
+
+  Scenario: CSS that can only be fixed with --unsafe
+    Given a file "main.css" with content
+      """
+      .style {
+      \tcolor: red !important;
+      }
+      """
+    And a file "biome.json" with content
+      """
+      {
+        "linter": {
+          "rules": {
+            "complexity": {
+              "noImportantStyles": "error"
+            }
+          }
+        }
+      }
+      """
+    When executing "tricorder fix --show=all"
+    Then it prints the lines
+      """
+      fix CSS (Biome)
+      """
+    And the exit code is 0
+    And file "main.css" is unchanged

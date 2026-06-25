@@ -11,7 +11,7 @@ Feature: unsafe-fix CSS
     Given a file "main.css" with content
       """
       .style {
-        color: red !important;
+      \tcolor: red !important;
       }
       """
     And a file "biome.json" with content
