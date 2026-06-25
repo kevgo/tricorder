@@ -9,10 +9,10 @@ pub trait Stack {
     /// indicates whether the given file path is a part of this stack
     fn owns(&self, file: &Path) -> bool;
 
-    /// all possible lints for this stack
+    /// lints for this stack
     fn lints(&self) -> Vec<Box<dyn Lint>>;
 
-    /// all possible fixes for this stack
+    /// safe fixes for this stack
     fn fixes(&self) -> Vec<Box<dyn Fix>>;
 }
 
