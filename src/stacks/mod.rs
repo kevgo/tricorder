@@ -3,7 +3,6 @@ use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
 mod css;
 mod cucumber;
 mod go;
-mod java;
 mod json;
 mod markdown;
 mod python;
@@ -17,7 +16,6 @@ pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
 use ignore::Walk;
-pub use java::Java;
 pub use json::Json;
 pub use markdown::Markdown;
 pub use python::Python;
@@ -35,7 +33,6 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         Box::new(Css {}),
         Box::new(Cucumber {}),
         Box::new(Go {}),
-        Box::new(Java {}),
         Box::new(Json {}),
         Box::new(Markdown {}),
         Box::new(Python {}),
