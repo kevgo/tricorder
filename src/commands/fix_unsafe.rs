@@ -18,11 +18,13 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 6: run the unsafe fixes
+    // step 3: discover the unsafe fixes
     let unsafe_fixes = determine_unsafe_fixes(&stacks)?;
     if args.show == Show::All {
         eprintln!("running {} tools", unsafe_fixes.len());
     }
+
+    // step 4: run the unsafe fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: unsafe_fixes,
         error_on_output,
