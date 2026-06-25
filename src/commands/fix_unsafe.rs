@@ -41,10 +41,9 @@ pub fn determine_unsafe_fixes(stacks: &DetectedStacks) -> Result<Vec<conc::Runna
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if !fix.is_enabled(stacks) {
-                continue;
+            if fix.is_enabled(stacks) {
+                stack_executables.extend(fix.unsafe_fix_commands(stack)?);
             }
-            stack_executables.extend(fix.unsafe_fix_commands(stack)?);
         }
     }
     let mut result = Vec::new();
