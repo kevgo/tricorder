@@ -52,4 +52,24 @@ impl Fix for Biome {
         })?;
         Ok(executable.into_iter().collect())
     }
+
+    fn unsafe_fix_commands(
+        &self,
+        stack: &DetectedStack,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let mut args = Vec::with_capacity(stack.files.len() + 3);
+        args.push(S("lint"));
+        args.push(S("--write"));
+        args.push(S("--unsafe"));
+        for file in &stack.files {
+            args.push(file.to_string_lossy().to_string());
+        }
+        let executable = get_rta_command(&GetRTACmdArgs {
+            name: format!("unsafe fix {} ({self})", &stack.stack),
+            app: &rta::applications::Biome {},
+            args,
+            version: None,
+        })?;
+        Ok(executable.into_iter().collect())
+    }
 }
