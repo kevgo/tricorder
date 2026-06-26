@@ -22,10 +22,9 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
 
 fn git_diff() -> Result<Vec<u8>> {
     let output = Command::new("git")
-        .arg("-c")
-        .arg("color.ui=always")
         .arg("diff")
         .arg("HEAD")
+        .arg("--color")
         .output()
         .map_err(|err| UserError::CannotRunGit {
             msg: err.to_string(),
