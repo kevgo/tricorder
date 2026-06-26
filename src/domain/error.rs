@@ -17,7 +17,7 @@ pub enum UserError {
 impl UserError {
     pub fn print(self) {
         match self {
-            UserError::CannotRunGit { msg } => println!("cannot run \"git diff\": {msg}"),
+            UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");
                 let _ = std::io::stdout().write_all(&diff);
