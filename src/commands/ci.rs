@@ -5,9 +5,7 @@ use std::process::{Command, ExitCode};
 
 pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     let before_diff = git_diff()?;
-    // println!("before_diff: '{before_diff}'");
     let before_status = git_status()?;
-    // println!("before_status: '{before_status}'");
 
     let exit_code = pitstop(args)?;
     if exit_code != ExitCode::SUCCESS {
@@ -15,9 +13,7 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     }
 
     let after_diff = git_diff()?;
-    // println!("after_diff: '{after_diff}'");
     let after_status = git_status()?;
-    // println!("after_status: '{after_status}'");
 
     if (before_diff != after_diff) || (before_status != after_status) {
         return Err(UserError::CiUnformatted { diff: after_diff });
