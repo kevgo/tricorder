@@ -2,7 +2,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
 
   Background:
     Given a Git repository
-    Given a file "run-that-app" with content
+    And a file "run-that-app" with content
       """
       biome 2.4.0
       ruff 0.15.16
