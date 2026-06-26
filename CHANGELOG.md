@@ -1,5 +1,10 @@
 # Tricorder changelog
 
+## 0.0.10 (2026-06-26)
+
+- `tricorder ci` command
+- app: Tikibase
+
 ## 0.0.9 (2026-06-25)
 
 - `tricorder fix-unsafe` command
