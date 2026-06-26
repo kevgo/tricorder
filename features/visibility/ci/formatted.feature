@@ -67,6 +67,7 @@ Feature: CI multiple good stacks
       All checks passed!
       """
     And all files are unchanged
+    And the exit code is 0
 
   Scenario: --show=names
     When executing "tricorder ci --show=names"
@@ -82,8 +83,10 @@ Feature: CI multiple good stacks
       lint TypeScript (Biome)
       """
     And all files are unchanged
+    And the exit code is 0
 
   Scenario: --show=failed
     When executing "tricorder ci --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged
+    And the exit code is 0

@@ -6,6 +6,7 @@ use std::process::{Command, ExitCode};
 pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     // run git diff
     let before_diff = git_diff()?;
+    println!("before_diff: '{before_diff}'");
 
     let exit_code = pitstop(args)?;
     if exit_code != ExitCode::SUCCESS {
@@ -13,6 +14,7 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     }
 
     let after_diff = git_diff()?;
+    println!("after_diff: '{after_diff}'");
 
     if before_diff != after_diff {
         return Err(UserError::CiUnformatted);
@@ -30,9 +32,7 @@ fn git_diff() -> Result<String> {
             });
         }
     };
-    Ok(
-        String::from_utf8(diff.stdout).map_err(|err| UserError::CannotParseGitDiffOutput {
-            err: err.to_string(),
-        }),
-    )?
+    String::from_utf8(diff.stdout).map_err(|err| UserError::CannotParseGitDiffOutput {
+        err: err.to_string(),
+    })
 }

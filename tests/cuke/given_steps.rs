@@ -25,6 +25,16 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     });
 }
 
+#[given(expr = "a Git repository")]
+async fn a_git_repository(world: &mut TricorderWorld) {
+    Command::new("git")
+        .arg("init")
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+}
+
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(
     world: &mut TricorderWorld,
