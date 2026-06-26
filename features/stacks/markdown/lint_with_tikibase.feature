@@ -9,10 +9,13 @@ Feature: lint a Tikibase
       """
     Given a file "tikibase.json" with content
       """
-      {}
+      {
+        "ignore": [
+          "run-that-app"
+        ]
+      }
       """
 
-  @this
   Scenario: valid Markdown
     Given a file "one.md" with content
       """
@@ -29,25 +32,31 @@ Feature: lint a Tikibase
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      lint Markdown (rumdl)
       lint Markdown (tikibase)
+      lint Markdown (rumdl)
       """
     And the exit code is 0
-    And file "main.md" is unchanged
+    And all files are unchanged
 
   Scenario: unformatted Markdown
-    Given a file "main.md" with content
+    Given a file "one.md" with content
       """
-      #     Hello
+      # One
+
+      also check out [Two](two.md)
+      """
+    And a file "two.md" with content
+      """
+      # Two
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      lint Markdown (rumdl)
-      main.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
+      lint Markdown (tikibase)
+      two.md:1  document is not connected to any other documents
       """
     And the exit code is 1
-    And file "main.md" is unchanged
+    And all files are unchanged
 
   Scenario: invalid Markdown
     Given a file "main.md" with content
@@ -57,8 +66,10 @@ Feature: lint a Tikibase
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
+      lint Markdown (tikibase)
+      main.md:1  no title section
       lint Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
     And the exit code is 1
-    And file "main.md" is unchanged
+    And all files are unchanged
