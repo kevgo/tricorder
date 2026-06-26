@@ -1,3 +1,5 @@
+use std::io::Write;
+
 /// a Result that always has a `UserError` as the error and therefore doesn't require to specify it at each call point
 pub type Result<T> = core::result::Result<T, UserError>;
 
@@ -7,7 +9,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 pub enum UserError {
     CannotParseGitDiffOutput { err: String },
     CannotRunGit { msg: String },
-    CiUnformatted { diff: String },
+    CiUnformatted { diff: Vec<u8> },
     Cli { msg: String },
     Config { msg: String },
     Rta { err: rta::error::UserError },
@@ -20,7 +22,10 @@ impl UserError {
                 println!("cannot parse output of \"git diff\": {err}");
             }
             UserError::CannotRunGit { msg } => println!("cannot run \"git diff\": {msg}"),
-            UserError::CiUnformatted { diff } => println!("code is not formatted\n\n{diff}"),
+            UserError::CiUnformatted { diff } => {
+                println!("code is not formatted\n");
+                let _ = std::io::stdout().write_all(&diff);
+            }
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }

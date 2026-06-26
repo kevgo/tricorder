@@ -22,7 +22,7 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-fn git_diff() -> Result<String> {
+fn git_diff() -> Result<Vec<u8>> {
     let diff = match Command::new("git")
         .arg("-c")
         .arg("color.ui=always")
@@ -37,12 +37,10 @@ fn git_diff() -> Result<String> {
             });
         }
     };
-    String::from_utf8(diff.stdout).map_err(|err| UserError::CannotParseGitDiffOutput {
-        err: err.to_string(),
-    })
+    Ok(diff.stdout)
 }
 
-fn git_status() -> Result<String> {
+fn git_status() -> Result<Vec<u8>> {
     let status = match Command::new("git")
         .arg("status")
         .arg("--porcelain")
@@ -55,7 +53,5 @@ fn git_status() -> Result<String> {
             });
         }
     };
-    String::from_utf8(status.stdout).map_err(|err| UserError::CannotParseGitDiffOutput {
-        err: err.to_string(),
-    })
+    Ok(status.stdout)
 }
