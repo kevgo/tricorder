@@ -22,6 +22,7 @@ Feature: CI multiple good stacks
       console.log("hello");
       """
 
+  @this
   Scenario: default visibility
     When executing "tricorder ci"
     Then it prints nothing to STDOUT

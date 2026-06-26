@@ -5,6 +5,9 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
+    CannotParseGitDiffOutput { err: String },
+    CannotRunGitDiff { msg: String },
+    CiUnformatted,
     Cli { msg: String },
     Config { msg: String },
     Rta { err: rta::error::UserError },
@@ -13,6 +16,11 @@ pub enum UserError {
 impl UserError {
     pub fn print(self) {
         match self {
+            UserError::CannotParseGitDiffOutput { err } => {
+                println!("cannot parse output of \"git diff\": {err}");
+            }
+            UserError::CannotRunGitDiff { msg } => println!("cannot run \"git diff\": {msg}"),
+            UserError::CiUnformatted => println!("code is not formatted"),
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }
