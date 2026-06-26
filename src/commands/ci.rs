@@ -23,13 +23,13 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
 }
 
 fn git_diff() -> Result<Vec<u8>> {
-    let diff = match Command::new("git")
+    let output = Command::new("git")
         .arg("-c")
         .arg("color.ui=always")
         .arg("diff")
         .arg("HEAD")
-        .output()
-    {
+        .output();
+    let diff = match output {
         Ok(output) => output,
         Err(err) => {
             return Err(UserError::CannotRunGit {
@@ -41,11 +41,11 @@ fn git_diff() -> Result<Vec<u8>> {
 }
 
 fn git_status() -> Result<Vec<u8>> {
-    let status = match Command::new("git")
+    let output = Command::new("git")
         .arg("status")
         .arg("--porcelain")
-        .output()
-    {
+        .output();
+    let status = match output {
         Ok(output) => output,
         Err(err) => {
             return Err(UserError::CannotRunGit {
