@@ -12,7 +12,8 @@ Feature: lint a Tikibase
       {
         "ignore": [
           "run-that-app"
-        ]
+        ],
+        "bidiLinks": true
       }
       """
 
@@ -54,8 +55,9 @@ Feature: lint a Tikibase
       """
       lint Markdown (tikibase)
       two.md:1  document is not connected to any other documents
+      two.md:1  missing link to one.md
       """
-    And the exit code is 1
+    And the exit code is 2
     And all files are unchanged
 
   Scenario: invalid Markdown
