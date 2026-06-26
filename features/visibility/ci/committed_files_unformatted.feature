@@ -87,6 +87,18 @@ Feature: CI if committed files are unformatted
       """
       lint CSS (Biome)
       """
+    And it prints the block
+      """
+      diff --git a/main.css b/main.css
+      """
+    And it prints the block
+      """
+      diff --git a/main.ts b/main.ts
+      """
+    And it prints the block
+      """
+      diff --git a/main.py b/main.py
+      """
     And file "main.css" now has content
       """
       p {
@@ -103,7 +115,6 @@ Feature: CI if committed files are unformatted
       """
     And the exit code is 1
 
-  @this
   Scenario: --show=names
     When executing "tricorder ci --show=names"
     Then it does not print
@@ -111,16 +122,49 @@ Feature: CI if committed files are unformatted
       1 CSS, 1 Python, 1 TypeScript, 1 other
       running 4 tools
       """
-    And it prints only these lines in any order
+    And it prints the block
       """
       delete empty folders
-      fix Python (ruff)
-      format Python (ruff)
+      """
+    And it prints the block
+      """
       fix TypeScript (Biome)
+      """
+    And it prints the block
+      """
       fix CSS (Biome)
+      """
+    And it prints the block
+      """
+      fix Python (ruff)
+      """
+    And it prints the block
+      """
+      format Python (ruff)
+      """
+    And it prints the block
+      """
       lint Python (ruff)
+      """
+    And it prints the block
+      """
       lint TypeScript (Biome)
+      """
+    And it prints the block
+      """
       lint CSS (Biome)
+      """
+    And it prints the block
+      """
+      diff --git a/main.css b/main.css
+      """
+    And it prints the block
+      """
+      diff --git a/main.ts b/main.ts
+      """
+    And it prints the block
+      """
+      diff --git a/main.py b/main.py
       """
     And file "main.css" now has content
       """
@@ -136,11 +180,26 @@ Feature: CI if committed files are unformatted
       """
       print("hello")
       """
-    And the exit code is 0
+    And the exit code is 1
 
   Scenario: --show=failed
     When executing "tricorder ci --show=failed"
-    Then it prints nothing to STDOUT
+    Then it prints the block
+      """
+      code is not formatted
+      """
+    And it prints the block
+      """
+      diff --git a/main.css b/main.css
+      """
+    And it prints the block
+      """
+      diff --git a/main.ts b/main.ts
+      """
+    And it prints the block
+      """
+      diff --git a/main.py b/main.py
+      """
     And file "main.css" now has content
       """
       p {
@@ -155,4 +214,4 @@ Feature: CI if committed files are unformatted
       """
       print("hello")
       """
-    And the exit code is 0
+    And the exit code is 1
