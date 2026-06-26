@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{Checker, DetectedStack, DetectedStacks, Fixer, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, DetectedStacks, Fix, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
@@ -20,8 +20,8 @@ impl Display for Tikibase {
     }
 }
 
-impl Checker for Tikibase {
-    fn check_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+impl Lint for Tikibase {
+    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         let executable = get_rta_command(&GetRTACmdArgs {
@@ -34,8 +34,8 @@ impl Checker for Tikibase {
     }
 }
 
-impl Fixer for Tikibase {
-    fn format_command(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+impl Fix for Tikibase {
+    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fix"));
         let executable = get_rta_command(&GetRTACmdArgs {
@@ -44,6 +44,13 @@ impl Fixer for Tikibase {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.into_iter().collect())
+    }
+
+    fn unsafe_fix_commands(
+        &self,
+        _stack: &DetectedStack,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        Ok(vec![])
     }
 }
