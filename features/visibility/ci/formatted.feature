@@ -22,7 +22,6 @@ Feature: CI multiple good stacks
       console.log("hello");
       """
 
-  @this
   Scenario: default visibility
     When executing "tricorder ci"
     Then it prints nothing to STDOUT
@@ -30,7 +29,7 @@ Feature: CI multiple good stacks
     And the exit code is 0
 
   Scenario: --show=all
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder ci --show=all"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -70,7 +69,7 @@ Feature: CI multiple good stacks
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder pitstop --show=names"
+    When executing "tricorder ci --show=names"
     Then it prints only these lines in any order
       """
       delete empty folders
@@ -85,6 +84,6 @@ Feature: CI multiple good stacks
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder pitstop --show=failed"
+    When executing "tricorder ci --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged
