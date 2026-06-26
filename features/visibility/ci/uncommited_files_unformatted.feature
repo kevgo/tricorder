@@ -1,4 +1,3 @@
-@this
 Feature: CI multiple unformatted stacks
 
   Background:
