@@ -7,7 +7,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 pub enum UserError {
     CannotParseGitDiffOutput { err: String },
     CannotRunGit { msg: String },
-    CiUnformatted,
+    CiUnformatted { diff: String },
     Cli { msg: String },
     Config { msg: String },
     Rta { err: rta::error::UserError },
@@ -20,7 +20,7 @@ impl UserError {
                 println!("cannot parse output of \"git diff\": {err}");
             }
             UserError::CannotRunGit { msg } => println!("cannot run \"git diff\": {msg}"),
-            UserError::CiUnformatted => println!("code is not formatted"),
+            UserError::CiUnformatted { diff } => println!("code is not formatted\n\n{diff}"),
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
             UserError::Rta { err } => err.print(),
         }

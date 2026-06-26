@@ -4,6 +4,25 @@ use cucumber::given;
 use tokio::fs;
 use tokio::process::Command;
 
+#[given(expr = "a committed file {string} with content")]
+async fn a_committed_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+    a_file_with_content(world, step, filename.clone()).await;
+    Command::new("git")
+        .arg("add")
+        .arg(&filename)
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+    Command::new("git")
+        .arg("commit")
+        .arg(format!("--message=Add {filename}"))
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+}
+
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap();

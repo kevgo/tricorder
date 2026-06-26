@@ -1,4 +1,4 @@
-Feature: CI doesn't care about uncommitted files that are unformatted
+Feature: CI if committed files are unformatted
 
   Background:
     Given a Git repository
@@ -8,24 +8,27 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       ruff 0.15.16
       delete-empty-folders 0.0.2
       """
-    And a file "main.py" with content
+    And a committed file "main.py" with content
       """
       print(  "hello"  )
       """
-    And a file "main.css" with content
+    And a committed file "main.css" with content
       """
       p {
         color : red ;
       }
       """
-    And a file "main.ts" with content
+    And a committed file "main.ts" with content
       """
       console.log(  "hello"  );
       """
 
   Scenario: default visibility
     When executing "tricorder ci"
-    Then it prints nothing to STDOUT
+    Then it prints the block
+      """
+      code is not formatted
+      """
     And it prints nothing to STDERR
     And file "main.py" now has content
       """
@@ -41,7 +44,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       """
       console.log("hello");
       """
-    And the exit code is 0
+    And the exit code is 1
 
   Scenario: --show=all
     When executing "tricorder ci --show=all"
@@ -98,8 +101,9 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       """
       print("hello")
       """
-    And the exit code is 0
+    And the exit code is 1
 
+  @this
   Scenario: --show=names
     When executing "tricorder ci --show=names"
     Then it does not print

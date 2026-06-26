@@ -20,14 +20,20 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
     // println!("after_status: '{after_status}'");
 
     if (before_diff != after_diff) || (before_status != after_status) {
-        return Err(UserError::CiUnformatted);
+        return Err(UserError::CiUnformatted { diff: after_diff });
     }
 
     Ok(exit_code)
 }
 
 fn git_diff() -> Result<String> {
-    let diff = match Command::new("git").arg("diff").arg("HEAD").output() {
+    let diff = match Command::new("git")
+        .arg("-c")
+        .arg("color.ui=always")
+        .arg("diff")
+        .arg("HEAD")
+        .output()
+    {
         Ok(output) => output,
         Err(err) => {
             return Err(UserError::CannotRunGit {
