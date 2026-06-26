@@ -14,7 +14,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Run the CI checks
+    /// Check all lints and fixes on CI
     Ci(RunArgs),
 
     /// Install coding agent hooks for this project
