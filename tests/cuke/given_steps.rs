@@ -15,6 +15,10 @@ async fn a_committed_file_with_content(world: &mut TricorderWorld, step: &Step, 
         .await
         .unwrap();
     Command::new("git")
+        .arg("-c")
+        .arg("user.name=Test")
+        .arg("-c")
+        .arg("user.email=test@example.com")
         .arg("commit")
         .arg(format!("--message=Add {filename}"))
         .current_dir(&world.dir)
@@ -53,6 +57,10 @@ async fn a_git_repository(world: &mut TricorderWorld) {
         .await
         .unwrap();
     Command::new("git")
+        .arg("-c")
+        .arg("user.name=Test")
+        .arg("-c")
+        .arg("user.email=test@example.com")
         .arg("commit")
         .arg("--allow-empty")
         .arg("--message=initial")
