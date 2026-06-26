@@ -42,12 +42,13 @@ Feature: fix Markdown
       """
       # hello
 
-      [e
+      [e]()
       """
     When executing "tricorder fix --show=all"
     Then it prints the lines
       """
       fix Markdown (rumdl)
+      main.md:3:1: [MD042] Empty link found: [e]()
       """
     And the exit code is 0
     And file "main.md" is unchanged
