@@ -1,4 +1,4 @@
-Feature: CI multiple good stacks
+Feature: CI multiple formatted stacks
 
   Background:
     Given a file "run-that-app" with content
