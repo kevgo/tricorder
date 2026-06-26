@@ -30,7 +30,7 @@ async fn a_git_repository(world: &mut TricorderWorld) {
     Command::new("git")
         .arg("init")
         .current_dir(&world.dir)
-        .status()
+        .output()
         .await
         .unwrap();
     Command::new("git")
@@ -38,7 +38,7 @@ async fn a_git_repository(world: &mut TricorderWorld) {
         .arg("--allow-empty")
         .arg("--message=initial")
         .current_dir(&world.dir)
-        .status()
+        .output()
         .await
         .unwrap();
 }

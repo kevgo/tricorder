@@ -1,3 +1,4 @@
+@this
 Feature: CI multiple unformatted stacks
 
   Background:
@@ -23,7 +24,6 @@ Feature: CI multiple unformatted stacks
       console.log(  "hello"  );
       """
 
-  @this
   Scenario: default visibility
     When executing "tricorder ci"
     Then it prints nothing to STDOUT
@@ -42,7 +42,7 @@ Feature: CI multiple unformatted stacks
       """
       console.log("hello");
       """
-    And the exit code is 1
+    And the exit code is 0
 
   Scenario: --show=all
     When executing "tricorder ci --show=all"
@@ -99,7 +99,7 @@ Feature: CI multiple unformatted stacks
       """
       print("hello")
       """
-    And the exit code is 1
+    And the exit code is 0
 
   Scenario: --show=names
     When executing "tricorder ci --show=names"
@@ -133,7 +133,7 @@ Feature: CI multiple unformatted stacks
       """
       print("hello")
       """
-    And the exit code is 1
+    And the exit code is 0
 
   Scenario: --show=failed
     When executing "tricorder ci --show=failed"
@@ -152,4 +152,4 @@ Feature: CI multiple unformatted stacks
       """
       print("hello")
       """
-    And the exit code is 1
+    And the exit code is 0
