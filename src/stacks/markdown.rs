@@ -20,7 +20,7 @@ impl Stack for Markdown {
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Rumdl {})]
+        vec![Box::new(Tikibase {}), Box::new(Rumdl {})]
     }
 }
 

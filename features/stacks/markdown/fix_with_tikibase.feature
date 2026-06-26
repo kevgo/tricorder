@@ -1,18 +1,18 @@
-Feature: lint a Tikibase
+Feature: fix Markdown with Tikibase
 
   Background:
     Given a file "run-that-app" with content
       """
       rumdl 0.2.14
       delete-empty-folders 0.0.2
-      tikibase 0.6.2
       """
     And a file "tikibase.json" with content
       """
       {
         "ignore": [
           "run-that-app"
-        ]
+        ],
+        "bidiLinks": true
       }
       """
 
@@ -29,14 +29,15 @@ Feature: lint a Tikibase
 
       also check out [One](one.md)
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the lines
       """
-      lint Markdown (tikibase)
-      lint Markdown (rumdl)
+      fix Markdown (tikibase)
+      fix Markdown (rumdl)
       """
     And the exit code is 0
-    And all files are unchanged
+    And file "one.md" is unchanged
+    And file "two.md" is unchanged
 
   Scenario: unformatted Markdown
     Given a file "one.md" with content
@@ -49,27 +50,37 @@ Feature: lint a Tikibase
       """
       # Two
       """
-    When executing "tricorder lint --show=all"
-    Then it prints the block
+    When executing "tricorder fix --show=all"
+    Then it prints the lines
       """
-      lint Markdown (tikibase)
-      two.md:1  document is not connected to any other documents
+      fix Markdown (tikibase)
+      two.md:3  added one.md to occurrences section
+      fix Markdown (rumdl)
       """
-    And the exit code is 1
-    And all files are unchanged
+    And the exit code is 0
+    And file "one.md" is unchanged
+    And file "two.md" now has content
+      """
+      # Two
+
+      ## occurrences
+
+      - [One](one.md)
+      """
 
   Scenario: invalid Markdown
     Given a file "main.md" with content
       """
-      text
+      # hello
+
+      [e]()
       """
-    When executing "tricorder lint --show=all"
-    Then it prints the lines
+    When executing "tricorder fix --show=all"
+    Then it prints the block
       """
-      lint Markdown (tikibase)
-      main.md:1  no title section
-      lint Markdown (rumdl)
-      main.md:1:1: [MD041] First line in file should be a level 1 heading
+      fix Markdown (tikibase)
+      fix Markdown (rumdl)
+      main.md:3:1: [MD042] Empty link found: [e]()
       """
-    And the exit code is 1
-    And all files are unchanged
+    And the exit code is 0
+    And file "main.md" is unchanged

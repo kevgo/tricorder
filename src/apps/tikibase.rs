@@ -39,8 +39,8 @@ impl Fix for Tikibase {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fix"));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("{} ({self})", &stack.stack),
-            app: &rta::applications::Rumdl {},
+            name: format!("fix {} ({self})", &stack.stack),
+            app: &rta::applications::Tikibase {},
             args,
             version: None,
         })?;
