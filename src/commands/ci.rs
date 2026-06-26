@@ -24,7 +24,7 @@ pub fn ci(args: &RunArgs) -> Result<ExitCode> {
 }
 
 fn git_diff() -> Result<String> {
-    let diff = match Command::new("git").arg("diff").arg("HEAD").output() {
+    let diff = match Command::new("git").arg("branch").output() {
         Ok(output) => output,
         Err(err) => {
             return Err(UserError::CannotRunGitDiff {

@@ -30,7 +30,15 @@ async fn a_git_repository(world: &mut TricorderWorld) {
     Command::new("git")
         .arg("init")
         .current_dir(&world.dir)
-        .output()
+        .status()
+        .await
+        .unwrap();
+    Command::new("git")
+        .arg("commit")
+        .arg("--allow-empty")
+        .arg("--message=initial")
+        .current_dir(&world.dir)
+        .status()
         .await
         .unwrap();
 }
