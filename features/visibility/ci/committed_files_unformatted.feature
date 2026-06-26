@@ -29,6 +29,18 @@ Feature: CI if committed files are unformatted
       """
       code is not formatted
       """
+    And it prints the block
+      """
+      diff --git a/main.css b/main.css
+      """
+    And it prints the block
+      """
+      diff --git a/main.ts b/main.ts
+      """
+    And it prints the block
+      """
+      diff --git a/main.py b/main.py
+      """
     And it prints nothing to STDERR
     And file "main.py" now has content
       """
