@@ -28,30 +28,20 @@ fn git_diff() -> Result<Vec<u8>> {
         .arg("color.ui=always")
         .arg("diff")
         .arg("HEAD")
-        .output();
-    let diff = match output {
-        Ok(output) => output,
-        Err(err) => {
-            return Err(UserError::CannotRunGit {
-                msg: err.to_string(),
-            });
-        }
-    };
-    Ok(diff.stdout)
+        .output()
+        .map_err(|err| UserError::CannotRunGit {
+            msg: err.to_string(),
+        })?;
+    Ok(output.stdout)
 }
 
 fn git_status() -> Result<Vec<u8>> {
     let output = Command::new("git")
         .arg("status")
         .arg("--porcelain")
-        .output();
-    let status = match output {
-        Ok(output) => output,
-        Err(err) => {
-            return Err(UserError::CannotRunGit {
-                msg: err.to_string(),
-            });
-        }
-    };
-    Ok(status.stdout)
+        .output()
+        .map_err(|err| UserError::CannotRunGit {
+            msg: err.to_string(),
+        })?;
+    Ok(output.stdout)
 }
