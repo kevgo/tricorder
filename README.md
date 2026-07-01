@@ -1,32 +1,72 @@
 # Tricorder
 
-_One command._ _Every linter._ _Every stack._
+_One command, every linter, every stack._
 
-Tricorder is a zero-config quality gate for polyglot codebases.
-It detects which languages are present, resolves the canonical linter for each,
-auto-generates the necessary config,
+Tricorder is a zero-config quality gate for manual and agentic coding.
+It detects which programming languages are present,
+resolves the canonical linters for each, auto-generates the necessary config,
 and runs them in parallel behind a single command and a single exit code.
-That exit code is the integration surface: AI agents, Git hooks, CI pipelines,
-and IDE plugins all act on the same signal.
+
+- the best formatters and linters
+- always up to date
+- for all languages in your codebase
+- in all your codebases
 
 ## Why
 
-The status quo is painful.
+The status quo is painful:
 Every team has to figure out which linters apply to their stack,
 install them consistently across macOS, Linux, and Windows,
 pin every tool to the same version on dev and CI,
-and maintain config files across every repo.
-Almost nobody gets all four right.
+maintain config files across every repo, and keep everything up to date.
+Almost nobody gets this right.
 
 AI-generated code amplifies the cost of getting it wrong:
-agents produce code at machine speed and need a deterministic,
+Agents produce code at machine speed and need a deterministic,
 locally executed quality signal to fix their own output
 before a human ever sees it.
 
-Tricorder makes "run the right checks for this repo" one command,
-and "have the agent fix its own output" one more.
-Every team at Walmart gets the same reliable,
-reproducible checks with no per-developer setup.
+Tricorder makes "run all automated checks for this repo"
+and "have the agent improve its own output" single commands.
+Every team gets reliable, reproducible checks with no per-developer setup.
+
+## Example
+
+You have a TypeScript frontend and a Python backend.
+Running `tricorder check` runs `biome check --error-on-warnings`, `pyright`,
+and `ruff check --quiet`.
+You don't need to download or install any of these tools.
+Multi-Tool does that for you.
+It has also created config files for these tools in your repo
+that enable all features.
+You can customize them for your use case.
+Later you add shell scripts somewhere in a subfolder.
+Multi-Tool detects this new language and now also runs `shellcheck` and `shfmt`.
+
+All the things you don't do:
+
+- figure out which stacks your codebase uses
+- market research which linters and formatters are the best for each stack
+- forgetting to add formatters and linters for new languages
+- reading documentation to install, setup,
+  and configure the dozens of tools needed
+- Sisyphean work to keep all these tools up to date
+- inconsistencies with other developers and teams which tool to use
+
+Almost no project or team does all of this well all of the time.
+With Multi-Tool everybody does this well all of the time.
+
+## Q & A
+
+> Does Tricorder lock me into their tooling choices?
+
+No, you can customize the default selection of tools.
+In this case, the value of Tricorder is limited to installing
+and running the tools in parallel.
+
+> I want to use a linter that isn't supported by Tricorder.
+
+Send a pull request!
 
 ## Installation
 
@@ -60,12 +100,15 @@ cargo install --git https://github.com/kevgo/tricorder
 ## Usage
 
 ```sh
-tricorder lint              # run every applicable linter
-tricorder init               # install agentic hooks (see below)
+tricorder init         # install agentic hooks (see below)
+tricorder lint         # run every applicable linter
+tricorder fix          # fix all safely auto-fixable issues
+tricorder fix-unsafe   # fix all issues that are not safe to auto-fix
+tricorder pitstop      # fix and format everything, then run all linters
+tricorder precommit    # run in the Git pre-commit hook
+tricorder ci           # run on CI
+tricorder postgenerate # run after the agent generated code
 ```
-
-`check` exits 0 when every tool passes, non-zero otherwise.
-That exit code is the contract everything else builds on.
 
 ## Agentic integration
 

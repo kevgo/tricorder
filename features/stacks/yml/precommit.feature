@@ -44,6 +44,7 @@ Feature: precommit YML
       key: other
       """
 
+  @this
   Scenario: invalid YML
     Given a file "main.yml" with content
       """
