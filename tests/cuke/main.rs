@@ -23,7 +23,7 @@ async fn main() {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
         })
-        // .max_concurrent_scenarios(1)
+        .max_concurrent_scenarios(1)
         .with_writer(DotWriter::new(Arc::clone(&had_failures)).normalized())
         .run("features")
         .await;
