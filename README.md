@@ -95,6 +95,25 @@ Compile from source:
 cargo install --git https://github.com/kevgo/tricorder
 ```
 
+## Configuration
+
+You can define custom linters in a config file **Tricorder.toml**.
+
+```toml
+[[custom-lints]]
+name = "custom lint 1"
+command = "lints/one.sh"
+
+[[custom-lints]]
+name = "custom lint 2"
+command = "lints/two.sh"
+
+[[custom-fixes]]
+name = "sort alphabetically"
+command = "fixes/sort.py"
+stack = "python"
+```
+
 ## Usage
 
 ```sh
@@ -108,7 +127,7 @@ tricorder ci            # run on CI
 tricorder postgenerate  # run after the agent generated code
 ```
 
-## Agentic integration
+### `tricorder init`
 
 One command wires Tricorder into AI agents like Claude Code, Codex, Code Puppy,
 or Wibey:
@@ -129,51 +148,43 @@ automatically, with zero per-developer setup:
 - Before every `git commit`,
   Tricorder formats and auto-fixes the changes to commit.
 
-## Custom linters
+### `tricorder lint`
 
-You can define custom linters in a config file **Tricorder.toml**.
+The `tricorder lint` command runs all applicable linters.
+Since linters don't change files, they all run in parallel.
 
-```toml
-[[custom-lints]]
-name = "custom lint 1"
-command = "lints/one.sh"
+### `tricorder fix`
 
-[[custom-lints]]
-name = "custom lint 2"
-command = "lints/two.sh"
+The `tricorder fix` command applies all safe auto-fixes to your codebase:
+formatters and linters that clean up code smells.
+Tricorder runs fixes for different languages in parallel.
 
-[[custom-fixes]]
-name = "sort alphabetically"
-command = "fixes/sort.py"
-stack = "python"
-```
+### `tricorder fix-unsafe`
 
-## CI
+The `tricorder fix-unsafe` command applies all advanced auto-fixes
+that address code smells but might change the meaning of the code.
+You are advised to review the changes before committing
+and verify them by running the automated tests.
 
-The same `tricorder lint` exit code feeds straight into CI.
-A representative pipeline step:
+### `tricorder pitstop`
 
-```yaml
-- name: tricorder
-  run: tricorder lint
-```
+The `tricorder pitstop` command runs `tricorder fix`
+and then `tricorder fix` in sequence.
 
-Any non-zero exit fails the build,
-which is a clear signal to set up Tricorder locally
-and let the pre-commit hook catch the issue next time.
+### `tricorder precommit`
 
-## How it works
+The `tricorder precommit` command runs `tricorder fix`
+but always with exit code 0 to allow the commit to proceed.
 
-Tricorder walks the project, classifies files by extension into known stacks,
-and asks each stack which linters apply.
-For every applicable linter it also generates a sensible default config
-(both the Tricorder-level config and the per-tool config files),
-so teams don't have to maintain those by hand.
+### `tricorder ci`
 
-Linter executables are fetched on demand through Walmart's `run-that-app` cache,
-so there's no per-tool install step.
-Checks run concurrently and the unified exit code is the integration surface
-that every downstream consumer (agents, hooks, CI) keys off of.
+The `tricorder ci` performs all activities necessary on CI:
+
+- determines the uncommitted changes
+- runs `tricorder pitstop` and exits with exit code 1 if there are any issues
+- determines the uncommitted changes again
+- if the uncommitted changes are different now, i.e. some code was unformatted,
+  it fails the build.
 
 ## Supported stacks
 
@@ -188,21 +199,4 @@ that every downstream consumer (agents, hooks, CI) keys off of.
 | Java       | checkstyle    |
 | SQL        | sqlfmt        |
 
-Stacks are auto-detected — there's no config file to maintain.
-
-## Migration
-
-- add Tricorder to your scripts that run the linters
-- start removing lints that Tricorder runs
-- contribute tools that Tricoder doesn't run but should to Tricorder
-
-## Roadmap
-
-- `tricorder fix`: a write-mode that applies every safe auto-fix
-  so the agent doesn't have to round-trip findings it could resolve
-  mechanically.
-- Structured JSON output (`--json`, `--output`) for richer agent digests
-  and CI dashboards.
-  Schema is drafted on the `struct-response` branch.
-- IDE plugins for the manual coding flow.
-- Continued rollout to more teams at Walmart post-hackathon.
+Stacks are auto-detected.
