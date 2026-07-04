@@ -22,11 +22,10 @@ impl Display for TextRunner {
 
 impl Lint for TextRunner {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
-        args.push(S("check"));
+        let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("lint {} ({self})", &stack.stack),
-            app: &rta::applications::Tikibase {},
+            name: format!("test {} ({self})", &stack.stack),
+            app: &rta::applications::TextRunner {},
             args,
             version: None,
         })?;
