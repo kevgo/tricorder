@@ -11,6 +11,7 @@ pub mod ruff;
 pub mod rumdl;
 pub mod sqlfmt;
 pub mod taplo;
+pub mod text_runner;
 pub mod tikibase;
 
 use crate::domain::UserError;
