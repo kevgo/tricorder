@@ -22,7 +22,6 @@ impl Display for TextRunner {
 
 impl Lint for TextRunner {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
-        println!("444444444444444444444444444444444");
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", &stack.stack),
