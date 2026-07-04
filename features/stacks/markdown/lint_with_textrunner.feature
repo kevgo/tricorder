@@ -34,7 +34,7 @@ Feature: lint documentation with Text-Runner
     Then it prints the lines
       """
       lint Markdown (rumdl)
-      xxx
+      test Markdown (Text-Runner)
       """
     And the exit code is 0
     And all files are unchanged
