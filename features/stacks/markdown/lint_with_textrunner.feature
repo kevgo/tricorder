@@ -10,11 +10,9 @@ Feature: lint documentation with Text-Runner
     And a file "text-runner.jsonc" with content
       """
       {
-      "files": "**/*.md",
       "format": "detailed",
       "systemTmp": true,
-      "online": false,
-      "emptyWorkspace": true
+      "online": false
       }
       """
 
