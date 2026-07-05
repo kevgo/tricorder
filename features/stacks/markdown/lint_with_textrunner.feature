@@ -57,14 +57,14 @@ Feature: lint documentation with Text-Runner
     And a file "text-runner/failing.js" with content
       """
       export default function failing() {
-        throw new Error("Zonk");
+        throw new Error("Boom!");
       }
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
       test Markdown (Text-Runner)
-      one.md:3 -- Zonk
+      one.md:3 -- Boom!
       """
     And the exit code is 1
     And all files are unchanged
