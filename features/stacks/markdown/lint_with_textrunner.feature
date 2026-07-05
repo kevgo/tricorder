@@ -6,6 +6,7 @@ Feature: lint documentation with Text-Runner
       rumdl 0.2.14
       delete-empty-folders 0.0.2
       node 26.0.0
+      npm 26.0.0
       text-runner 7.1.0
       """
     And a file "text-runner.jsonc" with content
@@ -17,7 +18,6 @@ Feature: lint documentation with Text-Runner
       }
       """
 
-  @this
   Scenario: valid Markdown
     Given a file "one.md" with content
       """
@@ -31,13 +31,14 @@ Feature: lint documentation with Text-Runner
 
       also check out [One](one.md)
       """
-    When inspect the workspace
+    # When inspect the workspace
     When executing "tricorder lint --show=all"
-    Then it prints nothing to STDERR
     Then it prints the lines
       """
       lint Markdown (rumdl)
       test Markdown (Text-Runner)
+      one.md:3 -- link to local file two.md
+      two.md:3 -- link to local file one.md
       """
     And the exit code is 0
     And all files are unchanged
