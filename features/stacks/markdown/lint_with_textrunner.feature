@@ -70,19 +70,16 @@ Feature: lint documentation with Text-Runner
     And the exit code is 1
     And all files are unchanged
 
-  @this
   Scenario: invalid Markdown
     Given a file "main.md" with content
       """
-      text
+      <a type="missing"></a>
       """
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      lint Markdown (tikibase)
-      main.md:1  no title section
-      lint Markdown (rumdl)
-      main.md:1:1: [MD041] First line in file should be a level 1 heading
+      test Markdown (Text-Runner)
+      main.md:1 -- unknown action: missing
       """
     And the exit code is 1
     And all files are unchanged
