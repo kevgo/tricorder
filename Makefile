@@ -1,4 +1,4 @@
-RUN_THAT_APP_VERSION = 0.37.0  # run-that-app version to use
+RUN_THAT_APP_VERSION = 0.39.2  # run-that-app version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
