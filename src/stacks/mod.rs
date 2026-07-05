@@ -73,7 +73,7 @@ pub fn discover() -> DetectedStacks {
         .into_iter()
         .filter(|stack| !stack.files.is_empty())
         .map(|mut stack| {
-            stack.files.sort();
+            stack.files.sort_unstable();
             stack
         })
         .collect();
