@@ -79,7 +79,7 @@ pub fn discover_in(dir: &Path) -> DetectedStacks {
         .into_iter()
         .filter(|stack| !stack.files.is_empty())
         .map(|mut stack| {
-            stack.files.sort();
+            stack.files.sort_unstable();
             stack
         })
         .collect();
