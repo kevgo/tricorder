@@ -43,3 +43,9 @@ impl<'a> IntoIterator for &'a Files {
         self.0.iter()
     }
 }
+
+impl From<Vec<PathBuf>> for Files {
+    fn from(files: Vec<PathBuf>) -> Self {
+        Self(files)
+    }
+}

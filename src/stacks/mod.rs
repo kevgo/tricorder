@@ -88,7 +88,7 @@ mod tests {
     mod discover {
         use crate::domain::{DetectedStack, DetectedStacks, Files, StackType};
         use crate::stacks::discover_in;
-        use crate::stacks::{Go, Json, Markdown};
+        use crate::stacks::{Go, Json, Markdown, Unknown};
         use std::fs;
         use tempfile::TempDir;
 
@@ -123,21 +123,29 @@ mod tests {
                 ],
             );
             let have = discover_in(dir.path());
+            let root = dir.path();
             let want = DetectedStacks::new(vec![
                 DetectedStack {
                     stack: Box::new(Go {}),
-                    files: Files::new(),
+                    files: Files::from(vec![root.join("main.go")]),
                 },
                 DetectedStack {
                     stack: Box::new(Json {}),
-                    files: Files::new(),
+                    files: Files::from(vec![root.join("config.json")]),
                 },
                 DetectedStack {
                     stack: Box::new(Markdown {}),
-                    files: Files::new(),
+                    files: Files::from(vec![root.join("README.md")]),
+                },
+                DetectedStack {
+                    stack: Box::new(Unknown {}),
+                    files: Files::from(vec![
+                        root.join("text-runner.jsonc"),
+                        root.join("archive.tar"),
+                    ]),
                 },
             ]);
-            assert_eq!(have, want);
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
