@@ -69,7 +69,7 @@ pub fn discover() -> DetectedStacks {
             }
         }
     }
-    let non_empty = detected_stacks
+    let result = detected_stacks
         .into_iter()
         .filter(|stack| !stack.files.is_empty())
         .map(|mut stack| {
@@ -77,5 +77,5 @@ pub fn discover() -> DetectedStacks {
             stack
         })
         .collect();
-    DetectedStacks::new(non_empty)
+    DetectedStacks::new(result)
 }
