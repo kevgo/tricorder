@@ -3,10 +3,12 @@ Feature: lint documentation with Text-Runner
   Background:
     Given a file "run-that-app" with content
       """
-      rumdl 0.2.14
+      biome 2.5.2
       delete-empty-folders 0.0.2
       node 26.0.0
       npm 26.0.0
+      rumdl 0.2.14
+      taplo 0.10.0
       text-runner 7.1.0
       """
     And a file "text-runner.jsonc" with content
@@ -16,6 +18,10 @@ Feature: lint documentation with Text-Runner
       "systemTmp": true,
       "online": false
       }
+      """
+    And a file "rumdl.toml" with content
+      """
+      enable = []
       """
 
   Scenario: valid Markdown
@@ -43,25 +49,27 @@ Feature: lint documentation with Text-Runner
     And the exit code is 0
     And all files are unchanged
 
+  @this
   Scenario: unformatted Markdown
     Given a file "one.md" with content
       """
       # One
 
-      also check out [Two](two.md)
+      <a type="failing">Zonk</a>
       """
-    And a file "two.md" with content
+    And a file "text-runner/failing.js" with content
       """
-      # Two
+      export default function failing() {
+        throw new Error("Zonk");
+      }
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      lint Markdown (tikibase)
-      two.md:1  document is not connected to any other documents
-      two.md:1  missing link to one.md
+      test Markdown (Text-Runner)
+      one.md:3 -- Zonk
       """
-    And the exit code is 2
+    And the exit code is 1
     And all files are unchanged
 
   Scenario: invalid Markdown
