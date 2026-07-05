@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-#[derive(Default)]
+#[derive(Default, PartialEq, Eq)]
 pub struct Files(Vec<PathBuf>);
 
 impl Files {
