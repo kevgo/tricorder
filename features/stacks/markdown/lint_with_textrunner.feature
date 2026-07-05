@@ -29,21 +29,20 @@ Feature: lint documentation with Text-Runner
       """
       # One
 
-      also check out [Two](two.md)
+      <a type="hello"></a>
       """
-    And a file "two.md" with content
+    And a file "text-runner/hello.js" with content
       """
-      # Two
-
-      also check out [One](one.md)
+      export default function hello(action) {
+        action.log("Hello world!")
+      }
       """
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
       lint Markdown (rumdl)
       test Markdown (Text-Runner)
-      one.md:3 -- link to local file two.md
-      two.md:3 -- link to local file one.md
+      one.md:3 -- Hello
       """
     And the exit code is 0
     And all files are unchanged
