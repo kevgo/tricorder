@@ -52,7 +52,7 @@ Feature: lint documentation with Text-Runner
       """
       # One
 
-      <a type="failing">Zonk</a>
+      <a type="failing"></a>
       """
     And a file "text-runner/failing.js" with content
       """
