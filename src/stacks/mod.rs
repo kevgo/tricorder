@@ -1,6 +1,3 @@
-use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
-use std::path::Path;
-
 mod css;
 mod cucumber;
 mod go;
@@ -13,6 +10,7 @@ mod typescript;
 mod unknown;
 mod yml;
 
+use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
 pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
@@ -21,6 +19,7 @@ pub use json::Json;
 pub use markdown::Markdown;
 pub use python::Python;
 pub use sql::Sql;
+use std::path::Path;
 pub use toml::Toml;
 pub use typescript::Typescript;
 pub use unknown::Unknown;
