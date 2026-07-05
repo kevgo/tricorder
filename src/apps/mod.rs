@@ -38,24 +38,28 @@ pub(crate) fn get_rta_command(
         };
         match rta::get_cmd(args.app, get_cmd_args, &apps) {
             Ok(cmd) => {
-                println!("command: {cmd:?}");
+                println!("OK command: {cmd:?}");
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
                     command: command.into(),
                 }));
             }
-            Err(err) => match err {
-                rta::error::UserError::RunRequestMissingVersion { app: _ } => {
-                    let add_args = rta::commands::AddArgs {
-                        app_name: args.app.name(),
-                        verbose: true,
-                    };
-                    if let Err(err) = rta::commands::add(add_args, &apps) {
-                        return Err(UserError::Rta { err });
+            Err(err) => {
+                println!("ERROR: {err:?}");
+                match err {
+                    rta::error::UserError::RunRequestMissingVersion { app } => {
+                        println!("MISSING VERSION: {app}, adding to config ");
+                        let add_args = rta::commands::AddArgs {
+                            app_name: app,
+                            verbose: true,
+                        };
+                        if let Err(err) = rta::commands::add(add_args, &apps) {
+                            return Err(UserError::Rta { err });
+                        }
                     }
+                    _ => return Err(UserError::Rta { err }),
                 }
-                _ => return Err(UserError::Rta { err }),
-            },
+            }
         }
     }
     Ok(None)
