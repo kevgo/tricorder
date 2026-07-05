@@ -33,6 +33,10 @@ impl Files {
     pub fn push(&mut self, file: PathBuf) {
         self.0.push(file);
     }
+
+    pub fn sort(&mut self) {
+        self.0.sort_unstable();
+    }
 }
 
 impl<'a> IntoIterator for &'a Files {
