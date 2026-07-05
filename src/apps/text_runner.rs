@@ -7,10 +7,10 @@ pub struct TextRunner;
 
 impl Tool for TextRunner {
     fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        let Some(unknown_stack) = detected_stacks.get_stack(StackType::Unknown) else {
+        let Some(jsonc_stack) = detected_stacks.get_stack(StackType::JsonC) else {
             return false;
         };
-        unknown_stack.files.contains("./text-runner.jsonc")
+        jsonc_stack.files.contains("./text-runner.jsonc")
     }
 }
 
