@@ -33,11 +33,12 @@ pub(crate) fn get_rta_command(
             version: args.version.clone(),
             from_source: false,
             include_apps: vec![],
-            optional: true,
+            optional: false,
             verbose: false,
         };
         match rta::get_cmd(args.app, get_cmd_args, &apps) {
             Ok(cmd) => {
+                println!("command: {cmd:?}");
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
                     command: command.into(),

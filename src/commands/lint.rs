@@ -46,12 +46,16 @@ pub fn determine_lints(
     // determine the lints for the stacks
     for stack in stacks {
         for lint in stack.stack.lints() {
+            println!("lint: {lint}");
             if !lint.is_enabled(stacks) {
+                println!("lint {lint} is not enabled");
                 continue;
             }
             if let Some(executable) = lint.lint_commands(stack)? {
+                println!("lint is enabled: {executable:?}");
                 result.push(executable);
             } else {
+                println!("lint is not available for this platform: {lint}");
                 // this app is not available for this platform --> don't run it
             }
         }

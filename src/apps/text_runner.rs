@@ -22,6 +22,7 @@ impl Display for TextRunner {
 
 impl Lint for TextRunner {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+        println!("determining lint commands for Text-Runner");
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", &stack.stack),
@@ -29,6 +30,7 @@ impl Lint for TextRunner {
             args,
             version: None,
         })?;
+        println!("executable: {executable:?}");
         Ok(executable.map(conc::Runnable::Single))
     }
 }
