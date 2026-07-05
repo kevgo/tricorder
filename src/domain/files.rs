@@ -34,7 +34,7 @@ impl Files {
         self.0.push(file);
     }
 
-    pub fn sort(&mut self) {
+    pub fn sort_unstable(&mut self) {
         self.0.sort_unstable();
     }
 }
