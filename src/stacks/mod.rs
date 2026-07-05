@@ -81,6 +81,10 @@ pub fn discover_in(dir: &Path) -> DetectedStacks {
     let non_empty = detected_stacks
         .into_iter()
         .filter(|stack| !stack.files.is_empty())
+        .map(|mut stack| {
+            stack.files.sort();
+            stack
+        })
         .collect();
     DetectedStacks::new(non_empty)
 }
