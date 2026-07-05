@@ -37,7 +37,6 @@ Feature: lint documentation with Text-Runner
 
       also check out [One](one.md)
       """
-    # When inspect the workspace
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
@@ -49,7 +48,6 @@ Feature: lint documentation with Text-Runner
     And the exit code is 0
     And all files are unchanged
 
-  @this
   Scenario: unformatted Markdown
     Given a file "one.md" with content
       """
@@ -72,6 +70,7 @@ Feature: lint documentation with Text-Runner
     And the exit code is 1
     And all files are unchanged
 
+  @this
   Scenario: invalid Markdown
     Given a file "main.md" with content
       """
