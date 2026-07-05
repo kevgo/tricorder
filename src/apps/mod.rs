@@ -33,7 +33,7 @@ pub(crate) fn get_rta_command(
             version: args.version.clone(),
             from_source: false,
             include_apps: vec![],
-            optional: false,
+            optional: true,
             verbose: false,
         };
         match rta::get_cmd(args.app, get_cmd_args, &apps) {
