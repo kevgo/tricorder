@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.11 (2026-07-05)
+
+- new RTA backend
+
 ## 0.0.10 (2026-06-26)
 
 - `tricorder ci` command
