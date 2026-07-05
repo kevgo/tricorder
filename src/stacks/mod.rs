@@ -140,8 +140,8 @@ mod tests {
                 DetectedStack {
                     stack: Box::new(Unknown {}),
                     files: Files::from(vec![
-                        root.join("text-runner.jsonc"),
                         root.join("archive.tar"),
+                        root.join("text-runner.jsonc"),
                     ]),
                 },
             ]);
