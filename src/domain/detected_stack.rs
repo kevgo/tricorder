@@ -25,7 +25,9 @@ impl std::fmt::Debug for DetectedStack {
 
 impl PartialEq for DetectedStack {
     fn eq(&self, other: &Self) -> bool {
-        self.stack.stack_type() == other.stack.stack_type() && self.files == other.files
+        let stacks_match = self.stack.stack_type() == other.stack.stack_type();
+        let files_match = self.files == other.files;
+        stacks_match && files_match
     }
 }
 
