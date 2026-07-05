@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-#[derive(Default)]
+#[derive(Default, PartialEq, Eq)]
 pub struct Files(Vec<PathBuf>);
 
 impl Files {
@@ -41,5 +41,11 @@ impl<'a> IntoIterator for &'a Files {
 
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
+    }
+}
+
+impl From<Vec<PathBuf>> for Files {
+    fn from(files: Vec<PathBuf>) -> Self {
+        Self(files)
     }
 }
