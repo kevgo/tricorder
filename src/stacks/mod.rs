@@ -86,7 +86,7 @@ pub fn discover_in(dir: &Path) -> DetectedStacks {
 mod tests {
 
     mod discover {
-        use crate::domain::{DetectedStack, DetectedStacks, Files, StackType};
+        use crate::domain::{DetectedStack, DetectedStacks, Files};
         use crate::stacks::discover_in;
         use crate::stacks::{Go, Json, Markdown, Unknown};
         use std::fs;
@@ -152,16 +152,13 @@ mod tests {
         fn nested_directories() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["src/nested/deep/main.go"]);
-            let stacks = discover_in(dir.path());
-            assert!(stacks.contains_stack(StackType::Go));
-        }
-
-        #[test]
-        fn unrecognised_files_are_assigned_to_unknown_stack() {
-            let dir = TempDir::new().unwrap();
-            make_files(&dir, &["binary.exe", "archive.tar"]);
-            let stacks = discover_in(dir.path());
-            assert!(stacks.contains_stack(StackType::Unknown));
+            let have = discover_in(dir.path());
+            let root = dir.path();
+            let want = DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Go {}),
+                files: Files::from(vec![root.join("src/nested/deep/main.go")]),
+            }]);
+            pretty::assert_eq!(have, want);
         }
     }
 }
