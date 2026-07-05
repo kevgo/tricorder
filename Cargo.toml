@@ -5,7 +5,7 @@ members = [".", "test_helpers"]
 
 [package]
 name = "tricorder"
-version = "0.0.10"
+version = "0.0.11"
 edition = "2024"
 description = "The all-in-one DevEx tool."
 
