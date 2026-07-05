@@ -7,6 +7,23 @@ pub struct DetectedStack {
     pub files: Files,
 }
 
+impl std::fmt::Debug for DetectedStack {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("DetectedStack {\n");
+        f.write_str("  stack: ");
+        f.write_str(&self.stack.to_string());
+        f.write_str("\n  files:\n");
+        for file in &self.files {
+            f.write_str("    - ");
+            f.write_str(file.to_string_lossy().as_ref());
+            f.write_str("\n");
+        }
+        f.write_str("}");
+        Ok(())
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
 pub struct DetectedStacks(Vec<DetectedStack>);
 
 impl DetectedStacks {

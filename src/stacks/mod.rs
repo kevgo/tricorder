@@ -86,8 +86,9 @@ pub fn discover_in(dir: &Path) -> DetectedStacks {
 mod tests {
 
     mod discover {
-        use crate::domain::StackType;
+        use crate::domain::{DetectedStack, DetectedStacks, Files, StackType};
         use crate::stacks::discover_in;
+        use crate::stacks::{Go, Json, Markdown};
         use std::fs;
         use tempfile::TempDir;
 
@@ -102,33 +103,45 @@ mod tests {
         }
 
         #[test]
-        fn empty_directory_returns_no_stacks() {
+        fn empty_directory() {
             let dir = TempDir::new().unwrap();
             let stacks = discover_in(dir.path());
             assert!(stacks.is_empty());
         }
 
         #[test]
-        fn detects_single_stack() {
-            let dir = TempDir::new().unwrap();
-            make_files(&dir, &["package.json", "tsconfig.json"]);
-            let stacks = discover_in(dir.path());
-            assert!(stacks.contains_stack(StackType::Json));
-            assert!(!stacks.contains_stack(StackType::Typescript));
-        }
-
-        #[test]
         fn detects_multiple_stacks() {
             let dir = TempDir::new().unwrap();
-            make_files(&dir, &["main.go", "config.json", "README.md"]);
-            let stacks = discover_in(dir.path());
-            assert!(stacks.contains_stack(StackType::Go));
-            assert!(stacks.contains_stack(StackType::Json));
-            assert!(stacks.contains_stack(StackType::Markdown));
+            make_files(
+                &dir,
+                &[
+                    "main.go",
+                    "config.json",
+                    "README.md",
+                    "archive.tar",
+                    "text-runner.jsonc",
+                ],
+            );
+            let have = discover_in(dir.path());
+            let want = DetectedStacks::new(vec![
+                DetectedStack {
+                    stack: Box::new(Go {}),
+                    files: Files::new(),
+                },
+                DetectedStack {
+                    stack: Box::new(Json {}),
+                    files: Files::new(),
+                },
+                DetectedStack {
+                    stack: Box::new(Markdown {}),
+                    files: Files::new(),
+                },
+            ]);
+            assert_eq!(have, want);
         }
 
         #[test]
-        fn discovers_files_in_nested_directories() {
+        fn nested_directories() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["src/nested/deep/main.go"]);
             let stacks = discover_in(dir.path());
