@@ -84,60 +84,63 @@ pub fn discover_in(dir: &Path) -> DetectedStacks {
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::StackType;
-    use crate::stacks::discover_in;
-    use std::fs;
-    use tempfile::TempDir;
 
-    fn make_files(dir: &TempDir, paths: &[&str]) {
-        for path in paths {
-            let full = dir.path().join(path);
-            if let Some(parent) = full.parent() {
-                fs::create_dir_all(parent).unwrap();
+    mod discover {
+        use crate::domain::StackType;
+        use crate::stacks::discover_in;
+        use std::fs;
+        use tempfile::TempDir;
+
+        fn make_files(dir: &TempDir, paths: &[&str]) {
+            for path in paths {
+                let full = dir.path().join(path);
+                if let Some(parent) = full.parent() {
+                    fs::create_dir_all(parent).unwrap();
+                }
+                fs::write(&full, "").unwrap();
             }
-            fs::write(&full, "").unwrap();
         }
-    }
 
-    #[test]
-    fn empty_directory_returns_no_stacks() {
-        let dir = TempDir::new().unwrap();
-        let stacks = discover_in(dir.path());
-        assert!(stacks.is_empty());
-    }
+        #[test]
+        fn empty_directory_returns_no_stacks() {
+            let dir = TempDir::new().unwrap();
+            let stacks = discover_in(dir.path());
+            assert!(stacks.is_empty());
+        }
 
-    #[test]
-    fn detects_single_stack() {
-        let dir = TempDir::new().unwrap();
-        make_files(&dir, &["package.json", "tsconfig.json"]);
-        let stacks = discover_in(dir.path());
-        assert!(stacks.contains_stack(StackType::Json));
-        assert!(!stacks.contains_stack(StackType::Typescript));
-    }
+        #[test]
+        fn detects_single_stack() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["package.json", "tsconfig.json"]);
+            let stacks = discover_in(dir.path());
+            assert!(stacks.contains_stack(StackType::Json));
+            assert!(!stacks.contains_stack(StackType::Typescript));
+        }
 
-    #[test]
-    fn detects_multiple_stacks() {
-        let dir = TempDir::new().unwrap();
-        make_files(&dir, &["main.go", "config.json", "README.md"]);
-        let stacks = discover_in(dir.path());
-        assert!(stacks.contains_stack(StackType::Go));
-        assert!(stacks.contains_stack(StackType::Json));
-        assert!(stacks.contains_stack(StackType::Markdown));
-    }
+        #[test]
+        fn detects_multiple_stacks() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["main.go", "config.json", "README.md"]);
+            let stacks = discover_in(dir.path());
+            assert!(stacks.contains_stack(StackType::Go));
+            assert!(stacks.contains_stack(StackType::Json));
+            assert!(stacks.contains_stack(StackType::Markdown));
+        }
 
-    #[test]
-    fn discovers_files_in_nested_directories() {
-        let dir = TempDir::new().unwrap();
-        make_files(&dir, &["src/nested/deep/main.go"]);
-        let stacks = discover_in(dir.path());
-        assert!(stacks.contains_stack(StackType::Go));
-    }
+        #[test]
+        fn discovers_files_in_nested_directories() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["src/nested/deep/main.go"]);
+            let stacks = discover_in(dir.path());
+            assert!(stacks.contains_stack(StackType::Go));
+        }
 
-    #[test]
-    fn unrecognised_files_are_assigned_to_unknown_stack() {
-        let dir = TempDir::new().unwrap();
-        make_files(&dir, &["binary.exe", "archive.tar"]);
-        let stacks = discover_in(dir.path());
-        assert!(stacks.contains_stack(StackType::Unknown));
+        #[test]
+        fn unrecognised_files_are_assigned_to_unknown_stack() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["binary.exe", "archive.tar"]);
+            let stacks = discover_in(dir.path());
+            assert!(stacks.contains_stack(StackType::Unknown));
+        }
     }
 }
