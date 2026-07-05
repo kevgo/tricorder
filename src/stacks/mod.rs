@@ -95,7 +95,7 @@ mod tests {
     mod discover {
         use crate::domain::{DetectedStack, DetectedStacks, Files};
         use crate::stacks::discover_in;
-        use crate::stacks::{Go, Json, Markdown, Unknown};
+        use crate::stacks::{Go, Json, JsonC, Markdown, Unknown};
         use std::fs;
         use tempfile::TempDir;
 
@@ -141,15 +141,16 @@ mod tests {
                     files: Files::from(vec![root.join("config.json")]),
                 },
                 DetectedStack {
+                    stack: Box::new(JsonC {}),
+                    files: Files::from(vec![root.join("text-runner.jsonc")]),
+                },
+                DetectedStack {
                     stack: Box::new(Markdown {}),
                     files: Files::from(vec![root.join("README.md")]),
                 },
                 DetectedStack {
                     stack: Box::new(Unknown {}),
-                    files: Files::from(vec![
-                        root.join("archive.tar"),
-                        root.join("text-runner.jsonc"),
-                    ]),
+                    files: Files::from(vec![root.join("archive.tar")]),
                 },
             ]);
             pretty::assert_eq!(have, want);
