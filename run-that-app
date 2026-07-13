@@ -6,7 +6,7 @@ ghokin 3.9.0
 keep-sorted 0.9.1
 lefthook 2.1.10
 node 26.5.0
-prettier-standalone 0.24.0
+prettier 3.7.0
 ripgrep 15.1.0
 ruff 0.15.21
 rumdl 0.2.31
