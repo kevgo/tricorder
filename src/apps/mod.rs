@@ -29,14 +29,16 @@ pub(crate) fn get_rta_command(
     let apps = rta::applications::all();
     for _ in 0..2 {
         let get_cmd_args = rta::GetCmdArgs {
+            app: args.app,
             app_args: args.args.clone(),
             version: args.version.clone(),
+            apps: &apps,
             from_source: false,
             include_apps: vec![],
             optional: true,
             verbose: false,
         };
-        match rta::get_cmd(args.app, get_cmd_args, &apps) {
+        match rta::get_cmd(get_cmd_args) {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),

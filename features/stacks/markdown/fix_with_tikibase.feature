@@ -5,6 +5,8 @@ Feature: fix Markdown with Tikibase
       """
       rumdl 0.2.14
       delete-empty-folders 0.0.2
+      prettier-standalone 0.24.0
+      tikibase 0.6.2
       """
     And a file "tikibase.json" with content
       """

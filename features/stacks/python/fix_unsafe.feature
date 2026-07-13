@@ -5,6 +5,7 @@ Feature: unsafe-fix Python
       """
       ruff 0.15.16
       delete-empty-folders 0.0.2
+      taplo 0.10.0
       """
     And a file "main.py" with content
       """
