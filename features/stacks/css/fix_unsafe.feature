@@ -5,6 +5,7 @@ Feature: unsafe-fix CSS
       """
       biome 2.4.0
       delete-empty-folders 0.0.2
+      prettier-standalone 3.7.0
       """
     And a file "main.css" with content
       """
@@ -39,6 +40,7 @@ Feature: unsafe-fix CSS
       }
       """
 
+  @this
   Scenario: fix
     When executing "tricorder fix --show=all"
     Then it prints the lines
