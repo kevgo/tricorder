@@ -1,5 +1,6 @@
 .rumdl_cache
 tools/rta*
+tools/tricorder*
 /target
 /tmp
 

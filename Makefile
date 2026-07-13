@@ -1,14 +1,11 @@
 RUN_THAT_APP_VERSION = 0.40.0  # run-that-app version to use
+TRICORDER_VERSION = 0.0.10     # tricorder version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
-GHERKIN_LINT = $(NPM) exec --yes gherkin-lint
-GHOKIN       = $(RTA) ghokin
 KEEPSORTED   = $(RTA) keep-sorted
 LEFTHOOK     = $(RTA) lefthook
-NPM          = $(RTA) npm
-RUMDL        = $(RTA) rumdl
-TAPLO        = $(RTA) taplo
+TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
 
 build:  # builds the codebase
 	cargo build
@@ -42,13 +39,11 @@ demo:  # runs Tricorder in the "demo" folder
 install:
 	cargo install --path . --locked
 
-fix: ${RTA}  # runs all lints and fixes
+fix: ${RTA} ${TRICORDER}  # runs all lints and fixes
 	cargo +nightly fix --allow-dirty
 	cargo clippy --fix --allow-dirty
 	cargo +nightly fmt
-	$(RUMDL) fmt
-	$(TAPLO) format
-	make --no-print-directory ghokin
+	$(TRICORDER) fix
 	make --no-print-directory keep-sorted
 
 ghokin: ${RTA}  # format the Cucumber tests
@@ -61,12 +56,10 @@ keep-sorted: ${RTA}
 	$(RTA) --install ripgrep
 	$(KEEPSORTED) $(shell $(RTA) ripgrep -l --hidden 'keep-sorted end' ./ --glob '!{.git,Makefile}')
 
-lint: ${RTA}  # lints the main codebase concurrently
+lint: ${RTA} ${TRICORDER}  # lints the main codebase concurrently
 	cargo clippy --all-targets --all-features -- --deny=warnings
 	cargo clippy --test=cuke --all-features -- --deny=warnings
-	$(RUMDL) check
-	${GHERKIN_LINT}
-	# $(TAPLO) check  # current version has a bug with Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
+	$(TRICORDER) lint
 
 setup: setup-ci  # install development dependencies on this computer
 	cargo install cargo-machete --locked
@@ -99,6 +92,12 @@ ${RTA}:
 	rm -f tools/rta*
 	(cd tools && curl https://raw.githubusercontent.com/kevgo/run-that-app/main/download.sh | sh -s -- --version ${RUN_THAT_APP_VERSION} --name rta@${RUN_THAT_APP_VERSION})
 	ln -s rta@$(RUN_THAT_APP_VERSION) tools/rta
+
+${TRICORDER}:
+	rm -f tools/tricorder*
+	(cd tools && curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -s -- --version ${TRICORDER_VERSION} --name tricorder@${TRICORDER_VERSION})
+	ln -s tricorder@$(TRICORDER_VERSION) tools/tricorder
+
 
 
 .DEFAULT_GOAL := help
