@@ -25,7 +25,7 @@ impl Lint for Tikibase {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("lint {} ({self})", &stack.stack),
+            name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Tikibase {},
             args,
             version: None,
@@ -39,7 +39,7 @@ impl Fix for Tikibase {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fix"));
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("fix {} ({self})", &stack.stack),
+            name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Tikibase {},
             args,
             version: None,

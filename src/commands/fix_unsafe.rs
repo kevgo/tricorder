@@ -1,26 +1,25 @@
-use ahash::AHashMap;
-
-use crate::cli::input::{RunArgs, Show};
+use crate::cli::input::{self, ParsedRunArgs};
 use crate::cli::output::print_metadata;
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
+pub fn fix_unsafe(args: &ParsedRunArgs) -> Result<ExitCode> {
     // step 1: load the config
-    let show = conc::Show::from(args.show);
     let error_on_output = false;
     let stderr_to_stdout = true;
+    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
-    if args.show == Show::All {
+    if show == conc::Show::All {
         print_metadata(&stacks);
     }
 
     // step 3: discover the unsafe fixes
     let unsafe_fixes = determine_unsafe_fixes(&stacks)?;
-    if args.show == Show::All {
+    if show == conc::Show::All {
         eprintln!("running {} tools", unsafe_fixes.len());
     }
 

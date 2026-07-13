@@ -1,4 +1,4 @@
-use crate::cli::input::{RunArgs, Show};
+use crate::cli::input::{self, ParsedRunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
@@ -7,16 +7,16 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
+pub fn pitstop(args: &ParsedRunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
-    let show = conc::Show::from(args.show);
+    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
     let stacks = stacks::discover();
-    if args.show == Show::All {
+    if show == conc::Show::All {
         print_metadata(&stacks);
     }
 
@@ -24,7 +24,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let fix_runnables = fix::determine_fixes(config.custom_fixes, &stacks)?;
     let lints = lint::determine_lints(&stacks, config.custom_lints)?;
     let runnable_count = fix_runnables.len() + lints.len();
-    if args.show == Show::All {
+    if show == conc::Show::All {
         eprintln!("running {runnable_count} tools");
     }
     let Runnables {

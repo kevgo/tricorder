@@ -22,9 +22,13 @@ Feature: CI multiple formatted stacks
       console.log("hello");
       """
 
+  @this
   Scenario: default visibility
     When executing "tricorder ci"
-    Then it prints nothing to STDOUT
+    Then it prints
+      """
+      All checks passed!
+      """
     And all files are unchanged
     And the exit code is 0
 
