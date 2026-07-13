@@ -40,8 +40,18 @@ pub enum Command {
 #[derive(clap::Args)]
 pub struct RunArgs {
     /// how much output to display
-    #[arg(long, default_value = "failed")]
-    pub show: Show,
+    #[arg(long)]
+    pub show: Option<Show>,
+}
+
+impl RunArgs {
+    /// provides a `RunArgs` with the show set to the given default if not provided
+    #[must_use]
+    pub fn with_default_show(self, default_show: Show) -> Self {
+        Self {
+            show: Some(self.show.unwrap_or(default_show)),
+        }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, ValueEnum)]

@@ -25,7 +25,17 @@ Feature: CI doesn't care about uncommitted files that are unformatted
 
   Scenario: default visibility
     When executing "tricorder ci"
-    Then it prints nothing to STDOUT
+    Then it prints only these lines in any order
+      """
+      delete empty folders
+      fix Python (ruff)
+      format Python (ruff)
+      lint Python (ruff)
+      fix CSS (Biome)
+      lint CSS (Biome)
+      fix TypeScript (Biome)
+      lint TypeScript (Biome)
+      """
     And it prints nothing to STDERR
     And file "main.py" now has content
       """
