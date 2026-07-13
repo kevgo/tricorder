@@ -1,11 +1,11 @@
-use crate::cli::input::{self, ParsedRunArgs};
+use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix_unsafe(args: &ParsedRunArgs) -> Result<ExitCode> {
+pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let error_on_output = false;
     let stderr_to_stdout = true;

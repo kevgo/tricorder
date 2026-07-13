@@ -1,5 +1,5 @@
 use crate::apps::delete_empty_folders;
-use crate::cli::input::{self, ParsedRunArgs};
+use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomFix};
 use crate::domain::{DetectedStacks, Result, StackType};
@@ -7,7 +7,7 @@ use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix(args: &ParsedRunArgs) -> Result<ExitCode> {
+pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));

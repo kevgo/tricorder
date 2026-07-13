@@ -1,9 +1,9 @@
-use crate::cli::input::{self, ParsedRunArgs};
+use crate::cli::input::{self, RunArgs};
 use crate::commands::pitstop;
 use crate::domain::{Result, UserError};
 use std::process::{Command, ExitCode};
 
-pub fn ci(mut args: ParsedRunArgs) -> Result<ExitCode> {
+pub fn ci(mut args: RunArgs) -> Result<ExitCode> {
     args = args.with_default_show(input::Show::Names);
 
     let before_diff = git_diff()?;

@@ -1,11 +1,11 @@
-use crate::cli::input::{self, ParsedRunArgs};
+use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomLint};
 use crate::domain::{DetectedStacks, Result};
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn lint(args: &ParsedRunArgs) -> Result<ExitCode> {
+pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));

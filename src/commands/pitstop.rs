@@ -1,4 +1,4 @@
-use crate::cli::input::{self, ParsedRunArgs};
+use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
@@ -7,7 +7,7 @@ use crate::domain::Result;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn pitstop(args: &ParsedRunArgs) -> Result<ExitCode> {
+pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));

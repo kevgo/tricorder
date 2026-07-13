@@ -15,36 +15,36 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// Check all lints and fixes on CI
-    Ci(ParsedRunArgs),
+    Ci(RunArgs),
 
     /// Install coding agent hooks for this project
     Init(InitArgs),
 
     /// Repair all code quality issues
-    Fix(ParsedRunArgs),
+    Fix(RunArgs),
 
     /// Advanced fixes that might break things
-    FixUnsafe(ParsedRunArgs),
+    FixUnsafe(RunArgs),
 
     /// Find all code quality issues
     #[command(visible_alias = "postgenerate")]
-    Lint(ParsedRunArgs),
+    Lint(RunArgs),
 
     /// Run fixes and lints
-    Pitstop(ParsedRunArgs),
+    Pitstop(RunArgs),
 
     /// Repair all code quality issues, never fails
-    Precommit(ParsedRunArgs),
+    Precommit(RunArgs),
 }
 
 #[derive(clap::Args)]
-pub struct ParsedRunArgs {
+pub struct RunArgs {
     /// how much output to display
     #[arg(long)]
     pub show: Option<Show>,
 }
 
-impl ParsedRunArgs {
+impl RunArgs {
     /// provides a `ParsedRunArgs` with the show set to the default if not provided
     #[must_use]
     pub fn with_default_show(self, default_show: Show) -> Self {
