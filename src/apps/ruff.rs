@@ -26,7 +26,7 @@ impl Lint for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("lint {} (ruff)", &stack.stack),
+            name: format!("lint {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -53,7 +53,7 @@ impl Fix for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("fix {} (ruff)", &stack.stack),
+            name: format!("fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -69,7 +69,7 @@ impl Fix for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("format {} (ruff)", &stack.stack),
+            name: format!("format {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -96,7 +96,7 @@ impl Fix for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("unsafe fix {} (ruff)", &stack.stack),
+            name: format!("unsafe fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
@@ -112,7 +112,7 @@ impl Fix for Ruff {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("format {} (ruff)", &stack.stack),
+            name: format!("format {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
