@@ -25,7 +25,7 @@ impl Lint for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("lint {} ({self})", &stack.stack),
+            name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,
@@ -42,7 +42,7 @@ impl Fix for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("fix {} ({self})", &stack.stack),
+            name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,
@@ -61,7 +61,7 @@ impl Fix for Taplo {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("force fix {} ({self})", &stack.stack),
+            name: format!("force fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,

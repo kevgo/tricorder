@@ -24,7 +24,7 @@ impl Lint for TextRunner {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("test {} ({self})", &stack.stack),
+            name: format!("test {} ({self})", stack.stack),
             app: &rta::applications::TextRunner {},
             args,
             version: None,
