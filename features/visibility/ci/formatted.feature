@@ -22,12 +22,18 @@ Feature: CI multiple formatted stacks
       console.log("hello");
       """
 
-  @this
   Scenario: default visibility
     When executing "tricorder ci"
-    Then it prints
+    Then it prints only these lines in any order
       """
-      All checks passed!
+      delete empty folders
+      fix Python (ruff)
+      format Python (ruff)
+      lint Python (ruff)
+      fix CSS (Biome)
+      lint CSS (Biome)
+      fix TypeScript (Biome)
+      lint TypeScript (Biome)
       """
     And all files are unchanged
     And the exit code is 0
