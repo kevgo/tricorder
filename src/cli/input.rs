@@ -45,7 +45,7 @@ pub struct RunArgs {
 }
 
 impl RunArgs {
-    /// provides a `ParsedRunArgs` with the show set to the default if not provided
+    /// provides a `RunArgs` with the show set to the given default if not provided
     #[must_use]
     pub fn with_default_show(self, default_show: Show) -> Self {
         Self {
