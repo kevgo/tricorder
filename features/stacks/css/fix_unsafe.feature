@@ -40,7 +40,6 @@ Feature: unsafe-fix CSS
       }
       """
 
-  @this
   Scenario: fix
     When executing "tricorder fix --show=all"
     Then it prints the lines
