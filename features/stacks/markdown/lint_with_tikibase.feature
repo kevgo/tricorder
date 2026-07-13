@@ -66,10 +66,13 @@ Feature: lint a Tikibase
       text
       """
     When executing "tricorder lint --show=all"
-    Then it prints the lines
+    Then it prints the block
       """
       lint Markdown (tikibase)
       main.md:1  no title section
+      """
+    And it prints the block
+      """
       lint Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
