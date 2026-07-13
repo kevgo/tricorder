@@ -88,7 +88,7 @@ impl DotWriter {
                         self.has_skipped_step = true;
                         self.step_failures.push(format!(
                             "{location}  unimplemented step '{}{}'",
-                            &step.keyword, &step.value
+                            step.keyword, step.value
                         ));
                     }
                     _ => {}
