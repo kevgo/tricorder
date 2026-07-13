@@ -1,5 +1,12 @@
 # Tricorder changelog
 
+## 0.0.12 (2026-07-13)
+
+- provide carrier version in `run-that-app`
+- the CI command now uses the default visibility `names`
+- app: Text-Runner
+- JSONC stack
+
 ## 0.0.11 (2026-07-05)
 
 - new RTA backend
