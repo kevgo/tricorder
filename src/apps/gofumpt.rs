@@ -26,7 +26,7 @@ impl Fix for Gofumpt {
             args.push(file.to_string_lossy().to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("fix {} ({self})", &stack.stack),
+            name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Gofumpt {},
             args,
             version: None,
