@@ -1,4 +1,4 @@
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, Show};
 use crate::commands::pitstop;
 use crate::domain::{Result, UserError};
 use std::process::{Command, ExitCode};
@@ -6,7 +6,7 @@ use std::process::{Command, ExitCode};
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let before_diff = git_diff()?;
 
-    let exit_code = pitstop(&args.with_default_show(input::Show::Names))?;
+    let exit_code = pitstop(&args.with_default_show(Show::Names))?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
