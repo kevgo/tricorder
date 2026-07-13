@@ -3,12 +3,10 @@ use crate::commands::pitstop;
 use crate::domain::{Result, UserError};
 use std::process::{Command, ExitCode};
 
-pub fn ci(mut args: RunArgs) -> Result<ExitCode> {
-    args = args.with_default_show(input::Show::Names);
-
+pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let before_diff = git_diff()?;
 
-    let exit_code = pitstop(&args)?;
+    let exit_code = pitstop(&args.with_default_show(input::Show::Names))?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
