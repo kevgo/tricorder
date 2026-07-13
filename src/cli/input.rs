@@ -45,15 +45,6 @@ pub struct ParsedRunArgs {
 }
 
 impl ParsedRunArgs {
-    #[must_use]
-    pub fn to_run_args(self, default_show: conc::Show) -> RunArgs {
-        let show = match self.show {
-            Some(show) => show.into(),
-            None => default_show,
-        };
-        RunArgs { show }
-    }
-
     /// provides a `ParsedRunArgs` with the show set to the default if not provided
     #[must_use]
     pub fn with_default_show(self, default_show: Show) -> Self {
@@ -61,10 +52,6 @@ impl ParsedRunArgs {
             show: Some(self.show.unwrap_or(default_show)),
         }
     }
-}
-
-pub struct RunArgs {
-    pub show: conc::Show,
 }
 
 #[derive(Clone, Copy, PartialEq, ValueEnum)]
