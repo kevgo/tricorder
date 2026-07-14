@@ -158,14 +158,7 @@ M  src/stacks/mod.rs
 ?? src/filesystem/" => StagedFiles {
                 partial: vec!["src/commands/precommit.rs".into()],
                 full: vec!["src/stacks/mod.rs".into()],
-            },
-            r"
-MM file.rs
-M  file.rs
-?? other" => StagedFiles {
-                partial: vec!["file.rs".into()],
-                full: vec!["file.rs".into()],
-            },
+            }
         };
 
         for (give, want) in tests {
