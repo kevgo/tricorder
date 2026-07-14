@@ -1,7 +1,6 @@
+use ahash::AHashSet;
 use std::path::PathBuf;
 use std::process::Command;
-
-use ahash::AHashSet;
 
 #[must_use]
 pub fn status() -> Option<StagedFiles> {
