@@ -2,6 +2,7 @@ use ahash::AHashSet;
 use std::path::PathBuf;
 use std::process::Command;
 
+/// determines which files are staged in the current directory
 #[must_use]
 pub fn status() -> Option<StagedFiles> {
     let Ok(output) = Command::new("git").arg("status").arg("--short").output() else {
@@ -19,15 +20,15 @@ pub fn status() -> Option<StagedFiles> {
 
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
-    /// partially staged files
+    /// partially staged files (some parts are staged, others are not)
     pub partial: Vec<PathBuf>,
 
-    /// fully staged files
+    /// fully staged files (all parts are staged)
     pub full: Vec<PathBuf>,
 }
 
 impl StagedFiles {
-    /// provides all staged files, fully or partially staged
+    /// provides all staged files (fully or partially)
     #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
         let mut result = AHashSet::new();
@@ -37,18 +38,19 @@ impl StagedFiles {
     }
 }
 
+/// parses the output of "git status --short"
 fn parse_output(output: &str) -> StagedFiles {
     let mut result = StagedFiles {
         partial: Vec::new(),
         full: Vec::new(),
     };
-
     for line in output.lines() {
         parse_line(line, &mut result);
     }
     result
 }
 
+/// parses a line from the output of "git status --short"
 fn parse_line(line: &str, result: &mut StagedFiles) {
     if line.len() < 3 {
         return;
