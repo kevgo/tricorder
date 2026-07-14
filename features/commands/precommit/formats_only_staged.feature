@@ -2,6 +2,10 @@ Feature: "tricorder precommit" formats only staged files
 
   Background:
     Given a Git repository
+    And a file "run-that-app" with content
+      """
+      rumdl 0.2.14
+      """
     And a file "partially_staged.md" with content
       """
       # Partially staged file
