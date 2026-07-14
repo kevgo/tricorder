@@ -16,7 +16,7 @@ pub fn status() -> Option<StagedFiles> {
     Some(parse_output(&output))
 }
 
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
     /// partially staged files
     pub partial: Vec<PathBuf>,
@@ -159,6 +159,27 @@ M  file.rs
         for (give, want) in tests {
             let have = super::parse_output(&give[1..]);
             pretty::assert_eq!(have, want, "{give}");
+        }
+    }
+
+    mod staged_files {
+        use crate::git::StagedFiles;
+        use maplit::hashmap;
+        use std::collections::HashMap;
+        use std::path::PathBuf;
+
+        #[test]
+        fn all() {
+            let file_path = PathBuf::from("file.rs");
+            let tests: HashMap<StagedFiles, Vec<&PathBuf>> = hashmap! {
+                StagedFiles {
+                    partial: vec![file_path.clone()],
+                    full: vec![file_path.clone()],
+                } => vec![&file_path],
+            };
+            for (give, want) in tests {
+                assert_eq!(give.all(), want);
+            }
         }
     }
 }
