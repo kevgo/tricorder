@@ -53,22 +53,27 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
     }
     let mut chars = line.chars();
     let Some(staging) = chars.next() else {
+        log_unexpected_line(line);
         return;
     };
     let Some(is_staged) = parse_prefix(staging) else {
+        log_unexpected_line(line);
         return;
     };
     let Some(working) = chars.next() else {
+        log_unexpected_line(line);
         return;
     };
     let Some(is_working) = parse_prefix(working) else {
+        log_unexpected_line(line);
         return;
     };
     let Some(space) = chars.next() else {
+        log_unexpected_line(line);
         return;
     };
     if space != ' ' {
-        println!("unexpected line in output of \"git status --short\": {line}");
+        log_unexpected_line(line);
         return;
     }
     let (_, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
@@ -77,6 +82,10 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
     } else if is_staged {
         result.full.push(filename.into());
     }
+}
+
+fn log_unexpected_line(line: &str) {
+    println!("unexpected line in output of \"git status --short\": {line}");
 }
 
 /// parses the status code that Git prints when running "git status --short"
