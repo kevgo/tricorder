@@ -261,7 +261,6 @@ async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
 #[then(expr = "the unstaged changes are")]
 async fn the_unstaged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    // run "git diff --staged"
     let output = Command::new("git")
         .arg("diff")
         .current_dir(&world.dir)
