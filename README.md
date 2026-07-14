@@ -1,7 +1,5 @@
 # Tricorder
 
-oeuoeuoeu
-
 _One command, every linter, every stack._
 
 Tricorder is a zero-config quality gate for manual and agentic coding.
