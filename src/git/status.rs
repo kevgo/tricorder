@@ -6,14 +6,13 @@ use std::process::Command;
 #[must_use]
 pub fn status() -> Option<StagedFiles> {
     let Ok(output) = Command::new("git").arg("status").arg("--short").output() else {
-        // Git not found --> format all files
+        // Git not installed
         return None;
     };
     if !output.status.success() {
-        // Git command failed --> format all files
+        // probably not a Git repo
         return None;
     }
-    // parse the output
     let output = String::from_utf8_lossy(&output.stdout);
     Some(parse_output(&output))
 }
