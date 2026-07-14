@@ -68,7 +68,7 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
     if space != ' ' {
         return;
     }
-    let (_before, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
+    let (_, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
     if is_staged && is_working {
         result.partial.push(filename.into());
     } else if is_staged {
