@@ -68,11 +68,11 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
     if space != ' ' {
         return;
     }
-    let filename = PathBuf::from(chars.collect::<String>());
+    let (_before, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
     if is_staged && is_working {
-        result.partial.push(filename);
+        result.partial.push(filename.into());
     } else if is_staged {
-        result.full.push(filename);
+        result.full.push(filename.into());
     }
 }
 
@@ -133,7 +133,7 @@ mod tests {
         for (give, want) in tests {
             let mut have = StagedFiles::default();
             super::parse_line(give, &mut have);
-            assert_eq!(have, want);
+            assert_eq!(have, want, "{}", give);
         }
     }
 
