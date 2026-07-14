@@ -155,7 +155,7 @@ mod tests {
             r"
 MM partial.txt
 M  full.txt
- M unstaged.txt
+ A unstaged.txt
 ?? untracked" => StagedFiles {
                 partial: vec!["partial.txt".into()],
                 full: vec!["full.txt".into()],
