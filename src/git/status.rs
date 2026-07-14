@@ -68,6 +68,7 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
         return;
     };
     if space != ' ' {
+        println!("unexpected line in output of \"git status --short\": {line}");
         return;
     }
     let (_, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
