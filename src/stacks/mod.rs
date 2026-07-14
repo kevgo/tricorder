@@ -49,8 +49,9 @@ pub fn all() -> Vec<Box<dyn Stack>> {
     ]
 }
 
+/// provides the staged files and their stacks
 #[must_use]
-pub fn discover_uncommitted() -> DetectedStacks {
+pub fn discover_staged() -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
