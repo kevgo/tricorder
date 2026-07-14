@@ -124,6 +124,12 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
         absolute_path.set_extension("exe");
     }
     let mut cmd = Command::new(absolute_path);
+    if executable == "git" {
+        cmd.arg("-c")
+            .arg("user.name=Test")
+            .arg("-c")
+            .arg("user.email=test@example.com");
+    }
     cmd.args(args);
     cmd.current_dir(&world.dir);
     let output = cmd
