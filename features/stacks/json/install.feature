@@ -1,17 +1,18 @@
 @online
-Feature: install all CSS tools
+Feature: install all JSON tools
 
   Scenario: not installed
-    Given a file "main.json" with content
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      node 26.4.0
+      """
+    And a file "main.json" with content
       """
       {"key":"value"}
       """
     When executing "tricorder fix --show=all"
-    Then it prints the lines to STDERR
-      """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      """
-    And it prints the lines
+    Then it prints the lines
       """
       fix JSON (Prettier)
       """
@@ -24,5 +25,7 @@ Feature: install all CSS tools
       """
       # more info at https://github.com/kevgo/run-that-app
 
-      prettier-standalone \d+\.\d+\.\d+
+      delete-empty-folders 0.0.2
+      node 26.4.0
+      prettier \d+\.\d+\.\d+
       """
