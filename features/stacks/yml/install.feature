@@ -7,10 +7,6 @@ Feature: install all YML tools
       key:     value
       """
     When executing "tricorder fix --show=all"
-    Then it prints the lines to STDERR
-      """
-      Talking to GitHub API (https://api.github.com/repos/markelliot/prettier-standalone/releases/latest) ... ok
-      """
     And it prints the lines
       """
       fix YML (Prettier)
@@ -24,5 +20,5 @@ Feature: install all YML tools
       """
       # more info at https://github.com/kevgo/run-that-app
 
-      prettier-standalone \d+\.\d+\.\d+
+      prettier \d+\.\d+\.\d+
       """
