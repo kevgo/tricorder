@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 use std::process::Command;
 
+use ahash::AHashSet;
+
 #[must_use]
 pub fn status() -> Option<StagedFiles> {
     let Ok(output) = Command::new("git").arg("status").arg("--short").output() else {
@@ -29,7 +31,10 @@ impl StagedFiles {
     /// provides all staged files, fully or partially staged
     #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
-        self.partial.iter().chain(self.full.iter()).collect()
+        let mut result = AHashSet::new();
+        result.extend(self.partial.iter());
+        result.extend(self.full.iter());
+        result.into_iter().collect()
     }
 }
 
