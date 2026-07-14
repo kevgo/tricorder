@@ -1,7 +1,5 @@
 {
-  "cucumber.features": [
-    "features/**/*.feature"
-  ],
+  "cucumber.features": ["features/**/*.feature"],
   "cucumber.glue": [
     "tests/cuke/given_steps.rs",
     "tests/cuke/then_steps.rs",

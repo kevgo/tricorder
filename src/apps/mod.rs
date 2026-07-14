@@ -46,7 +46,8 @@ pub(crate) fn get_rta_command(
                 }));
             }
             Err(err) => match err {
-                rta::error::UserError::RunRequestMissingVersion { app } => {
+                rta::error::UserError::RunRequestMissingVersion { app }
+                | rta::error::UserError::NoVersionsFound { app } => {
                     let add_args = rta::commands::AddArgs {
                         app_name: app,
                         verbose: true,

@@ -3,8 +3,9 @@ Feature: pitstop YML
   Scenario: unformatted YML
     Given a file "run-that-app" with content
       """
-      prettier-standalone 0.24.0
       delete-empty-folders 0.0.2
+      node 26.4.0
+      prettier 3.7.0
       """
     And a file "main.yml" with content
       """
@@ -32,8 +33,9 @@ Feature: pitstop YML
   Scenario: unformatted YML with lint errors
     Given a file "run-that-app" with content
       """
-      prettier-standalone 0.24.0
       delete-empty-folders 0.0.2
+      node 26.4.0
+      prettier 3.7.0
       """
     And a file "main.yml" with content
       """
