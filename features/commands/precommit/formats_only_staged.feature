@@ -74,21 +74,15 @@ Feature: "tricorder precommit" formats only staged files
       """
       # Fully staged file
 
-      line 1
-      """
-    And I ran "git add fully_staged.md"
-    And a file "fully_staged.md" with content
-      """
-      # Fully staged file
-
       line   1
       """
+    And I ran "git add fully_staged.md"
     When executing "tricorder precommit"
-    Then there are no staged changes
+    Then it prints
       """
 
       """
-    And the unstaged changes are
+    Then the staged changes are
       """
       diff --git a/fully_staged.md b/fully_staged.md
       index 81b13b0..9829d0b 100644
@@ -98,4 +92,15 @@ Feature: "tricorder precommit" formats only staged files
        # Fully staged file
       -line 1
       +line   1
+      """
+    And the unstaged changes are
+      """
+      diff --git a/fully_staged.md b/fully_staged.md
+      index 9829d0b..81b13b0 100644
+      --- a/fully_staged.md
+      +++ b/fully_staged.md
+      @@ -1,3 +1,3 @@
+       # Fully staged file
+      -line   1
+      +line 1
       """
