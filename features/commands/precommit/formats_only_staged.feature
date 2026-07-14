@@ -25,7 +25,7 @@ Feature: "tricorder precommit" formats only staged files
     And I ran "git commit -m original"
 
   Scenario: precommit a partially staged file
-    Given a file "partially_staged.md" with content
+    Given I change file "partially_staged.md" to
       """
       # Partially staged file
 
@@ -34,7 +34,7 @@ Feature: "tricorder precommit" formats only staged files
       line 2
       """
     And I ran "git add partially_staged.md"
-    And a file "partially_staged.md" with content
+    And I change file "partially_staged.md" to
       """
       # Partially staged file
 
@@ -78,10 +78,7 @@ Feature: "tricorder precommit" formats only staged files
       """
     And I ran "git add fully_staged.md"
     When executing "tricorder precommit"
-    Then it prints
-      """
-
-      """
+    Then it prints nothing to STDOUT
     And the staged changes are
       """
       diff --git a/fully_staged.md b/fully_staged.md
