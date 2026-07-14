@@ -145,8 +145,8 @@ M  src/stacks/mod.rs
 ?? src/filesystem/";
         let have = super::parse_output(&give[1..]);
         let want = StagedFiles {
-            partial: vec!["src/stacks/mod.rs".into()],
-            full: vec!["src/filesystem/".into()],
+            partial: vec!["src/commands/precommit.rs".into()],
+            full: vec!["src/stacks/mod.rs".into()],
         };
         pretty::assert_eq!(have, want);
     }
