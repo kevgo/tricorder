@@ -39,7 +39,7 @@ Feature: "tricorder precommit" formats only staged files
       modified line 2
       """
     When executing "tricorder precommit"
-    Then the staged changes match
+    Then the staged changes are
       """
       diff --git a/partially_staged.md b/partially_staged.md
       index 587d5c8..8c901d4 100644

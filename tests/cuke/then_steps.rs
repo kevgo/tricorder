@@ -226,7 +226,7 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
 }
 
-#[then(expr = "the staged changes match")]
+#[then(expr = "the staged changes are")]
 async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     // run "git diff --staged"
