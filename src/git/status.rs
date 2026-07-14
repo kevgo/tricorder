@@ -133,7 +133,7 @@ mod tests {
         for (give, want) in tests {
             let mut have = StagedFiles::default();
             super::parse_line(give, &mut have);
-            assert_eq!(have, want, "{}", give);
+            assert_eq!(have, want, "{give}");
         }
     }
 
