@@ -12,6 +12,7 @@ mod unknown;
 mod yml;
 
 use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
+use crate::git;
 pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
@@ -46,6 +47,46 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         // keep-sorted end
         Box::new(Unknown {}),
     ]
+}
+
+pub fn discover_uncommitted() -> DetectedStacks {
+    let all_stacks = all();
+    let mut detected_stacks: Vec<DetectedStack> = all_stacks
+        .into_iter()
+        .map(|stack| DetectedStack {
+            stack,
+            files: Files::new(),
+        })
+        .collect();
+    let Some(git_status) = git::status() else {
+        // no git status --> return all stacks
+        return detected_stacks;
+    };
+    for file in git_status.uncommitted {
+        for detected_stack in &mut detected_stacks {
+            if detected_stack.stack.owns(&file) {
+                detected_stack.files.push(file);
+                break;
+            }
+        }
+    }
+    for file in git_status.staged {
+        for detected_stack in &mut detected_stacks {
+            if detected_stack.stack.owns(&file) {
+                detected_stack.files.push(file);
+                break;
+            }
+        }
+    }
+    let result = detected_stacks
+        .into_iter()
+        .filter(|stack| !stack.files.is_empty())
+        .map(|mut stack| {
+            stack.files.sort_unstable();
+            stack
+        })
+        .collect();
+    DetectedStacks::new(result)
 }
 
 /// provides all stacks and their files that exist in the workspace
