@@ -4,7 +4,8 @@ Feature: install all Python tools
   Scenario: not installed
     Given a file "run-that-app" with content
       """
-      prettier-standalone 0.24.0
+      node 26.4.0
+      prettier 3.7.0
       """
     And a file "main.py" with content
       """
@@ -37,7 +38,8 @@ Feature: install all Python tools
       """
       # more info at https://github.com/kevgo/run-that-app
 
-      prettier-standalone 0.24.0
+      node 26.4.0
+      prettier 3.7.0
       ruff \d+\.\d+\.\d+
       uv \d+\.\d+\.\d+
       """

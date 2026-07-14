@@ -27,7 +27,7 @@ impl Fix for Prettier {
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
-            app: &rta::applications::PrettierStandalone {},
+            app: &rta::applications::Prettier {},
             args,
             version: None,
         })?;
