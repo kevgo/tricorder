@@ -171,13 +171,15 @@ M  full.txt
 
         #[test]
         fn all() {
-            let partial = PathBuf::from("partial.txt");
-            let full = PathBuf::from("full.txt");
+            let partial_1 = PathBuf::from("partial_1.txt");
+            let partial_2 = PathBuf::from("partial_2.txt");
+            let full_1 = PathBuf::from("full_1.txt");
+            let full_2 = PathBuf::from("full_2.txt");
             let tests: HashMap<StagedFiles, Vec<&PathBuf>> = hashmap! {
                 StagedFiles {
-                    partial: vec![partial.clone()],
-                    full: vec![full.clone()],
-                } => vec![&partial, &full],
+                    partial: vec![partial_1.clone(), partial_2.clone()],
+                    full: vec![full_1.clone(), full_2.clone()],
+                } => vec![&partial_1, &partial_2, &full_1, &full_2],
             };
             for (give, want) in tests {
                 let have = give.all();
