@@ -84,7 +84,7 @@ Feature: "tricorder precommit" formats only staged files
       line   1
       """
     When executing "tricorder precommit"
-    Then the staged changes are
+    Then there are no staged changes
       """
 
       """

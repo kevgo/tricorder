@@ -244,6 +244,24 @@ async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
     assert_eq!(have.trim(), want.trim());
 }
 
+#[then(expr = "there are no staged changes")]
+async fn there_are_no_staged_changes(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    // run "git diff --staged"
+    let output = Command::new("git")
+        .arg("diff")
+        .arg("--staged")
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+    let stdout = strip_ansi_escapes::strip(&output.stdout);
+    let have = String::from_utf8_lossy(&stdout)
+        .replace("\n \n", "\n\n")
+        .replace("\n\n", "\n");
+    assert_eq!(have.trim(), want.trim());
+}
+
 #[then(expr = "the unstaged changes are")]
 async fn the_unstaged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
