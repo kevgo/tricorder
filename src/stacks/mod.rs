@@ -71,14 +71,6 @@ pub fn discover_uncommitted() -> DetectedStacks {
             }
         }
     }
-    for file in git_status.full {
-        for detected_stack in &mut detected_stacks {
-            if detected_stack.stack.owns(&file) {
-                detected_stack.files.push(file);
-                break;
-            }
-        }
-    }
     let result = detected_stacks
         .into_iter()
         .filter(|stack| !stack.files.is_empty())

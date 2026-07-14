@@ -178,12 +178,13 @@ M  file.rs
             let file_path = PathBuf::from("file.rs");
             let tests: HashMap<StagedFiles, Vec<&PathBuf>> = hashmap! {
                 StagedFiles {
-                    partial: vec![file_path.clone()],
+                    partial: vec![file_path.clone(), file_path.clone()],
                     full: vec![file_path.clone()],
                 } => vec![&file_path],
             };
             for (give, want) in tests {
-                assert_eq!(give.all(), want);
+                let have = give.all();
+                assert_eq!(have, want);
             }
         }
     }
