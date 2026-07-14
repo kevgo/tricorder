@@ -161,7 +161,6 @@ M  full.txt
                 full: vec!["full.txt".into()],
             }
         };
-
         for (give, want) in tests {
             let have = super::parse_output(&give[1..]);
             pretty::assert_eq!(have, want, "{give}");
