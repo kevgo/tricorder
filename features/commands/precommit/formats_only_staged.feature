@@ -1,4 +1,3 @@
-@this
 Feature: "tricorder precommit" formats only staged files
 
   Background:
