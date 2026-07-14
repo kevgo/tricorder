@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use std::process::Command;
 
+#[must_use]
 pub fn status() -> Option<StagedFiles> {
     let Ok(output) = Command::new("git").arg("status").arg("--short").output() else {
         // Git not found --> format all files
@@ -11,11 +12,11 @@ pub fn status() -> Option<StagedFiles> {
         return None;
     }
     // parse the output
-    let output = String::from_utf8(output.stdout).unwrap();
+    let output = String::from_utf8_lossy(&output.stdout);
     Some(parse_output(&output))
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub struct StagedFiles {
     /// partially staged files
     pub partial: Vec<PathBuf>,
@@ -25,16 +26,8 @@ pub struct StagedFiles {
 }
 
 impl StagedFiles {
-    pub fn new() -> Self {
-        Self {
-            partial: Vec::new(),
-            full: Vec::new(),
-        }
-    }
-}
-
-impl StagedFiles {
     /// provides all staged files, fully or partially staged
+    #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
         self.partial.iter().chain(self.full.iter()).collect()
     }
@@ -47,7 +40,7 @@ fn parse_output(output: &str) -> StagedFiles {
     };
 
     for line in output.lines() {
-        parse_line(line, &mut result)
+        parse_line(line, &mut result);
     }
     result
 }
@@ -138,7 +131,7 @@ mod tests {
             },
         };
         for (give, want) in tests {
-            let mut have = StagedFiles::new();
+            let mut have = StagedFiles::default();
             super::parse_line(give, &mut have);
             assert_eq!(have, want);
         }
@@ -146,10 +139,10 @@ mod tests {
 
     #[test]
     fn test_parse_output() {
-        let give = r#"
+        let give = r"
 MM src/commands/precommit.rs
 M  src/stacks/mod.rs
-?? src/filesystem/"#;
+?? src/filesystem/";
         let have = super::parse_output(&give[1..]);
         let want = StagedFiles {
             partial: vec!["src/stacks/mod.rs".into()],
