@@ -1,3 +1,3 @@
 mod status;
 
-pub use status::{StatusResult, status};
+pub use status::{StagedFiles, status};

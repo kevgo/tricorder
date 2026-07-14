@@ -60,17 +60,17 @@ pub fn discover_uncommitted() -> DetectedStacks {
         .collect();
     let Some(git_status) = git::status() else {
         // no git status --> return all stacks
-        return detected_stacks;
+        return discover_all();
     };
-    for file in git_status.uncommitted {
+    for file in git_status.all() {
         for detected_stack in &mut detected_stacks {
-            if detected_stack.stack.owns(&file) {
+            if detected_stack.stack.owns(file) {
                 detected_stack.files.push(file);
                 break;
             }
         }
     }
-    for file in git_status.staged {
+    for file in git_status.full {
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(&file) {
                 detected_stack.files.push(file);
