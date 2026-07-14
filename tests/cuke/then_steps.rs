@@ -5,6 +5,7 @@ use cucumber::then;
 use regex::Regex;
 use test_helpers::snapshots;
 use tokio::fs;
+use tokio::process::Command;
 
 #[then("all files are unchanged")]
 async fn all_files_unchanged(world: &mut TricorderWorld) {
@@ -223,6 +224,41 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TricorderWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
+}
+
+#[then(expr = "the staged changes match")]
+async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    // run "git diff --staged"
+    let output = Command::new("git")
+        .arg("diff")
+        .arg("--staged")
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+    let stdout = strip_ansi_escapes::strip(&output.stdout);
+    let have = String::from_utf8_lossy(&stdout)
+        .replace("\n \n", "\n\n")
+        .replace("\n\n", "\n");
+    assert_eq!(have.trim(), want.trim());
+}
+
+#[then(expr = "the unstaged changes are")]
+async fn the_unstaged_changes_are(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    // run "git diff --staged"
+    let output = Command::new("git")
+        .arg("diff")
+        .current_dir(&world.dir)
+        .output()
+        .await
+        .unwrap();
+    let stdout = strip_ansi_escapes::strip(&output.stdout);
+    let have = String::from_utf8_lossy(&stdout)
+        .replace("\n \n", "\n\n")
+        .replace("\n\n", "\n");
+    assert_eq!(have.trim(), want.trim());
 }
 
 #[then(expr = "there is no file {string}")]

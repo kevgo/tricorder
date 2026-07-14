@@ -104,8 +104,11 @@ async fn an_executable_file_with_content(
 async fn i_ran(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
-    assert!(executable == "tools/rta", "can only execute 'tools/rta'");
-    let mut absolute_path = world.cwd.join("tools").join("rta");
+    let mut absolute_path = if executable == "tools/rta" {
+        world.cwd.join("tools").join("rta")
+    } else {
+        which::which(executable).unwrap()
+    };
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
