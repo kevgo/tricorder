@@ -139,15 +139,26 @@ mod tests {
 
     #[test]
     fn test_parse_output() {
-        let give = r"
+        let tests = hashmap! {
+            r"
 MM src/commands/precommit.rs
 M  src/stacks/mod.rs
-?? src/filesystem/";
-        let have = super::parse_output(&give[1..]);
-        let want = StagedFiles {
-            partial: vec!["src/commands/precommit.rs".into()],
-            full: vec!["src/stacks/mod.rs".into()],
+?? src/filesystem/" => StagedFiles {
+                partial: vec!["src/commands/precommit.rs".into()],
+                full: vec!["src/stacks/mod.rs".into()],
+            },
+            r"
+MM file.rs
+M  file.rs
+?? other" => StagedFiles {
+                partial: vec!["file.rs".into()],
+                full: vec!["file.rs".into()],
+            },
         };
-        pretty::assert_eq!(have, want);
+
+        for (give, want) in tests {
+            let have = super::parse_output(&give[1..]);
+            pretty::assert_eq!(have, want, "{give}");
+        }
     }
 }

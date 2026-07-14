@@ -15,6 +15,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
 
     // step 2: discover the stacks
     let stacks = stacks::discover_uncommitted();
+    println!("{stacks:?}");
     if show == conc::Show::All {
         print_metadata(&stacks);
     }
