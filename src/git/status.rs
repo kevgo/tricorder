@@ -1,4 +1,3 @@
-use ahash::AHashSet;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -30,10 +29,7 @@ impl StagedFiles {
     /// provides all staged files (fully or partially)
     #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
-        let mut result = AHashSet::new();
-        result.extend(self.partial.iter());
-        result.extend(self.full.iter());
-        result.into_iter().collect()
+        self.partial.iter().chain(self.full.iter()).collect()
     }
 }
 
@@ -175,12 +171,13 @@ M  full.txt
 
         #[test]
         fn all() {
-            let file_path = PathBuf::from("file.rs");
+            let partial = PathBuf::from("partial.txt");
+            let full = PathBuf::from("full.txt");
             let tests: HashMap<StagedFiles, Vec<&PathBuf>> = hashmap! {
                 StagedFiles {
-                    partial: vec![file_path.clone(), file_path.clone()],
-                    full: vec![file_path.clone()],
-                } => vec![&file_path],
+                    partial: vec![partial.clone()],
+                    full: vec![full.clone()],
+                } => vec![&partial, &full],
             };
             for (give, want) in tests {
                 let have = give.all();
