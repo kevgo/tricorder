@@ -1,3 +1,4 @@
+@this
 Feature: "tricorder precommit" formats only staged files
 
   Background:
@@ -32,7 +33,7 @@ Feature: "tricorder precommit" formats only staged files
 
       line 2
       """
-    And I ran "git add -A"
+    And I ran "git add partially_staged.md"
     And a file "partially_staged.md" with content
       """
       # Partially staged file
@@ -68,7 +69,6 @@ Feature: "tricorder precommit" formats only staged files
       +modified line 2
       """
 
-  @this
   Scenario: precommit a fully staged file
     Given a file "fully_staged.md" with content
       """
@@ -76,7 +76,7 @@ Feature: "tricorder precommit" formats only staged files
 
       line 1
       """
-    And I ran "git add -A"
+    And I ran "git add fully_staged.md"
     And a file "fully_staged.md" with content
       """
       # Fully staged file
