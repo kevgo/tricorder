@@ -153,11 +153,12 @@ mod tests {
     fn test_parse_output() {
         let tests = hashmap! {
             r"
-MM src/commands/precommit.rs
-M  src/stacks/mod.rs
-?? src/filesystem/" => StagedFiles {
-                partial: vec!["src/commands/precommit.rs".into()],
-                full: vec!["src/stacks/mod.rs".into()],
+MM partial.txt
+M  full.txt
+ M unstaged.txt
+?? untracked" => StagedFiles {
+                partial: vec!["partial.txt".into()],
+                full: vec!["full.txt".into()],
             }
         };
 
