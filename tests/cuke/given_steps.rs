@@ -50,7 +50,6 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 
 #[given(expr = "I change file {string} to")]
 async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: String) {
-    // check if the file exists
     let filepath = world.dir.join(&filename);
     assert!(
         filepath.exists(),
