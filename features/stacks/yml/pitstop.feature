@@ -30,7 +30,6 @@ Feature: pitstop YML
       key: other
       """
 
-  @this
   Scenario: unformatted YML with lint errors
     Given a file "run-that-app" with content
       """
