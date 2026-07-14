@@ -24,7 +24,7 @@ Feature: "tricorder precommit" formats only staged files
     And I ran "git add -A"
     And I ran "git commit -m original"
 
-  Scenario: fix improper formatting of a partially staged file
+  Scenario: fix formatting for a partially staged file
     Given I change file "partially_staged.md" to
       """
       # Partially staged file
