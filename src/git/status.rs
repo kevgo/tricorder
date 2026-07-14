@@ -39,10 +39,7 @@ impl StagedFiles {
 
 /// parses the output of "git status --short"
 fn parse_output(output: &str) -> StagedFiles {
-    let mut result = StagedFiles {
-        partial: Vec::new(),
-        full: Vec::new(),
-    };
+    let mut result = StagedFiles::default();
     for line in output.lines() {
         parse_line(line, &mut result);
     }
