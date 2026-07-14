@@ -12,7 +12,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
 
     // step 2: discover the stacks
-    let stacks = stacks::discover();
+    let stacks = stacks::discover_all();
     if show == conc::Show::All {
         print_metadata(&stacks);
     }

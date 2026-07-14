@@ -15,7 +15,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let stacks = stacks::discover();
+    let stacks = stacks::discover_all();
     if show == conc::Show::All {
         print_metadata(&stacks);
     }
