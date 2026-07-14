@@ -3,7 +3,7 @@ Feature: lint JSON
   Background:
     Given a file "run-that-app" with content
       """
-      prettier-standalone 0.24.0
+      prettier 3.7.0
       delete-empty-folders 0.0.2
       """
 

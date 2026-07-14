@@ -38,10 +38,8 @@ pub(crate) fn get_rta_command(
             optional: true,
             verbose: false,
         };
-        println!("get_cmd_args: {:?}", args.app.name());
         match rta::get_cmd(get_cmd_args) {
             Ok(cmd) => {
-                println!("cmd: {cmd:?}");
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
                     command: command.into(),
@@ -50,7 +48,6 @@ pub(crate) fn get_rta_command(
             Err(err) => match err {
                 rta::error::UserError::NoVersionsFound { app }
                 | rta::error::UserError::RunRequestMissingVersion { app } => {
-                    println!("cannot find command for {}", args.app.name());
                     let add_args = rta::commands::AddArgs {
                         app_name: app,
                         verbose: true,
