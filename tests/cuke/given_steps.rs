@@ -52,9 +52,11 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: String) {
     // check if the file exists
     let filepath = world.dir.join(&filename);
-    if !filepath.exists() {
-        panic!("file '{}' does not exist", filepath.display());
-    }
+    assert!(
+        filepath.exists(),
+        "file '{}' does not exist",
+        filepath.display()
+    );
     a_file_with_content(world, step, filename).await;
 }
 
