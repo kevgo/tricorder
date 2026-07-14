@@ -229,7 +229,6 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
 #[then(expr = "the staged changes are")]
 async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    // run "git diff --staged"
     let output = Command::new("git")
         .arg("diff")
         .arg("--staged")
@@ -245,9 +244,8 @@ async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then(expr = "there are no staged changes")]
-async fn there_are_no_staged_changes(world: &mut TricorderWorld, step: &Step) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    // run "git diff --staged"
+async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
+    let want = "";
     let output = Command::new("git")
         .arg("diff")
         .arg("--staged")
