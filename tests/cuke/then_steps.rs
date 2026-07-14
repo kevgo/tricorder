@@ -254,9 +254,7 @@ async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
         .await
         .unwrap();
     let stdout = strip_ansi_escapes::strip(&output.stdout);
-    let have = String::from_utf8_lossy(&stdout)
-        .replace("\n \n", "\n\n")
-        .replace("\n\n", "\n");
+    let have = String::from_utf8_lossy(&stdout);
     assert_eq!(have.trim(), want.trim());
 }
 
