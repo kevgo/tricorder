@@ -69,7 +69,7 @@ Feature: "tricorder precommit" formats only staged files
       """
 
   Scenario: precommit a fully staged file
-    Given a file "fully_staged.md" with content
+    Given I change file "fully_staged.md" to
       """
       # Fully staged file
 
