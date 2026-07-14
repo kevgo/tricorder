@@ -52,7 +52,7 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
         log_unexpected_line(line);
         return;
     };
-    let Some(is_staged) = parse_prefix(staging) else {
+    let Some(is_staged) = prefix_is_staged(staging) else {
         log_unexpected_line(line);
         return;
     };
@@ -60,7 +60,7 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
         log_unexpected_line(line);
         return;
     };
-    let Some(is_working) = parse_prefix(working) else {
+    let Some(is_working) = prefix_is_staged(working) else {
         log_unexpected_line(line);
         return;
     };
@@ -85,10 +85,10 @@ fn log_unexpected_line(line: &str) {
 }
 
 /// parses the status code that Git prints when running "git status --short"
-fn parse_prefix(prefix: char) -> Option<bool> {
+fn prefix_is_staged(prefix: char) -> Option<bool> {
     match prefix {
         'A' | 'M' | 'R' | 'C' | 'T' => Some(true),
-        ' ' | 'D' | 'U' | '!' => Some(false),
+        ' ' | 'D' | 'U' | '?' | '!' => Some(false),
         _ => None,
     }
 }
