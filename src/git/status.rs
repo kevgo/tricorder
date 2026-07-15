@@ -36,7 +36,7 @@ pub struct StagedFiles {
 }
 
 impl StagedFiles {
-    /// provides all staged files (fully or partially)
+    /// provides all staged files, i.e. fully and partially staged ones
     #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
         self.partial.iter().chain(self.full.iter()).collect()
