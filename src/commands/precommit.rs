@@ -1,5 +1,3 @@
-use ahash::AHashMap;
-
 use crate::apps::delete_empty_folders;
 use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
@@ -7,6 +5,7 @@ use crate::commands::fix::Runnables;
 use crate::config::{Config, CustomFix};
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType};
 use crate::stacks;
+use ahash::AHashMap;
 use std::path::Path;
 use std::process::ExitCode;
 
