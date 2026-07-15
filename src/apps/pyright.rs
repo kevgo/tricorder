@@ -1,16 +1,16 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Lint, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Pyright;
 
 impl Tool for Pyright {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        let Some(json_stack) = detected_stacks.get_stack(StackType::Json) else {
-            return false;
-        };
-        json_stack.files.contains("./pyrightconfig.json")
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::FilePresent {
+            filename: "pyrightconfig.json",
+            stack_type: StackType::Json,
+        }
     }
 }
 

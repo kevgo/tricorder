@@ -1,13 +1,13 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct GherkinLint;
 
 impl Tool for GherkinLint {
-    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        true
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::Always
         // let Some(other_stack) = detected_stacks.with_type(StackType::Unknown) else {
         //     return false;
         // };

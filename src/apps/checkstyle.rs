@@ -1,4 +1,4 @@
-use crate::domain::{DetectedStack, DetectedStacks, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
 use std::fmt::Display;
 
 pub struct Checkstyle;
@@ -7,8 +7,8 @@ const BINARY: &str = "checkstyle";
 const CONFIG_ARG: &str = "-c /google_checks.xml";
 
 impl Tool for Checkstyle {
-    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
-        true
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::Always
     }
 }
 

@@ -68,7 +68,7 @@ pub fn determine_fixes(
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if !fix.is_enabled(stacks) {
+            if !stacks.stack_enabled(&fix.enabled_when()) {
                 continue;
             }
             stack_executables.extend(fix.fix_commands(stack)?);
