@@ -39,7 +39,10 @@ impl StagedFiles {
     /// provides all staged files, i.e. fully and partially staged ones
     #[must_use]
     pub fn all(&self) -> Vec<&PathBuf> {
-        self.partial.iter().chain(self.full.iter()).collect()
+        let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
+        result.extend(self.partial.iter());
+        result.extend(self.full.iter());
+        result
     }
 }
 
