@@ -65,9 +65,9 @@ pub fn determine_precommit_fixes(
     }
 
     // stack-specific fixes
-    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
+    let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in staged_stacks {
-        let stack_executables = stack_executables
+        let stack_executables = stacks_executables
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
@@ -92,7 +92,7 @@ pub fn determine_precommit_fixes(
                 command: conc::shell_command(&fix.command),
             };
             if let Some(stack) = fix.stack {
-                let stack_executables = stack_executables.entry(stack).or_default();
+                let stack_executables = stacks_executables.entry(stack).or_default();
                 stack_executables.push(executable);
             } else {
                 global.push(executable);
@@ -102,7 +102,7 @@ pub fn determine_precommit_fixes(
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stack_executables {
+    for (_stack_type, stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
             stack_specific.push(conc::Runnable::Sequence(stack_executables));
         }
