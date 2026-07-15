@@ -42,6 +42,7 @@ Feature: fix Markdown with Tikibase
     And file "one.md" is unchanged
     And file "two.md" is unchanged
 
+  @this
   Scenario: unformatted Markdown
     Given a file "one.md" with content
       """
