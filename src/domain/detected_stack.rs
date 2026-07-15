@@ -71,13 +71,13 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn stack_enabled(&self, enabled_when: EnabledWhen) -> bool {
+    pub fn stack_enabled(&self, enabled_when: &EnabledWhen) -> bool {
         match enabled_when {
             EnabledWhen::Always => true,
             EnabledWhen::FilePresent {
                 filename,
                 stack_type,
-            } => self.contains_file(stack_type, filename),
+            } => self.contains_file(*stack_type, filename),
         }
     }
 }
