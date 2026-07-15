@@ -1,5 +1,11 @@
 # Tricorder changelog
 
+## 0.0.13 (2026-07-15)
+
+- the "precommit" command fixes only staged files
+- calls out non-UTF8 file paths
+- runs the real Prettier package via NodeJS
+
 ## 0.0.12 (2026-07-13)
 
 - provide carrier version in `run-that-app`
