@@ -6,6 +6,7 @@ pub trait Tool: Display {
     fn enabled_when(&self) -> EnabledWhen;
 }
 
+/// describes under which conditions a tool is enabled
 pub enum EnabledWhen {
     /// the tool is always enabled
     Always,
