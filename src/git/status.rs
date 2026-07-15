@@ -94,7 +94,7 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
 }
 
 fn log_unexpected_line(line: &str) {
-    println!("unexpected line in output of \"git status --short\": {line}");
+    println!("unexpected line in output of \"git status --short --porcelain=v1\": {line}");
 }
 
 /// parses the status code that Git prints when running "git status --short"
