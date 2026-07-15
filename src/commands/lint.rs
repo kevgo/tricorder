@@ -13,13 +13,13 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let stacks = stacks::discover();
+    let all_stacks = stacks::discover_all();
     if show == conc::Show::All {
-        print_metadata(&stacks);
+        print_metadata(&all_stacks);
     }
 
     // step 3: discover all runnables
-    let runnables = determine_lints(&stacks, config.custom_lints)?;
+    let runnables = determine_lints(&all_stacks, config.custom_lints)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }

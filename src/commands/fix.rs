@@ -15,13 +15,13 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let stacks = stacks::discover();
+    let all_stacks = stacks::discover_all();
     if show == conc::Show::All {
-        print_metadata(&stacks);
+        print_metadata(&all_stacks);
     }
 
     // step 3: discover all runnables
-    let runnables = determine_fixes(config.custom_fixes, &stacks)?;
+    let runnables = determine_fixes(config.custom_fixes, &all_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -55,16 +55,16 @@ pub fn determine_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     stacks: &DetectedStacks,
 ) -> Result<Runnables> {
-    // step 3 global fixes
+    // global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(delete_empty_folders);
     }
 
-    // step 4 stack-specific fixes
-    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
+    // stack-specific fixes
+    let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in stacks {
-        let stack_executables = stack_executables
+        let stack_executables = stacks_executables
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
@@ -75,7 +75,7 @@ pub fn determine_fixes(
         }
     }
 
-    // step 5 custom fixes
+    // custom fixes
     if let Some(custom_fixes) = custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
@@ -83,7 +83,7 @@ pub fn determine_fixes(
                 command: conc::shell_command(&fix.command),
             };
             if let Some(stack) = fix.stack {
-                let stack_executables = stack_executables.entry(stack).or_default();
+                let stack_executables = stacks_executables.entry(stack).or_default();
                 stack_executables.push(executable);
             } else {
                 global.push(executable);
@@ -91,9 +91,9 @@ pub fn determine_fixes(
         }
     }
 
-    // step 6: convert to runnables and return
+    // convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stack_executables {
+    for (_stack_type, stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
             stack_specific.push(conc::Runnable::Sequence(stack_executables));
         }

@@ -12,6 +12,7 @@ mod unknown;
 mod yml;
 
 use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
+use crate::git;
 pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
@@ -48,15 +49,49 @@ pub fn all() -> Vec<Box<dyn Stack>> {
     ]
 }
 
+/// provides the staged files and their stacks
+#[must_use]
+pub fn discover_staged() -> DetectedStacks {
+    let all_stacks = all();
+    let mut detected_stacks: Vec<DetectedStack> = all_stacks
+        .into_iter()
+        .map(|stack| DetectedStack {
+            stack,
+            files: Files::new(),
+        })
+        .collect();
+    let Some(git_status) = git::status() else {
+        // no git status --> return all stacks
+        return discover_all();
+    };
+    for file in git_status.all() {
+        for detected_stack in &mut detected_stacks {
+            if detected_stack.stack.owns(file) {
+                detected_stack.files.push(file.clone());
+                break;
+            }
+        }
+    }
+    let result = detected_stacks
+        .into_iter()
+        .filter(|stack| !stack.files.is_empty())
+        .map(|mut stack| {
+            stack.files.sort_unstable();
+            stack
+        })
+        .collect();
+    DetectedStacks::new(result)
+}
+
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover() -> DetectedStacks {
-    discover_in(Path::new("./"))
+pub fn discover_all() -> DetectedStacks {
+    discover_all_in(Path::new("./"))
 }
 
 /// provides all stacks and their files found under `dir`
 #[must_use]
-pub fn discover_in(dir: &Path) -> DetectedStacks {
+pub fn discover_all_in(dir: &Path) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -94,7 +129,7 @@ mod tests {
 
     mod discover {
         use crate::domain::{DetectedStack, DetectedStacks, Files};
-        use crate::stacks::discover_in;
+        use crate::stacks::discover_all_in;
         use crate::stacks::{Go, Json, JsonC, Markdown, Unknown};
         use std::fs;
         use tempfile::TempDir;
@@ -112,7 +147,7 @@ mod tests {
         #[test]
         fn empty_directory() {
             let dir = TempDir::new().unwrap();
-            let stacks = discover_in(dir.path());
+            let stacks = discover_all_in(dir.path());
             assert!(stacks.is_empty());
         }
 
@@ -129,7 +164,7 @@ mod tests {
                     "text-runner.jsonc",
                 ],
             );
-            let have = discover_in(dir.path());
+            let have = discover_all_in(dir.path());
             let root = dir.path();
             let want = DetectedStacks::new(vec![
                 DetectedStack {
@@ -160,7 +195,7 @@ mod tests {
         fn nested_directories() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["src/nested/deep/main.go"]);
-            let have = discover_in(dir.path());
+            let have = discover_all_in(dir.path());
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),
