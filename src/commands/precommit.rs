@@ -5,7 +5,7 @@ use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::config::{Config, CustomFix};
-use crate::domain::{DetectedStacks, Result, StackType};
+use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType};
 use crate::stacks;
 use std::process::ExitCode;
 
@@ -71,7 +71,14 @@ pub fn determine_fixes_precommit(
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if !fix.is_enabled(stacks) {
+            let enabled = match fix.enabled_when() {
+                EnabledWhen::Always => true,
+                EnabledWhen::FilePresent {
+                    filename,
+                    stack_type,
+                } => stacks.contains_file(*stack_type, &format!("./{filename}")),
+            };
+            if !stacks.stack_enabled(&fix.enabled_when()) {
                 continue;
             }
             stack_executables.extend(fix.fix_commands(stack)?);
