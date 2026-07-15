@@ -48,6 +48,17 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
     });
 }
 
+#[given(expr = "I change file {string} to")]
+async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: String) {
+    let filepath = world.dir.join(&filename);
+    assert!(
+        filepath.exists(),
+        "file '{}' does not exist",
+        filepath.display()
+    );
+    a_file_with_content(world, step, filename).await;
+}
+
 #[given(expr = "a Git repository")]
 async fn a_git_repository(world: &mut TricorderWorld) {
     Command::new("git")
@@ -104,12 +115,21 @@ async fn an_executable_file_with_content(
 async fn i_ran(world: &mut TricorderWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
-    assert!(executable == "tools/rta", "can only execute 'tools/rta'");
-    let mut absolute_path = world.cwd.join("tools").join("rta");
+    let mut absolute_path = if executable == "tools/rta" {
+        world.cwd.join("tools").join("rta")
+    } else {
+        which::which(executable).unwrap()
+    };
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }
     let mut cmd = Command::new(absolute_path);
+    if executable == "git" {
+        cmd.arg("-c")
+            .arg("user.name=Test")
+            .arg("-c")
+            .arg("user.email=test@example.com");
+    }
     cmd.args(args);
     cmd.current_dir(&world.dir);
     let output = cmd
