@@ -23,7 +23,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_fixes_precommit(config.custom_fixes, &staged_stacks)?;
+    let runnables = determine_precommit_fixes(config.custom_fixes, &staged_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -54,7 +54,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
 ///
 /// The `staged_stacks` argument are the stacks that are currently staged in the git repository,
 /// not all stacks that exist in the workspace.
-pub fn determine_fixes_precommit(
+pub fn determine_precommit_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     staged_stacks: &DetectedStacks,
 ) -> Result<Runnables> {
