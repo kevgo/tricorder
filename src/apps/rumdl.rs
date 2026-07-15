@@ -1,13 +1,13 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Fix, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Rumdl;
 
 impl Tool for Rumdl {
-    fn is_enabled(&self, _detected_stacks: &DetectedStacks) -> bool {
-        true
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::Always
         // let Some(toml_stack) = detected_stacks.with_type(StackType::Toml) else {
         //     return false;
         // };
