@@ -177,7 +177,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
         }
         return;
     }
-    let missing = contains_lines(&stdout, want);
+    let missing = contains_lines(stdout, want);
     assert!(
         missing.is_empty(),
         "STDOUT is missing lines:\n\nHAVE:\n{stdout}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -193,7 +193,7 @@ fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
     };
     let stripped = strip_ansi_escapes::strip(&output.stderr);
     let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
-    let missing = contains_lines(&stderr, want);
+    let missing = contains_lines(stderr, want);
     assert!(
         missing.is_empty(),
         "STDERR is missing lines:\n\nHAVE:\n{stderr}\n\nWANT:\n{want}\n\nMISSING:\n{}",
