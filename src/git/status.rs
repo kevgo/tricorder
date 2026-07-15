@@ -46,7 +46,7 @@ impl StagedFiles {
     }
 }
 
-/// parses the output of "git status --short"
+/// parses the output of "git status --short --porcelain=v1"
 fn parse_output(output: &str) -> StagedFiles {
     let mut result = StagedFiles::default();
     for line in output.lines() {
