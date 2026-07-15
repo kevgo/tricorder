@@ -14,6 +14,7 @@ pub fn status() -> Option<StagedFiles> {
     }
     let Ok(output) = str::from_utf8(&output.stdout) else {
         // we don't support non-UTF-8 filenames for now
+        eprintln!("ERROR: \"git status --short\" returned non-UTF-8 output");
         return None;
     };
     Some(parse_output(output))
