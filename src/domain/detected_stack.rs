@@ -77,7 +77,7 @@ impl DetectedStacks {
             EnabledWhen::FilePresent {
                 filename,
                 stack_type,
-            } => self.contains_file(*stack_type, filename),
+            } => self.contains_file(*stack_type, &format!("./{filename}")),
         }
     }
 }
