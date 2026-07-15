@@ -7,6 +7,7 @@ use crate::commands::fix::Runnables;
 use crate::config::{Config, CustomFix};
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType};
 use crate::stacks;
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
@@ -76,7 +77,10 @@ pub fn determine_fixes_precommit(
                 EnabledWhen::FilePresent {
                     filename,
                     stack_type,
-                } => stacks.contains_file(*stack_type, &format!("./{filename}")),
+                } => {
+                    let file = Path::new(&filename);
+                    file.exists()
+                }
             };
             if !stacks.stack_enabled(&fix.enabled_when()) {
                 continue;
