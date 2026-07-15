@@ -45,7 +45,7 @@ Feature: runs all fixes for the changed files
 
       text
       """
-    Then the staged changes are
+    And the staged changes are
       """
       diff --git a/one.md b/one.md
       index b3e70d0..7a53595 100644
