@@ -4,7 +4,12 @@ use std::process::Command;
 /// determines which files are staged in the current directory
 #[must_use]
 pub fn status() -> Option<StagedFiles> {
-    let Ok(output) = Command::new("git").arg("status").arg("--short").output() else {
+    let Ok(output) = Command::new("git")
+        .arg("status")
+        .arg("--short")
+        .arg("--porcelain=v1")
+        .output()
+    else {
         // Git not installed
         return None;
     };
