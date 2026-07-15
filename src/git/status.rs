@@ -12,8 +12,11 @@ pub fn status() -> Option<StagedFiles> {
         // probably not a Git repo
         return None;
     }
-    let output = String::from_utf8_lossy(&output.stdout);
-    Some(parse_output(&output))
+    let Ok(output) = str::from_utf8(&output.stdout) else {
+        // we don't support non-UTF-8 filenames for now
+        return None;
+    };
+    Some(parse_output(output))
 }
 
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
