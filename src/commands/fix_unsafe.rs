@@ -12,13 +12,13 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
 
     // step 2: discover the stacks
-    let stacks = stacks::discover_all();
+    let all_stacks = stacks::discover_all();
     if show == conc::Show::All {
-        print_metadata(&stacks);
+        print_metadata(&all_stacks);
     }
 
     // step 3: discover the unsafe fixes
-    let unsafe_fixes = determine_unsafe_fixes(&stacks)?;
+    let unsafe_fixes = determine_unsafe_fixes(&all_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", unsafe_fixes.len());
     }

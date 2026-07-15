@@ -15,14 +15,14 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let stacks = stacks::discover_all();
+    let all_stacks = stacks::discover_all();
     if show == conc::Show::All {
-        print_metadata(&stacks);
+        print_metadata(&all_stacks);
     }
 
     // step 3: discover all runnables
-    let fix_runnables = fix::determine_fixes(config.custom_fixes, &stacks)?;
-    let lints = lint::determine_lints(&stacks, config.custom_lints)?;
+    let fix_runnables = fix::determine_fixes(config.custom_fixes, &all_stacks)?;
+    let lints = lint::determine_lints(&all_stacks, config.custom_lints)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show == conc::Show::All {
         eprintln!("running {runnable_count} tools");
