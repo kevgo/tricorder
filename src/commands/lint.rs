@@ -46,7 +46,7 @@ pub fn determine_lints(
     // determine the lints for the stacks
     for stack in stacks {
         for lint in stack.stack.lints() {
-            if !lint.is_enabled(stacks) {
+            if !stacks.stack_enabled(lint.enabled_when()) {
                 continue;
             }
             if let Some(executable) = lint.lint_commands(stack)? {

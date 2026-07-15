@@ -1,4 +1,4 @@
-use crate::domain::{Files, Stack, StackType};
+use crate::domain::{EnabledWhen, Files, Stack, StackType};
 
 /// A stack that was detected in the workspace,
 /// and the workspace files belonging to it.
@@ -68,6 +68,17 @@ impl DetectedStacks {
     #[must_use]
     pub fn get_stack(&self, stack_type: StackType) -> Option<&DetectedStack> {
         self.0.iter().find(|s| s.stack.stack_type() == stack_type)
+    }
+
+    #[must_use]
+    pub fn stack_enabled(&self, enabled_when: EnabledWhen) -> bool {
+        match enabled_when {
+            EnabledWhen::Always => true,
+            EnabledWhen::FilePresent {
+                filename,
+                stack_type,
+            } => self.contains_file(stack_type, filename),
+        }
     }
 }
 
