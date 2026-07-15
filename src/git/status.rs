@@ -55,7 +55,7 @@ fn parse_output(output: &str) -> StagedFiles {
     result
 }
 
-/// parses a line from the output of "git status --short"
+/// parses a line from the output of "git status --short --porcelain=v1"
 fn parse_line(line: &str, result: &mut StagedFiles) {
     if line.len() < 3 {
         return;
