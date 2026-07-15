@@ -61,19 +61,19 @@ fn parse_line(line: &str, result: &mut StagedFiles) {
         return;
     }
     let mut chars = line.chars();
-    let Some(staging) = chars.next() else {
+    let Some(staging_char) = chars.next() else {
         log_unexpected_line(line);
         return;
     };
-    let Some(is_staged) = prefix_is_staged(staging) else {
+    let Some(is_staged) = prefix_is_staged(staging_char) else {
         log_unexpected_line(line);
         return;
     };
-    let Some(working) = chars.next() else {
+    let Some(working_char) = chars.next() else {
         log_unexpected_line(line);
         return;
     };
-    let Some(is_working) = prefix_is_staged(working) else {
+    let Some(is_working) = prefix_is_staged(working_char) else {
         log_unexpected_line(line);
         return;
     };
