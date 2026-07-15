@@ -58,13 +58,13 @@ pub fn determine_precommit_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     staged_stacks: &DetectedStacks,
 ) -> Result<Runnables> {
-    // step 3 global fixes
+    // global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(delete_empty_folders);
     }
 
-    // step 4 stack-specific fixes
+    // stack-specific fixes
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in staged_stacks {
         let stack_executables = stack_executables
@@ -87,7 +87,7 @@ pub fn determine_precommit_fixes(
         }
     }
 
-    // step 5 custom fixes
+    // custom fixes
     if let Some(custom_fixes) = custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {

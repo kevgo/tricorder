@@ -55,13 +55,13 @@ pub fn determine_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     stacks: &DetectedStacks,
 ) -> Result<Runnables> {
-    // step 3 global fixes
+    // global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
         global.push(delete_empty_folders);
     }
 
-    // step 4 stack-specific fixes
+    // stack-specific fixes
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in stacks {
         let stack_executables = stack_executables
@@ -75,7 +75,7 @@ pub fn determine_fixes(
         }
     }
 
-    // step 5 custom fixes
+    // custom fixes
     if let Some(custom_fixes) = custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
@@ -91,7 +91,7 @@ pub fn determine_fixes(
         }
     }
 
-    // step 6: convert to runnables and return
+    // convert to runnables and return
     let mut stack_specific = Vec::new();
     for (_stack_type, stack_executables) in stack_executables {
         if !stack_executables.is_empty() {
