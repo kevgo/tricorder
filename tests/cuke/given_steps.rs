@@ -140,7 +140,7 @@ async fn i_ran(world: &mut TricorderWorld, command: String) {
         output.status.success(),
         "command failed with {}\n\nOUTPUT:\n{}{}",
         output.status.code().unwrap(),
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr),
+        str::from_utf8(&output.stdout).expect("non-UTF-8 output"),
+        str::from_utf8(&output.stderr).expect("non-UTF-8 output"),
     );
 }

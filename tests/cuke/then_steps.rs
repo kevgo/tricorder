@@ -76,12 +76,12 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no output");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
     assert!(
         !stdout.contains(want),
         "output should not contain '{want}'\n\nHAVE:\n{stdout}",
     );
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stderr = str::from_utf8(&output.stderr).expect("non-UTF-8 output");
     assert!(
         !stderr.contains(want),
         "output should not contain '{want}'\n\nHAVE:\n{stderr}",
@@ -94,7 +94,7 @@ fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
     let Some(output) = &world.output else {
         panic!("no command run");
     };
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
     for want_line in want.lines() {
         assert!(!stdout.contains(want_line), "STDOUT contains '{want_line}'");
     }
@@ -107,7 +107,7 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = String::from_utf8_lossy(&stripped);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stdout.trim(), want);
 }
 
@@ -117,7 +117,7 @@ fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = String::from_utf8_lossy(&stripped);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stdout, "");
 }
 
@@ -127,7 +127,7 @@ fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stderr);
-    let stderr = String::from_utf8_lossy(&stripped);
+    let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stderr, "");
 }
 
@@ -138,7 +138,7 @@ fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stderr);
-    let stderr = String::from_utf8_lossy(&stripped);
+    let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stderr.trim(), want);
 }
 
@@ -149,7 +149,7 @@ fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = String::from_utf8_lossy(&stripped);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     assert!(
         stdout.contains(want),
         "output does not contain the block\n\nHAVE:\n{stdout}\n\n"
@@ -163,7 +163,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = String::from_utf8_lossy(&stripped);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     if snapshots::enabled() {
         if stdout != want {
             let path = world
@@ -178,7 +178,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
         }
         return;
     }
-    let missing = contains_lines(&stdout, want);
+    let missing = contains_lines(stdout, want);
     assert!(
         missing.is_empty(),
         "STDOUT is missing lines:\n\nHAVE:\n{stdout}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -193,8 +193,8 @@ fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stderr);
-    let stderr = String::from_utf8_lossy(&stripped);
-    let missing = contains_lines(&stderr, want);
+    let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    let missing = contains_lines(stderr, want);
     assert!(
         missing.is_empty(),
         "STDERR is missing lines:\n\nHAVE:\n{stderr}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -211,7 +211,7 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
         panic!("no command run");
     };
     let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = String::from_utf8_lossy(&stripped);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     let mut have = stdout.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
     assert!(
