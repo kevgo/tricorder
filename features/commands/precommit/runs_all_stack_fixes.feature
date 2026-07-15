@@ -17,7 +17,7 @@ Feature: runs all fixes for the changed files
         "bidiLinks": false
       }
       """
-    Given a file "one.md" with content
+    And a file "one.md" with content
       """
       # One
 
