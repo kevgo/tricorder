@@ -76,16 +76,15 @@ pub fn determine_fixes_precommit(
                 EnabledWhen::Always => true,
                 EnabledWhen::FilePresent {
                     filename,
-                    stack_type,
+                    stack_type: _,
                 } => {
                     let file = Path::new(&filename);
                     file.exists()
                 }
             };
-            if !stacks.stack_enabled(&fix.enabled_when()) {
-                continue;
+            if enabled {
+                stack_executables.extend(fix.fix_commands(stack)?);
             }
-            stack_executables.extend(fix.fix_commands(stack)?);
         }
     }
 
