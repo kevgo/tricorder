@@ -14,4 +14,4 @@ pub use fix::Fix;
 pub use lint::Lint;
 pub use stack::Stack;
 pub use stack_type::StackType;
-pub use tool::Tool;
+pub use tool::{EnabledWhen, Tool};
