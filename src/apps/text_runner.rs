@@ -1,16 +1,16 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Lint, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct TextRunner;
 
 impl Tool for TextRunner {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        let Some(jsonc_stack) = detected_stacks.get_stack(StackType::JsonC) else {
-            return false;
-        };
-        jsonc_stack.files.contains("./text-runner.jsonc")
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::FilePresent {
+            filename: "text-runner.jsonc",
+            stack_type: StackType::JsonC,
+        }
     }
 }
 

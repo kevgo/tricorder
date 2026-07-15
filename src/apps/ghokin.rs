@@ -1,13 +1,13 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, Fix, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Ghokin;
 
 impl Tool for Ghokin {
-    fn is_enabled(&self, _detected_stacks: &crate::domain::DetectedStacks) -> bool {
-        true
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::Always
     }
 }
 

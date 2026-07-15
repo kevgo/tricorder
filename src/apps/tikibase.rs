@@ -1,16 +1,16 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, DetectedStacks, Fix, Lint, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
 
 pub struct Tikibase;
 
 impl Tool for Tikibase {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool {
-        let Some(json_stack) = detected_stacks.get_stack(StackType::Json) else {
-            return false;
-        };
-        json_stack.files.contains("./tikibase.json")
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::FilePresent {
+            filename: "tikibase.json",
+            stack_type: StackType::Json,
+        }
     }
 }
 

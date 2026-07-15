@@ -1,7 +1,19 @@
-use crate::domain::DetectedStacks;
+use crate::domain::StackType;
 use std::fmt::Display;
 
 /// a tool (lint or fix) that Tricorder can run
 pub trait Tool: Display {
-    fn is_enabled(&self, detected_stacks: &DetectedStacks) -> bool;
+    fn enabled_when(&self) -> EnabledWhen;
+}
+
+/// describes under which conditions a tool is enabled
+pub enum EnabledWhen {
+    /// the tool is always enabled
+    Always,
+
+    /// the tool is enabled when a file with the given name
+    FilePresent {
+        filename: &'static str,
+        stack_type: StackType,
+    },
 }
