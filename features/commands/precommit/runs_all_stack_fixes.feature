@@ -1,6 +1,5 @@
 Feature: runs all fixes for the changed files
 
-  @this
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
     And a file "run-that-app" with content
