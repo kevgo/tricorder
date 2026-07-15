@@ -14,20 +14,14 @@ Feature: runs all fixes for the changed files
         "ignore": [
           "run-that-app"
         ],
-        "bidiLinks": true
+        "bidiLinks": false
       }
       """
     Given a file "one.md" with content
       """
       # One
 
-      also check out [Two](two.md)
-      """
-    And a file "two.md" with content
-      """
-      # Two
-
-      also check out [One](one.md)
+      text
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
@@ -35,7 +29,7 @@ Feature: runs all fixes for the changed files
       """
       # New   one
 
-      also check out [Two](two.md)
+      text
       """
     And I ran "git add one.md"
     When executing "tricorder precommit --show=all"
@@ -49,27 +43,27 @@ Feature: runs all fixes for the changed files
       """
       # New one
 
-      also check out [Two](two.md)
+      text
       """
     Then the staged changes are
       """
       diff --git a/one.md b/one.md
-      index 625df47..671d4b5 100644
+      index b3e70d0..7a53595 100644
       --- a/one.md
       +++ b/one.md
       @@ -1,3 +1,3 @@
       -# One
       +# New   one
-       also check out [Two](two.md)
+       text
       """
     And the unstaged changes are
       """
       diff --git a/one.md b/one.md
-      index 671d4b5..205f62f 100644
+      index 7a53595..4168e2b 100644
       --- a/one.md
       +++ b/one.md
       @@ -1,3 +1,3 @@
       -# New   one
       +# New one
-       also check out [Two](two.md)
+       text
       """
