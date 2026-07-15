@@ -25,12 +25,13 @@ pub fn status() -> Option<StagedFiles> {
     Some(parse_output(output))
 }
 
+/// represents the files that are staged in the current directory
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
-    /// partially staged files (some parts are staged, others are not)
+    /// partially staged files (some changes made to this file are staged, other changes are not)
     pub partial: Vec<PathBuf>,
 
-    /// fully staged files (all parts are staged)
+    /// fully staged files (all changes made to this file are staged)
     pub full: Vec<PathBuf>,
 }
 
