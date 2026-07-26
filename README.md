@@ -173,8 +173,9 @@ and then `tricorder fix` in sequence.
 
 ### `tricorder precommit`
 
-The `tricorder precommit` command runs `tricorder fix`
-but always with exit code 0 to allow the commit to proceed.
+The `tricorder precommit` command runs `tricorder fix`,
+but only for the staged files,
+and it always exits with code 0 to allow the commit to proceed.
 
 ### `tricorder ci`
 
