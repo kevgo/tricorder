@@ -10,7 +10,7 @@ and runs them in parallel behind a single command and a single exit code.
 - the best formatters and linters
 - always up to date
 - for all languages
-- running as fast as possible
+- running concurrently
 
 ## Why
 
