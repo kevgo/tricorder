@@ -12,30 +12,30 @@ description = "The all-in-one DevEx tool."
 [dependencies]
 ahash = "0.8.12"
 big_s = "1.0.2"
-clap = { version = "4.6.1", features = ["derive"] }
+clap = { version = "4.6.4", features = ["derive"] }
 conc = { package = "concurrent_shell_commands", version = "0.6.1" }
-ignore = "0.4.28"
+ignore = "0.4.31"
 itertools = "0.14.0"
 rta = { package = "run-that-app", version = "0.40.0" }
-serde = { version = "1.0.228", features = ["derive"] }
+serde = { version = "1.0.229", features = ["derive"] }
 serde_with = "3.21.0"
 strum = { version = "0.28.0", features = ["derive"] }
-toml = "1.1.2"
-which = "8.0.4"
+toml = "1.1.3"
+which = "8.0.5"
 
 [dev-dependencies]
 contains_lines = "0.0.1"
 cucumber = "0.23.0"
 itertools = "0.14.0"
 maplit = "1.0.2"
-mio = "1.2.1"
+mio = "1.2.2"
 pretty = { package = "pretty_assertions", version = "1.4.1" }
 rand = "0.10.2"
-regex = "1.13.0"
+regex = "1.13.1"
 strip-ansi-escapes = "0.2.1"
 tempfile = "3.27.0"
 test_helpers = { path = "test_helpers" }
-tokio = { version = "1.52.3", features = [
+tokio = { version = "1.53.1", features = [
   "fs",
   "io-util",
   "macros",
