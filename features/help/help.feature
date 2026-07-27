@@ -26,7 +26,7 @@ Feature: Displaying help
         init        Install coding agent hooks for this project
         fix         Repair all code quality issues
         fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [aliases: postgenerate]
+        lint        Find all code quality issues [alias: postgenerate]
         pitstop     Run fixes and lints
         precommit   Repair all code quality issues, never fails
         help        Print this message or the help of the given subcommand(s)
@@ -50,7 +50,7 @@ Feature: Displaying help
         init        Install coding agent hooks for this project
         fix         Repair all code quality issues
         fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [aliases: postgenerate]
+        lint        Find all code quality issues [alias: postgenerate]
         pitstop     Run fixes and lints
         precommit   Repair all code quality issues, never fails
         help        Print this message or the help of the given subcommand(s)
@@ -74,7 +74,7 @@ Feature: Displaying help
         init        Install coding agent hooks for this project
         fix         Repair all code quality issues
         fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [aliases: postgenerate]
+        lint        Find all code quality issues [alias: postgenerate]
         pitstop     Run fixes and lints
         precommit   Repair all code quality issues, never fails
         help        Print this message or the help of the given subcommand(s)
