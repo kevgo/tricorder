@@ -22,7 +22,7 @@ Feature: exclude a CSS file
     Given a file "two.css" with content
       """
       .foo {
-        color : red ;
+        color : green ;
       }
       """
     When executing "tricorder lint --show=all"
@@ -31,7 +31,13 @@ Feature: exclude a CSS file
       lint CSS (Biome)
       """
     And the exit code is 0
-    And file "main.css" is unchanged
+    And file "one.css" now has content
+      """
+      .foo {
+        color: red;
+      }
+      """
+    And file "two.css" is unchanged
 
   Scenario: invalid CSS
     Given a file "main.css" with content
