@@ -3,7 +3,7 @@ Feature: fix Cucumber
   Background:
     Given a file "run-that-app" with content
       """
-      ghokin 3.9.0
+      ghokin 3.10.0
       delete-empty-folders 0.0.2
       """
 
@@ -19,7 +19,7 @@ Feature: fix Cucumber
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      "." formatted
+      "main.feature" formatted
       """
     And the exit code is 0
     And file "main.feature" is unchanged
@@ -43,7 +43,8 @@ Feature: fix Cucumber
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      "." formatted
+      "main.feature" formatted
+      "other.feature" formatted
       """
     And the exit code is 0
     And file "main.feature" now has content
@@ -70,7 +71,7 @@ Feature: fix Cucumber
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      an error occurred with file "main.feature" : Parser errors:
+      Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
     And the exit code is 1
