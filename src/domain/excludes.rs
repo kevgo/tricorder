@@ -30,12 +30,16 @@ impl Excludes {
     }
 
     /// indicates whether the given path matches one of the exclude patterns
+    ///
+    /// Use this method to efficiently skip ignored subfolders when walking the file system from top to bottom.
     #[must_use]
     pub fn matches_self(&self, path: &Path, is_dir: bool) -> bool {
         self.0.matched(path, is_dir).is_ignore()
     }
 
     /// indicates whether the given path or any of its parent directories matches one of the exclude patterns
+    ///
+    /// Use this method to skip ignored files when checking file paths received outside of a directory walk.
     #[must_use]
     pub fn matches_self_or_parent(&self, path: &Path) -> bool {
         self.0.matched_path_or_any_parents(path, false).is_ignore()

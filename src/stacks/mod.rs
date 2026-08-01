@@ -103,10 +103,10 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
             files: Files::new(),
         })
         .collect();
-    let filter_excludes = excludes.clone();
+    let excludes2 = excludes.clone();
     let walk = WalkBuilder::new(dir)
         .filter_entry(move |entry| {
-            !filter_excludes.matches_self(
+            !excludes2.matches_self(
                 entry.path(),
                 entry.file_type().is_some_and(|ft| ft.is_dir()),
             )
