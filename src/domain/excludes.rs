@@ -23,6 +23,12 @@ impl Excludes {
         Ok(Self(gitignore))
     }
 
+    /// creates a new `Excludes` matcher that matches nothing
+    #[must_use]
+    pub fn empty() -> Self {
+        Self(Gitignore::empty())
+    }
+
     /// indicates whether the given path matches one of the exclude patterns
     #[must_use]
     pub fn matches_self(&self, path: &Path, is_dir: bool) -> bool {
@@ -33,12 +39,6 @@ impl Excludes {
     #[must_use]
     pub fn matches_self_or_parent(&self, path: &Path) -> bool {
         self.0.matched_path_or_any_parents(path, false).is_ignore()
-    }
-}
-
-impl Default for Excludes {
-    fn default() -> Self {
-        Self(Gitignore::empty())
     }
 }
 
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn empty() {
-        let excludes = Excludes::default();
+        let excludes = Excludes::empty();
         assert!(!excludes.matches_self(Path::new("one.css"), false));
     }
 

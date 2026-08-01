@@ -160,7 +160,7 @@ mod tests {
         #[test]
         fn empty_directory() {
             let dir = TempDir::new().unwrap();
-            let stacks = discover_all_in(dir.path(), &Excludes::default());
+            let stacks = discover_all_in(dir.path(), &Excludes::empty());
             assert!(stacks.is_empty());
         }
 
@@ -177,7 +177,7 @@ mod tests {
                     "text-runner.jsonc",
                 ],
             );
-            let have = discover_all_in(dir.path(), &Excludes::default());
+            let have = discover_all_in(dir.path(), &Excludes::empty());
             let root = dir.path();
             let want = DetectedStacks::new(vec![
                 DetectedStack {
@@ -208,7 +208,7 @@ mod tests {
         fn nested_directories() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["src/nested/deep/main.go"]);
-            let have = discover_all_in(dir.path(), &Excludes::default());
+            let have = discover_all_in(dir.path(), &Excludes::empty());
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),
