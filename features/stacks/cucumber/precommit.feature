@@ -1,11 +1,14 @@
 Feature: precommit Cucumber
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
-      ghokin 3.9.0
+      ghokin 3.10.0
       delete-empty-folders 0.0.2
       """
+    And I ran "git add -A"
+    And I ran "git commit -m original"
 
   Scenario: valid Cucumber
     Given a file "main.feature" with content
@@ -20,6 +23,7 @@ Feature: precommit Cucumber
     And the exit code is 0
     And file "main.feature" is unchanged
 
+  @this
   Scenario: unformatted Cucumber
     Given a file "main.feature" with content
       """
@@ -35,9 +39,10 @@ Feature: precommit Cucumber
         Scenario:   bar2
           Given   another step
       """
+    And I ran "git add -A"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
-    And the exit code is 0
+    Then the exit code is 0
     And file "main.feature" now has content
       """
       Feature: foo
