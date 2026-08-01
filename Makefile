@@ -1,5 +1,5 @@
 RUN_THAT_APP_VERSION = 0.40.0  # run-that-app version to use
-TRICORDER_VERSION = 0.0.10     # tricorder version to use
+TRICORDER_VERSION = 0.0.13     # tricorder version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
