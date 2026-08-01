@@ -23,7 +23,6 @@ Feature: precommit Cucumber
     And the exit code is 0
     And file "main.feature" is unchanged
 
-  @this
   Scenario: unformatted Cucumber
     Given a file "main.feature" with content
       """
@@ -63,6 +62,7 @@ Feature: precommit Cucumber
       """
       Feat
       """
+    And I ran "git add -A"
     When executing "tricorder precommit"
     Then it prints
       """
