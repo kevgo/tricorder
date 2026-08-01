@@ -114,6 +114,13 @@ command = "fixes/sort.py"
 stack = "python"
 ```
 
+You can exclude files from being linted and fixed altogether,
+using gitignore-style patterns:
+
+```toml
+exclude = ["two.css", "vendor/", "**/*.min.css"]
+```
+
 ## Usage
 
 ```sh

@@ -1,5 +1,6 @@
 mod detected_stack;
 mod error;
+mod excludes;
 mod files;
 mod fix;
 mod lint;
@@ -9,6 +10,7 @@ mod tool;
 
 pub use detected_stack::{DetectedStack, DetectedStacks};
 pub use error::{Result, UserError};
+pub use excludes::Excludes;
 pub use files::Files;
 pub use fix::Fix;
 pub use lint::Lint;
