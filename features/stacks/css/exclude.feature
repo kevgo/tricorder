@@ -5,6 +5,7 @@ Feature: exclude a CSS file
       """
       delete-empty-folders 0.0.2
       biome 2.4.0
+      taplo 0.10.0
       """
     And a file "tricorder.toml" with content
       """
