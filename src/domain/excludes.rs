@@ -57,6 +57,7 @@ mod tests {
     fn matches_directory() {
         let excludes = Excludes::new(&["vendor/".to_string()], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("vendor"), true));
+        assert!(!excludes.matches_self(Path::new("vendor/lib.css"), true));
         assert!(excludes.matches_self_or_parent(Path::new("vendor/lib.css")));
     }
 
