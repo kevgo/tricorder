@@ -1,6 +1,7 @@
-use crate::domain::{Result, StackType, UserError};
+use crate::domain::{Excludes, Result, StackType, UserError};
 use serde::Deserialize;
 use std::fs;
+use std::path::Path;
 
 const CONFIG_FILENAME: &str = "tricorder.toml";
 
@@ -11,6 +12,8 @@ pub struct Config {
 
     #[serde(alias = "custom-lints")]
     pub custom_lints: Option<Vec<CustomLint>>,
+
+    pub exclude: Option<Vec<String>>,
 }
 
 impl Config {
@@ -27,6 +30,11 @@ impl Config {
         toml::from_str(&text).map_err(|err| UserError::Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })
+    }
+
+    /// provides the matcher for the files that should not be linted
+    pub fn excludes(&self) -> Result<Excludes> {
+        Excludes::new(self.exclude.as_deref().unwrap_or_default(), Path::new("./"))
     }
 }
 
@@ -93,6 +101,7 @@ command = "fixes/sort.py"
                         command: S("lints/two.sh"),
                     },
                 ]),
+                exclude: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -104,6 +113,7 @@ command = "fixes/sort.py"
             let want = Config {
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
+                exclude: None,
             };
             assert_eq!(have, want);
         }
@@ -114,8 +124,21 @@ command = "fixes/sort.py"
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
+                exclude: None,
             };
             assert_eq!(have, want);
+        }
+
+        #[test]
+        fn exclude() {
+            let give = r#"exclude = ["a.css", "b/"]"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_lints: None,
+                custom_fixes: None,
+                exclude: Some(vec![S("a.css"), S("b/")]),
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -153,6 +176,7 @@ stack = "PyThOn"
                     },
                 ]),
                 custom_lints: None,
+                exclude: None,
             };
             assert_eq!(have, want);
         }
@@ -179,6 +203,7 @@ command = "fixes/one.sh"
                     command: S("fixes/one.sh"),
                     stack: None,
                 }]),
+                exclude: None,
             };
             pretty::assert_eq!(have, want);
         }

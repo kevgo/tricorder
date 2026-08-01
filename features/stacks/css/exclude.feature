@@ -11,15 +11,14 @@ Feature: exclude a CSS file
       exclude = ["two.css"]
       """
 
-  @this
   Scenario: linting
     Given a file "one.css" with content
       """
       .foo {
-        col
+        color: green;
       }
       """
-    Given a file "two.css" with content
+    And a file "two.css" with content
       """
       .bar {
         col
@@ -57,3 +56,30 @@ Feature: exclude a CSS file
       """
     And the exit code is 1
     And file "main.css" is unchanged
+
+  Scenario: fixing
+    Given a file "one.css" with content
+      """
+      .foo {
+        color : red ;
+      }
+      """
+    And a file "two.css" with content
+      """
+      .bar {
+        color : green ;
+      }
+      """
+    When executing "tricorder fix --show=all"
+    Then it prints the lines
+      """
+      fix CSS (Biome)
+      """
+    And the exit code is 0
+    And file "one.css" now has content
+      """
+      .foo {
+      \tcolor: red;
+      }
+      """
+    And file "two.css" is unchanged

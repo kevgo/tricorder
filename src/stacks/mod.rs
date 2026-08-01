@@ -11,12 +11,12 @@ mod typescript;
 mod unknown;
 mod yml;
 
-use crate::domain::{DetectedStack, DetectedStacks, Files, Stack};
+use crate::domain::{DetectedStack, DetectedStacks, Excludes, Files, Stack};
 use crate::git;
 pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
-use ignore::Walk;
+use ignore::WalkBuilder;
 pub use json::Json;
 pub use jsonc::JsonC;
 pub use markdown::Markdown;
@@ -51,7 +51,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 
 /// provides the staged files and their stacks
 #[must_use]
-pub fn discover_staged() -> DetectedStacks {
+pub fn discover_staged(excludes: &Excludes) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -62,9 +62,12 @@ pub fn discover_staged() -> DetectedStacks {
         .collect();
     let Some(git_status) = git::status() else {
         // no git status --> return all stacks
-        return discover_all();
+        return discover_all(excludes);
     };
     for file in git_status.all() {
+        if excludes.matches_or_parents(file) {
+            continue;
+        }
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(file) {
                 detected_stack.files.push(file.clone());
@@ -85,13 +88,13 @@ pub fn discover_staged() -> DetectedStacks {
 
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover_all() -> DetectedStacks {
-    discover_all_in(Path::new("./"))
+pub fn discover_all(excludes: &Excludes) -> DetectedStacks {
+    discover_all_in(Path::new("./"), excludes)
 }
 
 /// provides all stacks and their files found under `dir`
 #[must_use]
-pub fn discover_all_in(dir: &Path) -> DetectedStacks {
+pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -100,7 +103,16 @@ pub fn discover_all_in(dir: &Path) -> DetectedStacks {
             files: Files::new(),
         })
         .collect();
-    for entry in Walk::new(dir) {
+    let filter_excludes = excludes.clone();
+    let walk = WalkBuilder::new(dir)
+        .filter_entry(move |entry| {
+            !filter_excludes.matches(
+                entry.path(),
+                entry.file_type().is_some_and(|ft| ft.is_dir()),
+            )
+        })
+        .build();
+    for entry in walk {
         let Ok(entry) = entry else { continue };
         let path = entry.path();
         if !path.is_file() {
@@ -128,10 +140,11 @@ pub fn discover_all_in(dir: &Path) -> DetectedStacks {
 mod tests {
 
     mod discover {
-        use crate::domain::{DetectedStack, DetectedStacks, Files};
+        use crate::domain::{DetectedStack, DetectedStacks, Excludes, Files};
         use crate::stacks::discover_all_in;
         use crate::stacks::{Go, Json, JsonC, Markdown, Unknown};
         use std::fs;
+        use std::path::Path;
         use tempfile::TempDir;
 
         fn make_files(dir: &TempDir, paths: &[&str]) {
@@ -147,7 +160,7 @@ mod tests {
         #[test]
         fn empty_directory() {
             let dir = TempDir::new().unwrap();
-            let stacks = discover_all_in(dir.path());
+            let stacks = discover_all_in(dir.path(), &Excludes::default());
             assert!(stacks.is_empty());
         }
 
@@ -164,7 +177,7 @@ mod tests {
                     "text-runner.jsonc",
                 ],
             );
-            let have = discover_all_in(dir.path());
+            let have = discover_all_in(dir.path(), &Excludes::default());
             let root = dir.path();
             let want = DetectedStacks::new(vec![
                 DetectedStack {
@@ -195,11 +208,39 @@ mod tests {
         fn nested_directories() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["src/nested/deep/main.go"]);
-            let have = discover_all_in(dir.path());
+            let have = discover_all_in(dir.path(), &Excludes::default());
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),
                 files: Files::from(vec![root.join("src/nested/deep/main.go")]),
+            }]);
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn excludes_file() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["main.go", "excluded.go"]);
+            let excludes = Excludes::new(&["excluded.go".to_string()], Path::new("./")).unwrap();
+            let have = discover_all_in(dir.path(), &excludes);
+            let root = dir.path();
+            let want = DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Go {}),
+                files: Files::from(vec![root.join("main.go")]),
+            }]);
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn excludes_directory() {
+            let dir = TempDir::new().unwrap();
+            make_files(&dir, &["main.go", "vendor/lib.go"]);
+            let excludes = Excludes::new(&["vendor/".to_string()], Path::new("./")).unwrap();
+            let have = discover_all_in(dir.path(), &excludes);
+            let root = dir.path();
+            let want = DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Go {}),
+                files: Files::from(vec![root.join("main.go")]),
             }]);
             pretty::assert_eq!(have, want);
         }
