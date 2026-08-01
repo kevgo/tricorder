@@ -33,23 +33,22 @@ Feature: "tricorder precommit" formats but does not stage files with partially s
     Then the staged changes are
       """
       diff --git a/file.md b/file.md
-      index 0ae52b7..9bbf111 100644
+      index 68063cc..4111ae8 100644
       --- a/file.md
       +++ b/file.md
       @@ -1,3 +1,3 @@
-       line     1
-      -line     2
-      +line 2
+       line     1 old
+      -line     2 old
+      +line 2 new
       """
     And the unstaged changes are
       """
       diff --git a/file.md b/file.md
-      index 9bbf111..587d5c8 100644
+      index 4111ae8..5103d60 100644
       --- a/file.md
       +++ b/file.md
       @@ -1,3 +1,3 @@
-       # Partially staged file
-      -line     1
-      +line 1
-       line 2
+      -line     1 old
+      +line 1 new
+       line 2 new
       """
