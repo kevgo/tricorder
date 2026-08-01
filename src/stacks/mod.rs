@@ -65,7 +65,7 @@ pub fn discover_staged(excludes: &Excludes) -> DetectedStacks {
         return discover_all(excludes);
     };
     for file in git_status.all() {
-        if excludes.matches_partial(file) {
+        if excludes.matches_self_or_parent(file) {
             continue;
         }
         for detected_stack in &mut detected_stacks {
@@ -106,7 +106,7 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
     let filter_excludes = excludes.clone();
     let walk = WalkBuilder::new(dir)
         .filter_entry(move |entry| {
-            !filter_excludes.matches_full(
+            !filter_excludes.matches_self(
                 entry.path(),
                 entry.file_type().is_some_and(|ft| ft.is_dir()),
             )
