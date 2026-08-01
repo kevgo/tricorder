@@ -41,7 +41,7 @@ Feature: precommit Cucumber
     And I ran "git add -A"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
-    Then the exit code is 0
+    And the exit code is 0
     And file "main.feature" now has content
       """
       Feature: foo
