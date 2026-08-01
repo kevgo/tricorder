@@ -45,17 +45,18 @@ impl Excludes {
 #[cfg(test)]
 mod tests {
     use super::Excludes;
+    use big_s::S;
     use std::path::Path;
 
     #[test]
     fn matches_file() {
-        let excludes = Excludes::new(&["two.css".to_string()], Path::new("./")).unwrap();
+        let excludes = Excludes::new(&[S("two.css")], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("two.css"), false));
     }
 
     #[test]
     fn matches_directory() {
-        let excludes = Excludes::new(&["vendor/".to_string()], Path::new("./")).unwrap();
+        let excludes = Excludes::new(&[S("vendor/")], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("vendor"), true));
         assert!(!excludes.matches_self(Path::new("vendor/lib.css"), true));
         assert!(excludes.matches_self_or_parent(Path::new("vendor/lib.css")));
@@ -63,7 +64,7 @@ mod tests {
 
     #[test]
     fn no_match() {
-        let excludes = Excludes::new(&["two.css".to_string()], Path::new("./")).unwrap();
+        let excludes = Excludes::new(&[S("two.css")], Path::new("./")).unwrap();
         assert!(!excludes.matches_self(Path::new("one.css"), false));
     }
 
