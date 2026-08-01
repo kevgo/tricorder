@@ -61,7 +61,7 @@ Feature: precommit Cucumber
     When executing "tricorder precommit"
     Then it prints
       """
-      an error occurred with file "main.feature" : Parser errors:
+      Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
     And the exit code is 0
