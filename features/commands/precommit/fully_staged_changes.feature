@@ -7,32 +7,27 @@ Feature: "tricorder precommit" formats and stages files with fully staged change
       delete-empty-folders 0.0.2
       rumdl 0.2.14
       """
-    And a file "fully_staged.md" with content
+    And a file "file.md" with content
       """
-      # Fully staged file
-
-      line 1
+      # Original
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
-    And I change file "fully_staged.md" to
+    And I change file "file.md" to
       """
-      # Fully staged file
-
-      line   2
+      #     New
       """
-    And I ran "git add fully_staged.md"
+    And I ran "git add file.md"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the staged changes are
       """
-      diff --git a/fully_staged.md b/fully_staged.md
-      index 81b13b0..7fde770 100644
-      --- a/fully_staged.md
-      +++ b/fully_staged.md
-      @@ -1,3 +1,3 @@
-       # Fully staged file
-      -line 1
-      +line 2
+      diff --git a/file.md b/file.md
+      index 6950014..e65f941 100644
+      --- a/file.md
+      +++ b/file.md
+      @@ -1 +1 @@
+      -# Original
+      +# New
       """
     And there are no unstaged changes
