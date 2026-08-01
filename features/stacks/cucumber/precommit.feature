@@ -1,11 +1,14 @@
 Feature: precommit Cucumber
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
-      ghokin 3.9.0
+      ghokin 3.10.0
       delete-empty-folders 0.0.2
       """
+    And I ran "git add -A"
+    And I ran "git commit -m original"
 
   Scenario: valid Cucumber
     Given a file "main.feature" with content
@@ -35,6 +38,7 @@ Feature: precommit Cucumber
         Scenario:   bar2
           Given   another step
       """
+    And I ran "git add -A"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -58,10 +62,11 @@ Feature: precommit Cucumber
       """
       Feat
       """
+    And I ran "git add -A"
     When executing "tricorder precommit"
     Then it prints
       """
-      an error occurred with file "main.feature" : Parser errors:
+      Parser errors:
       (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'
       """
     And the exit code is 0
