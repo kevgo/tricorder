@@ -23,7 +23,7 @@ impl Fix for Ghokin {
         args.push(S("fmt"));
         args.push(S("replace"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.to_string_lossy()[2..].to_string());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
