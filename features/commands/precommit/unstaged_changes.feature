@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" does not format unstaged files
+Feature: "tricorder precommit" does not format files with unstaged changes
 
   Background:
     Given a Git repository

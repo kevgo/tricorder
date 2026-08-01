@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" formats and stages only staged files
+Feature: "tricorder precommit" formats and stages files with partially staged changes
 
   Background:
     Given a Git repository

@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" formats and stages only staged files
+Feature: "tricorder precommit" formats and stages files with fully staged changes
 
   Background:
     Given a Git repository
@@ -16,6 +16,7 @@ Feature: "tricorder precommit" formats and stages only staged files
     And I ran "git add -A"
     And I ran "git commit -m original"
 
+  @this
   Scenario: precommit a fully staged file
     Given I change file "fully_staged.md" to
       """
