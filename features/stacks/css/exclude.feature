@@ -8,7 +8,7 @@ Feature: exclude a CSS file
       """
     And a file "tricorder.toml" with content
       """
-      toml.lint.exclude = ["two.css"]
+      exclude = ["two.css"]
       """
 
   @this
