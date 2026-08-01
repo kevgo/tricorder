@@ -1,6 +1,5 @@
 Feature: "tricorder precommit" formats and stages files with partially staged changes
 
-  @this
   Scenario: precommit partially staged changes
     Given a Git repository
     And a file "run-that-app" with content
@@ -33,14 +32,13 @@ Feature: "tricorder precommit" formats and stages files with partially staged ch
     Then the staged changes are
       """
       diff --git a/file.md b/file.md
-      index 587d5c8..d66556c 100644
+      index 9c82e17..5103d60 100644
       --- a/file.md
       +++ b/file.md
-      @@ -1,5 +1,5 @@
-       # Partially staged file
-      -line 1
-      +line 3
-      -line 2
-      +line 4
+      @@ -1,3 +1,3 @@
+      -line 1 old
+      +line 1 new
+      -line 2 old
+      +line 2 new
       """
     And there are no unstaged changes
