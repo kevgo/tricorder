@@ -16,13 +16,13 @@ Feature: exclude a CSS file
     Given a file "one.css" with content
       """
       .foo {
-        color : red ;
+        col
       }
       """
     Given a file "two.css" with content
       """
-      .foo {
-        color : green ;
+      .bar {
+        col
       }
       """
     When executing "tricorder lint --show=all"
@@ -30,13 +30,16 @@ Feature: exclude a CSS file
       """
       lint CSS (Biome)
       """
+    And it prints the block
+      """
+      one.css:3:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it does not print
+      """
+      two.css:3:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
     And the exit code is 0
-    And file "one.css" now has content
-      """
-      .foo {
-        color: red;
-      }
-      """
+    And file "one.css" is unchanged
     And file "two.css" is unchanged
 
   Scenario: invalid CSS
