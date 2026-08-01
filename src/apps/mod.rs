@@ -30,7 +30,7 @@ pub(crate) fn get_rta_command(
     for _ in 0..2 {
         let get_cmd_args = rta::GetCmdArgs {
             app: args.app,
-            app_args: args.args.clone(),
+            app_args: &args.args,
             version: args.version.clone(),
             apps: &apps,
             from_source: false,
