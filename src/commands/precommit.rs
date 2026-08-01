@@ -12,12 +12,13 @@ use std::process::ExitCode;
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let excludes = config.excludes()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let staged_stacks = stacks::discover_staged();
+    let staged_stacks = stacks::discover_staged(&excludes);
     if show == conc::Show::All {
         print_metadata(&staged_stacks);
     }
