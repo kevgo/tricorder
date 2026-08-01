@@ -23,7 +23,7 @@ Feature: "tricorder precommit" formats and stages files with partially staged ch
       """
       # Partially staged file
 
-      line   1
+      line   3
 
       line 2
       """
@@ -32,21 +32,22 @@ Feature: "tricorder precommit" formats and stages files with partially staged ch
       """
       # Partially staged file
 
-      line   1
+      line   3
 
-      line   2
+      line   4
       """
     When executing "tricorder precommit"
     Then the staged changes are
       """
       diff --git a/partially_staged.md b/partially_staged.md
-      index 587d5c8..86b2397 100644
+      index 587d5c8..d66556c 100644
       --- a/partially_staged.md
       +++ b/partially_staged.md
       @@ -1,5 +1,5 @@
        # Partially staged file
       -line 1
-      +line   1
-       line 2
+      +line 3
+      -line 2
+      +line 4
       """
     And there are no unstaged changes

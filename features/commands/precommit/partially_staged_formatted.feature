@@ -18,7 +18,6 @@ Feature: "tricorder precommit" formats but does not stage files with partially s
     And I ran "git add -A"
     And I ran "git commit -m original"
 
-  @this
   Scenario: precommit partially staged changes
     Given I change file "partially_staged.md" to
       """
@@ -41,13 +40,23 @@ Feature: "tricorder precommit" formats but does not stage files with partially s
     Then the staged changes are
       """
       diff --git a/partially_staged.md b/partially_staged.md
-      index 587d5c8..86b2397 100644
+      index 0ae52b7..9bbf111 100644
+      --- a/partially_staged.md
+      +++ b/partially_staged.md
+      @@ -2,4 +2,4 @@
+       line     1
+      -line     2
+      +line 2
+      """
+    And the unstaged changes are
+      """
+      diff --git a/partially_staged.md b/partially_staged.md
+      index 9bbf111..587d5c8 100644
       --- a/partially_staged.md
       +++ b/partially_staged.md
       @@ -1,5 +1,5 @@
        # Partially staged file
-      -line 1
-      +line     1
+      -line     1
+      +line 1
        line 2
       """
-    And there are no unstaged changes
