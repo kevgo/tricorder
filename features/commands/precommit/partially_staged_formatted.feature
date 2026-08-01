@@ -1,6 +1,5 @@
 Feature: "tricorder precommit" formats but does not stage files with partially staged changes that are already formatted
 
-  @this
   Scenario: precommit partially staged changes
     Given a Git repository
     And a file "run-that-app" with content
