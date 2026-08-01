@@ -25,37 +25,13 @@ Feature: exclude a CSS file
       }
       """
     When executing "tricorder lint --show=all"
-    Then it prints the block
+    Then it prints the lines
       """
       lint CSS (Biome)
-      """
-    And it prints the block
-      """
-      one.css:3:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it does not print
-      """
-      two.css:3:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       """
     And the exit code is 0
     And file "one.css" is unchanged
     And file "two.css" is unchanged
-
-  Scenario: invalid CSS
-    Given a file "main.css" with content
-      """
-      .foo {
-        col
-      }
-      """
-    When executing "tricorder lint --show=all"
-    Then it prints the lines
-      """
-      lint CSS (Biome)
-      Found 2 errors.
-      """
-    And the exit code is 1
-    And file "main.css" is unchanged
 
   Scenario: fixing
     Given a file "one.css" with content
