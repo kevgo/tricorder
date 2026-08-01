@@ -1,4 +1,3 @@
-@this
 Feature: exclude a CSS file
 
   Background:
