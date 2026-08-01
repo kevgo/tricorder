@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" formats and stages only staged files
+Feature: "tricorder precommit" does not format unstaged files
 
   Background:
     Given a Git repository
@@ -16,17 +16,17 @@ Feature: "tricorder precommit" formats and stages only staged files
     And I ran "git add -A"
     And I ran "git commit -m original"
 
-  Scenario: precommit a fully staged file
+  Scenario: precommit an unstaged file
     Given I change file "fully_staged.md" to
       """
       # Fully staged file
 
       line   1
       """
-    And I ran "git add fully_staged.md"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
-    And the staged changes are
+    And there are no staged changes
+    And the unstaged changes are
       """
       diff --git a/fully_staged.md b/fully_staged.md
       index 81b13b0..9829d0b 100644
@@ -37,4 +37,3 @@ Feature: "tricorder precommit" formats and stages only staged files
       -line 1
       +line   1
       """
-    And there are no unstaged changes
