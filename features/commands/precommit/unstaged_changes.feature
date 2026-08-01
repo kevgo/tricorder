@@ -1,6 +1,6 @@
 Feature: "tricorder precommit" does not format files with unstaged changes
 
-  Background:
+  Scenario: precommit an unstaged file
     Given a Git repository
     And a file "run-that-app" with content
       """
@@ -15,9 +15,7 @@ Feature: "tricorder precommit" does not format files with unstaged changes
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
-
-  Scenario: precommit an unstaged file
-    Given I change file "fully_staged.md" to
+    And I change file "fully_staged.md" to
       """
       # Fully staged file
 

@@ -1,6 +1,6 @@
 Feature: "tricorder precommit" formats but does not stage files with partially staged changes that are already formatted
 
-  Background:
+  Scenario: precommit partially staged changes
     Given a Git repository
     And a file "run-that-app" with content
       """
@@ -17,9 +17,7 @@ Feature: "tricorder precommit" formats but does not stage files with partially s
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
-
-  Scenario: precommit partially staged changes
-    Given I change file "partially_staged.md" to
+    And I change file "partially_staged.md" to
       """
       # Partially staged file
 

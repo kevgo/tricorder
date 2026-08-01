@@ -1,6 +1,6 @@
 Feature: "tricorder precommit" formats and stages files with partially staged changes
 
-  Background:
+  Scenario: precommit partially staged changes
     Given a Git repository
     And a file "run-that-app" with content
       """
@@ -17,9 +17,7 @@ Feature: "tricorder precommit" formats and stages files with partially staged ch
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
-
-  Scenario: precommit partially staged changes
-    Given I change file "partially_staged.md" to
+    And I change file "partially_staged.md" to
       """
       # Partially staged file
 
