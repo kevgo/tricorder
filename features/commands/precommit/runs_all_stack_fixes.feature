@@ -1,4 +1,4 @@
-Feature: runs all fixes for the changed files
+Feature: "tricorder precommit" runs all fixes for the changed files
 
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
