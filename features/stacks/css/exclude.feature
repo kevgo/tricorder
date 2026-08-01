@@ -1,3 +1,4 @@
+@this
 Feature: exclude a CSS file
 
   Background:
@@ -9,17 +10,17 @@ Feature: exclude a CSS file
       """
     And a file "tricorder.toml" with content
       """
-      exclude = ["two.css"]
+      exclude = ["bad.css"]
       """
 
   Scenario: linting
-    Given a file "one.css" with content
+    Given a file "good.css" with content
       """
       .foo {
         color: green;
       }
       """
-    And a file "two.css" with content
+    And a file "bad.css" with content
       """
       .bar {
         col
@@ -31,17 +32,17 @@ Feature: exclude a CSS file
       lint CSS (Biome)
       """
     And the exit code is 0
-    And file "one.css" is unchanged
-    And file "two.css" is unchanged
+    And file "good.css" is unchanged
+    And file "bad.css" is unchanged
 
   Scenario: fixing
-    Given a file "one.css" with content
+    Given a file "good.css" with content
       """
       .foo {
         color : red ;
       }
       """
-    And a file "two.css" with content
+    And a file "bad.css" with content
       """
       .bar {
         color : green ;
@@ -53,10 +54,10 @@ Feature: exclude a CSS file
       fix CSS (Biome)
       """
     And the exit code is 0
-    And file "one.css" now has content
+    And file "good.css" now has content
       """
       .foo {
       \tcolor: red;
       }
       """
-    And file "two.css" is unchanged
+    And file "bad.css" is unchanged
