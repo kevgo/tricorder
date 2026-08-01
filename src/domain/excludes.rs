@@ -25,13 +25,13 @@ impl Excludes {
 
     /// indicates whether the given path matches one of the exclude patterns
     #[must_use]
-    pub fn matches(&self, path: &Path, is_dir: bool) -> bool {
+    pub fn matches_full(&self, path: &Path, is_dir: bool) -> bool {
         self.0.matched(path, is_dir).is_ignore()
     }
 
     /// indicates whether the given path or any of its parent directories matches one of the exclude patterns
     #[must_use]
-    pub fn matches_or_parents(&self, path: &Path) -> bool {
+    pub fn matches_partial(&self, path: &Path) -> bool {
         self.0.matched_path_or_any_parents(path, false).is_ignore()
     }
 }
@@ -50,31 +50,31 @@ mod tests {
     #[test]
     fn matches_file() {
         let excludes = Excludes::new(&["two.css".to_string()], Path::new("./")).unwrap();
-        assert!(excludes.matches(Path::new("two.css"), false));
+        assert!(excludes.matches_full(Path::new("two.css"), false));
     }
 
     #[test]
     fn matches_directory() {
         let excludes = Excludes::new(&["vendor/".to_string()], Path::new("./")).unwrap();
-        assert!(excludes.matches(Path::new("vendor"), true));
-        assert!(excludes.matches_or_parents(Path::new("vendor/lib.css")));
+        assert!(excludes.matches_full(Path::new("vendor"), true));
+        assert!(excludes.matches_partial(Path::new("vendor/lib.css")));
     }
 
     #[test]
     fn no_match() {
         let excludes = Excludes::new(&["two.css".to_string()], Path::new("./")).unwrap();
-        assert!(!excludes.matches(Path::new("one.css"), false));
+        assert!(!excludes.matches_full(Path::new("one.css"), false));
     }
 
     #[test]
     fn empty() {
         let excludes = Excludes::default();
-        assert!(!excludes.matches(Path::new("one.css"), false));
+        assert!(!excludes.matches_full(Path::new("one.css"), false));
     }
 
     #[test]
     fn no_patterns_matches_nothing() {
         let excludes = Excludes::new(&[], Path::new("./")).unwrap();
-        assert!(!excludes.matches(Path::new("one.css"), false));
+        assert!(!excludes.matches_full(Path::new("one.css"), false));
     }
 }
