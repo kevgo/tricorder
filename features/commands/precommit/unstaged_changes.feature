@@ -9,16 +9,12 @@ Feature: "tricorder precommit" does not format files with unstaged changes
       """
     And a file "file.md" with content
       """
-      # Fully staged file
-
       line 1
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
     And I change file "file.md" to
       """
-      # Fully staged file
-
       line   1
       """
     When executing "tricorder precommit"
@@ -27,11 +23,10 @@ Feature: "tricorder precommit" does not format files with unstaged changes
     And the unstaged changes are
       """
       diff --git a/file.md b/file.md
-      index 81b13b0..9829d0b 100644
+      index 89b24ec..9ad9c0b 100644
       --- a/file.md
       +++ b/file.md
-      @@ -1,3 +1,3 @@
-       # Fully staged file
+      @@ -1 +1 @@
       -line 1
       +line   1
       """
