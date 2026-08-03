@@ -1,7 +1,8 @@
 Feature: precommit Python
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       ruff 0.15.16
       delete-empty-folders 0.0.2
@@ -16,6 +17,7 @@ Feature: precommit Python
       """
       print("Hello, other!")
       """
+    And I ran "git add main.py other.py"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -31,6 +33,7 @@ Feature: precommit Python
       """
       print   ("Hello, other!")
       """
+    And I ran "git add main.py other.py"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -52,6 +55,7 @@ Feature: precommit Python
       """
       print("
       """
+    And I ran "git add main.py other.py"
     When executing "tricorder precommit"
     Then it prints
       """
