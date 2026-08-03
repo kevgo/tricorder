@@ -7,7 +7,6 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
-    CannotReadFile { file: String, err: String },
     CannotRunGit { msg: String },
     CiUnformatted { diff: Vec<u8> },
     Cli { msg: String },
@@ -18,9 +17,6 @@ pub enum UserError {
 impl UserError {
     pub fn print(self) {
         match self {
-            UserError::CannotReadFile { file, err } => {
-                println!("cannot read file {file}: {err}");
-            }
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");
