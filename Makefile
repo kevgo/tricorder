@@ -34,6 +34,9 @@ cuke-all: build-release ${RTA}  # runs the online end-to-end tests
 cukethis: build-release ${RTA}  # runs only end-to-end tests with a @this tag
 	cargo test --test=cuke -- -t @this
 
+deadcode:
+	cargo test --test deadcode
+
 .PHONY: demo
 demo:  # runs Tricorder in the "demo" folder
 	cargo build --release --quiet
@@ -75,6 +78,7 @@ setup-ci:
 	rustup component add clippy
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
+	cargo install --locked --git https://github.com/est31/warnalyzer warnalyzer
 
 setup-githooks: ${RTA}  ## installs the Git pre-commit to auto-format
 	$(LEFTHOOK) install
