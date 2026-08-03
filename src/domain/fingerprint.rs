@@ -21,8 +21,7 @@ pub fn scan_files(files: &[&PathBuf]) -> Fingerprints {
     Fingerprints(result)
 }
 
-#[must_use]
-pub fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
+fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
     let Ok(file_content) = fs::read(file) else {
         return None;
     };
