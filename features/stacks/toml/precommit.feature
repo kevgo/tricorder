@@ -1,7 +1,8 @@
 Feature: precommit TOML
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       taplo 0.10.0
       delete-empty-folders 0.0.2
@@ -12,6 +13,7 @@ Feature: precommit TOML
       """
       key = "value"
       """
+    And I ran "git add main.toml"
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
@@ -29,6 +31,7 @@ Feature: precommit TOML
       """
       key =     "other"
       """
+    And I ran "git add main.toml other.toml"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
@@ -49,6 +52,7 @@ Feature: precommit TOML
       """
       key = "
       """
+    And I ran "git add main.toml"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
