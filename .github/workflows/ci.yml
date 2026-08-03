@@ -16,4 +16,5 @@ jobs:
       - run: make setup-ci
       - run: make unit lint cuke-slow
       - run: make fix
+      - run: make deadcode
       - run: git diff HEAD --exit-code --color
