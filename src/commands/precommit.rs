@@ -4,7 +4,7 @@ use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::config::{Config, CustomFix};
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
-use crate::git::{self, StagedFiles};
+use crate::git;
 use crate::stacks;
 use ahash::AHashMap;
 use std::path::Path;
@@ -28,7 +28,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: fingerprint the staged files before running the fixes
-    let staged_files = StagedFiles::all(&staged);
+    let staged_files = staged.all();
     let before = fingerprint::scan_files(&staged_files);
 
     // step 4: discover all runnables
