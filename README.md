@@ -2,15 +2,17 @@
 
 _One command, every linter, every stack._
 
-Tricorder is a zero-config quality gate for manual and agentic coding.
-It detects which programming languages are used,
-resolves the canonical linters for each, auto-generates the necessary config,
-and runs them in parallel behind a single command and a single exit code.
+Tricorder is a quality gate for manual and agentic software engineering:
+It lints and formats a wide variety of source code files using the best
+available linters for each.
 
-- the best formatters and linters
-- always up to date
-- for all languages
-- running concurrently
+- zero-config: works out of the box, but you can configure it if needed
+- zero dependencies: Tricorder downloads
+  and executes third-party linters on its own.
+- extremely fast: Tricorder formats only the files that need formatting,
+  and runs tools as much as possible concurrently.
+- single exit code: if any of the linters fails,
+  you get notified via the Tricorder exit code
 
 ## Why
 

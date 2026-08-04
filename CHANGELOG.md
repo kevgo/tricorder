@@ -1,6 +1,9 @@
 # Tricorder changelog
 
-## Unreleased
+## 0.0.14 (2026-08-04)
+
+- the "precommit" command now stages files it modifies
+- the "ghokin" app now gets called with the files to format, requires at least Ghokin 3.10.0
 
 - the "precommit" command now stages the files whose content its fixes changed
 
