@@ -32,7 +32,7 @@ fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
 /// the files whose content differs between these fingerprints and the given `after` ones
 #[must_use]
 pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a PathBuf> {
-    let mut result = Vec::with_capacity(after.0.len());
+    let mut result = Vec::new();
     for (file, after_fingerprint) in &after.0 {
         let Some(before_fingerprint) = before.0.get(file) else {
             continue;
