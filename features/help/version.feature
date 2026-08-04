@@ -4,7 +4,7 @@ Feature: Displaying the version
     When executing "tricorder <ARG>"
     Then it prints
       """
-      tricorder 0.0.13
+      tricorder 0.0.14
       """
     And the exit code is 0
 
