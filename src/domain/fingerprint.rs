@@ -33,8 +33,10 @@ fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
 pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a PathBuf> {
     let mut result = Vec::with_capacity(after.0.len());
     for (file, after_fingerprint) in &after.0 {
-        let before_fingerprint = before.0.get(file);
-        if before_fingerprint != Some(after_fingerprint) {
+        let Some(before_fingerprint) = before.0.get(file) else {
+            continue;
+        };
+        if before_fingerprint != after_fingerprint {
             result.push(file);
         }
     }
