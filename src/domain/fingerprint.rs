@@ -3,6 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 
 /// fingerprints of the content of files, to detect content changes
+/// key: filepath, value: fingerprint
 #[derive(Debug, Default)]
 #[must_use]
 pub struct Fingerprints(AHashMap<PathBuf, Option<u64>>);
