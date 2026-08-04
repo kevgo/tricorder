@@ -41,6 +41,7 @@ pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a Pa
             result.push(file);
         }
     }
+    result.sort();
     result
 }
 
