@@ -9,10 +9,9 @@ available linters for each.
 - zero-config: works out of the box, but you can configure it if needed
 - zero dependencies: Tricorder downloads
   and executes third-party linters on its own.
-- extremely fast: Tricorder formats only the files that need formatting,
-  and runs tools as much as possible concurrently.
-- single exit code: if any of the linters fails,
-  you get notified via the Tricorder exit code
+- fast: Tricorder formats only the files that need formatting,
+  and runs all linters and formatters concurrently.
+- single exit code for all tools
 
 ## Why
 
@@ -102,6 +101,9 @@ cargo install --git https://github.com/kevgo/tricorder
 You can define custom linters in a config file **Tricorder.toml**.
 
 ```toml
+# ignore these files
+exclude = ["file1", "file2"]
+
 [[custom-lints]]
 name = "custom lint 1"
 command = "lints/one.sh"
