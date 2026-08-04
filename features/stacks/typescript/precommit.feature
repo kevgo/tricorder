@@ -1,7 +1,8 @@
 Feature: precommit TypeScript
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       biome 2.4.0
       delete-empty-folders 0.0.2
@@ -12,6 +13,7 @@ Feature: precommit TypeScript
       """
       console.log("hello");
       """
+    And I ran "git add main.ts"
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
@@ -29,6 +31,7 @@ Feature: precommit TypeScript
       """
       console.log(  "other"  );
       """
+    And I ran "git add main.ts other.ts"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
@@ -49,6 +52,7 @@ Feature: precommit TypeScript
       """
       console.log("
       """
+    And I ran "git add main.ts"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """

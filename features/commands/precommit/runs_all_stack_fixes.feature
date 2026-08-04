@@ -1,4 +1,4 @@
-Feature: runs all fixes for the changed files
+Feature: "tricorder precommit" runs all fixes for the changed files
 
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
@@ -48,22 +48,12 @@ Feature: runs all fixes for the changed files
     And the staged changes are
       """
       diff --git a/one.md b/one.md
-      index b3e70d0..7a53595 100644
+      index b3e70d0..4168e2b 100644
       --- a/one.md
       +++ b/one.md
       @@ -1,3 +1,3 @@
       -# One
-      +# New   one
-       text
-      """
-    And the unstaged changes are
-      """
-      diff --git a/one.md b/one.md
-      index 7a53595..4168e2b 100644
-      --- a/one.md
-      +++ b/one.md
-      @@ -1,3 +1,3 @@
-      -# New   one
       +# New one
        text
       """
+    And there are no unstaged changes

@@ -1,7 +1,8 @@
 Feature: precommit YML
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
       node 26.4.0
@@ -13,6 +14,7 @@ Feature: precommit YML
       """
       key: value
       """
+    And I ran "git add main.yml"
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
@@ -30,6 +32,7 @@ Feature: precommit YML
       """
       key:     other
       """
+    And I ran "git add main.yml other.yml"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """
@@ -50,6 +53,7 @@ Feature: precommit YML
       """
       key: "
       """
+    And I ran "git add main.yml"
     When executing "tricorder precommit --show=all"
     Then it prints the lines
       """

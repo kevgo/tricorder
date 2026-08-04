@@ -183,6 +183,12 @@ and then `tricorder fix` in sequence.
 The `tricorder precommit` command runs `tricorder fix`,
 but only for the staged files,
 and it always exits with code 0 to allow the commit to proceed.
+It stages (`git add <file>`) previously staged files whose content got formatted
+during precommit, so that the precommit fixes end up in the commit.
+
+This stages the entire file.
+If you want to commit only parts of a file,
+please format the file before partially staging any changes.
 
 ### `tricorder ci`
 

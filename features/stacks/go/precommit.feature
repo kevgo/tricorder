@@ -1,7 +1,8 @@
 Feature: precommit Go
 
   Background:
-    Given a file "go.mod" with content
+    Given a Git repository
+    And a file "go.mod" with content
       """
       module example.com/demo
       go 1.21
@@ -24,6 +25,7 @@ Feature: precommit Go
       	fmt.Println("Hello, world!")
       }
       """
+    And I ran "git add main.go"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -46,6 +48,7 @@ Feature: precommit Go
       	fmt.Println(    "Hello, other!")
       }
       """
+    And I ran "git add main.go other.go"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -79,6 +82,7 @@ Feature: precommit Go
       	fmt.Println("
       }
       """
+    And I ran "git add main.go"
     When executing "tricorder precommit"
     Then it prints the block
       """

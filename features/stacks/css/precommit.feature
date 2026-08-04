@@ -1,7 +1,8 @@
 Feature: precommit CSS
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       biome 2.4.0
       delete-empty-folders 0.0.2
@@ -14,6 +15,7 @@ Feature: precommit CSS
       \tcolor: red;
       }
       """
+    And I ran "git add main.css"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -32,6 +34,7 @@ Feature: precommit CSS
         color : blue ;
       }
       """
+    And I ran "git add main.css other.css"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -55,6 +58,7 @@ Feature: precommit CSS
         col
       }
       """
+    And I ran "git add main.css"
     When executing "tricorder precommit"
     Then it prints the block
       """

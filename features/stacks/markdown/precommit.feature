@@ -1,7 +1,8 @@
 Feature: precommit Markdown
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       rumdl 0.2.14
       delete-empty-folders 0.0.2
@@ -12,6 +13,7 @@ Feature: precommit Markdown
       """
       # Hello
       """
+    And I ran "git add main.md"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -22,6 +24,7 @@ Feature: precommit Markdown
       """
       #     Hello
       """
+    And I ran "git add main.md"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -37,6 +40,7 @@ Feature: precommit Markdown
 
       [e
       """
+    And I ran "git add main.md"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0

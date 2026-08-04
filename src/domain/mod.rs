@@ -2,6 +2,7 @@ mod detected_stack;
 mod error;
 mod excludes;
 mod files;
+pub mod fingerprint;
 mod fix;
 mod lint;
 mod stack;
