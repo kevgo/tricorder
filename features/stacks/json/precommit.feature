@@ -1,7 +1,8 @@
 Feature: precommit JSON
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
       node 26.4.0
@@ -13,6 +14,7 @@ Feature: precommit JSON
       """
       { "key": "value" }
       """
+    And I ran "git add main.json"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -23,6 +25,7 @@ Feature: precommit JSON
       """
       {"key":"value"}
       """
+    And I ran "git add main.json"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -36,6 +39,7 @@ Feature: precommit JSON
       """
       { "key":
       """
+    And I ran "git add main.json"
     When executing "tricorder precommit"
     Then it prints the block
       """

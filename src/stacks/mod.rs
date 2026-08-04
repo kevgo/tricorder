@@ -12,7 +12,7 @@ mod unknown;
 mod yml;
 
 use crate::domain::{DetectedStack, DetectedStacks, Excludes, Files, Stack};
-use crate::git;
+use crate::git::StagedFiles;
 pub use css::Css;
 pub use cucumber::Cucumber;
 pub use go::Go;
@@ -49,9 +49,9 @@ pub fn all() -> Vec<Box<dyn Stack>> {
     ]
 }
 
-/// provides the staged files and their stacks
+/// provides the stacks for the given staged files
 #[must_use]
-pub fn discover_staged(excludes: &Excludes) -> DetectedStacks {
+pub fn from_staged(staged: &StagedFiles, excludes: &Excludes) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -60,11 +60,7 @@ pub fn discover_staged(excludes: &Excludes) -> DetectedStacks {
             files: Files::new(),
         })
         .collect();
-    let Some(git_status) = git::status() else {
-        // no git status --> return all stacks
-        return discover_all(excludes);
-    };
-    for file in git_status.all() {
+    for file in staged.all() {
         if excludes.matches_self_or_parent(file) {
             continue;
         }

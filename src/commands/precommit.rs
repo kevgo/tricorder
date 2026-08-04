@@ -3,7 +3,8 @@ use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::config::{Config, CustomFix};
-use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType};
+use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
+use crate::git;
 use crate::stacks;
 use ahash::AHashMap;
 use std::path::Path;
@@ -17,13 +18,20 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let error_on_output = false;
     let stderr_to_stdout = true;
 
-    // step 2: discover the stacks
-    let staged_stacks = stacks::discover_staged(&excludes);
+    // step 2: discover the staged files and their stacks
+    let Some(staged) = git::status() else {
+        return Ok(ExitCode::SUCCESS);
+    };
+    let staged_stacks = stacks::from_staged(&staged, &excludes);
     if show == conc::Show::All {
         print_metadata(&staged_stacks);
     }
 
-    // step 3: discover all runnables
+    // step 3: fingerprint the staged files before running the fixes
+    let staged_files = staged.all();
+    let before = fingerprint::scan_files(&staged_files);
+
+    // step 4: discover all runnables
     let runnables = determine_precommit_fixes(config.custom_fixes, &staged_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
@@ -33,7 +41,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
         stack_specific,
     } = runnables;
 
-    // step 4: run the global fixes
+    // step 5: run the global fixes
     let _exit_code = conc::run(conc::RunArgs {
         runnables: vec![global],
         error_on_output,
@@ -41,13 +49,18 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
         show,
     });
 
-    // step 5: run the stack-specific fixes
+    // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific,
         error_on_output,
         show,
         stderr_to_stdout,
     });
+
+    // step 7: stage the files whose fixes actually changed their content
+    let after = fingerprint::scan_files(&staged_files);
+    let changed = fingerprint::changed(&before, &after);
+    git::stage(&changed)?;
     Ok(ExitCode::SUCCESS)
 }
 

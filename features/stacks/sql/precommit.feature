@@ -1,7 +1,8 @@
 Feature: precommit SQL
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       uv 0.11.20
       delete-empty-folders 0.0.2
@@ -16,6 +17,7 @@ Feature: precommit SQL
       """
       select id, name from two
       """
+    And I ran "git add one.sql two.sql"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -31,6 +33,7 @@ Feature: precommit SQL
       """
       SELECT            id, name FROM two
       """
+    And I ran "git add one.sql two.sql"
     When executing "tricorder precommit"
     Then it prints nothing to STDOUT
     And the exit code is 0
@@ -52,6 +55,7 @@ Feature: precommit SQL
       """
       SELECT FROM "
       """
+    And I ran "git add one.sql two.sql"
     When executing "tricorder precommit"
     Then it prints
       """
@@ -71,10 +75,11 @@ Feature: precommit SQL
       """
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
+    And I ran "git add migration.<FILE EXTENSION>"
     When executing "tricorder precommit --show=all"
     Then it prints to STDERR
       """
-      2 other
+      1 other
       running 1 tools
       """
     And the exit code is 0

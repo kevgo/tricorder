@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use crate::world::TricorderWorld;
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
@@ -229,56 +231,54 @@ fn exit_code(world: &mut TricorderWorld, want: i32) {
 #[then(expr = "the staged changes are")]
 async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let output = Command::new("git")
-        .arg("diff")
-        .arg("--staged")
-        .current_dir(&world.dir)
-        .output()
-        .await
-        .unwrap();
-    let stdout = strip_ansi_escapes::strip(&output.stdout);
-    let have = String::from_utf8_lossy(&stdout)
-        .replace("\n \n", "\n\n")
-        .replace("\n\n", "\n");
-    assert_eq!(have.trim(), want.trim());
-}
-
-#[then(expr = "there are no staged changes")]
-async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
-    let want = "";
-    let output = Command::new("git")
-        .arg("diff")
-        .arg("--staged")
-        .current_dir(&world.dir)
-        .output()
-        .await
-        .unwrap();
-    let stdout = strip_ansi_escapes::strip(&output.stdout);
-    let have = String::from_utf8_lossy(&stdout);
+    let have = staged_changes(&world.dir).await;
     assert_eq!(have.trim(), want.trim());
 }
 
 #[then(expr = "the unstaged changes are")]
 async fn the_unstaged_changes_are(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
+    let have = unstaged_changes(&world.dir).await;
+    assert_eq!(have.trim(), want.trim());
+}
+
+#[then(expr = "there are no staged changes")]
+async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
+    let want = "";
+    let have = staged_changes(&world.dir).await;
+    assert_eq!(have.trim(), want.trim());
+}
+
+#[then(expr = "there are no unstaged changes")]
+async fn there_are_no_unstaged_changes(world: &mut TricorderWorld) {
+    let want = "";
+    let have = unstaged_changes(&world.dir).await;
+    assert_eq!(have.trim(), want.trim());
+}
+
+async fn staged_changes(dir: &Path) -> String {
     let output = Command::new("git")
         .arg("diff")
-        .current_dir(&world.dir)
+        .arg("--staged")
+        .current_dir(dir)
         .output()
         .await
         .unwrap();
     let stdout = strip_ansi_escapes::strip(&output.stdout);
-    let have = String::from_utf8_lossy(&stdout)
+    String::from_utf8_lossy(&stdout)
         .replace("\n \n", "\n\n")
-        .replace("\n\n", "\n");
-    assert_eq!(have.trim(), want.trim());
+        .replace("\n\n", "\n")
 }
 
-#[then(expr = "there is no file {string}")]
-fn no_file(world: &mut TricorderWorld, want: String) {
-    let filepath = world.dir.join(&want);
-    assert!(
-        !filepath.exists(),
-        "file '{want}' should not exist but does",
-    );
+async fn unstaged_changes(dir: &Path) -> String {
+    let output = Command::new("git")
+        .arg("diff")
+        .current_dir(dir)
+        .output()
+        .await
+        .unwrap();
+    let stdout = strip_ansi_escapes::strip(&output.stdout);
+    String::from_utf8_lossy(&stdout)
+        .replace("\n \n", "\n\n")
+        .replace("\n\n", "\n")
 }
