@@ -64,6 +64,23 @@ mod tests {
     }
 
     #[test]
+    fn multiple_files() {
+        let dir = TempDir::new().unwrap();
+        let file_1 = dir.path().join("file_1.txt");
+        fs::write(&file_1, "old content").unwrap();
+        let file_2 = dir.path().join("file_2.txt");
+        fs::write(&file_2, "old content").unwrap();
+        let file_3 = dir.path().join("file_3.txt");
+        fs::write(&file_3, "old content").unwrap();
+        let before = fingerprint::scan_files(&[&file_1, &file_2, &file_3]);
+        fs::write(&file_1, "new content").unwrap();
+        fs::write(&file_3, "new content").unwrap();
+        let after = fingerprint::scan_files(&[&file_1, &file_2, &file_3]);
+        let have = fingerprint::changed(&before, &after);
+        assert_eq!(have, vec![&file_1, &file_3]);
+    }
+
+    #[test]
     fn unchanged() {
         let dir = TempDir::new().unwrap();
         let file = dir.path().join("file.txt");
