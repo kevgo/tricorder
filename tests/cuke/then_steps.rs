@@ -256,15 +256,6 @@ async fn there_are_no_unstaged_changes(world: &mut TricorderWorld) {
     assert_eq!(have.trim(), want.trim());
 }
 
-#[then(expr = "there is no file {string}")]
-fn no_file(world: &mut TricorderWorld, want: String) {
-    let filepath = world.dir.join(&want);
-    assert!(
-        !filepath.exists(),
-        "file '{want}' should not exist but does",
-    );
-}
-
 async fn staged_changes(dir: &Path) -> String {
     let output = Command::new("git")
         .arg("diff")
