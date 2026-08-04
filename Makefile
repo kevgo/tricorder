@@ -1,10 +1,9 @@
 RUN_THAT_APP_VERSION = 0.40.0  # run-that-app version to use
-TRICORDER_VERSION = 0.0.13     # tricorder version to use
+TRICORDER_VERSION = 0.0.14     # tricorder version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 KEEPSORTED   = $(RTA) keep-sorted
-LEFTHOOK     = $(RTA) lefthook
 TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
 
 build:  # builds the codebase
@@ -68,9 +67,6 @@ setup-ci:
 	rustup component add clippy
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
-
-setup-githooks: ${RTA}  ## installs the Git pre-commit to auto-format
-	$(LEFTHOOK) install
 
 ps: test fix  ## pitstop
 
