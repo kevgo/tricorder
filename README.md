@@ -2,15 +2,16 @@
 
 _One command, every linter, every stack._
 
-Tricorder is a zero-config quality gate for manual and agentic coding.
-It detects which programming languages are used,
-resolves the canonical linters for each, auto-generates the necessary config,
-and runs them in parallel behind a single command and a single exit code.
+Tricorder is a quality gate for manual and agentic software engineering:
+It lints and formats a wide variety of source code files using the best
+available linters for each.
 
-- the best formatters and linters
-- always up to date
-- for all languages
-- running concurrently
+- zero-config: works out of the box, but you can configure it if needed
+- zero dependencies: Tricorder downloads
+  and executes third-party linters on its own.
+- fast: Tricorder formats only the files that need formatting,
+  and runs all linters and formatters concurrently.
+- single exit code for all tools
 
 ## Why
 
@@ -100,6 +101,9 @@ cargo install --git https://github.com/kevgo/tricorder
 You can define custom linters in a config file **Tricorder.toml**.
 
 ```toml
+# ignore these files
+exclude = ["file1", "file2"]
+
 [[custom-lints]]
 name = "custom lint 1"
 command = "lints/one.sh"
