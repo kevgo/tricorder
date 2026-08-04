@@ -3,6 +3,7 @@ TRICORDER_VERSION = 0.0.14     # tricorder version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
+GHOKIN       = $(RTA) ghokin
 KEEPSORTED   = $(RTA) keep-sorted
 TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
 
@@ -93,8 +94,6 @@ ${TRICORDER}:
 	rm -f tools/tricorder*
 	(cd tools && curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -s -- --version ${TRICORDER_VERSION} --name tricorder@${TRICORDER_VERSION})
 	ln -s tricorder@$(TRICORDER_VERSION) tools/tricorder
-
-
 
 .DEFAULT_GOAL := help
 .SILENT:
