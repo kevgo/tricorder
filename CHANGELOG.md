@@ -2,10 +2,11 @@
 
 ## 0.0.14 (2026-08-04)
 
-- the "precommit" command now stages files it modifies
-- the "ghokin" app now gets called with the files to format, requires at least Ghokin 3.10.0
-
-- the "precommit" command now stages the files whose content its fixes changed
+- The "precommit" command now stages files it modifies.
+  This allows running "tricorder precommit" directly as the Git precommit hook.
+- The "ghokin" app now gets called with the files to format.
+  Requires at least Ghokin v3.10.0.
+- The new `exclude` key in the Tricorder config file ("tricorder.toml") allows ignoring files.
 
 ## 0.0.13 (2026-07-15)
 
