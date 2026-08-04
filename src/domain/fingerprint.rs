@@ -90,6 +90,21 @@ mod tests {
     }
 
     #[test]
+    fn created() {
+        let dir = TempDir::new().unwrap();
+        let file = dir.path().join("file.txt");
+        let before = fingerprint::scan_files(&[&file]);
+        std::fs::write(&file, "content").unwrap();
+        let after = fingerprint::scan_files(&[&file]);
+        let have = fingerprint::changed(&before, &after);
+        assert_eq!(
+            have,
+            vec![&file],
+            "a file that got created counts as changed"
+        );
+    }
+
+    #[test]
     fn missing_in_both_scans() {
         let dir = TempDir::new().unwrap();
         let file = dir.path().join("does-not-exist.txt");
