@@ -8,9 +8,9 @@ use std::path::PathBuf;
 #[must_use]
 pub struct Fingerprints(AHashMap<PathBuf, Option<u64>>);
 
-/// hashes the content of the given files
+/// provides fingerprints for the content of the given files
 ///
-/// A file that cannot be read (missing or unreadable) gets a `None` fingerprint.
+/// Files that don't exist (because they are deleted) get a `None` fingerprint.
 pub fn scan_files(files: &[&PathBuf]) -> Fingerprints {
     // fixed seed so that fingerprints taken at different times are comparable
     let hasher = RandomState::with_seeds(0, 0, 0, 0);
