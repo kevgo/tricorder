@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.15 (2026-08-04)
+
+- bug fixes
+
 ## 0.0.14 (2026-08-04)
 
 - The "precommit" command now stages files it modifies.
