@@ -25,12 +25,12 @@ mod tests {
         // in Git worktrees and submodules, ".git" is a file, not a directory
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join(".git"), "gitdir: ../elsewhere\n").unwrap();
-        assert!(is_repo(dir.path()).0);
+        assert!(is_repo(dir.path()));
     }
 
     #[test]
     fn no_git_repository() {
         let dir = TempDir::new().unwrap();
-        assert!(!is_repo(dir.path()).0);
+        assert!(!is_repo(dir.path()));
     }
 }
