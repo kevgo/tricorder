@@ -175,6 +175,9 @@ automatically, with zero per-developer setup:
 
 The `tricorder lint` command runs all applicable linters.
 Since linters don't change files, they all run in parallel.
+Inside a Git repository,
+it also runs `git diff HEAD --check` to detect leftover conflict markers in your
+changes.
 
 ### `tricorder fix`
 

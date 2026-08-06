@@ -1,0 +1,44 @@
+Feature: "tricorder fix" does not run "git diff --check"
+
+  Background:
+    Given a Git repository
+    And a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+    And a committed file "main.txt" with content
+      """
+      line one
+      """
+
+  Scenario: clean repository
+    When executing "tricorder fix"
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
+    And the exit code is 0
+
+  Scenario: whitespace error in a changed file
+    Given I change file "main.txt" to
+      """
+      line one
+       \tindented
+      """
+    When executing "tricorder fix"
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
+    And the exit code is 0
+
+  Scenario: conflict markers in a changed file
+    Given I change file "main.txt" to
+      """
+      line one
+      <<<<<<< HEAD:main.txt
+      Hello world
+      =======
+      Goodbye
+      >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
+      """
+    When executing "tricorder fix"
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
+    And the exit code is 0

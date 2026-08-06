@@ -3,6 +3,7 @@ pub mod checkstyle;
 pub mod delete_empty_folders;
 pub mod gherkin_lint;
 pub mod ghokin;
+pub mod git_diff_check;
 pub mod gofumpt;
 pub mod golangci_lint;
 pub mod keep_sorted;

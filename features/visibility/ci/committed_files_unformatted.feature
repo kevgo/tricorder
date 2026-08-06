@@ -63,7 +63,7 @@ Feature: CI if committed files are unformatted
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 8 tools
+      running 9 tools
       """
     And it prints the block
       """
