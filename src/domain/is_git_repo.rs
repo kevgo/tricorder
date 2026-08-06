@@ -26,9 +26,3 @@ impl From<bool> for IsGitRepo {
         Self(value)
     }
 }
-
-impl From<IsGitRepo> for bool {
-    fn from(value: IsGitRepo) -> Self {
-        value.0
-    }
-}
