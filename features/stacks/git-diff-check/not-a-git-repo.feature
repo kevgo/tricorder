@@ -1,0 +1,20 @@
+Feature: "tricorder lint" does not run "git diff --check" if not a Git repository
+
+  Scenario: Git not installed
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+    And a file "main.txt" with content
+      """
+      line one
+      <<<<<<< HEAD:main.txt
+      Hello world
+      =======
+      Goodbye
+      >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
+      """
+    When executing "tricorder lint"
+    Then it prints nothing to STDOUT
+    Then it prints nothing to STDERR
+    And the exit code is 0
