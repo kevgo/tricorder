@@ -58,6 +58,7 @@ pub fn determine_lints(
             }
         }
     }
+
     // determine the runnables for the custom lints
     if let Some(custom_lints) = custom_lints {
         for CustomLint { name, command } in custom_lints {
