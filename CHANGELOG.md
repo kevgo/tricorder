@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## Unreleased
+
+- runs `git diff --check` as a linter in Git repositories
+
 ## 0.0.15 (2026-08-04)
 
 - bug fixes

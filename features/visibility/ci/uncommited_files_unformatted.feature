@@ -35,6 +35,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       lint CSS (Biome)
       fix TypeScript (Biome)
       lint TypeScript (Biome)
+      lint Git (git diff --check)
       """
     And it prints nothing to STDERR
     And file "main.py" now has content
@@ -58,7 +59,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
-      running 8 tools
+      running 9 tools
       """
     And it prints the block
       """
@@ -127,6 +128,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       lint Python (ruff)
       lint TypeScript (Biome)
       lint CSS (Biome)
+      lint Git (git diff --check)
       """
     And file "main.css" now has content
       """

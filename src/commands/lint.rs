@@ -1,3 +1,4 @@
+use crate::apps::git_diff_check;
 use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomLint};
@@ -57,7 +58,6 @@ pub fn determine_lints(
             }
         }
     }
-
     // determine the runnables for the custom lints
     if let Some(custom_lints) = custom_lints {
         for CustomLint { name, command } in custom_lints {
@@ -67,5 +67,11 @@ pub fn determine_lints(
             }));
         }
     }
+
+    // determine the Git lint
+    if let Some(executable) = git_diff_check::lint_command() {
+        result.push(conc::Runnable::Single(executable));
+    }
+
     Ok(result)
 }
