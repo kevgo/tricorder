@@ -2,7 +2,7 @@ use std::ops::{Deref, Not};
 
 /// indicates whether the current directory contains a Git repository
 #[must_use]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct IsGitRepo(bool);
 
 impl Deref for IsGitRepo {
