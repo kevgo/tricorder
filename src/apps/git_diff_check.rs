@@ -1,13 +1,13 @@
-use crate::git;
 use big_s::S;
-use std::path::Path;
 use std::process::Command;
+
+use crate::domain::IsGitRepo;
 
 /// provides the command that checks the Git changes for whitespace errors,
 /// if the current directory is a Git repository
 #[must_use]
-pub fn lint_command() -> Option<conc::Executable> {
-    if !git::is_repo(Path::new("./")) {
+pub fn lint_command(is_git_repo: IsGitRepo) -> Option<conc::Executable> {
+    if !is_git_repo.bool() {
         return None;
     }
     let mut command = Command::new("git");
