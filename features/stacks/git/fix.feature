@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" does not run "git diff --check"
+Feature: "tricorder fix" does not run "git diff --check"
 
   Background:
     Given a Git repository
@@ -12,7 +12,7 @@ Feature: "tricorder precommit" does not run "git diff --check"
       """
 
   Scenario: clean repository
-    When executing "tricorder precommit"
+    When executing "tricorder fix"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
@@ -23,7 +23,7 @@ Feature: "tricorder precommit" does not run "git diff --check"
       line one
        \tindented
       """
-    When executing "tricorder precommit"
+    When executing "tricorder fix"
     Then it prints nothing to STDOUT
     Then it prints nothing to STDERR
     And the exit code is 0
@@ -38,7 +38,7 @@ Feature: "tricorder precommit" does not run "git diff --check"
       Goodbye
       >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
       """
-    When executing "tricorder precommit"
+    When executing "tricorder fix"
     Then it prints nothing to STDOUT
     Then it prints nothing to STDERR
     And the exit code is 0
