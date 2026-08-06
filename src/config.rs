@@ -14,6 +14,9 @@ pub struct Config {
     pub custom_lints: Option<Vec<CustomLint>>,
 
     pub exclude: Option<Vec<String>>,
+
+    #[serde(alias = "keep-sorted")]
+    pub keep_sorted: Option<KeepSorted>,
 }
 
 impl Config {
@@ -49,6 +52,11 @@ pub struct CustomFix {
 pub struct CustomLint {
     pub name: Option<String>,
     pub command: String,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq)]
+pub struct KeepSorted {
+    pub enabled: bool,
 }
 
 #[cfg(test)]
@@ -102,6 +110,7 @@ command = "fixes/sort.py"
                     },
                 ]),
                 exclude: None,
+                keep_sorted: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -114,6 +123,7 @@ command = "fixes/sort.py"
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
                 exclude: None,
+                keep_sorted: None,
             };
             assert_eq!(have, want);
         }
@@ -125,6 +135,7 @@ command = "fixes/sort.py"
                 custom_lints: None,
                 custom_fixes: None,
                 exclude: None,
+                keep_sorted: None,
             };
             assert_eq!(have, want);
         }
@@ -137,6 +148,7 @@ command = "fixes/sort.py"
                 custom_lints: None,
                 custom_fixes: None,
                 exclude: Some(vec![S("a.css"), S("b/")]),
+                keep_sorted: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -177,6 +189,7 @@ stack = "PyThOn"
                 ]),
                 custom_lints: None,
                 exclude: None,
+                keep_sorted: None,
             };
             assert_eq!(have, want);
         }
@@ -204,8 +217,33 @@ command = "fixes/one.sh"
                     stack: None,
                 }]),
                 exclude: None,
+                keep_sorted: None,
             };
             pretty::assert_eq!(have, want);
+        }
+    }
+
+    mod keep_sorted {
+        use crate::config::{Config, KeepSorted};
+
+        #[test]
+        fn absent() {
+            let have: Config = toml::from_str("").unwrap();
+            assert_eq!(have.keep_sorted, None);
+        }
+
+        #[test]
+        fn enabled_true() {
+            let give = "[keep-sorted]\nenabled = true";
+            let have: Config = toml::from_str(give).unwrap();
+            assert_eq!(have.keep_sorted, Some(KeepSorted { enabled: true }));
+        }
+
+        #[test]
+        fn enabled_false() {
+            let give = "[keep-sorted]\nenabled = false";
+            let have: Config = toml::from_str(give).unwrap();
+            assert_eq!(have.keep_sorted, Some(KeepSorted { enabled: false }));
         }
     }
 }

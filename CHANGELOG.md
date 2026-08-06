@@ -1,5 +1,10 @@
 # Tricorder changelog
 
+## Unreleased
+
+- The new `[keep-sorted]` config option allows opting in to running
+  [keep-sorted](https://github.com/google/keep-sorted) on marker-bearing files.
+
 ## 0.0.15 (2026-08-04)
 
 - bug fixes

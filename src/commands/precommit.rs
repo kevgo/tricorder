@@ -1,8 +1,8 @@
-use crate::apps::delete_empty_folders;
+use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
-use crate::config::{Config, CustomFix};
+use crate::config::{Config, CustomFix, KeepSorted};
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
@@ -32,7 +32,8 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let before = fingerprint::scan_files(&staged_files);
 
     // step 4: discover all runnables
-    let runnables = determine_precommit_fixes(config.custom_fixes, &staged_stacks)?;
+    let runnables =
+        determine_precommit_fixes(config.custom_fixes, config.keep_sorted, &staged_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -70,6 +71,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
 /// not all stacks that exist in the workspace.
 pub fn determine_precommit_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
+    keep_sorted_config: Option<KeepSorted>,
     staged_stacks: &DetectedStacks,
 ) -> Result<Runnables> {
     // global fixes
@@ -111,6 +113,16 @@ pub fn determine_precommit_fixes(
             } else {
                 global.push(executable);
             }
+        }
+    }
+
+    // keep-sorted
+    if keep_sorted_config.is_some_and(|ks| ks.enabled) {
+        for (stack_type, executable) in keep_sorted::fix_commands(staged_stacks)? {
+            stacks_executables
+                .entry(stack_type)
+                .or_default()
+                .push(executable);
         }
     }
 
