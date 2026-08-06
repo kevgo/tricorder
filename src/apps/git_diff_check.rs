@@ -12,7 +12,7 @@ pub fn lint_command() -> Option<conc::Executable> {
     let mut command = Command::new("git");
     command.args(["diff", "HEAD", "--check"]);
     Some(conc::Executable {
-        name: S("lint Git (git diff --check)"),
+        name: S("lint Git (git diff HEAD --check)"),
         command,
     })
 }

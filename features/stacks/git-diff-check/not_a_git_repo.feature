@@ -16,5 +16,5 @@ Feature: "tricorder lint" does not run "git diff --check" if not a Git repositor
       """
     When executing "tricorder lint"
     Then it prints nothing to STDOUT
-    Then it prints nothing to STDERR
+    And it prints nothing to STDERR
     And the exit code is 0
