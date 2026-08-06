@@ -47,6 +47,8 @@ Feature: "tricorder lint" checks the Git changes for whitespace errors
     When executing "tricorder lint"
     Then it prints the block
       """
-      main.txt:2: space before tab in indent.
+      main.txt:2: leftover conflict marker
+      main.txt:4: leftover conflict marker
+      main.txt:6: leftover conflict marker
       """
     And the exit code is 2
