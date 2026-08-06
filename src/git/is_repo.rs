@@ -17,7 +17,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         fs::create_dir(dir.path().join(".git")).unwrap();
         fs::write(dir.path().join(".git/HEAD"), "ref: refs/heads/main\n").unwrap();
-        assert!(is_repo(dir.path()).0);
+        assert!(is_repo(dir.path()));
     }
 
     #[test]
