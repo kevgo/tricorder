@@ -4,7 +4,8 @@ use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
 use crate::domain::Result;
-use crate::stacks;
+use crate::{git, stacks};
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -14,6 +15,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
     let error_on_output = false;
     let stderr_to_stdout = true;
+    let is_git_repo = git::is_repo(Path::new("./"));
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&excludes);
@@ -23,7 +25,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
 
     // step 3: discover all runnables
     let fix_runnables = fix::determine_fixes(config.custom_fixes, &all_stacks)?;
-    let lints = lint::determine_lints(&all_stacks, config.custom_lints)?;
+    let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show == conc::Show::All {
         eprintln!("running {runnable_count} tools");

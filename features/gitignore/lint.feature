@@ -1,7 +1,8 @@
 Feature: ignore files in .gitignore
 
   Scenario: all Python files are ignored
-    Given a file ".gitignore" with content
+    Given a Git repository
+    And a file ".gitignore" with content
       """
       *.py
       """
