@@ -25,7 +25,7 @@ Feature: "tricorder fix" does not run "git diff --check"
       """
     When executing "tricorder fix"
     Then it prints nothing to STDOUT
-    Then it prints nothing to STDERR
+    And it prints nothing to STDERR
     And the exit code is 0
 
   Scenario: conflict markers in a changed file
@@ -40,5 +40,5 @@ Feature: "tricorder fix" does not run "git diff --check"
       """
     When executing "tricorder fix"
     Then it prints nothing to STDOUT
-    Then it prints nothing to STDERR
+    And it prints nothing to STDERR
     And the exit code is 0
