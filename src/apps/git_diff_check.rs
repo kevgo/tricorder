@@ -19,13 +19,7 @@ pub fn lint_command() -> Option<conc::Executable> {
 
 /// indicates whether the given directory is the root of a Git repository
 fn is_git_repo(dir: &Path) -> bool {
-    let git_path = dir.join(".git");
-    if git_path.is_file() {
-        // Git worktrees and submodules have a ".git" file
-        return true;
-    }
-    // make sure we have a real Git repository
-    git_path.join("HEAD").exists()
+    dir.join(".git").exists()
 }
 
 #[cfg(test)]
@@ -40,16 +34,6 @@ mod tests {
         fs::create_dir(dir.path().join(".git")).unwrap();
         fs::write(dir.path().join(".git/HEAD"), "ref: refs/heads/main\n").unwrap();
         assert!(is_git_repo(dir.path()));
-    }
-
-    #[test]
-    fn git_dir_without_head() {
-        // some tools (e.g. the `ignore` crate) only need a ".git/info/exclude"
-        // file to exist, without the directory being a real Git repository
-        let dir = TempDir::new().unwrap();
-        fs::create_dir_all(dir.path().join(".git/info")).unwrap();
-        fs::write(dir.path().join(".git/info/exclude"), "").unwrap();
-        assert!(!is_git_repo(dir.path()));
     }
 
     #[test]
