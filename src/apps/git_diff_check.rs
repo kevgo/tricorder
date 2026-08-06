@@ -21,13 +21,10 @@ pub fn lint_command() -> Option<conc::Executable> {
 fn is_git_repo(dir: &Path) -> bool {
     let git_path = dir.join(".git");
     if git_path.is_file() {
-        // Git worktrees and submodules point to their real Git dir via a
-        // ".git" file instead of a directory.
+        // Git worktrees and submodules have a ".git" file
         return true;
     }
-    // Some tools (e.g. the `ignore` crate) only need a ".git/info/exclude"
-    // file to exist to honor ".gitignore" files, without the directory
-    // being a real Git repository. Requiring "HEAD" filters those out.
+    // make sure we have a real Git repository
     git_path.join("HEAD").exists()
 }
 
