@@ -1,4 +1,4 @@
-Feature: "tricorder lint" runs "git diff --check"
+Feature: "tricorder pitstop" runs "git diff --check"
 
   Background:
     Given a Git repository
@@ -12,7 +12,7 @@ Feature: "tricorder lint" runs "git diff --check"
       """
 
   Scenario: clean repository
-    When executing "tricorder lint"
+    When executing "tricorder pitstop"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
@@ -23,7 +23,7 @@ Feature: "tricorder lint" runs "git diff --check"
       line one
        \tindented
       """
-    When executing "tricorder lint"
+    When executing "tricorder pitstop"
     Then it prints the block
       """
       main.txt:2: space before tab in indent.
@@ -40,7 +40,7 @@ Feature: "tricorder lint" runs "git diff --check"
       Goodbye
       >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
       """
-    When executing "tricorder lint"
+    When executing "tricorder pitstop"
     Then it prints the block
       """
       main.txt:2: leftover conflict marker
