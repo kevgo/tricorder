@@ -7,7 +7,7 @@ use crate::domain::IsGitRepo;
 /// if the current directory is a Git repository
 #[must_use]
 pub fn lint_command(is_git_repo: IsGitRepo) -> Option<conc::Executable> {
-    if !is_git_repo.bool() {
+    if !is_git_repo.0 {
         return None;
     }
     let mut command = Command::new("git");

@@ -1,14 +1,7 @@
 /// indicates whether the current directory contains a Git repository
 #[must_use]
 #[derive(Debug, Clone, Copy)]
-pub struct IsGitRepo(bool);
-
-impl IsGitRepo {
-    #[must_use]
-    pub fn bool(self) -> bool {
-        self.0
-    }
-}
+pub struct IsGitRepo(pub bool);
 
 impl From<bool> for IsGitRepo {
     fn from(value: bool) -> Self {
