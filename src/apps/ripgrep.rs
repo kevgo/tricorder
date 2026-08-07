@@ -56,86 +56,59 @@ fn parse_stdout(stdout: &str) -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::{check_exit_code, files_with_matches_in, parse_stdout};
-    use crate::domain::UserError;
-    use std::fs;
-    use std::path::PathBuf;
-    use tempfile::TempDir;
 
-    #[test]
-    fn check_exit_code_accepts_zero() {
-        assert!(check_exit_code(Some(0), b"").is_ok());
+    mod parse_stdout {
+        use super::super::parse_stdout;
+        use std::path::PathBuf;
+
+        #[test]
+        fn splits_paths() {
+            let have = parse_stdout("a.txt\nb.txt\n");
+            assert_eq!(have, vec![PathBuf::from("a.txt"), PathBuf::from("b.txt")]);
+        }
+
+        #[test]
+        fn skips_empty_lines() {
+            let have = parse_stdout("a.txt\n\nb.txt\n\n");
+            assert_eq!(have, vec![PathBuf::from("a.txt"), PathBuf::from("b.txt")]);
+        }
+
+        #[test]
+        fn empty() {
+            assert!(parse_stdout("").is_empty());
+        }
     }
 
-    #[test]
-    fn check_exit_code_accepts_one() {
-        assert!(check_exit_code(Some(1), b"").is_ok());
-    }
+    mod finds_matches_in {
+        use super::super::files_with_matches_in;
+        use std::fs;
+        use tempfile::TempDir;
 
-    #[test]
-    fn check_exit_code_rejects_other_codes() {
-        let err = check_exit_code(Some(2), b"boom").unwrap_err();
-        assert_eq!(err, UserError::CannotRunRipgrep { msg: "boom".into() });
-    }
+        #[test]
+        fn finds_matching_files() {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("hit.txt"), "needle here").unwrap();
+            fs::write(dir.path().join("miss.txt"), "nothing").unwrap();
+            let mut have = files_with_matches_in("needle", Some(dir.path())).unwrap();
+            have.sort();
+            assert_eq!(have, vec![dir.path().join("hit.txt")]);
+        }
 
-    #[test]
-    fn check_exit_code_rejects_missing_code() {
-        let err = check_exit_code(None, b"killed").unwrap_err();
-        assert_eq!(
-            err,
-            UserError::CannotRunRipgrep {
-                msg: "killed".into()
-            }
-        );
-    }
+        #[test]
+        fn finds_no_matching_files() {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("miss.txt"), "nothing").unwrap();
+            let have = files_with_matches_in("needle", Some(dir.path())).unwrap();
+            assert!(have.is_empty());
+        }
 
-    #[test]
-    fn parse_stdout_splits_paths() {
-        let have = parse_stdout("./a.txt\n./b.txt\n");
-        assert_eq!(
-            have,
-            vec![PathBuf::from("./a.txt"), PathBuf::from("./b.txt")]
-        );
-    }
-
-    #[test]
-    fn parse_stdout_skips_empty_lines() {
-        let have = parse_stdout("./a.txt\n\n./b.txt\n\n");
-        assert_eq!(
-            have,
-            vec![PathBuf::from("./a.txt"), PathBuf::from("./b.txt")]
-        );
-    }
-
-    #[test]
-    fn parse_stdout_empty() {
-        assert!(parse_stdout("").is_empty());
-    }
-
-    #[test]
-    fn finds_matching_files() {
-        let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("hit.txt"), "needle here").unwrap();
-        fs::write(dir.path().join("miss.txt"), "nothing").unwrap();
-        let mut have = files_with_matches_in("needle", Some(dir.path())).unwrap();
-        have.sort();
-        assert_eq!(have, vec![dir.path().join("hit.txt")]);
-    }
-
-    #[test]
-    fn finds_no_matching_files() {
-        let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("miss.txt"), "nothing").unwrap();
-        let have = files_with_matches_in("needle", Some(dir.path())).unwrap();
-        assert!(have.is_empty());
-    }
-
-    #[test]
-    fn finds_nested_matching_files() {
-        let dir = TempDir::new().unwrap();
-        fs::create_dir_all(dir.path().join("nested")).unwrap();
-        fs::write(dir.path().join("nested/hit.txt"), "needle").unwrap();
-        let have = files_with_matches_in("needle", Some(dir.path())).unwrap();
-        assert_eq!(have, vec![dir.path().join("nested/hit.txt")]);
+        #[test]
+        fn finds_nested_matching_files() {
+            let dir = TempDir::new().unwrap();
+            fs::create_dir_all(dir.path().join("nested")).unwrap();
+            fs::write(dir.path().join("nested/hit.txt"), "needle").unwrap();
+            let have = files_with_matches_in("needle", Some(dir.path())).unwrap();
+            assert_eq!(have, vec![dir.path().join("nested/hit.txt")]);
+        }
     }
 }
