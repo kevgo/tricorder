@@ -12,7 +12,12 @@ impl Files {
 
     #[must_use]
     pub fn contains(&self, file: &str) -> bool {
-        self.0.contains(&PathBuf::from(file))
+        for file in self.0 {
+            if file.as_ref() == file {
+                return true;
+            }
+        }
+        false
     }
 
     #[must_use]
