@@ -6,8 +6,9 @@ use std::path::{Path, PathBuf};
 
 const MARKER: &str = "keep-sorted end";
 
-/// provides one keep-sorted fix `Executable` per `StackType` that owns a file
-/// containing a "keep-sorted end" marker, excluding files matched by `ignores`
+/// provides one `Executable` per `StackType`
+/// that fixes all files of that stack
+/// that contain a "keep-sorted end" marker.
 pub fn fix_commands(
     stacks: &DetectedStacks,
     ignores: &Excludes,
@@ -17,7 +18,7 @@ pub fn fix_commands(
         return Ok(vec![]);
     }
 
-    // maps the normalized form of each stack file to its stack type and its original path
+    // determine
     let mut lookup: AHashMap<PathBuf, (StackType, PathBuf)> = AHashMap::new();
     for stack in stacks {
         let stack_type = stack.stack.stack_type();
