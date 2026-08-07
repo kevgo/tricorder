@@ -1,15 +1,16 @@
 use crate::apps::ripgrep;
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStacks, StackType, UserError};
+use crate::domain::{DetectedStacks, Excludes, StackType, UserError};
 use ahash::AHashMap;
 use std::path::{Path, PathBuf};
 
 const MARKER: &str = "keep-sorted end";
 
 /// provides one keep-sorted fix `Executable` per `StackType` that owns a file
-/// containing a "keep-sorted end" marker
+/// containing a "keep-sorted end" marker, excluding files matched by `ignores`
 pub fn fix_commands(
     stacks: &DetectedStacks,
+    ignores: &Excludes,
 ) -> Result<Vec<(StackType, conc::Executable)>, UserError> {
     let matches = ripgrep::files_with_matches(MARKER)?;
     if matches.is_empty() {
@@ -28,7 +29,11 @@ pub fn fix_commands(
     // group the matched files, in the path form used by their stack, by stack type
     let mut grouped: AHashMap<StackType, Vec<PathBuf>> = AHashMap::new();
     for found in matches {
-        if let Some((stack_type, original)) = lookup.get(normalize(&found)) {
+        let found = normalize(&found);
+        if ignores.matches_self_or_parent(found) {
+            continue;
+        }
+        if let Some((stack_type, original)) = lookup.get(found) {
             grouped
                 .entry(*stack_type)
                 .or_default()

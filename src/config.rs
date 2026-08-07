@@ -54,9 +54,17 @@ pub struct CustomLint {
     pub command: String,
 }
 
-#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct KeepSorted {
     pub enabled: bool,
+    pub ignore: Option<Vec<String>>,
+}
+
+impl KeepSorted {
+    /// provides the matcher for the files that keep-sorted should not sort
+    pub fn ignores(&self) -> Result<Excludes> {
+        Excludes::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+    }
 }
 
 #[cfg(test)]
@@ -225,6 +233,7 @@ command = "fixes/one.sh"
 
     mod keep_sorted {
         use crate::config::{Config, KeepSorted};
+        use big_s::S;
 
         #[test]
         fn absent() {
@@ -236,14 +245,39 @@ command = "fixes/one.sh"
         fn enabled_true() {
             let give = "[keep-sorted]\nenabled = true";
             let have: Config = toml::from_str(give).unwrap();
-            assert_eq!(have.keep_sorted, Some(KeepSorted { enabled: true }));
+            assert_eq!(
+                have.keep_sorted,
+                Some(KeepSorted {
+                    enabled: true,
+                    ignore: None
+                })
+            );
         }
 
         #[test]
         fn enabled_false() {
             let give = "[keep-sorted]\nenabled = false";
             let have: Config = toml::from_str(give).unwrap();
-            assert_eq!(have.keep_sorted, Some(KeepSorted { enabled: false }));
+            assert_eq!(
+                have.keep_sorted,
+                Some(KeepSorted {
+                    enabled: false,
+                    ignore: None
+                })
+            );
+        }
+
+        #[test]
+        fn ignore() {
+            let give = "[keep-sorted]\nenabled = true\nignore = [\"README.md\"]";
+            let have: Config = toml::from_str(give).unwrap();
+            assert_eq!(
+                have.keep_sorted,
+                Some(KeepSorted {
+                    enabled: true,
+                    ignore: Some(vec![S("README.md")]),
+                })
+            );
         }
     }
 }

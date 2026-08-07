@@ -117,8 +117,11 @@ pub fn determine_precommit_fixes(
     }
 
     // keep-sorted
-    if keep_sorted_config.is_some_and(|ks| ks.enabled) {
-        for (stack_type, executable) in keep_sorted::fix_commands(staged_stacks)? {
+    if let Some(keep_sorted_config) = keep_sorted_config
+        && keep_sorted_config.enabled
+    {
+        let ignores = keep_sorted_config.ignores()?;
+        for (stack_type, executable) in keep_sorted::fix_commands(staged_stacks, &ignores)? {
             stacks_executables
                 .entry(stack_type)
                 .or_default()

@@ -58,3 +58,46 @@ Feature: keep-sorted support
       keep-sorted
       """
     And file "unsorted.toml" is unchanged
+
+  Scenario: a file matching "ignore" is left untouched while others are still sorted
+    Given a file "unsorted2.toml" with content
+      """
+      # keep-sorted start
+      b = 1
+      a = 1
+      # keep-sorted end
+      """
+    And a file "tricorder.toml" with content
+      """
+      [keep-sorted]
+      enabled = true
+      ignore = ["unsorted.toml"]
+      """
+    When executing "tricorder fix --show=all"
+    Then it prints the block
+      """
+      sort TOML (keep-sorted)
+      """
+    And file "unsorted.toml" is unchanged
+    And file "unsorted2.toml" now has content
+      """
+      # keep-sorted start
+      a = 1
+      b = 1
+      # keep-sorted end
+      """
+    And the exit code is 0
+
+  Scenario: all marker-bearing files match "ignore"
+    Given a file "tricorder.toml" with content
+      """
+      [keep-sorted]
+      enabled = true
+      ignore = ["unsorted.toml"]
+      """
+    When executing "tricorder fix --show=all"
+    Then it does not print
+      """
+      keep-sorted
+      """
+    And file "unsorted.toml" is unchanged
