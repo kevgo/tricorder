@@ -1,8 +1,15 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// A path without a leading "./"
 #[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NormalizedPath(String);
+
+impl NormalizedPath {
+    #[must_use]
+    pub fn starts_with(&self, prefix: &str) -> bool {
+        self.0.starts_with(prefix)
+    }
+}
 
 impl AsRef<str> for NormalizedPath {
     fn as_ref(&self) -> &str {
@@ -18,6 +25,13 @@ impl From<&Path> for NormalizedPath {
     }
 }
 
+impl From<PathBuf> for NormalizedPath {
+    fn from(path: PathBuf) -> Self {
+        let path: &Path = path.as_ref();
+        NormalizedPath::from(path)
+    }
+}
+
 impl From<&str> for NormalizedPath {
     fn from(path: &str) -> Self {
         let stripped = path.strip_prefix("./").unwrap_or(path);
@@ -28,6 +42,12 @@ impl From<&str> for NormalizedPath {
 impl From<NormalizedPath> for String {
     fn from(path: NormalizedPath) -> Self {
         path.0
+    }
+}
+
+impl From<&NormalizedPath> for String {
+    fn from(path: &NormalizedPath) -> Self {
+        path.0.clone()
     }
 }
 

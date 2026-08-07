@@ -23,7 +23,7 @@ impl Fix for Gofumpt {
         args.push(S("-l"));
         args.push(S("-w"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),

@@ -24,7 +24,7 @@ impl Lint for Biome {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -42,7 +42,7 @@ impl Fix for Biome {
         args.push(S("format"));
         args.push(S("--write"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
@@ -62,7 +62,7 @@ impl Fix for Biome {
         args.push(S("--write"));
         args.push(S("--unsafe"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} ({self})", stack.stack),

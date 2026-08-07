@@ -40,8 +40,8 @@ impl Files {
 }
 
 impl<'a> IntoIterator for &'a Files {
-    type Item = &'a PathBuf;
-    type IntoIter = std::slice::Iter<'a, PathBuf>;
+    type Item = &'a NormalizedPath;
+    type IntoIter = std::slice::Iter<'a, NormalizedPath>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
@@ -49,7 +49,8 @@ impl<'a> IntoIterator for &'a Files {
 }
 
 impl From<Vec<PathBuf>> for Files {
-    fn from(files: Vec<PathBuf>) -> Self {
-        Self(files)
+    fn from(paths: Vec<PathBuf>) -> Self {
+        let normalized_paths = paths.into_iter().map(std::convert::Into::into).collect();
+        Self(normalized_paths)
     }
 }
