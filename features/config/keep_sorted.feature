@@ -11,8 +11,8 @@ Feature: keep-sorted support
     And a file "unsorted.toml" with content
       """
       # keep-sorted start
-      b = 1
       a = 1
+      b = 1
       # keep-sorted end
       """
 
@@ -24,7 +24,6 @@ Feature: keep-sorted support
       """
     And file "unsorted.toml" is unchanged
 
-  @this
   Scenario: keep-sorted sorts a marker-bearing file when enabled
     Given a file "tricorder.toml" with content
       """
@@ -78,8 +77,8 @@ Feature: keep-sorted support
     Given a file "unsorted2.toml" with content
       """
       # keep-sorted start
-      b = 1
       a = 1
+      b = 1
       # keep-sorted end
       """
     And a file "tricorder.toml" with content

@@ -116,7 +116,8 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
         }
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(path) {
-                detected_stack.files.push(path.to_owned());
+                let normalized = path.strip_prefix("./").unwrap_or(path);
+                detected_stack.files.push(normalized.to_owned());
                 break;
             }
         }

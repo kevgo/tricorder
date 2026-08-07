@@ -23,7 +23,6 @@ pub fn fix_commands(
     for stack in stacks {
         let stack_type = stack.stack.stack_type();
         for file in &stack.files {
-            println!("file: {}", file.display());
             lookup.insert(file.clone(), (stack_type, file.clone()));
         }
     }
