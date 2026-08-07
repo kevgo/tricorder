@@ -1,7 +1,8 @@
+use crate::domain::NormalizedPath;
 use std::path::PathBuf;
 
 #[derive(Default, PartialEq, Eq)]
-pub struct Files(Vec<PathBuf>);
+pub struct Files(Vec<NormalizedPath>);
 
 impl Files {
     #[must_use]
