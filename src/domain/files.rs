@@ -1,5 +1,5 @@
 use crate::domain::NormalizedPath;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Default, PartialEq, Eq)]
 pub struct Files(Vec<NormalizedPath>);
@@ -30,8 +30,8 @@ impl Files {
         self.0.len()
     }
 
-    pub fn push(&mut self, file: PathBuf) {
-        self.0.push(file);
+    pub fn push(&mut self, file: &Path) {
+        self.0.push(file.into());
     }
 
     pub fn sort_unstable(&mut self) {

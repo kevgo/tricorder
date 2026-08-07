@@ -1,7 +1,7 @@
 use std::path::Path;
 
 /// A path without a leading "./"
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NormalizedPath(String);
 
 impl AsRef<str> for NormalizedPath {
