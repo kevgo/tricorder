@@ -15,12 +15,6 @@ impl Files {
     }
 
     #[must_use]
-    pub fn contains_any(&self, files: &[&str]) -> bool {
-        let files = files.iter().map(PathBuf::from).collect::<Vec<_>>();
-        self.0.iter().any(|file| files.contains(file))
-    }
-
-    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
