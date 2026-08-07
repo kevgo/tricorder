@@ -44,7 +44,7 @@ Feature: keep-sorted support
       """
     And the exit code is 0
 
-  Scenario: a file matching "exclude" is left untouched
+  Scenario: does not sort globally excluded files
     Given a file "tricorder.toml" with content
       """
       exclude = ["unsorted.toml"]
@@ -59,7 +59,21 @@ Feature: keep-sorted support
       """
     And file "unsorted.toml" is unchanged
 
-  Scenario: a file matching "ignore" is left untouched while others are still sorted
+  Scenario: does not sort files that should not be sorted
+    Given a file "tricorder.toml" with content
+      """
+      [keep-sorted]
+      enabled = true
+      ignore = ["unsorted.toml"]
+      """
+    When executing "tricorder fix --show=all"
+    Then it does not print
+      """
+      keep-sorted
+      """
+    And file "unsorted.toml" is unchanged
+
+  Scenario: some sortable files are ignored
     Given a file "unsorted2.toml" with content
       """
       # keep-sorted start
@@ -87,17 +101,3 @@ Feature: keep-sorted support
       # keep-sorted end
       """
     And the exit code is 0
-
-  Scenario: all marker-bearing files match "ignore"
-    Given a file "tricorder.toml" with content
-      """
-      [keep-sorted]
-      enabled = true
-      ignore = ["unsorted.toml"]
-      """
-    When executing "tricorder fix --show=all"
-    Then it does not print
-      """
-      keep-sorted
-      """
-    And file "unsorted.toml" is unchanged
