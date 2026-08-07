@@ -12,8 +12,8 @@ impl Files {
 
     #[must_use]
     pub fn contains(&self, file: &str) -> bool {
-        for file in self.0 {
-            if file.as_ref() == file {
+        for self_file in &self.0 {
+            if self_file.as_ref() == file {
                 return true;
             }
         }
