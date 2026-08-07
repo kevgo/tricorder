@@ -2,3 +2,6 @@ exclude = [
   # current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
   "Cargo.toml",
 ]
+
+[keep-sorted]
+enabled = true

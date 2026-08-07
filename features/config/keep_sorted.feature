@@ -24,6 +24,7 @@ Feature: keep-sorted support
       """
     And file "unsorted.toml" is unchanged
 
+  @this
   Scenario: keep-sorted sorts a marker-bearing file when enabled
     Given a file "tricorder.toml" with content
       """
