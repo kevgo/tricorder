@@ -24,9 +24,9 @@ impl Fix for Ghokin {
         args.push(S("replace"));
         for file in &stack.files {
             let filename = if file.starts_with("./") {
-                file.to_string_lossy()[2..].to_string()
+                file.as_ref()[2..].to_string()
             } else {
-                file.to_string_lossy().to_string()
+                file.as_ref().to_string()
             };
             args.push(filename);
         }

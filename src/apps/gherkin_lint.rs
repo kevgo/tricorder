@@ -28,7 +28,7 @@ impl Lint for GherkinLint {
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),

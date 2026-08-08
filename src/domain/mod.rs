@@ -1,6 +1,7 @@
 mod detected_stack;
 mod error;
 mod excludes;
+mod file;
 mod files;
 pub mod fingerprint;
 mod fix;
@@ -13,6 +14,7 @@ mod tool;
 pub use detected_stack::{DetectedStack, DetectedStacks};
 pub use error::{Result, UserError};
 pub use excludes::Excludes;
+pub use file::File;
 pub use files::Files;
 pub use fix::Fix;
 pub use is_git_repo::IsGitRepo;

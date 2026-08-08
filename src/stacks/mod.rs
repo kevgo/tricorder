@@ -66,7 +66,7 @@ pub fn from_staged(staged: &StagedFiles, excludes: &Excludes) -> DetectedStacks 
         }
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(file) {
-                detected_stack.files.push(file.clone());
+                detected_stack.files.push(file);
                 break;
             }
         }
@@ -117,7 +117,7 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(path) {
                 let normalized = path.strip_prefix("./").unwrap_or(path);
-                detected_stack.files.push(normalized.to_owned());
+                detected_stack.files.push(normalized);
                 break;
             }
         }
