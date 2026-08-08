@@ -18,7 +18,7 @@ pub fn fix_commands(
         return Ok(vec![]);
     }
 
-    // determine
+    // determine the stack type for each file in the workspace
     let mut lookup: AHashMap<File, (StackType, File)> = AHashMap::new();
     for stack in stacks {
         let stack_type = stack.stack.stack_type();
