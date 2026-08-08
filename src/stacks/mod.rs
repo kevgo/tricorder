@@ -61,7 +61,7 @@ pub fn from_staged(staged: &StagedFiles, excludes: &Excludes) -> DetectedStacks 
         })
         .collect();
     for file in staged.all() {
-        if excludes.matches_self_or_parent(file) {
+        if excludes.matches_self_or_parent(file.as_ref()) {
             continue;
         }
         for detected_stack in &mut detected_stacks {
