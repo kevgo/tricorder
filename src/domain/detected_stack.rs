@@ -80,6 +80,17 @@ impl DetectedStacks {
             } => self.contains_file(*stack_type, filename),
         }
     }
+
+    #[must_use]
+    pub fn stack_type_for_file(&self, file: &str) -> Option<StackType> {
+        let path = file.as_ref();
+        for detected_stack in &self.0 {
+            if detected_stack.stack.owns(path) {
+                return Some(detected_stack.stack.stack_type());
+            }
+        }
+        None
+    }
 }
 
 impl IntoIterator for DetectedStacks {

@@ -18,28 +18,20 @@ pub fn fix_commands(
         return Ok(vec![]);
     }
 
-    // build a hashmap for efficient lookup of stacktype for a file path
-    let mut lookup: AHashMap<File, StackType> = AHashMap::new();
-    for stack in stacks {
-        let stack_type = stack.stack.stack_type();
-        for file in &stack.files {
-            lookup.insert(file.clone(), stack_type);
-        }
-    }
-
-    // group the matched files, in the path form used by their stack, by stack type
+    // determine the files to sort via keep-sorted, organized by stack
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
         let found = File::from(found);
         if ignores.matches_self_or_parent(&found) {
             continue;
         }
-        if let Some(stack_type) = lookup.get(&found) {
-            grouped.entry(*stack_type).or_default().push(found);
+        if let Some(stack_type) = stacks.stack_type_for_file(&found) {
+            grouped.entry(stack_type).or_default().push(found);
         }
     }
 
-    let mut result = Vec::new();
+    // create the executables for each stack
+    let mut result = Vec::with_capacity(grouped.len());
     for (stack_type, mut files) in grouped {
         files.sort_unstable();
         let args = files.into_iter().map(Into::into).collect();
