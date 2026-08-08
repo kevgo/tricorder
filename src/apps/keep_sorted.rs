@@ -29,7 +29,7 @@ pub fn fix_commands(
         return Ok(vec![]);
     }
 
-    // step 3: group the files by stack type
+    // step 3: group the files to sort by stack type
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
         if let Some(stack_type) = stacks.stack_type_for_file(found.as_ref()) {
