@@ -16,14 +16,14 @@ pub fn scan_files(files: &[&File]) -> Fingerprints {
     let hasher = RandomState::with_seeds(0, 0, 0, 0);
     let mut result = AHashMap::new();
     for file in files {
-        let fingerprint = scan_file(*file, &hasher);
+        let fingerprint = scan_file(file, &hasher);
         result.insert((*file).clone(), fingerprint);
     }
     Fingerprints(result)
 }
 
 fn scan_file(file: &File, hasher: &RandomState) -> Option<u64> {
-    let Ok(file_content) = fs::read(&file) else {
+    let Ok(file_content) = fs::read(file) else {
         return None;
     };
     Some(hasher.hash_one(file_content))
