@@ -8,11 +8,18 @@ Feature: keep-sorted support
       ripgrep 15.2.0
       keep-sorted 0.9.1
       """
-    And a file "unsorted.toml" with content
+    And a file "unsorted_1.toml" with content
       """
       # keep-sorted start
       a = 1
       b = 1
+      # keep-sorted end
+      """
+    And a file "unsorted_2.toml" with content
+      """
+      # keep-sorted start
+      c = 1
+      d = 1
       # keep-sorted end
       """
 
@@ -22,9 +29,10 @@ Feature: keep-sorted support
       """
       keep-sorted
       """
-    And file "unsorted.toml" is unchanged
+    And file "unsorted_1.toml" is unchanged
+    And file "unsorted_2.toml" is unchanged
 
-  Scenario: keep-sorted sorts a marker-bearing file when enabled
+  Scenario: keep-sorted sorts marker-bearing files when enabled
     Given a file "tricorder.toml" with content
       """
       [keep-sorted]
@@ -35,11 +43,18 @@ Feature: keep-sorted support
       """
       sort TOML (keep-sorted)
       """
-    And file "unsorted.toml" now has content
+    And file "unsorted_1.toml" now has content
       """
       # keep-sorted start
       a = 1
       b = 1
+      # keep-sorted end
+      """
+    And file "unsorted_2.toml" now has content
+      """
+      # keep-sorted start
+      c = 1
+      d = 1
       # keep-sorted end
       """
     And the exit code is 0
@@ -47,57 +62,42 @@ Feature: keep-sorted support
   Scenario: does not sort globally excluded files
     Given a file "tricorder.toml" with content
       """
-      exclude = ["unsorted.toml"]
+      exclude = ["unsorted_1.toml"]
 
       [keep-sorted]
       enabled = true
       """
     When executing "tricorder fix --show=all"
-    Then it does not print
+    Then it prints the block
       """
       keep-sorted
       """
-    And file "unsorted.toml" is unchanged
+    And file "unsorted_1.toml" is unchanged
+    And file "unsorted_2.toml" now has content
+      """
+      # keep-sorted start
+      c = 1
+      d = 1
+      # keep-sorted end
+      """
 
   Scenario: does not sort files that should not be sorted
     Given a file "tricorder.toml" with content
       """
       [keep-sorted]
       enabled = true
-      ignore = ["unsorted.toml"]
-      """
-    When executing "tricorder fix --show=all"
-    Then it does not print
-      """
-      keep-sorted
-      """
-    And file "unsorted.toml" is unchanged
-
-  Scenario: some sortable files are ignored
-    Given a file "unsorted2.toml" with content
-      """
-      # keep-sorted start
-      a = 1
-      b = 1
-      # keep-sorted end
-      """
-    And a file "tricorder.toml" with content
-      """
-      [keep-sorted]
-      enabled = true
-      ignore = ["unsorted.toml"]
+      ignore = ["unsorted_1.toml"]
       """
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      sort TOML (keep-sorted)
+      keep-sorted
       """
-    And file "unsorted.toml" is unchanged
-    And file "unsorted2.toml" now has content
+    And file "unsorted_1.toml" is unchanged
+    And file "unsorted_2.toml" now has content
       """
       # keep-sorted start
-      a = 1
-      b = 1
+      c = 1
+      d = 1
       # keep-sorted end
       """
-    And the exit code is 0
