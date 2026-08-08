@@ -32,8 +32,12 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let before = fingerprint::scan_files(&staged_files);
 
     // step 4: discover all runnables
-    let runnables =
-        determine_precommit_fixes(config.custom_fixes, config.keep_sorted, &staged_stacks)?;
+    let runnables = determine_precommit_fixes(
+        config.custom_fixes,
+        config.keep_sorted,
+        &staged_stacks,
+        &config.exclude,
+    )?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -73,6 +77,7 @@ pub fn determine_precommit_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
     keep_sorted_config: Option<KeepSorted>,
     staged_stacks: &DetectedStacks,
+    global_ignores: &Option<Vec<String>>,
 ) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
@@ -120,8 +125,12 @@ pub fn determine_precommit_fixes(
     if let Some(keep_sorted_config) = keep_sorted_config
         && keep_sorted_config.enabled
     {
-        let ignores = keep_sorted_config.ignores()?;
-        for (stack_type, executable) in keep_sorted::fix_commands(staged_stacks, &ignores)? {
+        let args = keep_sorted::FixCommandsArgs {
+            stacks: staged_stacks,
+            global_ignores,
+            keep_sorted_ignores: &keep_sorted_config.ignore,
+        };
+        for (stack_type, executable) in keep_sorted::fix_commands(args)? {
             stacks_executables
                 .entry(stack_type)
                 .or_default()
