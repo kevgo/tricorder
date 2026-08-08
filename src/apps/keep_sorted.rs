@@ -30,11 +30,15 @@ pub fn fix_commands(
     // group the matched files, in the path form used by their stack, by stack type
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
-        if ignores.matches_self_or_parent(&found.into()) {
+        let found = File::from(found);
+        if ignores.matches_self_or_parent(&found) {
             continue;
         }
-        if let Some((stack_type, original)) = lookup.get(found.into()) {
-            grouped.entry(*stack_type).or_default().push(*original);
+        if let Some((stack_type, original)) = lookup.get(&found) {
+            grouped
+                .entry(*stack_type)
+                .or_default()
+                .push(original.clone());
         }
     }
 
