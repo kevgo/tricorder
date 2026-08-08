@@ -9,12 +9,15 @@ const MARKER: &str = "keep-sorted end";
 /// provides one `Executable` per `StackType`
 /// that fixes all files of that stack
 /// that contain a "keep-sorted end" marker.
-pub fn fix_commands(
-    stacks: &DetectedStacks,
-    ignores: &Excludes,
+pub fn fix_commands<'a>(
+    &FixCommandsArgs::<'a> {
+        stacks,
+        global_ignores,
+        keep_sorted_ignores,
+    }: &FixCommandsArgs<'a>,
 ) -> Result<Vec<(StackType, conc::Executable)>, UserError> {
     // step 2: find all files that contain the "keep-sorted end" marker
-    let ignores = vec![global_ignore, keep_sorted_ignores];
+    let ignores = vec![];
     let matches = ripgrep::files_with_matches(MARKER, ignores)?;
     if matches.is_empty() {
         return Ok(vec![]);
@@ -47,4 +50,10 @@ pub fn fix_commands(
         }
     }
     Ok(result)
+}
+
+pub struct FixCommandsArgs<'a> {
+    pub stacks: &'a DetectedStacks,
+    pub global_ignores: &'a [String],
+    pub keep_sorted_ignores: &'a [String],
 }

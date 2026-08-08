@@ -98,6 +98,11 @@ pub fn determine_fixes(
         && keep_sorted_config.enabled
     {
         let ignores = keep_sorted_config.ignores()?;
+        let args = keep_sorted::FixCommandsArgs {
+            stacks,
+            global_ignores: &[],
+            keep_sorted_ignores: &ignores,
+        };
         for (stack_type, executable) in keep_sorted::fix_commands(stacks, &ignores)? {
             stacks_executables
                 .entry(stack_type)
