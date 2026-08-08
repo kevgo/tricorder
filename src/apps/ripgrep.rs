@@ -9,15 +9,14 @@ pub fn files_with_matches(pattern: &str) -> Result<Vec<File>, UserError> {
 }
 
 fn files_with_matches_in(pattern: &str, path: Option<&Path>) -> Result<Vec<File>, UserError> {
-    let args = vec![
-        S("--files-with-matches"),
-        S("--fixed-strings"),
-        pattern.to_string(),
-    ];
     let Some(executable) = get_rta_command(&GetRTACmdArgs {
         name: S("ripgrep"),
         app: &rta::applications::RipGrep {},
-        args,
+        args: vec![
+            S("--files-with-matches"),
+            S("--fixed-strings"),
+            pattern.to_string(),
+        ],
         version: None,
     })?
     else {
