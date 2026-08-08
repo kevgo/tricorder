@@ -9,7 +9,7 @@ const MARKER: &str = "keep-sorted end";
 /// provides one `Executable` per `StackType`
 /// that fixes all files of that stack
 /// that contain a "keep-sorted end" marker.
-pub fn fix_commands<'a>(
+pub fn fix_commands(
     FixCommandsArgs {
         stacks,
         global_ignores,
@@ -57,6 +57,6 @@ pub fn fix_commands<'a>(
 
 pub struct FixCommandsArgs<'a> {
     pub stacks: &'a DetectedStacks,
-    pub global_ignores: &'a Option<Vec<String>>,
-    pub keep_sorted_ignores: &'a Option<Vec<String>>,
+    pub global_ignores: Option<&'a Vec<String>>,
+    pub keep_sorted_ignores: Option<&'a Vec<String>>,
 }

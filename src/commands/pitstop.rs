@@ -28,7 +28,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         config.custom_fixes,
         config.keep_sorted,
         &all_stacks,
-        &config.exclude,
+        config.exclude.as_ref(),
     )?;
     let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
