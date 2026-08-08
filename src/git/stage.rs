@@ -9,7 +9,7 @@ pub fn stage(files: &[&File]) -> Result<()> {
     let output = Command::new("git")
         .arg("add")
         .arg("--")
-        .args(files.iter().map(AsRef::as_ref))
+        .args(files.iter().map(|file| file.as_str()))
         .output()
         .map_err(|err| UserError::CannotRunGit {
             msg: err.to_string(),
