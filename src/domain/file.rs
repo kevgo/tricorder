@@ -1,23 +1,23 @@
 use std::path::{Path, PathBuf};
 
-/// A path without a leading "./"
+/// An OS path that is guaranteed to have the leading "./" stripped
 #[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub struct NormalizedPath(String);
+pub struct File(String);
 
-impl NormalizedPath {
+impl File {
     #[must_use]
     pub fn starts_with(&self, prefix: &str) -> bool {
         self.0.starts_with(prefix)
     }
 }
 
-impl AsRef<str> for NormalizedPath {
+impl AsRef<str> for File {
     fn as_ref(&self) -> &str {
         &self.0
     }
 }
 
-impl From<&Path> for NormalizedPath {
+impl From<&Path> for File {
     fn from(path: &Path) -> Self {
         let path = path.to_string_lossy();
         let stripped = path.strip_prefix("./").unwrap_or(path.as_ref());
@@ -25,28 +25,28 @@ impl From<&Path> for NormalizedPath {
     }
 }
 
-impl From<PathBuf> for NormalizedPath {
+impl From<PathBuf> for File {
     fn from(path: PathBuf) -> Self {
         let path: &Path = path.as_ref();
-        NormalizedPath::from(path)
+        File::from(path)
     }
 }
 
-impl From<&str> for NormalizedPath {
+impl From<&str> for File {
     fn from(path: &str) -> Self {
         let stripped = path.strip_prefix("./").unwrap_or(path);
         Self(stripped.to_string())
     }
 }
 
-impl From<NormalizedPath> for String {
-    fn from(path: NormalizedPath) -> Self {
+impl From<File> for String {
+    fn from(path: File) -> Self {
         path.0
     }
 }
 
-impl From<&NormalizedPath> for String {
-    fn from(path: &NormalizedPath) -> Self {
+impl From<&File> for String {
+    fn from(path: &File) -> Self {
         path.0.clone()
     }
 }
@@ -66,7 +66,7 @@ mod tests {
             "test.txt/test.txt" => "test.txt/test.txt",
         };
         for (give, want) in tests {
-            let have = NormalizedPath::from(give);
+            let have = File::from(give);
             assert_eq!(have, want.into());
         }
     }

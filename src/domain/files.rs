@@ -1,8 +1,8 @@
-use crate::domain::NormalizedPath;
+use crate::domain::File;
 use std::path::{Path, PathBuf};
 
 #[derive(Default, PartialEq, Eq)]
-pub struct Files(Vec<NormalizedPath>);
+pub struct Files(Vec<File>);
 
 impl Files {
     #[must_use]
@@ -40,8 +40,8 @@ impl Files {
 }
 
 impl<'a> IntoIterator for &'a Files {
-    type Item = &'a NormalizedPath;
-    type IntoIter = std::slice::Iter<'a, NormalizedPath>;
+    type Item = &'a File;
+    type IntoIter = std::slice::Iter<'a, File>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
