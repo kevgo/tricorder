@@ -5,3 +5,4 @@ exclude = [
 
 [keep-sorted]
 enabled = true
+ignore = ["README.md", "target/**"]
