@@ -121,7 +121,7 @@ mod tests {
             fs::write(dir.path().join("hit.txt"), "needle").unwrap();
             fs::write(dir.path().join("ignore.md"), "needle").unwrap();
             let have = files_with_matches_in("needle", Some(dir.path()), &[S("*.md")]).unwrap();
-            assert!(have.is_empty());
+            assert_eq!(have, vec!["hit.txt".into()]);
         }
     }
 }
