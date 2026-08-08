@@ -25,9 +25,8 @@ pub fn fix_commands(
         if ignores.matches_self_or_parent(&found) {
             continue;
         }
-        let file = File::from(found);
-        if let Some(stack_type) = stacks.stack_type_for_file(&file) {
-            grouped.entry(stack_type).or_default().push(file);
+        if let Some(stack_type) = stacks.stack_type_for_file(&found) {
+            grouped.entry(stack_type).or_default().push(found.into());
         }
     }
 

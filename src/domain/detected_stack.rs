@@ -1,4 +1,5 @@
 use crate::domain::{EnabledWhen, Files, Stack, StackType};
+use std::path::Path;
 
 /// A stack that was detected in the workspace,
 /// and the workspace files belonging to it.
@@ -82,8 +83,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn stack_type_for_file(&self, file: &str) -> Option<StackType> {
-        let path = file.as_ref();
+    pub fn stack_type_for_file(&self, path: &Path) -> Option<StackType> {
         for detected_stack in &self.0 {
             if detected_stack.stack.owns(path) {
                 return Some(detected_stack.stack.stack_type());
