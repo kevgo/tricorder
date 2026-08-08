@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
-/// An OS path that is guaranteed to have the leading "./" stripped
+/// An OS path that is guaranteed to be in the normalized form,
+/// i.e. has the leading "./" that the burntsushi libraries return stripped
 #[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct File(String);
 
