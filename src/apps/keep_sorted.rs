@@ -19,11 +19,11 @@ pub fn fix_commands(
     }
 
     // determine the stack type for each file in the workspace
-    let mut lookup: AHashMap<File, (StackType, File)> = AHashMap::new();
+    let mut lookup: AHashMap<File, StackType> = AHashMap::new();
     for stack in stacks {
         let stack_type = stack.stack.stack_type();
         for file in &stack.files {
-            lookup.insert(file.clone(), (stack_type, file.clone()));
+            lookup.insert(file.clone(), stack_type);
         }
     }
 
@@ -34,11 +34,8 @@ pub fn fix_commands(
         if ignores.matches_self_or_parent(&found) {
             continue;
         }
-        if let Some((stack_type, original)) = lookup.get(&found) {
-            grouped
-                .entry(*stack_type)
-                .or_default()
-                .push(original.clone());
+        if let Some(stack_type) = lookup.get(&found) {
+            grouped.entry(*stack_type).or_default().push(found);
         }
     }
 
