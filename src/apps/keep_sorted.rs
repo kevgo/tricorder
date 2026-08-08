@@ -13,11 +13,9 @@ pub fn fix_commands(
     stacks: &DetectedStacks,
     ignores: &Excludes,
 ) -> Result<Vec<(StackType, conc::Executable)>, UserError> {
-    // step 1: determine all files to search
-    let files_to_search = stacks.all_files_without(ignores);
-
     // step 2: find all files that contain the "keep-sorted end" marker
-    let matches = ripgrep::files_with_matches(files_to_search, MARKER)?;
+    let ignores = vec![global_ignore, keep_sorted_ignores];
+    let matches = ripgrep::files_with_matches(MARKER, ignores)?;
     if matches.is_empty() {
         return Ok(vec![]);
     }

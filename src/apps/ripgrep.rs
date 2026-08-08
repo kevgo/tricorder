@@ -4,19 +4,24 @@ use big_s::S;
 use std::path::Path;
 
 /// provides the paths (relative to the current directory) of all files that contain `pattern`
-pub fn files_with_matches(pattern: &str) -> Result<Vec<File>, UserError> {
-    files_with_matches_in(pattern, None)
+pub fn files_with_matches(pattern: &str, ignores: &[String]) -> Result<Vec<File>, UserError> {
+    files_with_matches_in(pattern, None, ignores)
 }
 
-fn files_with_matches_in(pattern: &str, path: Option<&Path>) -> Result<Vec<File>, UserError> {
+fn files_with_matches_in(
+    pattern: &str,
+    path: Option<&Path>,
+    ignores: &[String],
+) -> Result<Vec<File>, UserError> {
+    let mut args = vec![S("--files-with-matches"), S("--fixed-strings")];
+    for ignore in ignores {
+        args.push(format!("--glob=!{}", ignore));
+    }
+    args.push(pattern.to_string());
     let Some(executable) = get_rta_command(&GetRTACmdArgs {
         name: S("ripgrep"),
         app: &rta::applications::RipGrep {},
-        args: vec![
-            S("--files-with-matches"),
-            S("--fixed-strings"),
-            pattern.to_string(),
-        ],
+        args,
         version: None,
     })?
     else {
