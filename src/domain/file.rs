@@ -64,7 +64,7 @@ mod tests {
             "/test.txt" => "/test.txt",
             "//test.txt" => "//test.txt",
             "test.txt/" => "test.txt/",
-            "test.txt/test.txt" => "test.txt/test.txt",
+            "foo/bar.txt" => "foo/bar.txt",
         };
         for (give, want) in tests {
             let have = File::from(give);
