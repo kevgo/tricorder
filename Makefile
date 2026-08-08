@@ -54,7 +54,7 @@ help:  # prints all available targets
 
 keep-sorted: ${RTA}  # sorts the source code files
 	$(RTA) --install ripgrep
-	$(KEEPSORTED) $(shell $(RTA) ripgrep -l --hidden 'keep-sorted end' ./ --glob '!{.git,Makefile}')
+	$(KEEPSORTED) $(shell $(RTA) ripgrep -l --hidden 'keep-sorted end' ./ --glob '!{.git,Makefile,README.md,features/config/keep_sorted.feature,src/apps/keep_sorted.rs}')
 
 lint: ${RTA} ${TRICORDER}  # runs all linters
 	cargo clippy --all-targets --all-features -- --deny=warnings

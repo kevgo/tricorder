@@ -1,7 +1,7 @@
-use crate::apps::delete_empty_folders;
+use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomFix};
+use crate::config::{Config, CustomFix, KeepSorted};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -22,7 +22,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_fixes(config.custom_fixes, &all_stacks)?;
+    let runnables = determine_fixes(config.custom_fixes, config.keep_sorted, &all_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -54,6 +54,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_fixes(
     custom_fixes: Option<Vec<CustomFix>>,
+    keep_sorted_config: Option<KeepSorted>,
     stacks: &DetectedStacks,
 ) -> Result<Runnables> {
     // global fixes
@@ -89,6 +90,24 @@ pub fn determine_fixes(
             } else {
                 global.push(executable);
             }
+        }
+    }
+
+    // keep-sorted
+    if let Some(keep_sorted_config) = keep_sorted_config
+        && keep_sorted_config.enabled
+    {
+        let ignores = keep_sorted_config.ignores()?;
+        let args = keep_sorted::FixCommandsArgs {
+            stacks,
+            global_ignores: &[],
+            keep_sorted_ignores: &ignores,
+        };
+        for (stack_type, executable) in keep_sorted::fix_commands(stacks, &ignores)? {
+            stacks_executables
+                .entry(stack_type)
+                .or_default()
+                .push(executable);
         }
     }
 
