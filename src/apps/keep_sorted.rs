@@ -22,11 +22,12 @@ pub fn fix_commands(
     // step 2: group the files by stack type
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
-        if ignores.matches_self_or_parent(&found) {
+        let path = found.as_ref();
+        if ignores.matches_self_or_parent(path) {
             continue;
         }
-        if let Some(stack_type) = stacks.stack_type_for_file(&found) {
-            grouped.entry(stack_type).or_default().push(found.into());
+        if let Some(stack_type) = stacks.stack_type_for_file(path) {
+            grouped.entry(stack_type).or_default().push(found);
         }
     }
 

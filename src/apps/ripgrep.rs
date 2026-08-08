@@ -1,23 +1,20 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::UserError;
+use crate::domain::{File, UserError};
 use big_s::S;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// provides the paths (relative to the current directory) of all files that contain `pattern`
-pub fn files_with_matches(pattern: &str) -> Result<Vec<PathBuf>, UserError> {
+pub fn files_with_matches(pattern: &str) -> Result<Vec<File>, UserError> {
     files_with_matches_in(pattern, None)
 }
 
-fn files_with_matches_in(pattern: &str, path: Option<&Path>) -> Result<Vec<PathBuf>, UserError> {
-    let mut args = vec![
+fn files_with_matches_in(pattern: &str, path: Option<&Path>) -> Result<Vec<File>, UserError> {
+    let args = vec![
         S("--files-with-matches"),
         S("--fixed-strings"),
         pattern.to_string(),
     ];
-    if let Some(path) = path {
-        args.push(path.to_string_lossy().into_owned());
-    }
-    let Some(mut executable) = get_rta_command(&GetRTACmdArgs {
+    let Some(executable) = get_rta_command(&GetRTACmdArgs {
         name: S("ripgrep"),
         app: &rta::applications::RipGrep {},
         args,
@@ -26,8 +23,11 @@ fn files_with_matches_in(pattern: &str, path: Option<&Path>) -> Result<Vec<PathB
     else {
         return Ok(vec![]);
     };
-    let output = executable
-        .command
+    let mut command = executable.command;
+    if let Some(path) = path {
+        command.current_dir(path);
+    }
+    let output = command
         .output()
         .map_err(|err| UserError::CannotRunRipgrep {
             msg: err.to_string(),
@@ -46,11 +46,11 @@ fn check_exit_code(code: Option<i32>, stderr: &[u8]) -> Result<(), UserError> {
     }
 }
 
-fn parse_stdout(stdout: &str) -> Vec<PathBuf> {
+fn parse_stdout(stdout: &str) -> Vec<File> {
     stdout
         .lines()
         .filter(|line| !line.is_empty())
-        .map(PathBuf::from)
+        .map(File::from)
         .collect()
 }
 
@@ -59,18 +59,17 @@ mod tests {
 
     mod parse_stdout {
         use super::super::parse_stdout;
-        use std::path::PathBuf;
 
         #[test]
         fn splits_paths() {
             let have = parse_stdout("a.txt\nb.txt\n");
-            assert_eq!(have, vec![PathBuf::from("a.txt"), PathBuf::from("b.txt")]);
+            assert_eq!(have, vec!["a.txt".into(), "b.txt".into()]);
         }
 
         #[test]
         fn skips_empty_lines() {
             let have = parse_stdout("a.txt\n\nb.txt\n\n");
-            assert_eq!(have, vec![PathBuf::from("a.txt"), PathBuf::from("b.txt")]);
+            assert_eq!(have, vec!["a.txt".into(), "b.txt".into()]);
         }
 
         #[test]
@@ -91,7 +90,7 @@ mod tests {
             fs::write(dir.path().join("miss.txt"), "nothing").unwrap();
             let mut have = files_with_matches_in("needle", Some(dir.path())).unwrap();
             have.sort();
-            assert_eq!(have, vec![dir.path().join("hit.txt")]);
+            assert_eq!(have, vec!["hit.txt".into()]);
         }
 
         #[test]
@@ -108,7 +107,7 @@ mod tests {
             fs::create_dir_all(dir.path().join("nested")).unwrap();
             fs::write(dir.path().join("nested/hit.txt"), "needle").unwrap();
             let have = files_with_matches_in("needle", Some(dir.path())).unwrap();
-            assert_eq!(have, vec![dir.path().join("nested/hit.txt")]);
+            assert_eq!(have, vec!["nested/hit.txt".into()]);
         }
     }
 }
