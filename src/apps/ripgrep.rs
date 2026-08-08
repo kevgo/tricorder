@@ -15,7 +15,7 @@ fn files_with_matches_in(
 ) -> Result<Vec<File>, UserError> {
     let mut args = vec![S("--files-with-matches"), S("--fixed-strings")];
     for ignore in ignores {
-        args.push(format!("--glob=!{}", ignore));
+        args.push(format!("--glob=!{ignore}"));
     }
     args.push(pattern.to_string());
     let Some(executable) = get_rta_command(&GetRTACmdArgs {
