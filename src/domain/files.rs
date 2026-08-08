@@ -1,4 +1,5 @@
 use crate::domain::File;
+use std::convert::Into;
 use std::path::{Path, PathBuf};
 
 #[derive(Default, PartialEq, Eq)]
@@ -50,7 +51,7 @@ impl<'a> IntoIterator for &'a Files {
 
 impl From<Vec<PathBuf>> for Files {
     fn from(paths: Vec<PathBuf>) -> Self {
-        let normalized_paths = paths.into_iter().map(std::convert::Into::into).collect();
+        let normalized_paths = paths.into_iter().map(Into::into).collect();
         Self(normalized_paths)
     }
 }
