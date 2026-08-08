@@ -1,29 +1,29 @@
+use crate::domain::File;
 use ahash::{AHashMap, RandomState};
 use std::fs;
-use std::path::PathBuf;
 
 /// fingerprints of the content of files, to detect content changes
 /// key: filepath, value: fingerprint
 #[derive(Debug, Default)]
 #[must_use]
-pub struct Fingerprints(AHashMap<PathBuf, Option<u64>>);
+pub struct Fingerprints(AHashMap<File, Option<u64>>);
 
 /// provides fingerprints for the content of the given files
 ///
 /// Files that don't exist (because they are deleted) get a `None` fingerprint.
-pub fn scan_files(files: &[&PathBuf]) -> Fingerprints {
+pub fn scan_files(files: &[&File]) -> Fingerprints {
     // fixed seed so that fingerprints taken at different times are comparable
     let hasher = RandomState::with_seeds(0, 0, 0, 0);
     let mut result = AHashMap::new();
     for file in files {
-        let fingerprint = scan_file(file, &hasher);
+        let fingerprint = scan_file(*file, &hasher);
         result.insert((*file).clone(), fingerprint);
     }
     Fingerprints(result)
 }
 
-fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
-    let Ok(file_content) = fs::read(file) else {
+fn scan_file(file: &File, hasher: &RandomState) -> Option<u64> {
+    let Ok(file_content) = fs::read(&file) else {
         return None;
     };
     Some(hasher.hash_one(file_content))
@@ -31,7 +31,7 @@ fn scan_file(file: &PathBuf, hasher: &RandomState) -> Option<u64> {
 
 /// the files whose content differs between these fingerprints and the given `after` ones
 #[must_use]
-pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a PathBuf> {
+pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a File> {
     let mut result = Vec::new();
     for (file, after_fingerprint) in &after.0 {
         let Some(before_fingerprint) = before.0.get(file) else {
@@ -47,15 +47,14 @@ pub fn changed<'a>(before: &Fingerprints, after: &'a Fingerprints) -> Vec<&'a Pa
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::fingerprint;
+    use crate::domain::{File, fingerprint};
     use std::fs;
-    use std::path::PathBuf;
     use tempfile::TempDir;
 
     #[test]
     fn changed() {
         let dir = TempDir::new().unwrap();
-        let file = dir.path().join("file.txt");
+        let file = File::from(dir.path().join("file.txt"));
         fs::write(&file, "old content").unwrap();
         let before = fingerprint::scan_files(&[&file]);
         fs::write(&file, "new content").unwrap();
@@ -67,11 +66,11 @@ mod tests {
     #[test]
     fn multiple_files() {
         let dir = TempDir::new().unwrap();
-        let file_1 = dir.path().join("file_1.txt");
+        let file_1 = File::from(dir.path().join("file_1.txt"));
         fs::write(&file_1, "old content").unwrap();
-        let file_2 = dir.path().join("file_2.txt");
+        let file_2 = File::from(dir.path().join("file_2.txt"));
         fs::write(&file_2, "old content").unwrap();
-        let file_3 = dir.path().join("file_3.txt");
+        let file_3 = File::from(dir.path().join("file_3.txt"));
         fs::write(&file_3, "old content").unwrap();
         let before = fingerprint::scan_files(&[&file_1, &file_2, &file_3]);
         fs::write(&file_1, "new content").unwrap();
@@ -84,21 +83,21 @@ mod tests {
     #[test]
     fn unchanged() {
         let dir = TempDir::new().unwrap();
-        let file = dir.path().join("file.txt");
-        std::fs::write(&file, "content").unwrap();
+        let file = File::from(dir.path().join("file.txt"));
+        fs::write(&file, "content").unwrap();
         let before = fingerprint::scan_files(&[&file]);
         let after = fingerprint::scan_files(&[&file]);
         let have = fingerprint::changed(&before, &after);
-        assert_eq!(have, Vec::<&PathBuf>::new());
+        assert_eq!(have, Vec::<&File>::new());
     }
 
     #[test]
     fn deleted() {
         let dir = TempDir::new().unwrap();
-        let file = dir.path().join("file.txt");
-        std::fs::write(&file, "content").unwrap();
+        let file = File::from(dir.path().join("file.txt"));
+        fs::write(&file, "content").unwrap();
         let before = fingerprint::scan_files(&[&file]);
-        std::fs::remove_file(&file).unwrap();
+        fs::remove_file(&file).unwrap();
         let after = fingerprint::scan_files(&[&file]);
         let have = fingerprint::changed(&before, &after);
         assert_eq!(
@@ -111,7 +110,7 @@ mod tests {
     #[test]
     fn created() {
         let dir = TempDir::new().unwrap();
-        let file = dir.path().join("file.txt");
+        let file = File::from(dir.path().join("file.txt"));
         let before = fingerprint::scan_files(&[&file]);
         std::fs::write(&file, "content").unwrap();
         let after = fingerprint::scan_files(&[&file]);
@@ -126,13 +125,13 @@ mod tests {
     #[test]
     fn missing_in_both_scans() {
         let dir = TempDir::new().unwrap();
-        let file = dir.path().join("does-not-exist.txt");
+        let file = File::from(dir.path().join("does-not-exist.txt"));
         let before = fingerprint::scan_files(&[&file]);
         let after = fingerprint::scan_files(&[&file]);
         let have = fingerprint::changed(&before, &after);
         assert_eq!(
             have,
-            Vec::<&PathBuf>::new(),
+            Vec::<&File>::new(),
             "a file that is missing in both scans counts as unchanged"
         );
     }

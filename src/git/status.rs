@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use crate::domain::File;
 use std::process::Command;
 
 /// determines which files are staged in the current directory
@@ -29,16 +29,16 @@ pub fn status() -> Option<StagedFiles> {
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
     /// partially staged files: some changes made to this file are staged, other changes are not
-    pub partial: Vec<PathBuf>,
+    pub partial: Vec<File>,
 
     /// fully staged files: all changes made to this file are staged
-    pub full: Vec<PathBuf>,
+    pub full: Vec<File>,
 }
 
 impl StagedFiles {
     /// provides all staged files, i.e. fully and partially staged ones
     #[must_use]
-    pub fn all(&self) -> Vec<&PathBuf> {
+    pub fn all(&self) -> Vec<&File> {
         let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
         result.extend(self.partial.iter());
         result.extend(self.full.iter());
@@ -177,18 +177,18 @@ M  full.txt
     }
 
     mod staged_files {
+        use crate::domain::File;
         use crate::git::StagedFiles;
         use maplit::hashmap;
         use std::collections::HashMap;
-        use std::path::PathBuf;
 
         #[test]
         fn all() {
-            let partial_1 = PathBuf::from("partial_1.txt");
-            let partial_2 = PathBuf::from("partial_2.txt");
-            let full_1 = PathBuf::from("full_1.txt");
-            let full_2 = PathBuf::from("full_2.txt");
-            let tests: HashMap<StagedFiles, Vec<&PathBuf>> = hashmap! {
+            let partial_1 = File::from("partial_1.txt");
+            let partial_2 = File::from("partial_2.txt");
+            let full_1 = File::from("full_1.txt");
+            let full_2 = File::from("full_2.txt");
+            let tests: HashMap<StagedFiles, Vec<&File>> = hashmap! {
                 StagedFiles {
                     partial: vec![partial_1.clone(), partial_2.clone()],
                     full: vec![full_1.clone(), full_2.clone()],
