@@ -1,7 +1,9 @@
-use std::path::PathBuf;
+use crate::domain::File;
+use std::convert::Into;
+use std::path::{Path, PathBuf};
 
 #[derive(Default, PartialEq, Eq)]
-pub struct Files(Vec<PathBuf>);
+pub struct Files(Vec<File>);
 
 impl Files {
     #[must_use]
@@ -11,7 +13,12 @@ impl Files {
 
     #[must_use]
     pub fn contains(&self, file: &str) -> bool {
-        self.0.contains(&PathBuf::from(file))
+        for self_file in &self.0 {
+            if self_file.as_ref() == file {
+                return true;
+            }
+        }
+        false
     }
 
     #[must_use]
@@ -24,8 +31,8 @@ impl Files {
         self.0.len()
     }
 
-    pub fn push(&mut self, file: PathBuf) {
-        self.0.push(file);
+    pub fn push(&mut self, file: &Path) {
+        self.0.push(file.into());
     }
 
     pub fn sort_unstable(&mut self) {
@@ -34,8 +41,8 @@ impl Files {
 }
 
 impl<'a> IntoIterator for &'a Files {
-    type Item = &'a PathBuf;
-    type IntoIter = std::slice::Iter<'a, PathBuf>;
+    type Item = &'a File;
+    type IntoIter = std::slice::Iter<'a, File>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
@@ -43,7 +50,8 @@ impl<'a> IntoIterator for &'a Files {
 }
 
 impl From<Vec<PathBuf>> for Files {
-    fn from(files: Vec<PathBuf>) -> Self {
-        Self(files)
+    fn from(paths: Vec<PathBuf>) -> Self {
+        let normalized_paths = paths.into_iter().map(Into::into).collect();
+        Self(normalized_paths)
     }
 }

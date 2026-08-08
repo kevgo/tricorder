@@ -22,7 +22,7 @@ impl Fix for Prettier {
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--write"));
         for stack_file in &stack.files {
-            let file_str = stack_file.to_string_lossy().to_string();
+            let file_str = stack_file.into();
             args.push(file_str);
         }
         let executable = get_rta_command(&GetRTACmdArgs {

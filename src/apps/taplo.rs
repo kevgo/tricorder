@@ -22,7 +22,7 @@ impl Lint for Taplo {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -39,7 +39,7 @@ impl Fix for Taplo {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("format"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
@@ -58,7 +58,7 @@ impl Fix for Taplo {
         args.push(S("format"));
         args.push(S("--force"));
         for file in &stack.files {
-            args.push(file.to_string_lossy().to_string());
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("force fix {} ({self})", stack.stack),
