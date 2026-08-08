@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 
 /// An OS path that is guaranteed to be in the normalized form,
@@ -7,13 +8,26 @@ pub struct File(String);
 
 impl File {
     #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    #[must_use]
     pub fn starts_with(&self, prefix: &str) -> bool {
         self.0.starts_with(prefix)
     }
 }
 
-impl AsRef<str> for File {
-    fn as_ref(&self) -> &str {
+impl AsRef<Path> for File {
+    fn as_ref(&self) -> &Path {
+        Path::new(&self.0)
+    }
+}
+
+impl Deref for File {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
         &self.0
     }
 }

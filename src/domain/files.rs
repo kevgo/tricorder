@@ -1,6 +1,6 @@
 use crate::domain::File;
 use std::convert::Into;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 #[derive(Default, PartialEq, Eq)]
 pub struct Files(Vec<File>);
@@ -31,8 +31,8 @@ impl Files {
         self.0.len()
     }
 
-    pub fn push(&mut self, file: &Path) {
-        self.0.push(file.into());
+    pub fn push(&mut self, file: File) {
+        self.0.push(file);
     }
 
     pub fn sort_unstable(&mut self) {

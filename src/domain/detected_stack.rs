@@ -15,7 +15,7 @@ impl std::fmt::Debug for DetectedStack {
         f.write_str("\n  files:\n")?;
         for file in &self.files {
             f.write_str("    - ")?;
-            f.write_str(file.as_ref())?;
+            f.write_str(file.as_str())?;
             f.write_str("\n")?;
         }
         f.write_str("}")?;

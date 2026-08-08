@@ -41,10 +41,8 @@ impl Excludes {
     ///
     /// Use this method to skip ignored files when checking file paths received outside of a directory walk.
     #[must_use]
-    pub fn matches_self_or_parent(&self, path: &File) -> bool {
-        self.0
-            .matched_path_or_any_parents(path.as_ref(), false)
-            .is_ignore()
+    pub fn matches_self_or_parent(&self, file: &File) -> bool {
+        self.0.matched_path_or_any_parents(file, false).is_ignore()
     }
 }
 
