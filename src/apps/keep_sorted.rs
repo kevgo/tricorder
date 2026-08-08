@@ -45,7 +45,7 @@ pub fn fix_commands(
     let mut result = Vec::new();
     for (stack_type, mut files) in grouped {
         files.sort_unstable();
-        let args = files.into_iter().map(|file| file.into()).collect();
+        let args = files.into_iter().map(Into::into).collect();
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("sort {stack_type} (keep-sorted)"),
             app: &rta::applications::KeepSorted {},
