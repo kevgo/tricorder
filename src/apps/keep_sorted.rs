@@ -1,8 +1,8 @@
 use crate::apps::ripgrep;
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::domain::File;
 use crate::domain::{DetectedStacks, Excludes, StackType, UserError};
 use ahash::AHashMap;
-use std::path::PathBuf;
 
 const MARKER: &str = "keep-sorted end";
 
@@ -19,7 +19,7 @@ pub fn fix_commands(
     }
 
     // determine
-    let mut lookup: AHashMap<PathBuf, (StackType, PathBuf)> = AHashMap::new();
+    let mut lookup: AHashMap<File, (StackType, File)> = AHashMap::new();
     for stack in stacks {
         let stack_type = stack.stack.stack_type();
         for file in &stack.files {
@@ -28,26 +28,20 @@ pub fn fix_commands(
     }
 
     // group the matched files, in the path form used by their stack, by stack type
-    let mut grouped: AHashMap<StackType, Vec<PathBuf>> = AHashMap::new();
+    let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
-        if ignores.matches_self_or_parent(&found) {
+        if ignores.matches_self_or_parent(&found.into()) {
             continue;
         }
-        if let Some((stack_type, original)) = lookup.get(&found) {
-            grouped
-                .entry(*stack_type)
-                .or_default()
-                .push(original.clone());
+        if let Some((stack_type, original)) = lookup.get(found.into()) {
+            grouped.entry(*stack_type).or_default().push(*original);
         }
     }
 
     let mut result = Vec::new();
     for (stack_type, mut files) in grouped {
         files.sort_unstable();
-        let args = files
-            .into_iter()
-            .map(|file| file.to_string_lossy().to_string())
-            .collect();
+        let args = files.into_iter().map(|file| file.into()).collect();
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("sort {stack_type} (keep-sorted)"),
             app: &rta::applications::KeepSorted {},

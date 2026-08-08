@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 /// An OS path that is guaranteed to be in the normalized form,
 /// i.e. has the leading "./" that the burntsushi libraries return stripped
-#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct File(String);
 
 impl File {

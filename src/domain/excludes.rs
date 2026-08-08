@@ -1,4 +1,4 @@
-use crate::domain::{Result, UserError};
+use crate::domain::{File, Result, UserError};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use std::path::Path;
 
@@ -41,8 +41,10 @@ impl Excludes {
     ///
     /// Use this method to skip ignored files when checking file paths received outside of a directory walk.
     #[must_use]
-    pub fn matches_self_or_parent(&self, path: &Path) -> bool {
-        self.0.matched_path_or_any_parents(path, false).is_ignore()
+    pub fn matches_self_or_parent(&self, path: &File) -> bool {
+        self.0
+            .matched_path_or_any_parents(path.as_ref(), false)
+            .is_ignore()
     }
 }
 
@@ -63,7 +65,7 @@ mod tests {
         let excludes = Excludes::new(&[S("vendor/")], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("vendor"), true));
         assert!(!excludes.matches_self(Path::new("vendor/lib.css"), true));
-        assert!(excludes.matches_self_or_parent(Path::new("vendor/lib.css")));
+        assert!(excludes.matches_self_or_parent(&"vendor/lib.css".into()));
     }
 
     #[test]
