@@ -1,3 +1,4 @@
+use crate::domain::File;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -29,7 +30,7 @@ pub fn status() -> Option<StagedFiles> {
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
     /// partially staged files: some changes made to this file are staged, other changes are not
-    pub partial: Vec<PathBuf>,
+    pub partial: Vec<File>,
 
     /// fully staged files: all changes made to this file are staged
     pub full: Vec<PathBuf>,
