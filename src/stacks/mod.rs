@@ -11,7 +11,7 @@ mod typescript;
 mod unknown;
 mod yml;
 
-use crate::domain::{DetectedStack, DetectedStacks, Excludes, File, Files, Stack};
+use crate::domain::{DetectedStack, DetectedStacks, Excludes, Files, Stack};
 use crate::git::StagedFiles;
 pub use css::Css;
 pub use cucumber::Cucumber;
@@ -114,10 +114,9 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
         if !path.is_file() {
             continue;
         }
-        let file = File::from(path);
         for detected_stack in &mut detected_stacks {
             if detected_stack.stack.owns(path) {
-                detected_stack.files.push(file);
+                detected_stack.files.push(path.into());
                 break;
             }
         }
