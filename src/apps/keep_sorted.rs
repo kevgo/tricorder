@@ -13,12 +13,13 @@ pub fn fix_commands(
     stacks: &DetectedStacks,
     ignores: &Excludes,
 ) -> Result<Vec<(StackType, conc::Executable)>, UserError> {
+    // step 1: find all files that contain the "keep-sorted end" marker
     let matches = ripgrep::files_with_matches(MARKER)?;
     if matches.is_empty() {
         return Ok(vec![]);
     }
 
-    // determine the files to sort via keep-sorted, organized by stack
+    // step 2: group the files by stack type
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
         let found = File::from(found);
@@ -30,7 +31,7 @@ pub fn fix_commands(
         }
     }
 
-    // create the executables for each stack
+    // step 3: create the executables for each stack
     let mut result = Vec::with_capacity(grouped.len());
     for (stack_type, mut files) in grouped {
         files.sort_unstable();
