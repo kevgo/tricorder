@@ -30,7 +30,7 @@ pub fn fix_commands(
         }
     }
 
-    // step 3: create the executables for each stack
+    // step 3: create the executables that run keep-sorted for each stack
     let mut result = Vec::with_capacity(grouped.len());
     for (stack_type, mut files) in grouped {
         files.sort_unstable();
