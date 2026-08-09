@@ -2,7 +2,7 @@ use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{self, RunArgs};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
-use crate::config::{Config, CustomFix, KeepSorted};
+use crate::config::Config;
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
@@ -32,12 +32,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let before = fingerprint::scan_files(&staged_files);
 
     // step 4: discover all runnables
-    let runnables = determine_precommit_fixes(
-        config.custom_fixes,
-        config.keep_sorted,
-        &staged_stacks,
-        config.exclude.as_ref(),
-    )?;
+    let runnables = determine_precommit_fixes(&config, &staged_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
     }
@@ -74,10 +69,8 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
 /// The `staged_stacks` argument are the stacks that are currently staged in the git repository,
 /// not all stacks that exist in the workspace.
 pub fn determine_precommit_fixes(
-    custom_fixes: Option<Vec<CustomFix>>,
-    keep_sorted_config: Option<KeepSorted>,
+    config: &Config,
     staged_stacks: &DetectedStacks,
-    global_ignores: Option<&Vec<String>>,
 ) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
@@ -106,10 +99,10 @@ pub fn determine_precommit_fixes(
     }
 
     // custom fixes
-    if let Some(custom_fixes) = custom_fixes {
+    if let Some(custom_fixes) = &config.custom_fixes {
         for fix in custom_fixes {
             let executable = conc::Executable {
-                name: fix.name.unwrap_or_else(|| fix.command.clone()),
+                name: fix.name.clone().unwrap_or_else(|| fix.command.clone()),
                 command: conc::shell_command(&fix.command),
             };
             if let Some(stack) = fix.stack {
@@ -122,12 +115,12 @@ pub fn determine_precommit_fixes(
     }
 
     // keep-sorted
-    if let Some(keep_sorted_config) = keep_sorted_config
+    if let Some(keep_sorted_config) = &config.keep_sorted
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {
             stacks: staged_stacks,
-            global_ignores,
+            global_ignores: config.exclude.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
         for (stack_type, executable) in keep_sorted::fix_commands(args)? {
