@@ -120,7 +120,10 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("hit.txt"), "needle").unwrap();
             fs::write(dir.path().join("ignore.md"), "needle").unwrap();
-            let have = files_with_matches_in("needle", Some(dir.path()), &[S("*.md")]).unwrap();
+            fs::write(dir.path().join("ignore.txt"), "needle").unwrap();
+            let have =
+                files_with_matches_in("needle", Some(dir.path()), &[S("*.md"), S("ignore.txt")])
+                    .unwrap();
             assert_eq!(have, vec!["hit.txt".into()]);
         }
     }
