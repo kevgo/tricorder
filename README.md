@@ -125,6 +125,21 @@ using gitignore-style patterns:
 exclude = ["two.css", "vendor/", "**/*.min.css"]
 ```
 
+You can enable running [keep-sorted](https://github.com/google/keep-sorted) on
+every file that contains a `keep-sorted` marker comment:
+
+```toml
+[keep-sorted]
+enabled = true
+ignore = ["README.md"]
+```
+
+When enabled, Tricorder scans the workspace
+for files containing a `keep-sorted end` marker and runs keep-sorted on them
+as the last fix in each stack's fix sequence.
+The optional `ignore` key excludes the given files from being scanned
+and sorted, using the gitignore-style patterns.
+
 ## Usage
 
 ```sh
