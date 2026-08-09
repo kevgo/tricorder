@@ -24,12 +24,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let fix_runnables = fix::determine_fixes(
-        config.custom_fixes,
-        config.keep_sorted,
-        &all_stacks,
-        config.exclude.as_ref(),
-    )?;
+    let fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
     let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show == conc::Show::All {
