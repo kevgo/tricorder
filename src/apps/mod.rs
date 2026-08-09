@@ -1,3 +1,4 @@
+pub mod actionlint;
 pub mod biome;
 pub mod checkstyle;
 pub mod delete_empty_folders;

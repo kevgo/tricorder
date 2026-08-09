@@ -79,6 +79,7 @@ impl DetectedStacks {
                 filename,
                 stack_type,
             } => self.contains_file(*stack_type, filename),
+            EnabledWhen::FolderPresent { name } => Path::new(name).exists(),
         }
     }
 
