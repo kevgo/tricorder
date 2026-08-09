@@ -16,7 +16,7 @@ clap = { version = "4.6.4", features = ["derive"] }
 conc = { package = "concurrent_shell_commands", version = "0.6.1" }
 ignore = "0.4.31"
 itertools = "0.14.0"
-rta = { package = "run-that-app", version = "0.42.1" }
+rta = { package = "run-that-app", version = "0.42.2" }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_with = "3.21.0"
 strum = { version = "0.28.0", features = ["derive"] }
