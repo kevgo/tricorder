@@ -1,4 +1,4 @@
-use crate::domain::{Excludes, Result, StackType, UserError};
+use crate::domain::{Ignores, Result, StackType, UserError};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -36,8 +36,8 @@ impl Config {
     }
 
     /// provides the matcher for the files that should not be linted
-    pub fn excludes(&self) -> Result<Excludes> {
-        Excludes::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+    pub fn excludes(&self) -> Result<Ignores> {
+        Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
     }
 }
 
@@ -62,8 +62,8 @@ pub struct KeepSorted {
 
 impl KeepSorted {
     /// provides the matcher for the files that keep-sorted should not sort
-    pub fn ignores(&self) -> Result<Excludes> {
-        Excludes::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+    pub fn ignores(&self) -> Result<Ignores> {
+        Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
     }
 }
 

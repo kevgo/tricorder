@@ -4,9 +4,9 @@ use std::path::Path;
 
 /// matches files against a list of gitignore-style exclude patterns
 #[derive(Clone, Debug)]
-pub struct Excludes(Gitignore);
+pub struct Ignores(Gitignore);
 
-impl Excludes {
+impl Ignores {
     /// creates a new `Excludes` matcher from the given patterns, resolved relative to `dir`
     pub fn new(patterns: &[String], dir: &Path) -> Result<Self> {
         let mut builder = GitignoreBuilder::new(dir);
@@ -48,19 +48,19 @@ impl Excludes {
 
 #[cfg(test)]
 mod tests {
-    use super::Excludes;
+    use super::Ignores;
     use big_s::S;
     use std::path::Path;
 
     #[test]
     fn matches_file() {
-        let excludes = Excludes::new(&[S("two.css")], Path::new("./")).unwrap();
+        let excludes = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("two.css"), false));
     }
 
     #[test]
     fn matches_directory() {
-        let excludes = Excludes::new(&[S("vendor/")], Path::new("./")).unwrap();
+        let excludes = Ignores::new(&[S("vendor/")], Path::new("./")).unwrap();
         assert!(excludes.matches_self(Path::new("vendor"), true));
         assert!(!excludes.matches_self(Path::new("vendor/lib.css"), true));
         assert!(excludes.matches_self_or_parent(Path::new("vendor/lib.css")));
@@ -68,19 +68,19 @@ mod tests {
 
     #[test]
     fn no_match() {
-        let excludes = Excludes::new(&[S("two.css")], Path::new("./")).unwrap();
+        let excludes = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
         assert!(!excludes.matches_self(Path::new("one.css"), false));
     }
 
     #[test]
     fn empty() {
-        let excludes = Excludes::empty();
+        let excludes = Ignores::empty();
         assert!(!excludes.matches_self(Path::new("one.css"), false));
     }
 
     #[test]
     fn no_patterns_matches_nothing() {
-        let excludes = Excludes::new(&[], Path::new("./")).unwrap();
+        let excludes = Ignores::new(&[], Path::new("./")).unwrap();
         assert!(!excludes.matches_self(Path::new("one.css"), false));
     }
 }
