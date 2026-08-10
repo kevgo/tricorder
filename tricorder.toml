@@ -8,7 +8,7 @@ enabled = true
 ignore = ["README.md", "src/apps/keep_sorted.rs"]
 
 [[custom-fixes]]
-command = "cargo nightly --fix --allow-dirty"
+command = "cargo +nightly fix --allow-dirty"
 
 [[custom-fixes]]
 command = "cargo clippy --fix --allow-dirty"
