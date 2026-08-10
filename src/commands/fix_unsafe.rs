@@ -9,13 +9,13 @@ use std::process::ExitCode;
 pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
-    let excludes = config.excludes()?;
+    let ignores = config.ignores()?;
     let error_on_output = false;
     let stderr_to_stdout = true;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
 
     // step 2: discover the stacks
-    let all_stacks = stacks::discover_all(&excludes);
+    let all_stacks = stacks::discover_all(&ignores);
     if show == conc::Show::All {
         print_metadata(&all_stacks);
     }

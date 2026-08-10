@@ -2,34 +2,34 @@ use crate::domain::{Result, UserError};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use std::path::Path;
 
-/// matches files against a list of gitignore-style exclude patterns
+/// matches files against a list of gitignore-style patterns
 #[derive(Clone, Debug)]
 pub struct Ignores(Gitignore);
 
 impl Ignores {
-    /// creates a new `Excludes` matcher from the given patterns, resolved relative to `dir`
+    /// creates a new `IGnores` matcher from the given patterns, resolved relative to `dir`
     pub fn new(patterns: &[String], dir: &Path) -> Result<Self> {
         let mut builder = GitignoreBuilder::new(dir);
         for pattern in patterns {
             builder
                 .add_line(None, pattern)
                 .map_err(|err| UserError::Config {
-                    msg: format!("invalid exclude pattern \"{pattern}\": {err}"),
+                    msg: format!("invalid ignore pattern \"{pattern}\": {err}"),
                 })?;
         }
         let gitignore = builder.build().map_err(|err| UserError::Config {
-            msg: format!("invalid exclude patterns: {err}"),
+            msg: format!("invalid ignore patterns: {err}"),
         })?;
         Ok(Self(gitignore))
     }
 
-    /// creates a new `Excludes` matcher that matches nothing
+    /// creates a new `Ignores` matcher that matches nothing
     #[must_use]
     pub fn empty() -> Self {
         Self(Gitignore::empty())
     }
 
-    /// indicates whether the given path matches one of the exclude patterns
+    /// indicates whether the given path matches one of the ignore patterns
     ///
     /// Use this method to efficiently skip ignored subfolders when walking the file system from top to bottom.
     #[must_use]
@@ -37,7 +37,7 @@ impl Ignores {
         self.0.matched(path, is_dir).is_ignore()
     }
 
-    /// indicates whether the given path or any of its parent directories matches one of the exclude patterns
+    /// indicates whether the given path or any of its parent directories matches one of the ignore patterns
     ///
     /// Use this method to skip ignored files when checking file paths received outside of a directory walk.
     #[must_use]
@@ -54,33 +54,33 @@ mod tests {
 
     #[test]
     fn matches_file() {
-        let excludes = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
-        assert!(excludes.matches_self(Path::new("two.css"), false));
+        let ignores = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
+        assert!(ignores.matches_self(Path::new("two.css"), false));
     }
 
     #[test]
     fn matches_directory() {
-        let excludes = Ignores::new(&[S("vendor/")], Path::new("./")).unwrap();
-        assert!(excludes.matches_self(Path::new("vendor"), true));
-        assert!(!excludes.matches_self(Path::new("vendor/lib.css"), true));
-        assert!(excludes.matches_self_or_parent(Path::new("vendor/lib.css")));
+        let ignores = Ignores::new(&[S("vendor/")], Path::new("./")).unwrap();
+        assert!(ignores.matches_self(Path::new("vendor"), true));
+        assert!(!ignores.matches_self(Path::new("vendor/lib.css"), true));
+        assert!(ignores.matches_self_or_parent(Path::new("vendor/lib.css")));
     }
 
     #[test]
     fn no_match() {
-        let excludes = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
-        assert!(!excludes.matches_self(Path::new("one.css"), false));
+        let ignores = Ignores::new(&[S("two.css")], Path::new("./")).unwrap();
+        assert!(!ignores.matches_self(Path::new("one.css"), false));
     }
 
     #[test]
     fn empty() {
-        let excludes = Ignores::empty();
-        assert!(!excludes.matches_self(Path::new("one.css"), false));
+        let ignores = Ignores::empty();
+        assert!(!ignores.matches_self(Path::new("one.css"), false));
     }
 
     #[test]
     fn no_patterns_matches_nothing() {
-        let excludes = Ignores::new(&[], Path::new("./")).unwrap();
-        assert!(!excludes.matches_self(Path::new("one.css"), false));
+        let ignores = Ignores::new(&[], Path::new("./")).unwrap();
+        assert!(!ignores.matches_self(Path::new("one.css"), false));
     }
 }

@@ -51,7 +51,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 
 /// provides the stacks for the given staged files
 #[must_use]
-pub fn from_staged(staged: &StagedFiles, excludes: &Ignores) -> DetectedStacks {
+pub fn from_staged(staged: &StagedFiles, ignores: &Ignores) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -61,7 +61,7 @@ pub fn from_staged(staged: &StagedFiles, excludes: &Ignores) -> DetectedStacks {
         })
         .collect();
     for file in staged.all() {
-        if excludes.matches_self_or_parent(file.as_ref()) {
+        if ignores.matches_self_or_parent(file.as_ref()) {
             continue;
         }
         for detected_stack in &mut detected_stacks {
@@ -84,13 +84,13 @@ pub fn from_staged(staged: &StagedFiles, excludes: &Ignores) -> DetectedStacks {
 
 /// provides all stacks and their files that exist in the workspace
 #[must_use]
-pub fn discover_all(excludes: &Ignores) -> DetectedStacks {
-    discover_all_in(Path::new("./"), excludes)
+pub fn discover_all(ignores: &Ignores) -> DetectedStacks {
+    discover_all_in(Path::new("./"), ignores)
 }
 
 /// provides all stacks and their files found under `dir`
 #[must_use]
-pub fn discover_all_in(dir: &Path, excludes: &Ignores) -> DetectedStacks {
+pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -99,10 +99,10 @@ pub fn discover_all_in(dir: &Path, excludes: &Ignores) -> DetectedStacks {
             files: Files::new(),
         })
         .collect();
-    let excludes2 = excludes.clone();
+    let ignores2 = ignores.clone();
     let walk = WalkBuilder::new(dir)
         .filter_entry(move |entry| {
-            !excludes2.matches_self(
+            !ignores2.matches_self(
                 entry.path(),
                 entry.file_type().is_some_and(|ft| ft.is_dir()),
             )
@@ -214,11 +214,11 @@ mod tests {
         }
 
         #[test]
-        fn excludes_file() {
+        fn ignores_file() {
             let dir = TempDir::new().unwrap();
-            make_files(&dir, &["main.go", "excluded.go"]);
-            let excludes = Ignores::new(&["excluded.go".to_string()], Path::new("./")).unwrap();
-            let have = discover_all_in(dir.path(), &excludes);
+            make_files(&dir, &["main.go", "ignored.go"]);
+            let ignores = Ignores::new(&["ignored.go".to_string()], Path::new("./")).unwrap();
+            let have = discover_all_in(dir.path(), &ignores);
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),
@@ -228,11 +228,11 @@ mod tests {
         }
 
         #[test]
-        fn excludes_directory() {
+        fn ignores_directory() {
             let dir = TempDir::new().unwrap();
             make_files(&dir, &["main.go", "vendor/lib.go"]);
-            let excludes = Ignores::new(&["vendor/".to_string()], Path::new("./")).unwrap();
-            let have = discover_all_in(dir.path(), &excludes);
+            let ignores = Ignores::new(&["vendor/".to_string()], Path::new("./")).unwrap();
+            let have = discover_all_in(dir.path(), &ignores);
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),

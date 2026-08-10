@@ -36,7 +36,7 @@ impl Config {
     }
 
     /// provides the matcher for the files that should not be linted
-    pub fn excludes(&self) -> Result<Ignores> {
+    pub fn ignores(&self) -> Result<Ignores> {
         Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
     }
 }
@@ -149,8 +149,8 @@ command = "fixes/sort.py"
         }
 
         #[test]
-        fn exclude() {
-            let give = r#"exclude = ["a.css", "b/"]"#;
+        fn ignore() {
+            let give = r#"ignore = ["a.css", "b/"]"#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
                 custom_lints: None,
