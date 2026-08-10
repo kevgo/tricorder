@@ -49,9 +49,7 @@ help:  # prints all available targets
 	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 lint: ${RTA} ${TRICORDER}  # runs all linters
-	cargo clippy --all-targets --all-features -- --deny=warnings
-	cargo clippy --test=cuke --all-features -- --deny=warnings
-	$(TRICORDER) lint
+	$(TRICORDER) lint --show=names
 
 setup: setup-ci  # install development dependencies on this computer
 	cargo install cargo-machete --locked

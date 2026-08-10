@@ -15,3 +15,9 @@ command = "cargo clippy --fix --allow-dirty"
 
 [[custom-fixes]]
 command = "cargo +nightly fmt"
+
+[[custom-lints]]
+command = "cargo clippy --all-targets --all-features -- --deny=warnings"
+
+[[custom-lints]]
+command = "cargo clippy --test=cuke --all-features -- --deny=warnings"
