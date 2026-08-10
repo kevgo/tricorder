@@ -4,7 +4,6 @@ TRICORDER_VERSION = 0.0.16     # tricorder version to use
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
-KEEPSORTED   = $(RTA) keep-sorted
 TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
 
 build:  # builds the project in debug mode
