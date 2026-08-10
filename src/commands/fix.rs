@@ -10,13 +10,13 @@ use std::process::ExitCode;
 pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
-    let excludes = config.excludes()?;
+    let ignores = config.ignores()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let all_stacks = stacks::discover_all(&excludes);
+    let all_stacks = stacks::discover_all(&ignores);
     if show == conc::Show::All {
         print_metadata(&all_stacks);
     }
@@ -95,7 +95,7 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
     {
         let args = keep_sorted::FixCommandsArgs {
             stacks,
-            global_ignores: config.exclude.as_ref(),
+            global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
         for (stack_type, executable) in keep_sorted::fix_commands(args)? {

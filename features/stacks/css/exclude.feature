@@ -1,4 +1,4 @@
-Feature: exclude a CSS file
+Feature: ignore a CSS file
 
   Background:
     Given a file "run-that-app" with content
@@ -9,7 +9,7 @@ Feature: exclude a CSS file
       """
     And a file "tricorder.toml" with content
       """
-      exclude = ["bad.css"]
+      ignore = ["bad.css"]
       """
 
   Scenario: linting

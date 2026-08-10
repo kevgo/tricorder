@@ -59,10 +59,10 @@ Feature: keep-sorted support
       """
     And the exit code is 0
 
-  Scenario: does not sort globally excluded files
+  Scenario: does not sort globally ignored files
     Given a file "tricorder.toml" with content
       """
-      exclude = ["unsorted_1.toml"]
+      ignore = ["unsorted_1.toml"]
 
       [keep-sorted]
       enabled = true
