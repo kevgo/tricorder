@@ -40,7 +40,7 @@ install:  # installs Tricorder into the global path
 	cargo install --path . --locked
 
 fix: ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
-	$(TRICORDER) fix
+	$(TRICORDER) fix --show=names
 
 ghokin: ${RTA}  # format the Cucumber files
 	${GHOKIN} fmt replace features/
