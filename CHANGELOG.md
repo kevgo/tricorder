@@ -1,11 +1,9 @@
 # Tricorder changelog
 
-## Unreleased
+## 0.0.16 (2026-08-10)
 
-- The new `[keep-sorted]` config option allows opting in to running
-  [keep-sorted](https://github.com/google/keep-sorted) on marker-bearing files.
-  Its `ignore` key excludes matching files from being sorted.
-- runs `git diff --check` as a linter in Git repositories
+- app: [keep-sorted](https://github.com/google/keep-sorted), since this requires grepping for markers, it needs to be enabled via the new `[keep-sorted]` config option
+- app: `git diff --check` if the current codebase is in a Git repository
 
 ## 0.0.15 (2026-08-04)
 
