@@ -8,16 +8,21 @@ enabled = true
 ignore = ["README.md", "src/apps/keep_sorted.rs"]
 
 [[custom-fixes]]
+name = "cargo fix"
 command = "cargo +nightly fix --allow-dirty"
 
 [[custom-fixes]]
+name = "cargo clippy --fix"
 command = "cargo clippy --fix --allow-dirty"
 
 [[custom-fixes]]
+name = "cargo fmt"
 command = "cargo +nightly fmt"
 
 [[custom-lints]]
+name = "cargo clippy"
 command = "cargo clippy --all-targets --all-features -- --deny=warnings"
 
 [[custom-lints]]
+name = "E2E tests"
 command = "cargo clippy --test=cuke --all-features -- --deny=warnings"
