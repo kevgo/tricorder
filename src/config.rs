@@ -13,7 +13,7 @@ pub struct Config {
     #[serde(alias = "custom-lints")]
     pub custom_lints: Option<Vec<CustomLint>>,
 
-    pub exclude: Option<Vec<String>>,
+    pub ignore: Option<Vec<String>>,
 
     #[serde(alias = "keep-sorted")]
     pub keep_sorted: Option<KeepSorted>,
@@ -37,7 +37,7 @@ impl Config {
 
     /// provides the matcher for the files that should not be linted
     pub fn excludes(&self) -> Result<Excludes> {
-        Excludes::new(self.exclude.as_deref().unwrap_or_default(), Path::new("./"))
+        Excludes::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
     }
 }
 
@@ -117,7 +117,7 @@ command = "fixes/sort.py"
                         command: S("lints/two.sh"),
                     },
                 ]),
-                exclude: None,
+                ignore: None,
                 keep_sorted: None,
             };
             pretty::assert_eq!(have, want);
@@ -130,7 +130,7 @@ command = "fixes/sort.py"
             let want = Config {
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
-                exclude: None,
+                ignore: None,
                 keep_sorted: None,
             };
             assert_eq!(have, want);
@@ -142,7 +142,7 @@ command = "fixes/sort.py"
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
-                exclude: None,
+                ignore: None,
                 keep_sorted: None,
             };
             assert_eq!(have, want);
@@ -155,7 +155,7 @@ command = "fixes/sort.py"
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
-                exclude: Some(vec![S("a.css"), S("b/")]),
+                ignore: Some(vec![S("a.css"), S("b/")]),
                 keep_sorted: None,
             };
             pretty::assert_eq!(have, want);
@@ -196,7 +196,7 @@ stack = "PyThOn"
                     },
                 ]),
                 custom_lints: None,
-                exclude: None,
+                ignore: None,
                 keep_sorted: None,
             };
             assert_eq!(have, want);
@@ -224,7 +224,7 @@ command = "fixes/one.sh"
                     command: S("fixes/one.sh"),
                     stack: None,
                 }]),
-                exclude: None,
+                ignore: None,
                 keep_sorted: None,
             };
             pretty::assert_eq!(have, want);

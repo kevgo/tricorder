@@ -95,7 +95,7 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
     {
         let args = keep_sorted::FixCommandsArgs {
             stacks,
-            global_ignores: config.exclude.as_ref(),
+            global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
         for (stack_type, executable) in keep_sorted::fix_commands(args)? {
