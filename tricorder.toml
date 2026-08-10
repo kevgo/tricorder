@@ -5,4 +5,4 @@ ignore = [
 
 [keep-sorted]
 enabled = true
-ignore = ["README.md"]
+ignore = ["README.md", "src/apps/keep_sorted.rs"]
