@@ -12,7 +12,7 @@ name = "cargo fix"
 command = "cargo +nightly fix --allow-dirty"
 
 [[custom-fixes]]
-name = "cargo clippy fix"
+name = "cargo clippy --fix"
 command = "cargo clippy --fix --allow-dirty"
 
 [[custom-fixes]]
