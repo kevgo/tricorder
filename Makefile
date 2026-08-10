@@ -4,7 +4,6 @@ TRICORDER_VERSION = 0.0.16     # tricorder version to use
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
-KEEPSORTED   = $(RTA) keep-sorted
 TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
 
 build:  # builds the project in debug mode
@@ -40,10 +39,7 @@ install:  # installs Tricorder into the global path
 	cargo install --path . --locked
 
 fix: ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
-	cargo +nightly fix --allow-dirty
-	cargo clippy --fix --allow-dirty
-	cargo +nightly fmt
-	$(TRICORDER) fix
+	$(TRICORDER) fix --show=names
 
 ghokin: ${RTA}  # format the Cucumber files
 	${GHOKIN} fmt replace features/
@@ -52,9 +48,7 @@ help:  # prints all available targets
 	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 lint: ${RTA} ${TRICORDER}  # runs all linters
-	cargo clippy --all-targets --all-features -- --deny=warnings
-	cargo clippy --test=cuke --all-features -- --deny=warnings
-	$(TRICORDER) lint
+	$(TRICORDER) lint --show=names
 
 setup: setup-ci  # install development dependencies on this computer
 	cargo install cargo-machete --locked
