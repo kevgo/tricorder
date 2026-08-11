@@ -8,7 +8,6 @@ Feature: lint GitHub Actions workflow files
       delete-empty-folders 0.0.2
       """
 
-  @this
   Scenario: valid workflow
     Given a file ".github/workflows/main.yml" with content
       """
@@ -35,14 +34,19 @@ Feature: lint GitHub Actions workflow files
       running 2 tools
       """
     And the exit code is 0
-    And file ".github/workflows/main.yml" is unchanged
+    And all files are unchanged
 
   Scenario: invalid workflow
-    Given a file "main.yml" with content
+    Given a file ".github/workflows/main.yml" with content
       """
       key: "
       """
     When executing "tricorder lint --show=all"
-    Then it prints nothing to STDOUT
-    And the exit code is 0
-    And file "main.yml" is unchanged
+    Then it prints
+      """
+      lint Git (git diff HEAD --check)
+      GitHub Actions (actionlint)
+      .github/workflows/main.yml:2:5: could not parse as YAML: found unexpected end of stream [syntax-check]
+      """
+    And the exit code is 1
+    And all files are unchanged
