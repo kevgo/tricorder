@@ -29,7 +29,7 @@ Feature: lint GitHub Actions workflow files
       """
     And it prints to STDERR
       """
-      1 YML, 27 other
+      1 YML, 1 other
       running 2 tools
       """
     And the exit code is 0
