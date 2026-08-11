@@ -106,10 +106,15 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
         .hidden(false)
         .filter_entry(move |entry| {
             let entry_path = entry.path();
-            let Some(first_component) = entry_path.components().nth(1) else {
-                return true;
+            let Some(second_component) = entry_path.components().nth(1) else {
+                // path has no second component
+                return false;
             };
-            let Some(first_char) = first_component.as_os_str().to_string_lossy().chars().next()
+            let Some(first_char) = second_component
+                .as_os_str()
+                .to_string_lossy()
+                .chars()
+                .next()
             else {
                 return false;
             };
