@@ -41,7 +41,7 @@ Feature: lint GitHub Actions workflow files
       key: "
       """
     When executing "tricorder lint --show=all"
-    Then it prints
+    Then it prints only these lines in any order
       """
       lint Git (git diff HEAD --check)
       GitHub Actions (actionlint)
