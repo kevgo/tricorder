@@ -21,6 +21,6 @@ pub enum EnabledWhen {
     // and it contains at least one file of the given type
     FiletypeInFolder {
         folder: &'static str,
-        stack_type: StackType,
+        file_type: StackType,
     },
 }

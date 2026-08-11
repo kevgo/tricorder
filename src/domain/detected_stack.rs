@@ -93,7 +93,7 @@ impl DetectedStacks {
                 stack_type,
             } => self.contains_file(*stack_type, filename),
             EnabledWhen::FiletypeInFolder {
-                stack_type,
+                file_type: stack_type,
                 folder: name,
             } => self.folder_present(*stack_type, name),
         }

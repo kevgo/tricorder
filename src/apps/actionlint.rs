@@ -8,8 +8,8 @@ pub struct Actionlint;
 impl Tool for Actionlint {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::FiletypeInFolder {
-            stack_type: StackType::Yml,
             folder: ".github/workflows",
+            file_type: StackType::Yml,
         }
     }
 }

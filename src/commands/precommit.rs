@@ -92,7 +92,7 @@ pub fn determine_precommit_fixes(
                     stack_type: _,
                 } => Path::new(filename).exists(),
                 EnabledWhen::FiletypeInFolder {
-                    stack_type: _,
+                    file_type: _,
                     folder: name,
                 } => Path::new(name).exists(),
             };
