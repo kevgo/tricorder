@@ -13,7 +13,7 @@ use std::process::ExitCode;
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
-    let excludes = config.excludes()?;
+    let ignores = config.ignores()?;
     let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
     let error_on_output = false;
     let stderr_to_stdout = true;
@@ -22,7 +22,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let Some(staged) = git::status() else {
         return Ok(ExitCode::SUCCESS);
     };
-    let staged_stacks = stacks::from_staged(&staged, &excludes);
+    let staged_stacks = stacks::from_staged(&staged, &ignores);
     if show == conc::Show::All {
         print_metadata(&staged_stacks);
     }
@@ -124,7 +124,7 @@ pub fn determine_precommit_fixes(
     {
         let args = keep_sorted::FixCommandsArgs {
             stacks: staged_stacks,
-            global_ignores: config.exclude.as_ref(),
+            global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
         for (stack_type, executable) in keep_sorted::fix_commands(args)? {

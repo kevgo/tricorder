@@ -1,8 +1,28 @@
-exclude = [
+ignore = [
   # current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
   "Cargo.toml",
 ]
 
 [keep-sorted]
 enabled = true
-ignore = ["README.md"]
+ignore = ["README.md", "src/apps/keep_sorted.rs"]
+
+[[custom-fixes]]
+name = "cargo fix"
+command = "cargo +nightly fix --allow-dirty"
+
+[[custom-fixes]]
+name = "cargo clippy --fix"
+command = "cargo clippy --fix --allow-dirty"
+
+[[custom-fixes]]
+name = "cargo fmt"
+command = "cargo +nightly fmt"
+
+[[custom-lints]]
+name = "cargo clippy"
+command = "cargo clippy --all-targets --all-features -- --deny=warnings"
+
+[[custom-lints]]
+name = "E2E tests"
+command = "cargo clippy --test=cuke --all-features -- --deny=warnings"

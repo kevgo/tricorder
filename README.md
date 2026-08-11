@@ -102,7 +102,7 @@ You can define custom linters in a config file **Tricorder.toml**.
 
 ```toml
 # ignore these files
-exclude = ["file1", "file2"]
+ignore = ["file1", "file2"]
 
 [[custom-lints]]
 name = "custom lint 1"
@@ -118,11 +118,11 @@ command = "fixes/sort.py"
 stack = "python"
 ```
 
-You can exclude files from being linted and fixed altogether,
+You can ignore files from being linted and fixed altogether,
 using gitignore-style patterns:
 
 ```toml
-exclude = ["two.css", "vendor/", "**/*.min.css"]
+ignore = ["two.css", "vendor/", "**/*.min.css"]
 ```
 
 You can enable running [keep-sorted](https://github.com/google/keep-sorted) on
