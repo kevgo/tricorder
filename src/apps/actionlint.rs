@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
 use std::fmt::Display;
 
 pub struct Actionlint;
@@ -7,6 +7,7 @@ pub struct Actionlint;
 impl Tool for Actionlint {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::FolderPresent {
+            stack_type: StackType::Yml,
             name: ".github/workflows",
         }
     }

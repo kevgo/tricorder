@@ -91,7 +91,10 @@ pub fn determine_precommit_fixes(
                     filename,
                     stack_type: _,
                 } => Path::new(filename).exists(),
-                EnabledWhen::FolderPresent { name } => Path::new(name).exists(),
+                EnabledWhen::FolderPresent {
+                    stack_type: _,
+                    name,
+                } => Path::new(name).exists(),
             };
             if enabled {
                 stack_executables.extend(fix.fix_commands(stack)?);

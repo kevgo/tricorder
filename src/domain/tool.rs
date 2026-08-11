@@ -18,6 +18,7 @@ pub enum EnabledWhen {
     },
 
     FolderPresent {
+        stack_type: StackType,
         name: &'static str,
     },
 }
