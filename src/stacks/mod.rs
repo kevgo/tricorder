@@ -114,9 +114,7 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
                 return false;
             };
             if first_char == '.' {
-                // println!("hidden file: {}", entry_path.display());
                 let is_github_folder = entry_path.starts_with("./.github/");
-                // println!("is github folder: {}", is_github_folder);
                 return is_github_folder;
             }
             !ignores2.matches_self(entry_path, entry.file_type().is_some_and(|ft| ft.is_dir()))
