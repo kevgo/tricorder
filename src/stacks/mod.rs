@@ -124,6 +124,7 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
                 // Only include the ".github" folder.
                 return entry_path.starts_with("./.github/");
             }
+            // exclude files ignored in the config file
             !ignores2.matches_self(entry_path, entry.file_type().is_some_and(|ft| ft.is_dir()))
         })
         .build();
