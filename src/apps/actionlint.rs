@@ -20,9 +20,9 @@ impl Display for Actionlint {
 }
 
 impl Lint for Actionlint {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: stack.stack.to_string(),
+            name: format!("GitHub Actions (actionlint)"),
             app: &rta::applications::ActionLint {},
             args: vec![],
             version: None,
