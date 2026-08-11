@@ -7,7 +7,7 @@ pub struct Actionlint;
 
 impl Tool for Actionlint {
     fn enabled_when(&self) -> EnabledWhen {
-        EnabledWhen::FiletypeInFolder {
+        EnabledWhen::FolderContainingFileOfType {
             folder: ".github/workflows",
             file_type: StackType::Yml,
         }

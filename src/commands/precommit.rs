@@ -91,7 +91,7 @@ pub fn determine_precommit_fixes(
                     filename,
                     stack_type: _,
                 } => Path::new(filename).exists(),
-                EnabledWhen::FiletypeInFolder {
+                EnabledWhen::FolderContainingFileOfType {
                     file_type: _,
                     folder: name,
                     // in the precommit hook, we don't scan for all files in the workspace,

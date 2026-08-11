@@ -94,7 +94,7 @@ impl DetectedStacks {
                 filename,
                 stack_type,
             } => self.contains_file(*stack_type, filename),
-            EnabledWhen::FiletypeInFolder {
+            EnabledWhen::FolderContainingFileOfType {
                 file_type: stack_type,
                 folder: name,
             } => self.has_folder_containing_file(*stack_type, name),

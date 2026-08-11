@@ -19,7 +19,7 @@ pub enum EnabledWhen {
 
     // the tool is enabled when a folder with the given name exists
     // and it contains at least one file of the given type
-    FiletypeInFolder {
+    FolderContainingFileOfType {
         folder: &'static str,
         file_type: StackType,
     },
