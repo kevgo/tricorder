@@ -11,7 +11,6 @@ Feature: formatting a codebase without any code
     Then it prints nothing to STDOUT
     And the exit code is 0
 
-  @this
   Scenario: --show=all
     When executing "tricorder fix --show=all"
     Then it prints
