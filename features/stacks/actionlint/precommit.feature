@@ -1,4 +1,4 @@
-Feature: lint GitHub Actions workflow files
+Feature: precommit GitHub Actions workflow files
 
   Background:
     Given a Git repository
@@ -8,6 +8,7 @@ Feature: lint GitHub Actions workflow files
       delete-empty-folders 0.0.2
       """
 
+  @this
   Scenario: valid workflow
     Given a file ".github/workflows/main.yml" with content
       """
@@ -21,7 +22,7 @@ Feature: lint GitHub Actions workflow files
           steps:
             - uses: actions/checkout@v6
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder precommit --show=all"
     Then it prints
       """
       lint Git (git diff HEAD --check)
