@@ -59,7 +59,7 @@ impl DetectedStacks {
     /// indicates whether a folder with the given name exists in the files,
     /// and whether it contains at least one file of the given type
     #[must_use]
-    pub fn folder_present(&self, stack_type: StackType, name: &str) -> bool {
+    pub fn has_folder_containing_file(&self, stack_type: StackType, name: &str) -> bool {
         let Some(stack) = self.get_stack(stack_type) else {
             return false;
         };
@@ -97,7 +97,7 @@ impl DetectedStacks {
             EnabledWhen::FiletypeInFolder {
                 file_type: stack_type,
                 folder: name,
-            } => self.folder_present(*stack_type, name),
+            } => self.has_folder_containing_file(*stack_type, name),
         }
     }
 
