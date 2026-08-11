@@ -104,10 +104,10 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
         .hidden(false)
         .filter_entry(move |entry| {
             let entry_path = entry.path();
-            if let Some(element) = entry_path.components().nth(1) {
-                if element.as_os_str() == ".git" {
-                    return false;
-                }
+            if let Some(element) = entry_path.components().nth(1)
+                && element.as_os_str() == ".git"
+            {
+                return false;
             }
             !excludes2.matches_self(
                 entry.path(),
