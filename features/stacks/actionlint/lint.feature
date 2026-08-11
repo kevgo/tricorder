@@ -27,7 +27,7 @@ Feature: lint GitHub Actions workflow files
       lint Git (git diff HEAD --check)
       GitHub Actions (actionlint)
       """
-    And it prints to STDERR
+    And it prints the lines to STDERR
       """
       1 YML, 1 other
       running 2 tools
