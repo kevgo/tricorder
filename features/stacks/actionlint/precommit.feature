@@ -7,7 +7,7 @@ Feature: precommit GitHub Actions workflow files
       actionlint 1.7.12
       delete-empty-folders 0.0.2
       """
-    Given a file ".github/workflows/main.yml" with content
+    And a file ".github/workflows/main.yml" with content
       """
       key: "
       """

@@ -1,5 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
+use big_s::S;
 use std::fmt::Display;
 
 pub struct Actionlint;
@@ -22,7 +23,7 @@ impl Display for Actionlint {
 impl Lint for Actionlint {
     fn lint_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("GitHub Actions (actionlint)"),
+            name: S("GitHub Actions (actionlint)"),
             app: &rta::applications::ActionLint {},
             args: vec![],
             version: None,
