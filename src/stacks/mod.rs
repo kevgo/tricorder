@@ -101,6 +101,7 @@ pub fn discover_all_in(dir: &Path, excludes: &Excludes) -> DetectedStacks {
         .collect();
     let excludes2 = excludes.clone();
     let walk = WalkBuilder::new(dir)
+        .hidden(false)
         .filter_entry(move |entry| {
             !excludes2.matches_self(
                 entry.path(),
