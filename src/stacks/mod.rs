@@ -116,11 +116,13 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
                 .chars()
                 .next()
             else {
+                // second component is empty
                 return false;
             };
             if first_char == '.' {
-                let is_github_folder = entry_path.starts_with("./.github/");
-                return is_github_folder;
+                // This is a hidden file.
+                // Only include the ".github" folder.
+                return entry_path.starts_with("./.github/");
             }
             !ignores2.matches_self(entry_path, entry.file_type().is_some_and(|ft| ft.is_dir()))
         })
