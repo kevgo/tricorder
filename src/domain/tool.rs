@@ -17,8 +17,10 @@ pub enum EnabledWhen {
         stack_type: StackType,
     },
 
+    // the tool is enabled when a folder with the given name exists
+    // and it contains at least one file of the given type
     FolderPresent {
-        stack_type: StackType,
         name: &'static str,
+        stack_type: StackType,
     },
 }
