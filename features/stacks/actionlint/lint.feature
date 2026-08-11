@@ -1,7 +1,8 @@
 Feature: lint GitHub Actions workflow files
 
   Background:
-    Given a file "run-that-app" with content
+    Given a Git repository
+    And a file "run-that-app" with content
       """
       actionlint 1.7.12
       delete-empty-folders 0.0.2
@@ -21,9 +22,18 @@ Feature: lint GitHub Actions workflow files
           steps:
             - uses: actions/checkout@v6
       """
+    # When inspect the workspace
     When executing "tricorder lint --show=all"
-    Then it prints nothing to STDOUT
-    And it prints nothing to STDERR
+    Then it prints
+      """
+      lint Git (git diff HEAD --check)
+      YML
+      """
+    And it prints to STDERR
+      """
+      1 YML, 27 other
+      running 2 tools
+      """
     And the exit code is 0
     And file ".github/workflows/main.yml" is unchanged
 
