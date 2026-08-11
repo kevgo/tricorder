@@ -56,6 +56,8 @@ impl DetectedStacks {
         self.0.iter().any(|s| s.stack.stack_type() == stack_type)
     }
 
+    /// indicates whether a folder with the given name exists in the files,
+    /// and whether it contains at least one file of the given type
     #[must_use]
     pub fn folder_present(&self, stack_type: StackType, name: &str) -> bool {
         let Some(stack) = self.get_stack(stack_type) else {
