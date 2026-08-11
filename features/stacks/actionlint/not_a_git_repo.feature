@@ -1,0 +1,33 @@
+Feature: lint GitHub Actions workflow files
+
+  Scenario: valid workflow
+    Given a file "run-that-app" with content
+      """
+      actionlint 1.1.0
+      delete-empty-folders 0.0.2
+      """
+    And a file ".github/workflows/main.yml" with content
+      """
+      name: CI
+      on:
+        push:
+          branches: [main]
+      jobs:
+        test:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v6
+      """
+    When executing "tricorder lint --show=all"
+    Then it prints
+      """
+      GitHub Actions (actionlint)
+      no project was found in any parent directories of ".". check workflows directory is put correctly in your Git repository
+      """
+    And it prints to STDERR
+      """
+      1 YML, 1 other
+      running 1 tools
+      """
+    And the exit code is 1
+    And all files are unchanged
