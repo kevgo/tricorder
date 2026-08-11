@@ -101,18 +101,25 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
         .collect();
     let ignores2 = ignores.clone();
     let walk = WalkBuilder::new(dir)
+        // we still ignore all hidden files and directories
+        // except the ".github" folder using the filter below
         .hidden(false)
         .filter_entry(move |entry| {
             let entry_path = entry.path();
-            if let Some(element) = entry_path.components().nth(1)
-                && element.as_os_str() == ".git"
-            {
+            let Some(first_component) = entry_path.components().nth(1) else {
+                return true;
+            };
+            let Some(first_char) = first_component.as_os_str().to_string_lossy().chars().next()
+            else {
                 return false;
+            };
+            if first_char == '.' {
+                // println!("hidden file: {}", entry_path.display());
+                let is_github_folder = entry_path.starts_with("./.github/");
+                // println!("is github folder: {}", is_github_folder);
+                return is_github_folder;
             }
-            !ignores2.matches_self(
-                entry.path(),
-                entry.file_type().is_some_and(|ft| ft.is_dir()),
-            )
+            !ignores2.matches_self(entry_path, entry.file_type().is_some_and(|ft| ft.is_dir()))
         })
         .build();
     for entry in walk {
