@@ -12,6 +12,7 @@ pub enum UserError {
     CiUnformatted { diff: Vec<u8> },
     Cli { msg: String },
     Config { msg: String },
+    NoGitRepository,
     Rta { err: rta::error::UserError },
 }
 
@@ -26,6 +27,7 @@ impl UserError {
             }
             // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
+            UserError::NoGitRepository => println!("not a git repository (no .git directory)"),
             UserError::Rta { err } => err.print(),
         }
     }
