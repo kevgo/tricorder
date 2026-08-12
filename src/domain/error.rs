@@ -8,6 +8,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
     CannotDetermineCurrentDirectory { err: String },
+    CannotReadArgv,
     CannotRunGit { msg: String },
     CannotRunRipgrep { msg: String },
     CiUnformatted { diff: Vec<u8> },
@@ -24,6 +25,7 @@ impl UserError {
             UserError::CannotDetermineCurrentDirectory { err } => {
                 println!("cannot determine the current directory: {err}");
             }
+            UserError::CannotReadArgv => println!("cannot determine tricorder path: empty argv"),
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {

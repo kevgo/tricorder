@@ -34,9 +34,7 @@ pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
 
 /// Absolute path of this process from `argv[0]`.
 fn absolute_path_from_argv() -> Result<PathBuf> {
-    let argv0 = env::args_os().next().ok_or_else(|| UserError::Cli {
-        msg: "cannot determine tricorder path: empty argv".into(),
-    })?;
+    let argv0 = env::args_os().next().ok_or(UserError::CannotReadArgv)?;
     let path = PathBuf::from(argv0);
     let candidate = if path.is_absolute() {
         path.clone()
