@@ -8,17 +8,16 @@ use std::env;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
-const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
 const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
+const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
+const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
 
 pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
     let git_path = Path::new(".git");
     if !git_path.exists() {
         return Err(UserError::NoGitRepository);
     }
-    // Linked worktrees use a `.git` file instead of a directory.
     if git_path.is_file() {
         return Err(UserError::NotMainGitWorktree);
     }
