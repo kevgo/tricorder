@@ -4,5 +4,6 @@
 # Safe to edit.
 # Re-run init:githook --force to reset.
 
-command -v tricorder >/dev/null 2>&1 || exit 0
-tricorder lint
+TRICORDER="__TRICORDER__"
+[ -x "$TRICORDER" ] || exit 0
+"$TRICORDER" lint
