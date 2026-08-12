@@ -70,3 +70,48 @@ fn print_next_steps() {
     println!();
     println!("From now on, all code gets formatted when committing it.");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::escape_for_double_quotes;
+
+    #[test]
+    fn leaves_plain_paths_unchanged() {
+        assert_eq!(
+            escape_for_double_quotes("/home/kevlar/tricorder"),
+            "/home/kevlar/tricorder"
+        );
+        assert_eq!(escape_for_double_quotes(""), "");
+        assert_eq!(
+            escape_for_double_quotes("/path with spaces/tricorder"),
+            "/path with spaces/tricorder"
+        );
+    }
+
+    #[test]
+    fn escapes_backslashes() {
+        assert_eq!(
+            escape_for_double_quotes(r"C:\Tools\tricorder"),
+            r"C:\\Tools\\tricorder"
+        );
+        assert_eq!(escape_for_double_quotes(r"\\"), r"\\\\");
+    }
+
+    #[test]
+    fn escapes_double_quotes() {
+        assert_eq!(
+            escape_for_double_quotes(r#"/opt/"weird"/tricorder"#),
+            r#"/opt/\"weird\"/tricorder"#
+        );
+    }
+
+    #[test]
+    fn escapes_backslashes_before_quotes() {
+        // Backslashes must be doubled first so a literal \" in the path
+        // becomes \\\" inside the double-quoted shell string.
+        assert_eq!(
+            escape_for_double_quotes(r#"say \"hi\""#),
+            r#"say \\\"hi\\\""#
+        );
+    }
+}
