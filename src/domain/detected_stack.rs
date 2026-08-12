@@ -56,6 +56,21 @@ impl DetectedStacks {
         self.0.iter().any(|s| s.stack.stack_type() == stack_type)
     }
 
+    /// indicates whether a folder with the given name exists in the files,
+    /// and whether it contains at least one file of the given type
+    #[must_use]
+    pub fn has_folder_containing_file(&self, stack_type: StackType, name: &str) -> bool {
+        let Some(stack) = self.get_stack(stack_type) else {
+            return false;
+        };
+        for file in &stack.files {
+            if file.starts_with(name) {
+                return true;
+            }
+        }
+        false
+    }
+
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
@@ -79,6 +94,10 @@ impl DetectedStacks {
                 filename,
                 stack_type,
             } => self.contains_file(*stack_type, filename),
+            EnabledWhen::FolderContainingFileOfType {
+                file_type: stack_type,
+                folder: name,
+            } => self.has_folder_containing_file(*stack_type, name),
         }
     }
 

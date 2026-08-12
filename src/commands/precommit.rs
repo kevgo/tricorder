@@ -91,6 +91,12 @@ pub fn determine_precommit_fixes(
                     filename,
                     stack_type: _,
                 } => Path::new(filename).exists(),
+                EnabledWhen::FolderContainingFileOfType {
+                    file_type: _,
+                    folder: name,
+                    // in the precommit hook, we don't scan for all files in the workspace,
+                    // so we can't check if the folder exists there and need to look for the folder directly
+                } => Path::new(name).exists(),
             };
             if enabled {
                 stack_executables.extend(fix.fix_commands(stack)?);
