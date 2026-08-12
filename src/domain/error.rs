@@ -7,6 +7,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
+    CannotDetermineCurrentDirectory { err: String },
     CannotRunGit { msg: String },
     CannotRunRipgrep { msg: String },
     CiUnformatted { diff: Vec<u8> },
@@ -20,6 +21,9 @@ pub enum UserError {
 impl UserError {
     pub fn print(self) {
         match self {
+            UserError::CannotDetermineCurrentDirectory { err } => {
+                println!("cannot determine the current directory: {err}");
+            }
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {

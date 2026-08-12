@@ -41,8 +41,9 @@ fn absolute_path_from_argv() -> Result<PathBuf> {
     let candidate = if path.is_absolute() {
         path.clone()
     } else {
-        let cwd = env::current_dir().map_err(|err| UserError::Cli {
-            msg: format!("failed to get current directory: {err}"),
+        // resolve relative path to current directory
+        let cwd = env::current_dir().map_err(|err| UserError::CannotDetermineCurrentDirectory {
+            err: err.to_string(),
         })?;
         cwd.join(&path)
     };
