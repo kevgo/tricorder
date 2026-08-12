@@ -15,8 +15,13 @@ const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 
 pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
-    if !Path::new(".git").exists() {
+    let git_path = Path::new(".git");
+    if !git_path.exists() {
         return Err(UserError::NoGitRepository);
+    }
+    // Linked worktrees use a `.git` file instead of a directory.
+    if git_path.is_file() {
+        return Err(UserError::NotMainGitWorktree);
     }
     let tricorder = absolute_path_from_argv()?;
     let content = PRE_COMMIT_SH.replace(

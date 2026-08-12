@@ -13,6 +13,7 @@ pub enum UserError {
     Cli { msg: String },
     Config { msg: String },
     NoGitRepository,
+    NotMainGitWorktree,
     Rta { err: rta::error::UserError },
 }
 
@@ -28,6 +29,9 @@ impl UserError {
             // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
             UserError::NoGitRepository => println!("not a git repository (no .git directory)"),
+            UserError::NotMainGitWorktree => {
+                println!("please run this command in the main Git worktree");
+            }
             UserError::Rta { err } => err.print(),
         }
     }
