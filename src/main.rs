@@ -20,6 +20,7 @@ fn inner() -> tricorder::domain::Result<ExitCode> {
         Command::Fix(args) => tricorder::commands::fix(&args),
         Command::FixUnsafe(args) => tricorder::commands::fix_unsafe(&args),
         Command::Init(args) => tricorder::commands::init(&args),
+        Command::InitGithook(args) => tricorder::commands::init_githook(&args),
         Command::Lint(args) => tricorder::commands::lint(&args),
         Command::Pitstop(args) => tricorder::commands::pitstop(&args),
         Command::Precommit(args) => tricorder::commands::precommit(&args),

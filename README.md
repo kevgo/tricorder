@@ -144,6 +144,7 @@ and sorted, using the gitignore-style patterns.
 
 ```sh
 tricorder init          # install agentic hooks (see below)
+tricorder init:githook  # install the Git pre-commit hook
 tricorder lint          # run every applicable linter
 tricorder fix           # fix all safely auto-fixable issues
 tricorder fix-unsafe    # fix all issues that are not safe to auto-fix
@@ -171,8 +172,14 @@ automatically, with zero per-developer setup:
   Tricorder runs all applicable linters
   and prints instructions to the agent to self-corrects code quality issues
   before moving on.
-- Before every `git commit`,
-  Tricorder formats and auto-fixes the changes to commit.
+
+### `tricorder init:githook`
+
+Installs a Git `pre-commit` hook that runs Tricorder before every commit.
+
+```sh
+tricorder init:githook
+```
 
 ### `tricorder lint`
 

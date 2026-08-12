@@ -20,6 +20,10 @@ pub enum Command {
     /// Install coding agent hooks for this project
     Init(InitArgs),
 
+    /// Install the Git pre-commit hook
+    #[command(name = "init:githook")]
+    InitGithook(InitArgs),
+
     /// Repair all code quality issues
     Fix(RunArgs),
 
