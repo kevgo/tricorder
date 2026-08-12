@@ -1,4 +1,4 @@
-Feature: lint GitHub Actions workflow files
+Feature: GitHub Actions workflow files not in a Git repository
 
   Scenario: valid workflow
     Given a file "run-that-app" with content
