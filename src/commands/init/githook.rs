@@ -34,26 +34,10 @@ pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
 
 /// Absolute path of this process from `argv[0]`.
 fn absolute_path_from_argv() -> Result<PathBuf> {
-    let argv0 = env::args_os().next().ok_or(UserError::CannotReadArgv)?;
-    let path = PathBuf::from(argv0);
-    let candidate = if path.is_absolute() {
-        path.clone()
-    } else {
-        // resolve relative path to current directory
-        let cwd = env::current_dir().map_err(|err| UserError::CannotDetermineCurrentDirectory {
-            err: err.to_string(),
-        })?;
-        cwd.join(&path)
-    };
-    if let Ok(canonical) = candidate.canonicalize() {
-        return Ok(canonical);
-    }
-    // Bare command name (e.g. `tricorder`) — resolve via PATH.
-    which::which(&path).map_err(|err| UserError::Cli {
-        msg: format!(
-            "cannot resolve tricorder executable '{}': {err}",
-            path.display()
-        ),
+    let argv0 = env::args_os().next().ok_or(UserError::ArgvIsEmpty)?;
+    which::which(&argv0).map_err(|err| UserError::CannotFindTricorderExecutable {
+        path: argv0.into(),
+        err: err.to_string(),
     })
 }
 
