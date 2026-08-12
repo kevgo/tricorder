@@ -10,7 +10,6 @@ use std::process::ExitCode;
 
 const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
 const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
-
 const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 
