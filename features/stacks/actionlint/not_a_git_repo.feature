@@ -19,12 +19,12 @@ Feature: lint GitHub Actions workflow files
             - uses: actions/checkout@v6
       """
     When executing "tricorder lint --show=all"
-    Then it prints the lines
+    Then it prints
       """
       GitHub Actions (actionlint)
       no project was found in any parent directories of ".". check workflows directory is put correctly in your Git repository
       """
-    And it prints to STDERR
+    And it prints the lines to STDERR
       """
       1 YML, 1 other
       running 1 tools
