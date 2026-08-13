@@ -12,9 +12,12 @@ pub enum UserError {
     CannotCreateDirectory { path: PathBuf, err: String },
     CannotDetermineCurrentDirectory { err: String },
     CannotFindTricorderExecutable { path: PathBuf, err: String },
+    CannotReadFileMetadata { path: PathBuf, err: String },
+    CannotWriteFile { path: PathBuf, err: String },
     ArgvIsEmpty,
     CannotRunGit { msg: String },
     CannotRunRipgrep { msg: String },
+    CannotSetFilePermissions { path: PathBuf, err: String },
     CiUnformatted { diff: Vec<u8> },
     Cli { msg: String },
     Config { msg: String },
@@ -38,6 +41,15 @@ impl UserError {
             }
             UserError::CannotFindTricorderExecutable { path, err } => {
                 println!("cannot locate the {} executable: {err}", path.display());
+            }
+            UserError::CannotReadFileMetadata { path, err } => {
+                println!("cannot read file metadata: {}: {err}", path.display());
+            }
+            UserError::CannotSetFilePermissions { path, err } => {
+                println!("cannot set file permissions: {}: {err}", path.display());
+            }
+            UserError::CannotWriteFile { path, err } => {
+                println!("cannot write file: {}: {err}", path.display());
             }
             UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),

@@ -1,10 +1,9 @@
 //! `tricorder init:githook` — install the Git pre-commit hook
 //! to run tricorder as part of every commit.
 
-use super::install::install_file;
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
-use crate::filesystem::ensure_dir;
+use crate::filesystem::{ensure_dir, install_file};
 use crate::shellscripts;
 use std::env;
 use std::path::{Path, PathBuf};
