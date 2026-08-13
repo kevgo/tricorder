@@ -1,7 +1,7 @@
 mod ci;
 mod fix;
 mod fix_unsafe;
-mod init;
+pub mod init;
 mod lint;
 mod pitstop;
 mod precommit;
@@ -9,7 +9,6 @@ mod precommit;
 pub use ci::ci;
 pub use fix::fix;
 pub use fix_unsafe::fix_unsafe;
-pub use init::{init, init_githook};
 pub use lint::lint;
 pub use pitstop::pitstop;
 pub use precommit::precommit;

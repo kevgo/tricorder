@@ -14,7 +14,7 @@ const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
 const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
 
-pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
+pub fn githook(args: &InitArgs) -> Result<ExitCode> {
     let git_folder = Path::new(".git");
     if !git_folder.exists() {
         return Err(UserError::NoGitRepository);

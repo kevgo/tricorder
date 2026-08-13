@@ -18,7 +18,8 @@ pub enum Command {
     Ci(RunArgs),
 
     /// Install coding agent hooks for this project
-    Init(InitArgs),
+    #[command(name = "init:claude")]
+    InitClaude(InitArgs),
 
     /// Install the Git pre-commit hook
     #[command(name = "init:githook")]

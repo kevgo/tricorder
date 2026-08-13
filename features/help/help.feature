@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: ci, init, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
+        [subcommands: ci, init:claude, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -23,7 +23,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init          Install coding agent hooks for this project
+        init:claude   Install coding agent hooks for this project
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
@@ -48,7 +48,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init          Install coding agent hooks for this project
+        init:claude   Install coding agent hooks for this project
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
@@ -73,7 +73,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init          Install coding agent hooks for this project
+        init:claude   Install coding agent hooks for this project
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
