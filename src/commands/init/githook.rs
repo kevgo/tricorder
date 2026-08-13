@@ -5,6 +5,7 @@ use super::install::install_file;
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
 use crate::filesystem::ensure_dir;
+use crate::shellscripts;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -25,7 +26,7 @@ pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
     let tricorder = absolute_path_from_argv()?;
     let content = PRE_COMMIT_SH.replace(
         TRICORDER_PLACEHOLDER,
-        &escape_for_double_quotes(&tricorder.to_string_lossy()),
+        &shellscripts::escape(&tricorder.to_string_lossy()),
     );
     ensure_dir(GIT_HOOKS_DIR)?;
     install_file(GIT_PRE_COMMIT_PATH, &content, args.force, true)?;
@@ -42,52 +43,9 @@ fn absolute_path_from_argv() -> Result<PathBuf> {
     })
 }
 
-fn escape_for_double_quotes(value: &str) -> String {
-    value.replace('\\', "\\\\").replace('"', "\\\"")
-}
-
 fn print_next_steps() {
     println!();
     println!("I have created the Git pre-commit hook at .git/hooks/pre-commit.");
     println!();
     println!("From now on, Tricorder automatically formats all code that gets committed.");
-}
-
-#[cfg(test)]
-mod tests {
-    use super::escape_for_double_quotes;
-
-    #[test]
-    fn leaves_plain_paths_unchanged() {
-        let give = "/home/kevlar/tricorder";
-        let want = "/home/kevlar/tricorder";
-        let have = escape_for_double_quotes(give);
-        assert_eq!(have, want);
-    }
-
-    #[test]
-    fn escapes_backslashes() {
-        let give = r"C:\Tools\tricorder";
-        let want = r"C:\\Tools\\tricorder";
-        let have = escape_for_double_quotes(give);
-        assert_eq!(have, want);
-    }
-
-    #[test]
-    fn escapes_double_quotes() {
-        let give = r#"/opt/"weird"/tricorder"#;
-        let want = r#"/opt/\"weird\"/tricorder"#;
-        let have = escape_for_double_quotes(give);
-        assert_eq!(have, want);
-    }
-
-    #[test]
-    fn escapes_backslashes_before_quotes() {
-        // Backslashes must be doubled first so a literal \" in the path
-        // becomes \\\" inside the double-quoted shell string.
-        let give = r#"say \"hi\""#;
-        let want = r#"say \\\"hi\\\""#;
-        let have = escape_for_double_quotes(give);
-        assert_eq!(have, want);
-    }
 }
