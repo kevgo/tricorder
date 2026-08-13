@@ -8,7 +8,8 @@ pub use githook::init_githook;
 
 use crate::cli::input::InitArgs;
 use crate::domain::Result;
-use install::{ensure_dir, install_file};
+use crate::filesystem::ensure_dir;
+use install::install_file;
 use std::process::ExitCode;
 
 const SETTINGS_JSON: &str = include_str!("../../templates/settings.json");

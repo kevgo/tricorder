@@ -3,10 +3,6 @@ use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
-pub(super) fn ensure_dir(path: &str) -> Result<()> {
-    fs::create_dir_all(path).map_err(|err| io_error(path, "create directory", &err))
-}
-
 pub(super) fn install_file(path: &str, content: &str, force: bool, executable: bool) -> Result<()> {
     let dest = Path::new(path);
     if dest.exists() && !force {
