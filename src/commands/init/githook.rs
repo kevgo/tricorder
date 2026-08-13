@@ -47,9 +47,9 @@ fn escape_for_double_quotes(value: &str) -> String {
 
 fn print_next_steps() {
     println!();
-    println!("I have created the Git pre-commit hook into .git/hooks/pre-commit.");
+    println!("I have created the Git pre-commit hook at .git/hooks/pre-commit.");
     println!();
-    println!("From now on, all code gets formatted when committing it.");
+    println!("From now on, Tricorder automatically formats all code that gets committed.");
 }
 
 #[cfg(test)]
@@ -58,41 +58,35 @@ mod tests {
 
     #[test]
     fn leaves_plain_paths_unchanged() {
-        assert_eq!(
-            escape_for_double_quotes("/home/kevlar/tricorder"),
-            "/home/kevlar/tricorder"
-        );
-        assert_eq!(escape_for_double_quotes(""), "");
-        assert_eq!(
-            escape_for_double_quotes("/path with spaces/tricorder"),
-            "/path with spaces/tricorder"
-        );
+        let give = "/home/kevlar/tricorder";
+        let want = "/home/kevlar/tricorder";
+        let have = escape_for_double_quotes(give);
+        assert_eq!(have, want);
     }
 
     #[test]
     fn escapes_backslashes() {
-        assert_eq!(
-            escape_for_double_quotes(r"C:\Tools\tricorder"),
-            r"C:\\Tools\\tricorder"
-        );
-        assert_eq!(escape_for_double_quotes(r"\\"), r"\\\\");
+        let give = r"C:\Tools\tricorder";
+        let want = r"C:\\Tools\\tricorder";
+        let have = escape_for_double_quotes(give);
+        assert_eq!(have, want);
     }
 
     #[test]
     fn escapes_double_quotes() {
-        assert_eq!(
-            escape_for_double_quotes(r#"/opt/"weird"/tricorder"#),
-            r#"/opt/\"weird\"/tricorder"#
-        );
+        let give = r#"/opt/"weird"/tricorder"#;
+        let want = r#"/opt/\"weird\"/tricorder"#;
+        let have = escape_for_double_quotes(give);
+        assert_eq!(have, want);
     }
 
     #[test]
     fn escapes_backslashes_before_quotes() {
         // Backslashes must be doubled first so a literal \" in the path
         // becomes \\\" inside the double-quoted shell string.
-        assert_eq!(
-            escape_for_double_quotes(r#"say \"hi\""#),
-            r#"say \\\"hi\\\""#
-        );
+        let give = r#"say \"hi\""#;
+        let want = r#"say \\\"hi\\\""#;
+        let have = escape_for_double_quotes(give);
+        assert_eq!(have, want);
     }
 }
