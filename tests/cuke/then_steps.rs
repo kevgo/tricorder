@@ -13,7 +13,7 @@ use tokio::process::Command;
 async fn all_files_unchanged(world: &mut TricorderWorld) {
     for original in &world.original_files {
         let filepath = world.dir.join(&original.name);
-        let have = fs::read_to_string(filepath).await.
+        let have = fs::read_to_string(filepath).await.unwrap();
             panic!(
                 "cannot read file '{}', which should still exist",
                 original.name
