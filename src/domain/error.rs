@@ -9,6 +9,7 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
     CannotCanonicalizePath { path: PathBuf },
+    CannotCreateDirectory { path: PathBuf, err: String },
     CannotDetermineCurrentDirectory { err: String },
     CannotFindTricorderExecutable { path: PathBuf, err: String },
     ArgvIsEmpty,
@@ -28,6 +29,9 @@ impl UserError {
         match self {
             UserError::CannotCanonicalizePath { path } => {
                 println!("cannot canonicalize path: {}", path.display());
+            }
+            UserError::CannotCreateDirectory { path, err } => {
+                println!("cannot create directory {}: {err}", path.display());
             }
             UserError::CannotDetermineCurrentDirectory { err } => {
                 println!("cannot determine the current directory: {err}");
