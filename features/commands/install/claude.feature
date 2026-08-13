@@ -9,7 +9,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
       Your Claude-compatible coding agent now runs all linters after every Write/Edit.
 
       Possible next steps:
-        1. tricorder init:githook   # optional: also install the Git pre-commit hook
+        1. tricorder init:githook  # optional: also install the Git pre-commit hook
         2. git add .claude/ && git commit -m 'chore: tricorder hooks'
       """
     And it prints nothing to STDERR
@@ -87,7 +87,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
       Your Claude-compatible coding agent now runs all linters after every Write/Edit.
 
       Possible next steps:
-        1. tricorder init:githook   # optional: also install the Git pre-commit hook
+        1. tricorder init:githook  # optional: also install the Git pre-commit hook
         2. git add .claude/ && git commit -m 'chore: tricorder hooks'
       """
     And it prints nothing to STDERR

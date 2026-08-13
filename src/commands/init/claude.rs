@@ -27,7 +27,7 @@ fn print_next_steps() {
     println!("Your Claude-compatible coding agent now runs all linters after every Write/Edit.");
     println!();
     println!("Possible next steps:");
-    println!("  1. tricorder init:githook   # optional: also install the Git pre-commit hook");
+    println!("  1. tricorder init:githook  # optional: also install the Git pre-commit hook");
     println!("  2. git add .claude/ && git commit -m 'chore: tricorder hooks'");
 }
 
