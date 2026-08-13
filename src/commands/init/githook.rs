@@ -14,11 +14,11 @@ const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
 const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
 
 pub fn init_githook(args: &InitArgs) -> Result<ExitCode> {
-    let git_path = Path::new(".git");
-    if !git_path.exists() {
+    let git_folder = Path::new(".git");
+    if !git_folder.exists() {
         return Err(UserError::NoGitRepository);
     }
-    if git_path.is_file() {
+    if git_folder.is_file() {
         return Err(UserError::NotMainGitWorktree);
     }
     let tricorder = absolute_path_from_argv()?;
