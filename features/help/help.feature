@@ -23,7 +23,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install coding agent hooks for this project
+        init:claude   Install local hooks for claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
@@ -48,7 +48,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install coding agent hooks for this project
+        init:claude   Install local hooks for claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
@@ -73,7 +73,7 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install coding agent hooks for this project
+        init:claude   Install local hooks for claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
         fix           Repair all code quality issues
         fix-unsafe    Advanced fixes that might break things
