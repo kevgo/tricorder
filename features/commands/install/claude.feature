@@ -1,6 +1,5 @@
 Feature: "tricorder init:claude" installs Claude-compatible agent hooks
 
-  @this
   Scenario: install hooks into an empty project
     When executing "tricorder init:claude"
     Then it prints
@@ -36,7 +35,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
         }
       }
       """
-    And file ".claude/tricorder-hooks/post_write.sh" now has content
+    And file ".claude/tricorder-hooks/post_write.sh" now matches these lines
       """
       #!/bin/sh
 
@@ -44,7 +43,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
       # Safe to edit.
       # Re-run "tricorder init:claude --force" to reset.
 
-      TRICORDER="__TRICORDER__"
+      TRICORDER=".*/tricorder"
       [ -x "$TRICORDER" ] || exit 0
       "$TRICORDER" lint
       """
@@ -114,7 +113,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
         }
       }
       """
-    And file ".claude/tricorder-hooks/post_write.sh" now has content
+    And file ".claude/tricorder-hooks/post_write.sh" now matches these lines
       """
       #!/bin/sh
 
@@ -122,7 +121,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
       # Safe to edit.
       # Re-run "tricorder init:claude --force" to reset.
 
-      TRICORDER="__TRICORDER__"
+      TRICORDER=".*/tricorder"
       [ -x "$TRICORDER" ] || exit 0
       "$TRICORDER" lint
       """
