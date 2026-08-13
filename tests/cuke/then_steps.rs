@@ -13,7 +13,7 @@ use tokio::process::Command;
 async fn all_files_unchanged(world: &mut TricorderWorld) {
     for original in &world.original_files {
         let filepath = world.dir.join(&original.name);
-        let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
+        let have = fs::read_to_string(filepath).await.
             panic!(
                 "cannot read file '{}', which should still exist",
                 original.name
@@ -70,6 +70,20 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
         Regex::new(want).unwrap().is_match(have.trim()),
         "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
     );
+}
+
+#[then(expr = "file {string} is executable")]
+async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
+    let filepath = world.dir.join(&filename);
+    let metadata = fs::metadata(&filepath).await.unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert!(
+            metadata.permissions().mode() & 0o111 != 0,
+            "file '{filename}' is not executable"
+        );
+    }
 }
 
 #[then("it does not print")]

@@ -28,7 +28,11 @@ pub fn githook(args: &InitArgs) -> Result<ExitCode> {
         &shellscripts::escape(&tricorder.to_string_lossy()),
     );
     ensure_dir(GIT_HOOKS_DIR)?;
-    install_file(GIT_PRE_COMMIT_PATH, &content, args.force, true)?;
+    let success = install_file(GIT_PRE_COMMIT_PATH, &content, args.force, true)?;
+    if !success {
+        print_skipped();
+        return Ok(ExitCode::FAILURE);
+    }
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }
@@ -47,4 +51,9 @@ fn print_next_steps() {
     println!("I have created the Git pre-commit hook at .git/hooks/pre-commit.");
     println!();
     println!("From now on, Tricorder automatically formats all code that gets committed.");
+}
+
+fn print_skipped() {
+    println!("Could not install the Git pre-commit hook because it already exists.");
+    println!("To install anyway, run \"tricorder init:githook --force\".");
 }

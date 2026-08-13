@@ -11,8 +11,14 @@ const POST_WRITE_SH: &str = include_str!("../../templates/post_write.sh");
 
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     ensure_dir(HOOKS_DIR)?;
-    install_file(SETTINGS_PATH, SETTINGS_JSON, args.force, false)?;
-    install_file(POST_WRITE_PATH, POST_WRITE_SH, args.force, true)?;
+    let mut success = install_file(SETTINGS_PATH, SETTINGS_JSON, args.force, false)?;
+    if success {
+        success = install_file(POST_WRITE_PATH, POST_WRITE_SH, args.force, true)?;
+    }
+    if !success {
+        print_skipped();
+        return Ok(ExitCode::FAILURE);
+    }
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }
@@ -23,4 +29,9 @@ fn print_next_steps() {
     println!("Possible next steps:");
     println!("  1. tricorder init:githook   # optional: also install the Git pre-commit hook");
     println!("  2. git add .claude/ && git commit -m 'chore: tricorder hooks'");
+}
+
+fn print_skipped() {
+    println!("Could not install the Claude hooks because some of the files already exist.");
+    println!("To install anyway, run \"tricorder init:claude --force\".");
 }
