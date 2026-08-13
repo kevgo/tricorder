@@ -60,7 +60,6 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
     And the exit code is 1
     And file ".git/hooks/pre-commit" is unchanged
 
-  @this
   Scenario: --force overwrites an existing hook
     Given a Git repository
     And a file ".git/hooks/pre-commit" with content
