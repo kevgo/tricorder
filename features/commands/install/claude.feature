@@ -1,5 +1,6 @@
 Feature: "tricorder init:claude" installs Claude-compatible agent hooks
 
+  @this
   Scenario: install hooks into an empty project
     When executing "tricorder init:claude"
     Then it prints

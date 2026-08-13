@@ -1,6 +1,8 @@
 use crate::cli::input::InitArgs;
+use crate::commands::init::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::domain::Result;
 use crate::filesystem::{ensure_dir, install_file};
+use crate::shellscripts;
 use std::process::ExitCode;
 
 const HOOKS_DIR: &str = ".claude/tricorder-hooks";
@@ -12,8 +14,13 @@ const POST_WRITE_SH: &str = include_str!("../../templates/post_write.sh");
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     ensure_dir(HOOKS_DIR)?;
     let mut success = install_file(SETTINGS_PATH, SETTINGS_JSON, args.force, false)?;
+    let tricorder = absolute_path_from_argv()?;
+    let content = POST_WRITE_SH.replace(
+        TRICORDER_PLACEHOLDER,
+        &shellscripts::escape(&tricorder.to_string_lossy()),
+    );
     if success {
-        success = install_file(POST_WRITE_PATH, POST_WRITE_SH, args.force, true)?;
+        success = install_file(POST_WRITE_PATH, &content, args.force, true)?;
     }
     if !success {
         print_skipped();
