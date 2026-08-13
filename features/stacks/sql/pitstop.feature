@@ -41,7 +41,7 @@ Feature: pitstop SQL
       SELECT INTO
       """
     When executing "tricorder pitstop --show=all"
-    Then it prints
+    Then it prints the lines
       """
       delete empty folders
       fix SQL (sqlfmt)
