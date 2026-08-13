@@ -1,4 +1,4 @@
-use crate::apps::prettier::Prettier;
+use crate::apps::{actionlint::Actionlint, prettier::Prettier};
 use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
@@ -15,7 +15,7 @@ impl Stack for Yml {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![]
+        vec![Box::new(Actionlint {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
