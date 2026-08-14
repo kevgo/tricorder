@@ -1,6 +1,6 @@
 use std::path::Path;
 
-/// indicates whether any of the given files exist
+/// provides all of the given file paths that exist
 #[must_use]
 pub fn any_file_exists<'a>(files: &[&'a str]) -> Vec<&'a str> {
     let mut result = Vec::new();
