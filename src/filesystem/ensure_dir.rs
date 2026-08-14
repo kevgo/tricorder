@@ -1,9 +1,13 @@
 use crate::domain::{Result, UserError};
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// ensures the given directory exists, creating it if it doesn't
 pub fn ensure_dir(path: &str) -> Result<()> {
+    // fast path: the directory already exists
+    if Path::new(path).is_dir() {
+        return Ok(());
+    }
     fs::create_dir_all(path).map_err(|err| UserError::CannotCreateDirectory {
         path: PathBuf::from(path),
         err: err.to_string(),
