@@ -31,6 +31,7 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
 }
 
 fn print_next_steps() {
+    println!();
     println!("Your Claude-compatible coding agent now runs all linters after every Write/Edit.");
 }
 
