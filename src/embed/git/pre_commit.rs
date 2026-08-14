@@ -14,7 +14,8 @@ const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 const PRE_COMMIT_SH: &str = include_str!("pre_commit.sh");
 
-pub fn install(args: &InitArgs) -> Result<ExitCode> {
+/// installs the Git pre-commit hook to run tricorder as part of every commit
+pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
     let git_folder = Path::new(".git");
     if !git_folder.exists() {
         return Err(UserError::NoGitRepository);

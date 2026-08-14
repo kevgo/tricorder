@@ -1,5 +1,5 @@
 //! functionality around embedding Tricorder into Git
 
-mod precommit;
+mod pre_commit;
 
-pub use precommit::install;
+pub use pre_commit::pre_commit;

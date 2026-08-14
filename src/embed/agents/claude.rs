@@ -12,6 +12,7 @@ const POST_WRITE_PATH: &str = ".claude/tricorder-hooks/post_write.sh";
 const SETTINGS_JSON: &str = include_str!("settings.json");
 const POST_WRITE_SH: &str = include_str!("post_write.sh");
 
+/// install all Claude Code integrations
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     let existing_files = any_file_exists(&[SETTINGS_PATH, POST_WRITE_PATH]);
     if !existing_files.is_empty() && !args.force {
