@@ -1,12 +1,7 @@
-//! `tricorder init` — scaffold Claude Code / Code Puppy hooks into the
-//! current project so tricorder runs after every edit.
-
-mod claude;
-mod githook;
+pub mod commit;
+pub mod edit;
 
 use crate::domain::{Result, UserError};
-pub use claude::claude;
-pub use githook::githook;
 use std::env;
 use std::path::PathBuf;
 

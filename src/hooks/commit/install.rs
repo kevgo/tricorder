@@ -2,19 +2,19 @@
 //! to run tricorder as part of every commit.
 
 use crate::cli::input::InitArgs;
-use crate::commands::init::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::domain::{Result, UserError};
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{ensure_dir, install_file};
+use crate::hooks::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::shellscripts;
 use std::path::Path;
 use std::process::ExitCode;
 
 const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
-const PRE_COMMIT_SH: &str = include_str!("templates/pre_commit.sh");
+const PRE_COMMIT_SH: &str = include_str!("pre_commit.sh");
 
-pub fn githook(args: &InitArgs) -> Result<ExitCode> {
+pub fn install(args: &InitArgs) -> Result<ExitCode> {
     let git_folder = Path::new(".git");
     if !git_folder.exists() {
         return Err(UserError::NoGitRepository);

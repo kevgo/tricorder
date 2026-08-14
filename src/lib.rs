@@ -5,5 +5,6 @@ pub mod config;
 pub mod domain;
 pub mod filesystem;
 pub mod git;
+pub mod hooks;
 pub mod shellscripts;
 pub mod stacks;

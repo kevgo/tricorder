@@ -1,16 +1,16 @@
 use crate::cli::input::InitArgs;
-use crate::commands::init::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::domain::Result;
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{ensure_dir, install_file};
+use crate::hooks::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::shellscripts;
 use std::process::ExitCode;
 
 const HOOKS_DIR: &str = ".claude/tricorder-hooks";
 const SETTINGS_PATH: &str = ".claude/settings.json";
 const POST_WRITE_PATH: &str = ".claude/tricorder-hooks/post_write.sh";
-const SETTINGS_JSON: &str = include_str!("templates/settings.json");
-const POST_WRITE_SH: &str = include_str!("templates/post_write.sh");
+const SETTINGS_JSON: &str = include_str!("settings.json");
+const POST_WRITE_SH: &str = include_str!("post_write.sh");
 
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     let existing_files = any_file_exists(&[SETTINGS_PATH, POST_WRITE_PATH]);

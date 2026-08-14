@@ -1,7 +1,6 @@
 mod ci;
 mod fix;
 mod fix_unsafe;
-pub mod init;
 mod lint;
 mod pitstop;
 mod precommit;
