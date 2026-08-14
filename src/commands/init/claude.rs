@@ -9,8 +9,8 @@ use std::process::ExitCode;
 const HOOKS_DIR: &str = ".claude/tricorder-hooks";
 const SETTINGS_PATH: &str = ".claude/settings.json";
 const POST_WRITE_PATH: &str = ".claude/tricorder-hooks/post_write.sh";
-const SETTINGS_JSON: &str = include_str!("../../templates/settings.json");
-const POST_WRITE_SH: &str = include_str!("../../templates/post_write.sh");
+const SETTINGS_JSON: &str = include_str!("templates/settings.json");
+const POST_WRITE_SH: &str = include_str!("templates/post_write.sh");
 
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     let existing_files = any_file_exists(&[SETTINGS_PATH, POST_WRITE_PATH]);

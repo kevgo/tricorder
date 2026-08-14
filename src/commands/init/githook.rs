@@ -12,7 +12,7 @@ use std::process::ExitCode;
 
 const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
-const PRE_COMMIT_SH: &str = include_str!("../../templates/pre_commit.sh");
+const PRE_COMMIT_SH: &str = include_str!("templates/pre_commit.sh");
 
 pub fn githook(args: &InitArgs) -> Result<ExitCode> {
     let git_folder = Path::new(".git");
