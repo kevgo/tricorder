@@ -24,7 +24,7 @@ pub fn githook(args: &InitArgs) -> Result<ExitCode> {
     }
     let existing_files = any_file_exists(&[GIT_PRE_COMMIT_PATH]);
     if !existing_files.is_empty() && !args.force {
-        print_skipped();
+        print_skipped(&existing_files);
         return Ok(ExitCode::FAILURE);
     }
     let tricorder = absolute_path_from_argv()?;
@@ -45,7 +45,11 @@ fn print_next_steps() {
     println!("From now on, Tricorder automatically formats all code that gets committed.");
 }
 
-fn print_skipped() {
-    println!("I did not install the Git pre-commit hook because it already exists.");
+fn print_skipped(existing_files: &[&str]) {
+    println!("I did not install the Git pre-commit hook because these files already exist:");
+    for file in existing_files {
+        println!("  {file}");
+    }
+    println!();
     println!("To install anyway, please run with the \"--force\" flag.");
 }

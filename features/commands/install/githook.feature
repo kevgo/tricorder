@@ -52,9 +52,10 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
     When executing "tricorder init:githook"
     Then it prints
       """
-      skipped .git/hooks/pre-commit (exists; pass --force to overwrite)
-      Could not install the Git pre-commit hook because it already exists.
-      To install anyway, run "tricorder init:githook --force".
+      I did not install the Git pre-commit hook because these files already exist:
+        .git/hooks/pre-commit
+
+      To install anyway, please run with the "--force" flag.
       """
     And it prints nothing to STDERR
     And the exit code is 1
