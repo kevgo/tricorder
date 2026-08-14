@@ -1,3 +1,4 @@
+@this
 Feature: "tricorder init:claude" installs Claude-compatible agent hooks
 
   Scenario: install hooks into an empty project
@@ -53,7 +54,6 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude"
     Then it prints
       """
-        skipped .claude/settings.json (exists; pass --force to overwrite)
         Could not install the Claude hooks because some of the files already exist.
         To install anyway, run "tricorder init:claude --force".
       """
@@ -70,7 +70,6 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude"
     Then it prints
       """
-        skipped .claude/settings.json (exists; pass --force to overwrite)
         Could not install the Claude hooks because some of the files already exist.
         To install anyway, run "tricorder init:claude --force".
       """

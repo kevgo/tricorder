@@ -22,7 +22,8 @@ pub fn githook(args: &InitArgs) -> Result<ExitCode> {
     if git_folder.is_file() {
         return Err(UserError::NotMainGitWorktree);
     }
-    if any_file_exists(&[GIT_PRE_COMMIT_PATH]) && !args.force {
+    let existing_files = any_file_exists(&[GIT_PRE_COMMIT_PATH]);
+    if !existing_files.is_empty() && !args.force {
         print_skipped();
         return Ok(ExitCode::FAILURE);
     }

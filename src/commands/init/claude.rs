@@ -13,9 +13,9 @@ const SETTINGS_JSON: &str = include_str!("../../templates/settings.json");
 const POST_WRITE_SH: &str = include_str!("../../templates/post_write.sh");
 
 pub fn claude(args: &InitArgs) -> Result<ExitCode> {
-    let files_already_exist = any_file_exists(&[SETTINGS_PATH, POST_WRITE_PATH]);
-    if files_already_exist && !args.force {
-        print_skipped();
+    let existing_files = any_file_exists(&[SETTINGS_PATH, POST_WRITE_PATH]);
+    if !existing_files.is_empty() && !args.force {
+        print_skipped(&existing_files);
         return Ok(ExitCode::FAILURE);
     }
     ensure_dir(HOOKS_DIR)?;
@@ -35,7 +35,12 @@ fn print_next_steps() {
     println!("Your Claude-compatible coding agent now runs all linters after every Write/Edit.");
 }
 
-fn print_skipped() {
-    println!("Could not install the Claude hooks because some of the files already exist.");
+fn print_skipped(existing_files: &[&str]) {
+    let quoted = existing_files
+        .iter()
+        .map(|f| format!("\"{f}\""))
+        .collect::<Vec<String>>()
+        .join(", ");
+    println!("Could not install the Claude hooks because files {quoted} already exist.");
     println!("To install anyway, run \"tricorder init:claude --force\".");
 }
