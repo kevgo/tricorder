@@ -40,8 +40,6 @@ pub fn githook(args: &InitArgs) -> Result<ExitCode> {
 
 fn print_next_steps() {
     println!();
-    println!("I have created the Git pre-commit hook at .git/hooks/pre-commit.");
-    println!();
     println!("From now on, Tricorder automatically formats all code that gets committed.");
 }
 

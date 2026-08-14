@@ -1,13 +1,11 @@
 Feature: "tricorder init:githook" installs the Git pre-commit hook
 
-  Scenario: install the pre-commit hook into a Git repository
+  Scenario: install the pre-commit hook into an empty Git repository
     Given a Git repository
     When executing "tricorder init:githook"
     Then it prints
       """
       installed .git/hooks/pre-commit
-
-      I have created the Git pre-commit hook at .git/hooks/pre-commit.
 
       From now on, Tricorder automatically formats all code that gets committed.
       """
@@ -71,8 +69,6 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
     Then it prints
       """
       installed .git/hooks/pre-commit
-
-      I have created the Git pre-commit hook at .git/hooks/pre-commit.
 
       From now on, Tricorder automatically formats all code that gets committed.
       """
