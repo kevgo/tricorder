@@ -3,9 +3,9 @@
 
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
+use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{create_file, ensure_dir};
-use crate::hooks::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::shellscripts;
 use std::path::Path;
 use std::process::ExitCode;

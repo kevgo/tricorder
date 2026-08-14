@@ -1,5 +1,7 @@
-pub mod commit;
-pub mod edit;
+//! functionality around embedding Tricorder into external ools
+
+pub mod agents;
+pub mod git;
 
 use crate::domain::{Result, UserError};
 use std::env;
