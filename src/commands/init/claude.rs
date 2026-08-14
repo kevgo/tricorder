@@ -36,11 +36,10 @@ fn print_next_steps() {
 }
 
 fn print_skipped(existing_files: &[&str]) {
-    let quoted = existing_files
-        .iter()
-        .map(|f| format!("\"{f}\""))
-        .collect::<Vec<String>>()
-        .join(", ");
-    println!("Could not install the Claude hooks because files {quoted} already exist.");
+    println!("I did not install the Claude hooks because some files I would create already exist:");
+    for file in existing_files {
+        println!("  {file}");
+    }
+    println!();
     println!("To install anyway, run \"tricorder init:claude --force\".");
 }

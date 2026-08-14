@@ -54,7 +54,9 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude"
     Then it prints
       """
-        Could not install the Claude hooks because some of the files already exist.
+        I did not install the Claude hooks because some files I would create already exist:
+          .claude/settings.json
+
         To install anyway, run "tricorder init:claude --force".
       """
     And it prints nothing to STDERR
@@ -70,12 +72,14 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude"
     Then it prints
       """
-        Could not install the Claude hooks because some of the files already exist.
+        I did not install the Claude hooks because some files I would create already exist:
+          .claude/tricorder-hooks/post_write.sh
+
         To install anyway, run "tricorder init:claude --force".
       """
     And it prints nothing to STDERR
     And the exit code is 1
-    And file ".claude/settings.json" is unchanged
+    And file ".claude/settings.json" does not exist
     And file ".claude/tricorder-hooks/post_write.sh" is unchanged
 
   Scenario: --force overwrites existing files
