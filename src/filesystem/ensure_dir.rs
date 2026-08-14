@@ -8,6 +8,7 @@ pub fn ensure_dir(path: &str) -> Result<()> {
     if Path::new(path).is_dir() {
         return Ok(());
     }
+    // slow path: create the directory and all its missing parents
     fs::create_dir_all(path).map_err(|err| UserError::CannotCreateDirectory {
         path: PathBuf::from(path),
         err: err.to_string(),
