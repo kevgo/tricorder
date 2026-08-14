@@ -3,6 +3,7 @@ use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
+/// makes the given file executable
 pub fn set_executable(path: &Path) -> Result<()> {
     let metadata = fs::metadata(path).map_err(|err| UserError::CannotReadFileMetadata {
         path: path.into(),
