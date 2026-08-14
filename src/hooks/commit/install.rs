@@ -4,7 +4,7 @@
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
 use crate::filesystem::any_file_exists;
-use crate::filesystem::{ensure_dir, install_file};
+use crate::filesystem::{create_file, ensure_dir};
 use crate::hooks::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::shellscripts;
 use std::path::Path;
@@ -33,7 +33,7 @@ pub fn install(args: &InitArgs) -> Result<ExitCode> {
         &shellscripts::escape(&tricorder.to_string_lossy()),
     );
     ensure_dir(GIT_HOOKS_DIR)?;
-    install_file(GIT_PRE_COMMIT_PATH, &content, true)?;
+    create_file(GIT_PRE_COMMIT_PATH, &content, true)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }
