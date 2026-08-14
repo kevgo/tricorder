@@ -2,11 +2,10 @@ use crate::cli::input::InitArgs;
 use crate::domain::Result;
 use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::filesystem::any_file_exists;
-use crate::filesystem::{create_file, ensure_dir};
+use crate::filesystem::create_file;
 use crate::shellscripts;
 use std::process::ExitCode;
 
-const HOOKS_DIR: &str = ".claude/tricorder-hooks";
 const SETTINGS_PATH: &str = ".claude/settings.json";
 const POST_WRITE_PATH: &str = ".claude/tricorder-hooks/post_write.sh";
 const SETTINGS_JSON: &str = include_str!("settings.json");
@@ -19,7 +18,6 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
         print_skipped(&existing_files);
         return Ok(ExitCode::FAILURE);
     }
-    ensure_dir(HOOKS_DIR)?;
     create_file(SETTINGS_PATH, SETTINGS_JSON, false)?;
     let tricorder = absolute_path_from_argv()?;
     let content = POST_WRITE_SH.replace(

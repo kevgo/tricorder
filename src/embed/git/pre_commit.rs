@@ -5,12 +5,11 @@ use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
 use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::filesystem::any_file_exists;
-use crate::filesystem::{create_file, ensure_dir};
+use crate::filesystem::create_file;
 use crate::shellscripts;
 use std::path::Path;
 use std::process::ExitCode;
 
-const GIT_HOOKS_DIR: &str = ".git/hooks";
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 const PRE_COMMIT_SH: &str = include_str!("pre_commit.sh");
 
@@ -33,7 +32,6 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
         TRICORDER_PLACEHOLDER,
         &shellscripts::escape(&tricorder.to_string_lossy()),
     );
-    ensure_dir(GIT_HOOKS_DIR)?;
     create_file(GIT_PRE_COMMIT_PATH, &content, true)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
