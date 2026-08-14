@@ -29,6 +29,12 @@ async fn all_files_unchanged(world: &mut TricorderWorld) {
     }
 }
 
+#[then(expr = "file {string} does not exist")]
+async fn file_does_not_exist(world: &mut TricorderWorld, filename: String) {
+    let filepath = world.dir.join(&filename);
+    assert!(!filepath.exists());
+}
+
 #[then(expr = "file {string} is unchanged")]
 async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
     let original = world

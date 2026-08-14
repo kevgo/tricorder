@@ -45,11 +45,24 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
       """
     And file ".claude/tricorder-hooks/post_write.sh" is executable
 
-  Scenario: existing files are left unchanged
+  Scenario: claude settings exist already
     Given a file ".claude/settings.json" with content
       """
       existing settings
       """
+    When executing "tricorder init:claude"
+    Then it prints
+      """
+        skipped .claude/settings.json (exists; pass --force to overwrite)
+        Could not install the Claude hooks because some of the files already exist.
+        To install anyway, run "tricorder init:claude --force".
+      """
+    And it prints nothing to STDERR
+    And the exit code is 1
+    And file ".claude/settings.json" is unchanged
+    And file ".claude/tricorder-hooks/post_write.sh" does not exist
+
+  Scenario: claude hook exists already
     And a file ".claude/tricorder-hooks/post_write.sh" with content
       """
       existing hook

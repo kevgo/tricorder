@@ -4,6 +4,7 @@
 use crate::cli::input::InitArgs;
 use crate::commands::init::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::domain::{Result, UserError};
+use crate::filesystem::any_file_exists;
 use crate::filesystem::{ensure_dir, install_file};
 use crate::shellscripts;
 use std::path::Path;
@@ -21,17 +22,17 @@ pub fn githook(args: &InitArgs) -> Result<ExitCode> {
     if git_folder.is_file() {
         return Err(UserError::NotMainGitWorktree);
     }
+    if any_file_exists(&[GIT_PRE_COMMIT_PATH]) && !args.force {
+        print_skipped();
+        return Ok(ExitCode::FAILURE);
+    }
     let tricorder = absolute_path_from_argv()?;
     let content = PRE_COMMIT_SH.replace(
         TRICORDER_PLACEHOLDER,
         &shellscripts::escape(&tricorder.to_string_lossy()),
     );
     ensure_dir(GIT_HOOKS_DIR)?;
-    let success = install_file(GIT_PRE_COMMIT_PATH, &content, args.force, true)?;
-    if !success {
-        print_skipped();
-        return Ok(ExitCode::FAILURE);
-    }
+    install_file(GIT_PRE_COMMIT_PATH, &content, true)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }
@@ -44,6 +45,6 @@ fn print_next_steps() {
 }
 
 fn print_skipped() {
-    println!("Could not install the Git pre-commit hook because it already exists.");
-    println!("To install anyway, run \"tricorder init:githook --force\".");
+    println!("I did not install the Git pre-commit hook because it already exists.");
+    println!("To install anyway, please run with the \"--force\" flag.");
 }
