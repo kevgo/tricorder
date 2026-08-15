@@ -56,7 +56,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
         I did not install the Claude hooks because these files already exist:
           .claude/settings.json
 
-        To install anyway, please run with the "--force" flag.
+        To install anyway, please re-run with the "--force" flag.
       """
     And it prints nothing to STDERR
     And the exit code is 1
@@ -74,7 +74,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
         I did not install the Claude hooks because these files already exist:
           .claude/tricorder-hooks/post_write.sh
 
-        To install anyway, please run with the "--force" flag.
+        To install anyway, please re-run with the "--force" flag.
       """
     And it prints nothing to STDERR
     And the exit code is 1

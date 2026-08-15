@@ -24,5 +24,5 @@ pub fn print_skipped(hook: &str, existing_files: &[&str]) {
         println!("  {file}");
     }
     println!();
-    println!("To install anyway, please run with the \"--force\" flag.");
+    println!("To install anyway, please re-run with the \"--force\" flag.");
 }

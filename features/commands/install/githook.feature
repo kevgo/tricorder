@@ -57,7 +57,7 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
       I did not install the Git pre-commit hook because these files already exist:
         .git/hooks/pre-commit
 
-      To install anyway, please run with the "--force" flag.
+      To install anyway, please re-run with the "--force" flag.
       """
     And it prints nothing to STDERR
     And the exit code is 1
