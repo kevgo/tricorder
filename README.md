@@ -1,18 +1,18 @@
 # Tricorder
 
-Tricorder runs all linters and formatters applicable to your codebase.
-It downloads third-party tools if needed,
-and executes them concurrently to finish as quickly as possible.
+Tricorder runs all linters and formatters that apply to your codebase.
+It downloads third-party tools as needed and runs them concurrently to finish
+as quickly as possible.
 
-Tricorder can embed deeply into your development workflow.
-Besides general-purpose commands for linting and formatting your files,
-it provides specialized commands for manual development,
-running inside the loops of AI agents, or as a pre-commit Git hook.
+Tricorder integrates throughout your development workflow.
+In addition to general-purpose commands for linting and formatting,
+it provides specialized commands for interactive development, AI coding agents,
+CI, and Git pre-commit hooks.
 
 ## Demo
 
-If you run `tricorder lint --show=all` on the Tricorder codebase,
-it finishes in just 500 ms and prints this (simplified) output:
+Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
+500 ms and prints output like this:
 
 ```sh
 98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
@@ -25,21 +25,22 @@ GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
 ```
 
-First Tricorder determines the files in this codebase
-and classifies them by file type.
-Then it runs the linters for each file type, all at the same time.
-In this case:
+Tricorder first discovers the files in the codebase and classifies them by type.
+It then determines which linters apply and runs them concurrently.
+
+In this example, it runs:
 
 - [Taplo](https://github.com/tamasfe/taplo) for TOML files
 - [rumdl](https://github.com/rvben/rumdl) for Markdown files
 - [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
   for Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
-  for GitHub Action config files
-- `git diff --check` to look for unresolved merge conflict markers
+  for GitHub Action configuration
+- `git diff --check` to detect unresolved merge conflict markers
+  and whitespace errors
 
-Tricorder downloads and runs third-party linters on its own.
-Here is what it prints when you run `tricorder lint` the first time:
+Tricorder downloads and runs third-party tools automatically.
+The first time you run `tricorder lint`, you might see:
 
 ```sh
 Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
@@ -47,35 +48,34 @@ added rumdl@0.2.55 to run-that-app
 downloading rumdl 0.2.55 ... extracting ... ok
 ```
 
-To install the `rumdl` linter,
-Tricorder looks up the latest release where rumdl is hosted.
-It stores that version in a file called `run-that-app` so that rumdl always runs
-that version from now on.
-Then it downloads the release for your operating system and CPU architecture,
-unzips the executable from the archive,
-and stores that executable on the local hard drive.
+To install `rumdl`, Tricorder looks up its latest release and records
+that version in the `run-that-app` file.
+From then on, this repository consistently uses that version.
 
-Tricorder can also compile tools from source if it cannot find a binary release.
+Tricorder then downloads the release matching your operating system
+and CPU architecture, extracts the executable, and caches it locally.
+
+If a tool doesn't provide a compatible binary release,
+Tricorder can compile it from source.
+
+With Tricorder, you no longer have to:
+
+- figure out which file types exist in each codebase
+- research appropriate linters and formatters for every file type
+- bikeshed tooling choices across developers and teams
+- remember to add linters and formatters when new file types appear
+- learn how to install, configure, and invoke dozens of separate tools
+- keep those tools up to date across all your codebases
+
+## Why is it fast
 
 Many optimizations make Tricorder incredibly fast:
 
-- written in Rust
-- it runs modern linters that execute quickly
-- it calls all tools with the exact files to lint or format,
-  so that the linters don't need to search
-  for files again
-- it processes all stacks concurrently
-
-The things you don't have to do anymore:
-
-- figure out which file types exist in your codebase
-- research which linters and formatters exist for each file type
-- bikeshed with other developers and teams that use different linters
-  and formatters than you
-- remember to add linters and formatters
-  when somebody adds additional file types to your codebase
-- study how to install, setup, and configure the dozens of tools needed
-- keep all tools up to date across all codebases
+- It is written in Rust, which makes discovering your source files quick.
+- it favors modern, fast linters and formatters.
+- It passes each tool the exact files it needs to process,
+  so tools don't have to scan the codebase again.
+- it processes independent file types concurrently
 
 ## Q & A
 
