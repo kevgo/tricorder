@@ -167,7 +167,7 @@ tricorder precommit     # Fix staged files before committing, never fails
 tricorder help          # Print this message or the help of the given subcommands
 ```
 
-### Tricorder ci
+### `tricorder ci`
 
 This command makes formatting and linting problems visible in CI pipelines.
 It runs all formatters and linters and fails if either:
