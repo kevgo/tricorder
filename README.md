@@ -260,5 +260,3 @@ and won't need to re-stage the file.
 | Go         | golangci-lint |
 | Java       | checkstyle    |
 | SQL        | sqlfmt        |
-
-Stacks are auto-detected.
