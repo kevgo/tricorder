@@ -158,12 +158,12 @@ ignore = ["README.md"]  # ignored only by keep-sorted
 tricorder ci            # Check all lints and fixes on CI
 tricorder init:claude   # Hook into claude-compatible coding agents
 tricorder init:githook  # Install the Git pre-commit hook
-tricorder fix           # Repair all code quality issues
-tricorder fix-unsafe    # Advanced fixes that might break things
-tricorder lint          # Find all code quality issues (alias: postgenerate)
-tricorder pitstop       # Run fixes and lints
-tricorder precommit     # Repair all code quality issues, never fails
-tricorder help          # Print this message or the help of the given subcommand(s)
+tricorder fix           # Apply safe code quality fixes
+tricorder fix-unsafe    # Apply advanced fixes that might change behavior
+tricorder lint          # Find code quality issues (alias: postgenerate)
+tricorder pitstop       # Apply fixes, then report remaining issues
+tricorder precommit     # Fix staged files before committing, never fails
+tricorder help          # Print this message or the help of the given subcommands
 ```
 
 ### Tricorder ci
