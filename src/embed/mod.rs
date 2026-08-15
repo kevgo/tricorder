@@ -7,6 +7,7 @@ use crate::domain::{Result, UserError};
 use std::env;
 use std::path::PathBuf;
 
+/// Placeholder for the path to the Tricorder executable in templates for files that the embed module creates.
 const TRICORDER_PLACEHOLDER: &str = "{{TRICORDER}}";
 
 /// Absolute path of this process from `argv[0]`.
