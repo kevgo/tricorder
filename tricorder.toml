@@ -24,5 +24,5 @@ name = "cargo clippy"
 command = "cargo clippy --all-targets --all-features -- --deny=warnings"
 
 [[custom-lints]]
-name = "E2E tests"
+name = "cargo clippy for Cucumber code"
 command = "cargo clippy --test=cuke --all-features -- --deny=warnings"

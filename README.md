@@ -2,16 +2,34 @@
 
 _One command, every linter, every stack._
 
-Tricorder is a quality gate for manual and agentic software engineering:
-It lints and formats a wide variety of source code files using the best
-available linters for each.
+Tricorder runs all linters and formatters for all files in your codebase.
+It downloads third-party linters if needed,
+and executes them concurrently for maximum speed.
 
-- zero-config: works out of the box, but you can configure it if needed
-- zero dependencies: Tricorder downloads
-  and executes third-party linters on its own.
-- fast: Tricorder formats only the files that need formatting,
-  and runs all linters and formatters concurrently.
-- single exit code for all tools
+## Demo
+
+If you run `tricorder pitstop --show=names` on this codebase,
+you get this output:
+
+```sh
+downloading node 26.5.0 ... extracting ... ok
+added 1 package, and audited 2 packages in 309ms
+downloading rumdl 0.2.43 ... extracting ... ok
+delete empty folders
+sort other (keep-sorted)
+fix TOML (Taplo)
+sort TOML (keep-sorted)
+fix Markdown (rumdl)
+fix Cucumber (Ghokin)
+sort Cucumber (keep-sorted)
+fix JSON (Prettier)
+fix YML (Prettier)
+GitHub Actions (actionlint)
+lint Git (git diff HEAD --check)
+lint Markdown (rumdl)
+lint TOML (Taplo)
+lint Cucumber (Gherkin Lint)
+```
 
 ## Why
 
