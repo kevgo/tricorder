@@ -11,7 +11,7 @@ use std::path::PathBuf;
 const TRICORDER_PLACEHOLDER: &str = "{{TRICORDER}}";
 
 /// provides the absolute path to the Tricorder executable on the current machine
-fn absolute_path_to_executable() -> Result<PathBuf> {
+fn absolute_path_to_tricorder_executable() -> Result<PathBuf> {
     let argv0 = env::args_os().next().ok_or(UserError::ArgvIsEmpty)?;
     which::which(&argv0).map_err(|err| UserError::CannotFindTricorderExecutable {
         path: argv0.into(),
