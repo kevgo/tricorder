@@ -5,28 +5,29 @@ It downloads third-party tools if needed,
 and executes them concurrently to finish as quickly as possible.
 
 Tricorder can embed deeply into your development workflow.
-It can hook into AI agents to lint AI-generated code to prevent code smells
-inside the agentic loop.
-It can also hook into Git to auto-format code when it is being committed.
+Besides general-purpose commands for linting and formatting your files,
+it provides specialized commands for manual development,
+running inside the loops of AI agents, or as a pre-commit Git hook.
 
 ## Demo
 
-If you run `tricorder lint` on the Tricorder codebase,
+If you run `tricorder lint --show=all` on the Tricorder codebase,
 it finishes in just 500 ms and prints this (simplified) output:
 
 ```sh
 98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
 running 5 tools
 
-GitHub Actions (actionlint)
-lint Git (git diff HEAD --check)
 lint Markdown (rumdl)
 lint TOML (Taplo)
+lint Git (git diff HEAD --check)
+GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
 ```
 
-Tricorder determines the file types that exist in this codebase,
-and the linters for each file type.
+First Tricorder determines the files in this codebase
+and classifies them by file type.
+Then it runs the linters for each file type, all at the same time.
 In this case:
 
 - [Taplo](https://github.com/tamasfe/taplo) for TOML files
@@ -34,11 +35,11 @@ In this case:
 - [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
   for Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
-  for linting GitHub Action config files
-- `git diff --check` to find unresolved merge conflict markers
+  for GitHub Action config files
+- `git diff --check` to look for unresolved merge conflict markers
 
-Tricorder downloads and runs needed third-party linters on its own.
-Here is what it prints the first time you run `tricorder lint`:
+Tricorder downloads and runs third-party linters on its own.
+Here is what it prints when you run `tricorder lint` the first time:
 
 ```sh
 Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
@@ -46,15 +47,15 @@ added rumdl@0.2.55 to run-that-app
 downloading rumdl 0.2.55 ... extracting ... ok
 ```
 
-To install the `rumdl` linter, Tricorder looks up its latest release.
-It persists that version in its configuration
-(called "run-that-app") so that it always runs that version from now on.
-Then it downloads the release archive for your operating system
-and CPU architecture, unzips the executable in it,
-and stores that executable on the local hard drive, so that it can execute it.
+To install the `rumdl` linter,
+Tricorder looks up the latest release where rumdl is hosted.
+It stores that version in a file called `run-that-app` so that rumdl always runs
+that version from now on.
+Then it downloads the release for your operating system and CPU architecture,
+unzips the executable from the archive,
+and stores that executable on the local hard drive.
 
-Tricorder can also compile linters from source
-if the release doesn't provide a binary for your platform.
+if it cannot find release doesn't provide a binary for your platform.
 
 Many optimizations make Tricorder so incredibly fast:
 
