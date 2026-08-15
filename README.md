@@ -181,7 +181,7 @@ This command wires Tricorder into coding agents
 that use Claude-compatible configuration, such as Claude Code, Codex,
 Code Puppy, or Wibey.
 
-Once configured, the agent runs Tricorder lint after every `Write`, `Edit`,
+Once configured, the agent runs `tricorder lint` after every `Write`, `Edit`,
 or `MultiEdit`.
 When Tricorder finds an issue,
 it prints instructions that help the agent correct the problem itself.
