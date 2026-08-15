@@ -1,6 +1,3 @@
-//! `tricorder init:githook` — install the Git pre-commit hook
-//! to run tricorder as part of every commit.
-
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
 use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
