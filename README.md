@@ -12,10 +12,6 @@ If you run `tricorder pitstop --show=names` on this codebase,
 you get this output:
 
 ```sh
-downloading node 26.5.0 ... extracting ... ok
-added 1 package, and audited 2 packages in 309ms
-downloading rumdl 0.2.43 ... extracting ... ok
-delete empty folders
 sort other (keep-sorted)
 fix TOML (Taplo)
 sort TOML (keep-sorted)
@@ -30,6 +26,23 @@ lint Markdown (rumdl)
 lint TOML (Taplo)
 lint Cucumber (Gherkin Lint)
 ```
+
+Tricorder determines the file types that exist in this codebase:
+
+- TOML
+- Markdown
+- JSON
+- Cucumber
+- YML
+- GitHub Actions config files
+
+Then it determines the correct linters and formatters for each file type:
+
+- Taplo for TOML files
+- rumdl for Markdown files
+- gherkin-lint for Ghokin for Cucumber files
+- Prettier for JSON files
+- actionlint for GitHub Action config files
 
 ## Why
 
