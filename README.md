@@ -98,7 +98,7 @@ cargo install --git https://github.com/kevgo/tricorder
 
 ## Configuration
 
-You can define custom linters in a config file **Tricorder.toml**.
+You can define custom linters in a config file **tricorder.toml**.
 
 ```toml
 # ignore these files

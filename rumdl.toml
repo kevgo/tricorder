@@ -39,6 +39,7 @@ names = [
   "Rigor",
   "Tricorder",
   "Upkeep",
+  "tricorder.toml",
   # keep-sorted end
 ]
 code-blocks = false
