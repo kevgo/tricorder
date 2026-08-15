@@ -242,7 +242,6 @@ It always exits with status code 0, so it never blocks the commit.
 If this command results in changes to a file that was already staged,
 it stages the updated file again so
 that the formatting changes are included in the commit.
-
 Re-staging operates on the entire file.
 If you want to commit only part of a modified file,
 run ```Tricorder fix``` before partially staging your changes.
