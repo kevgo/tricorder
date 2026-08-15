@@ -43,7 +43,7 @@ Tricorder downloads and runs third-party tools automatically.
 The first time you run `tricorder lint`, you might see:
 
 ```text
-Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
+Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
 added rumdl@0.2.55 to run-that-app
 downloading rumdl 0.2.55 ... extracting ... ok
 ```
