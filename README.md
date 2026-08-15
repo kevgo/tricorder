@@ -66,6 +66,7 @@ With Tricorder, you no longer have to:
 - remember to add linters and formatters when new file types appear
 - learn how to install, configure, and invoke dozens of separate tools
 - keep those tools up to date across all your codebases
+- waste time waiting until primitive dev scripts have run all tools in sequence
 
 ## Why is it fast
 
