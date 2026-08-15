@@ -87,7 +87,6 @@ async fn file_matches_lines(world: &mut TricorderWorld, step: &Step, filename: S
     let have = have.trim().lines();
     for (want_line, have_line) in want.zip(have) {
         if want_line.contains(".*") {
-            // compile regex
             let regex = Regex::new(want_line).unwrap();
             assert!(
                 regex.is_match(have_line),
