@@ -244,7 +244,7 @@ it stages the updated file again so
 that the formatting changes are included in the commit.
 Re-staging operates on the entire file.
 If you want to commit only part of a modified file,
-run ```Tricorder fix``` before partially staging your changes.
+run ```tricorder fix``` before partially staging your changes.
 That way, Tricorder precommit won't introduce additional formatting changes
 and won't need to re-stage the file.
 
