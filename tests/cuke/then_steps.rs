@@ -108,10 +108,8 @@ async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        assert!(
-            metadata.permissions().mode() & 0o111 != 0,
-            "file '{filename}' is not executable"
-        );
+        let is_executable = metadata.permissions().mode() & 0o111 != 0;
+        assert!(is_executable, "file '{filename}' is not executable");
     }
 }
 

@@ -143,8 +143,8 @@ and sorted, using the gitignore-style patterns.
 ## Usage
 
 ```sh
-tricorder init          # install agentic hooks (see below)
-tricorder init:githook  # install the Git pre-commit hook
+tricorder init:claude   # make Tricorder run linters after Code compatible AI agents change files
+tricorder init:githook  # make Tricorder auto-format all code that gets committed to Git
 tricorder lint          # run every applicable linter
 tricorder fix           # fix all safely auto-fixable issues
 tricorder fix-unsafe    # fix all issues that are not safe to auto-fix
@@ -154,7 +154,7 @@ tricorder ci            # run on CI
 tricorder postgenerate  # run after the agent generated code
 ```
 
-### `tricorder init`
+### `tricorder init:claude`
 
 One command wires Tricorder into AI agents like Claude Code, Codex, Code Puppy,
 or Wibey:
