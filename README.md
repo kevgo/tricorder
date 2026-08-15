@@ -3,15 +3,23 @@
 _One command, every linter, every stack._
 
 Tricorder runs all linters and formatters for all files in your codebase.
-It downloads third-party linters if needed,
-and executes them concurrently for maximum speed.
+It downloads third-party tools if needed,
+and executes them concurrently for to get done as quickly as possible.
+
+Tricorder can embed deeply into your development workflow:
+
+- it can hook into AI agents to lint AI-generated code
+  for code smells inside the agentic loop
+- it can hook into Git to auto-format committed code
 
 ## Demo
 
-If you run `tricorder pitstop --show=names` on this codebase,
-you get this output:
+If you run `tricorder pitstop` on this codebase, you get this output:
 
 ```sh
+98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
+running 13 tools
+
 sort other (keep-sorted)
 fix TOML (Taplo)
 sort TOML (keep-sorted)
@@ -24,59 +32,68 @@ GitHub Actions (actionlint)
 lint Git (git diff HEAD --check)
 lint Markdown (rumdl)
 lint TOML (Taplo)
-lint Cucumber (Gherkin Lint)
+lint Cucumber (gherkin-lint)
 ```
 
-Tricorder determines the file types that exist in this codebase:
+Tricorder determines the file types that exist in this codebase.
+Then it determines the linters and formatters for each file type:
 
-- TOML
-- Markdown
-- JSON
-- Cucumber
-- YML
-- GitHub Actions config files
+- [Taplo](https://github.com/tamasfe/taplo) for linting
+  and formatting TOML files
+- [rumdl](https://github.com/rvben/rumdl) for linting
+  and formatting Markdown files
+- [Prettier](https://prettier.io) for formatting JSON and YML files
+- [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
+  for linting Cucumber files
+- [Ghokin](https://github.com/antham/ghokin) for formatting Cucumber files
+- [actionlint](https://github.com/rhysd/actionlint)
+  for linting GitHub Action config files
+- Tricorder is configured to run
+  [keep-sorted](https://github.com/google/keep-sorted) on files that contain
+  sorting markers
 
-Then it determines the correct linters and formatters for each file type:
+Tricorder runs these tools extremely concurrently:
 
-- Taplo for TOML files
-- rumdl for Markdown files
-- gherkin-lint for Ghokin for Cucumber files
-- Prettier for JSON files
-- actionlint for GitHub Action config files
+- all stacks get processed concurrently
+- for each stack, Tricorder first runs the formatters and then the linters
+
+Tricorder downloads and runs needed third-party executables on its own.
+Check out this part of the output:
 
 ```sh
-downloading delete-empty-folders 0.0.2 ... extracting ... ok
-Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
+Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
+added rumdl@0.2.55 to run-that-app
+downloading rumdl 0.2.55 ... extracting ... ok
+```
+
+To install `rumbl`, Tricorder looks up its latest release.
+It persists that version in its configuration so that it always runs
+that version from now on.
+It downloads the archive for the current platform unzips the executable in it,
+and stores the executable on the local hard drive,
+so that it can be executed later.
+
+If there is no binary executable available for your platform,
+Tricorder can compile tools from source:
+
+```sh
+Talking to GitHub API (<https://api.github.com/repos/antham/ghokin/releases/latest>) ... ok
 added ghokin@3.10.0 to run-that-app
 downloading ghokin 3.10.0 ... not found, skipping
 go install github.com/antham/ghokin/v3@v3.10.0
-Talking to GitHub API (https://api.github.com/repos/nodejs/node/releases/latest) ... ok
+```
+
+To run Node-based applications like Prettier, Tricorder downloads Node.js,
+then runs `npm install prettier` in a folder:
+
+```sh
+Talking to GitHub API (<https://api.github.com/repos/nodejs/node/releases/latest>) ... ok
 added node@26.7.0 to run-that-app
 downloading node 26.7.0 ... extracting ... ok
-Talking to GitHub API (https://api.github.com/repos/prettier/prettier/releases/latest) ... ok
+Talking to GitHub API (<https://api.github.com/repos/prettier/prettier/releases/latest>) ... ok
 added prettier@3.9.6 to run-that-app
-Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
-added rumdl@0.2.55 to run-that-app
-downloading rumdl 0.2.55 ... extracting ... ok
-Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
-added taplo@0.10.0 to run-that-app
-downloading taplo 0.10.0 ... extracting ... ok
-
 added 1 package, and audited 2 packages in 430ms
-
-1 package is looking for funding
-  run `npm fund` for details
-
-found 0 vulnerabilities
-Talking to GitHub API (https://api.github.com/repos/BurntSushi/ripgrep/releases/latest) ... ok
-added ripgrep@15.2.0 to run-that-app
-downloading ripgrep 15.2.0 ... extracting ... ok
-Talking to GitHub API (https://api.github.com/repos/google/keep-sorted/releases/latest) ... ok
-added keep-sorted@0.9.1 to run-that-app
-downloading keep-sorted 0.9.1 ... saving ... ok
-Talking to GitHub API (https://api.github.com/repos/rhysd/actionlint/releases/latest) ... ok
-added actionlint@1.7.12 to run-that-app
-downloading actionlint 1.7.12 ... extracting ... ok
+1 package is looking for funding run `npm fund` for details
 ```
 
 ## Why
@@ -309,3 +326,6 @@ The `tricorder ci` performs all activities necessary on CI:
 | SQL        | sqlfmt        |
 
 Stacks are auto-detected.
+
+````text
+````
