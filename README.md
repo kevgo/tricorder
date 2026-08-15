@@ -44,6 +44,41 @@ Then it determines the correct linters and formatters for each file type:
 - Prettier for JSON files
 - actionlint for GitHub Action config files
 
+```sh
+downloading delete-empty-folders 0.0.2 ... extracting ... ok
+Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
+added ghokin@3.10.0 to run-that-app
+downloading ghokin 3.10.0 ... not found, skipping
+go install github.com/antham/ghokin/v3@v3.10.0
+Talking to GitHub API (https://api.github.com/repos/nodejs/node/releases/latest) ... ok
+added node@26.7.0 to run-that-app
+downloading node 26.7.0 ... extracting ... ok
+Talking to GitHub API (https://api.github.com/repos/prettier/prettier/releases/latest) ... ok
+added prettier@3.9.6 to run-that-app
+Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
+added rumdl@0.2.55 to run-that-app
+downloading rumdl 0.2.55 ... extracting ... ok
+Talking to GitHub API (https://api.github.com/repos/tamasfe/taplo/releases/latest) ... ok
+added taplo@0.10.0 to run-that-app
+downloading taplo 0.10.0 ... extracting ... ok
+
+added 1 package, and audited 2 packages in 430ms
+
+1 package is looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+Talking to GitHub API (https://api.github.com/repos/BurntSushi/ripgrep/releases/latest) ... ok
+added ripgrep@15.2.0 to run-that-app
+downloading ripgrep 15.2.0 ... extracting ... ok
+Talking to GitHub API (https://api.github.com/repos/google/keep-sorted/releases/latest) ... ok
+added keep-sorted@0.9.1 to run-that-app
+downloading keep-sorted 0.9.1 ... saving ... ok
+Talking to GitHub API (https://api.github.com/repos/rhysd/actionlint/releases/latest) ... ok
+added actionlint@1.7.12 to run-that-app
+downloading actionlint 1.7.12 ... extracting ... ok
+```
+
 ## Why
 
 The status quo is painful:
