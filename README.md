@@ -65,7 +65,7 @@ With Tricorder, you no longer have to:
 - keep those tools up to date across all your codebases
 - waste time waiting until primitive dev scripts have run all tools in sequence
 
-## Why is it fast
+## How is it so fast
 
 Many optimizations make Tricorder incredibly fast:
 
