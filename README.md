@@ -168,76 +168,88 @@ tricorder help          # Print this message or the help of the given subcommand
 
 ### Tricorder ci
 
-This command is optimized to execute as part of your CI pipeline.
-It runs all formatters and linters and fails the build
-if there are unaddressed linter findings
-or the formatters have resulted in any file changes.
+This command makes formatting and linting problems visible in CI pipelines.
+It runs all formatters and linters and fails if either:
+
+- a linter reports an unresolved issue, or
+- a formatter modifies a file
 
 ### `tricorder init:claude`
 
-This command wires Tricorder into AI agents that use Claude configuration files,
-like Claude Code, Codex, Code Puppy, or Wibey.
+This command wires Tricorder into coding agents
+that use Claude-compatible configuration, such as Claude Code, Codex,
+Code Puppy, or Wibey.
 
-When enabled, your agent calls `tricorder lint`
-after every `Write` / `Edit` / `MultiEdit`.
-Tricorder prints instructions to the agent to self-correct code quality issues.
+Once configured, the agent runs Tricorder lint after every `Write`, `Edit`,
+or `MultiEdit`.
+When Tricorder finds an issue,
+it prints instructions that help the agent correct the problem itself.
 
-The result is higher-quality AI-generated code with fewer code smells.
-This goes well together with your own AI-generated linters
+This keeps AI-generated code clean
+while the agent is still working instead of discovering quality problems only
+after generation is complete.
+
+It works particularly well with custom AI-generated linters
 that enforce invariants specific to your domain.
 
-If you commit the config files this command creates,
-every teammate gets the same agentic behavior automatically,
-with zero per-developer setup.
+Commit the generated configuration files
+and every teammate gets the same agent behavior automatically,
+with no per-developer setup.
 
 ### `tricorder init:githook`
 
-This installs a Git `pre-commit`
-[hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks) that runs
-`tricorder precommit` before every commit.
+This command installs a Git
+[pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
+that runs `tricorder precommit` before every commit.
 
 ### `tricorder fix`
 
-This command applies all safe auto-fixes to your codebase,
-formatters and linters that clean up auto-fixable code smells.
-Multiple fix tools for a stack are run one at a time,
-but concurrently with fix tools for other stacks.
+This command applies all safe automatic fixes to the codebase.
+It runs formatters as well as linters
+that can automatically repair code-quality issues.
+Fix tools belonging to the same stack run sequentially to avoid interfering with
+each other.
+Different stacks are processed concurrently.
 
 ### `tricorder fix-unsafe`
 
-This command applies advanced auto-fixes
-that might change the meaning of the code.
-You are advised to review the changes before committing
-and verify them by running the automated tests.
+This command applies more aggressive automatic fixes
+that might change program behavior.
+
+Review the resulting changes
+before committing them and/or verify them by running your automated tests.
 
 ### `tricorder lint`
 
-This command runs all linters for all file types.
-All linters all run in parallel.
+This command runs all linters that apply to the files in the codebase.
+All linters run in parallel.
+
 Inside a Git repository,
-it also runs `git diff HEAD --check` to detect leftover conflict markers in your
-changes.
+Tricorder also runs `git diff HEAD --check` to detect unresolved conflict
+markers in your changes.
 
 ### `tricorder pitstop`
 
-This command is meant as a quick check during active development.
-It first fixes all auto-fixable issues and then prints the remaining issues
-that you need to fix manually.
+This command is optimized for efficient support during interactive development.
+It first applies all safe automatic fixes and then reports any remaining issues
+that require manual attention.
 
 ### `tricorder precommit`
 
-This command ensures that you commit only properly formatted code.
-It runs `tricorder fix`, but only for the staged files,
-and it always exits with code 0 to allow the commit to proceed.
-It stages (`git add <file>`) files that were already staged
-before whose content got formatted during precommit,
-so that the precommit fixes end up in the commit.
+This command ensures that staged code is formatted before it gets committed.
 
-This stages the entire file.
-If you want to commit only parts of a file,
-please run `tricorder fix` first and then partially staging any changes.
-This ensures that `tricorder precommit` will not result in any new changes,
-and therefore doesn't stage your files again.
+It runs the equivalent of `tricorder fix`, but only on the staged files.
+It always exits with status code 0, so it never blocks the commit.
+
+If this command results in changes to a file that was already staged,
+it stages the updated file again so
+that the formatting changes are included in the commit.
+
+Re-staging operates on the entire file.
+If you want to commit only part of a modified file,
+run ```Tricorder fix``` before partially staging your changes.
+That way, Tricorder precommit won't introduce additional formatting changes
+and won't need to re-stage the file.
 
 ## Supported stacks
 
