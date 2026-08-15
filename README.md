@@ -52,7 +52,6 @@ that version in the `run-that-app` file.
 From then on, this repository consistently uses that version.
 Tricorder then downloads the release matching your operating system
 and CPU architecture, extracts the executable, and caches it locally.
-
 If a tool doesn't provide a compatible binary release,
 Tricorder can compile it from source.
 
