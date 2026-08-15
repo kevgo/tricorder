@@ -1,33 +1,23 @@
 # Tricorder
 
-_One command, every linter, every stack._
-
-Tricorder runs all linters and formatters for all files in your codebase.
+Tricorder runs all linters and formatters applicable to your codebase.
 It downloads third-party tools if needed,
-and executes them concurrently for to get done as quickly as possible.
+and executes them concurrently to finish as quickly as possible.
 
-Tricorder can embed deeply into your development workflow:
-
-- it can hook into AI agents to lint AI-generated code
-  for code smells inside the agentic loop
-- it can hook into Git to auto-format committed code
+Tricorder can embed deeply into your development workflow.
+It can hook into AI agents to lint AI-generated code to prevent code smells
+inside the agentic loop.
+It can also hook into Git to auto-format code when it is being committed.
 
 ## Demo
 
-If you run `tricorder pitstop` on this codebase, you get this output:
+If you run `tricorder lint` on the Tricorder codebase,
+it finishes in just 500 ms and prints this (simplified) output:
 
 ```sh
 98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
-running 13 tools
+running 5 tools
 
-sort other (keep-sorted)
-fix TOML (Taplo)
-sort TOML (keep-sorted)
-fix Markdown (rumdl)
-fix Cucumber (Ghokin)
-sort Cucumber (keep-sorted)
-fix JSON (Prettier)
-fix YML (Prettier)
 GitHub Actions (actionlint)
 lint Git (git diff HEAD --check)
 lint Markdown (rumdl)
@@ -35,30 +25,19 @@ lint TOML (Taplo)
 lint Cucumber (gherkin-lint)
 ```
 
-Tricorder determines the file types that exist in this codebase.
-Then it determines the linters and formatters for each file type:
+Tricorder determines the file types that exist in this codebase,
+and the linters for each file type.
+In this case:
 
-- [Taplo](https://github.com/tamasfe/taplo) for linting
-  and formatting TOML files
-- [rumdl](https://github.com/rvben/rumdl) for linting
-  and formatting Markdown files
-- [Prettier](https://prettier.io) for formatting JSON and YML files
+- [Taplo](https://github.com/tamasfe/taplo) for TOML files
+- [rumdl](https://github.com/rvben/rumdl) for Markdown files
 - [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
-  for linting Cucumber files
-- [Ghokin](https://github.com/antham/ghokin) for formatting Cucumber files
+  for Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
   for linting GitHub Action config files
-- Tricorder is configured to run
-  [keep-sorted](https://github.com/google/keep-sorted) on files that contain
-  sorting markers
 
-Tricorder runs these tools extremely concurrently:
-
-- all stacks get processed concurrently
-- for each stack, Tricorder first runs the formatters and then the linters
-
-Tricorder downloads and runs needed third-party executables on its own.
-Check out this part of the output:
+Tricorder downloads and runs needed third-party linters on its own.
+Here is what it prints the first time you run it:
 
 ```sh
 Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
@@ -66,12 +45,27 @@ added rumdl@0.2.55 to run-that-app
 downloading rumdl 0.2.55 ... extracting ... ok
 ```
 
-To install `rumbl`, Tricorder looks up its latest release.
-It persists that version in its configuration so that it always runs
-that version from now on.
-It downloads the archive for the current platform unzips the executable in it,
-and stores the executable on the local hard drive,
-so that it can be executed later.
+To install the `rumdl` linter, Tricorder looks up its latest release.
+It persists that version in its configuration
+(called "run-that-app") so that it always runs that version from now on.
+Then it downloads the release archive for your operating system
+and CPU architecture, unzips the executable in it,
+and stores that executable on the local hard drive, so that it can execute it.
+
+Tricorder can also compile linters from source if no binary exists
+for downloading.
+
+What makes Tricorder so fast is that it is extremely optimized for speed:
+
+- it executes the linters for the different stacks concurrently
+  because each one operates on non-overlapping files
+- it calls all tools with the exact files to lint or format,
+  so that the linters don't need to scan the directory tree again
+
+Tricorder runs these tools extremely concurrently:
+
+- all stacks get processed concurrently
+- for each stack, Tricorder first runs the formatters and then the linters
 
 If there is no binary executable available for your platform,
 Tricorder can compile tools from source:
