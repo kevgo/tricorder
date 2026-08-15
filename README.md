@@ -236,7 +236,6 @@ that require manual attention.
 ### `tricorder precommit`
 
 This command ensures that staged code is formatted before it gets committed.
-
 It runs the equivalent of `tricorder fix`, but only on the staged files.
 It always exits with status code 0, so it never blocks the commit.
 
