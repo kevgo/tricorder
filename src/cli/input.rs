@@ -17,8 +17,13 @@ pub enum Command {
     /// Check all lints and fixes on CI
     Ci(RunArgs),
 
-    /// Install coding agent hooks for this project
-    Init(InitArgs),
+    /// Install local hooks for claude-compatible coding agents
+    #[command(name = "init:claude")]
+    InitClaude(InitArgs),
+
+    /// Install the Git pre-commit hook
+    #[command(name = "init:githook")]
+    InitGithook(InitArgs),
 
     /// Repair all code quality issues
     Fix(RunArgs),
