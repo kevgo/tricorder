@@ -4,3 +4,13 @@ pub enum FileMode {
     Executable,
     NotExecutable,
 }
+
+impl FileMode {
+    #[must_use]
+    pub fn is_executable(self) -> bool {
+        match self {
+            FileMode::Executable => true,
+            FileMode::NotExecutable => false,
+        }
+    }
+}

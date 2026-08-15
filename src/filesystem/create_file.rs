@@ -13,9 +13,8 @@ pub fn create_file(path: &str, content: &str, executable: FileMode) -> Result<()
         path: path.to_string(),
         err: err.to_string(),
     })?;
-    match executable {
-        FileMode::Executable => set_executable(file_path)?,
-        FileMode::NotExecutable => {}
+    if executable.is_executable() {
+        set_executable(file_path)?;
     }
     println!("installed {path}");
     Ok(())
