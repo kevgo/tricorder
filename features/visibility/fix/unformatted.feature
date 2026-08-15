@@ -81,6 +81,50 @@ Feature: fix multiple stacks
       print("hello")
       """
 
+  Scenario: --show=verbose
+    When executing "tricorder fix --show=verbose"
+    Then it prints to STDERR
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 5 tools
+      """
+    And it prints the block matching
+      """
+      fix TypeScript \(Biome\)
+        \S+/biome format --write main\.ts
+      """
+    And it prints the block matching
+      """
+      fix CSS \(Biome\)
+        \S+/biome format --write main\.css
+      """
+    And it prints the block matching
+      """
+      fix Python \(ruff\)
+        \S+/ruff check --fix main\.py
+      All checks passed!
+      """
+    And it prints the block matching
+      """
+      format Python \(ruff\)
+        \S+/ruff format main\.py
+      1 file reformatted
+      """
+    And file "main.css" now has content
+      """
+      p {
+      \tcolor: red;
+      }
+      """
+    And file "main.ts" now has content
+      """
+      console.log("hello");
+      """
+    And file "main.py" now has content
+      """
+      print("hello")
+      """
+
   Scenario: --show=names
     When executing "tricorder fix --show=names"
     Then it does not print

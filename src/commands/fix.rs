@@ -1,6 +1,6 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{self, RunArgs};
-use crate::cli::output::print_metadata;
+use crate::cli::output::{self, print_metadata};
 use crate::config::Config;
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
@@ -11,7 +11,9 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let requested = args.show.unwrap_or(input::Show::Failed);
+    let show = conc::Show::from(requested);
+    let verbose = requested == input::Show::Verbose;
     let error_on_output = false;
     let stderr_to_stdout = true;
 
@@ -22,9 +24,12 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_fixes(&config, &all_stacks)?;
+    let mut runnables = determine_fixes(&config, &all_stacks)?;
     if show == conc::Show::All {
         eprintln!("running {} tools", runnables.len());
+    }
+    if verbose {
+        runnables.add_command_details();
     }
     let Runnables {
         global,
@@ -135,5 +140,11 @@ impl Runnables {
             result += x.len();
         }
         result
+    }
+
+    /// appends the full command line to the name of each executable in this instance
+    pub fn add_command_details(&mut self) {
+        output::add_command_details(std::slice::from_mut(&mut self.global));
+        output::add_command_details(&mut self.stack_specific);
     }
 }

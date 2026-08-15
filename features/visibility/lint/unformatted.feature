@@ -58,6 +58,32 @@ Feature: lint multiple stacks with unformatted files
     And the exit code is 0
     And all files are unchanged
 
+  Scenario: --show=verbose
+    When executing "tricorder lint --show=verbose"
+    Then it prints to STDERR
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
+      """
+    And it prints the block matching
+      """
+      lint Python \(ruff\)
+        \S+/ruff check main\.py
+      All checks passed!
+      """
+    And it prints the block matching
+      """
+      lint CSS \(Biome\)
+        \S+/biome lint main\.css
+      """
+    And it prints the block matching
+      """
+      lint TypeScript \(Biome\)
+        \S+/biome lint main\.ts
+      """
+    And the exit code is 0
+    And all files are unchanged
+
   Scenario: --show=names
     When executing "tricorder lint --show=names"
     Then it prints nothing to STDERR

@@ -1,5 +1,5 @@
 use crate::cli::input::{self, RunArgs};
-use crate::cli::output::print_metadata;
+use crate::cli::output::{self, print_metadata};
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
@@ -12,7 +12,9 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let requested = args.show.unwrap_or(input::Show::Failed);
+    let show = conc::Show::from(requested);
+    let verbose = requested == input::Show::Verbose;
     let error_on_output = false;
     let stderr_to_stdout = true;
     let is_git_repo = git::is_repo(Path::new("./"));
@@ -24,11 +26,15 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
-    let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
+    let mut fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
+    let mut lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show == conc::Show::All {
         eprintln!("running {runnable_count} tools");
+    }
+    if verbose {
+        fix_runnables.add_command_details();
+        output::add_command_details(&mut lints);
     }
     let Runnables {
         global: global_fixes,

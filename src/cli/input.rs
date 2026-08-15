@@ -56,6 +56,8 @@ impl RunArgs {
 
 #[derive(Clone, Copy, PartialEq, ValueEnum)]
 pub enum Show {
+    /// all commands including their full command lines, and their output
+    Verbose,
     /// all commands and their output
     All,
     /// all commands but only output of failed ones
@@ -67,7 +69,7 @@ pub enum Show {
 impl From<Show> for conc::Show {
     fn from(value: Show) -> Self {
         match value {
-            Show::All => conc::Show::All,
+            Show::Verbose | Show::All => conc::Show::All,
             Show::Names => conc::Show::Names,
             Show::Failed => conc::Show::Failed,
         }
