@@ -24,11 +24,9 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
         print_skipped(&existing_files);
         return Ok(ExitCode::FAILURE);
     }
-    let tricorder = absolute_path_from_argv()?;
-    let content = PRE_COMMIT_SH.replace(
-        TRICORDER_PLACEHOLDER,
-        &shellscripts::escape(&tricorder.to_string_lossy()),
-    );
+    let tricorder_path = absolute_path_from_argv()?;
+    let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
+    let content = PRE_COMMIT_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
     create_file(GIT_PRE_COMMIT_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
