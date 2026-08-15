@@ -223,7 +223,6 @@ before committing them and/or verify them by running your automated tests.
 
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
-
 Inside a Git repository,
 Tricorder also runs `git diff HEAD --check` to detect unresolved conflict
 markers in your changes.
