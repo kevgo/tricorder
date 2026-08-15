@@ -1,10 +1,13 @@
 # more info at https://github.com/kevgo/run-that-app
 
-actionlint 1.7.12
+biome 2.5.5
+contest 0.5.0
 ghokin 3.10.0
 keep-sorted 0.9.1
-node 26.7.0
+lefthook 2.1.10
+node 26.5.0
 prettier 3.9.6
 ripgrep 15.2.0
-rumdl 0.2.55
+ruff 0.16.0
+rumdl 0.2.43
 taplo 0.10.0
