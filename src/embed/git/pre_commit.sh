@@ -4,6 +4,6 @@
 # Safe to edit.
 # Run "tricorder init:githook --force" to reset.
 
-TRICORDER="__TRICORDER__"
+TRICORDER="{{TRICORDER}}"
 [ -x "$TRICORDER" ] || exit 0
 "$TRICORDER" precommit

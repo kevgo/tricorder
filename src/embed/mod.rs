@@ -7,7 +7,7 @@ use crate::domain::{Result, UserError};
 use std::env;
 use std::path::PathBuf;
 
-const TRICORDER_PLACEHOLDER: &str = "__TRICORDER__";
+const TRICORDER_PLACEHOLDER: &str = "{{TRICORDER}}";
 
 /// Absolute path of this process from `argv[0]`.
 fn absolute_path_from_argv() -> Result<PathBuf> {

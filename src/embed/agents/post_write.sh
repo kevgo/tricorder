@@ -4,6 +4,6 @@
 # Safe to edit.
 # Re-run "tricorder init:claude --force" to reset.
 
-TRICORDER="__TRICORDER__"
+TRICORDER="{{TRICORDER}}"
 [ -x "$TRICORDER" ] || exit 0
 "$TRICORDER" lint
