@@ -156,7 +156,7 @@ ignore = ["README.md"]  # ignored only by keep-sorted
 
 ```sh
 tricorder ci            # Check all lints and fixes on CI
-tricorder init:claude   # Hook into claude-compatible coding agents
+tricorder init:claude   # Embed into claude-compatible coding agents
 tricorder init:githook  # Install the Git pre-commit hook
 tricorder fix           # Apply safe code quality fixes
 tricorder fix-unsafe    # Apply advanced fixes that might change behavior

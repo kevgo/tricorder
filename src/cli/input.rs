@@ -17,7 +17,7 @@ pub enum Command {
     /// Check all lints and fixes on CI
     Ci(RunArgs),
 
-    /// Hook into claude-compatible coding agents
+    /// Embed into claude-compatible coding agents
     #[command(name = "init:claude")]
     InitClaude(InitArgs),
 
