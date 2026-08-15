@@ -81,19 +81,20 @@ Many optimizations make Tricorder incredibly fast:
 
 > Does Tricorder lock me into its tooling choices?
 
-You can enable and disable the tools you want
-or don't want Tricorder to run in the Tricorder config file.
+No. You can enable or disable individual tools in the Tricorder configuration
+file.
 
 > I want to use a linter or formatter that isn't supported by Tricorder.
 
-Send a ticket or pull request!
+Open an issue or send a pull request!
 
 ## Installation
 
-The installer script places the Tricorder executable into the current directory.
-To install into a particular directory, execute the installer there.
+The installer places the Tricorder executable in the current directory.
+To install Tricorder into a particular directory,
+run the installer from that directory.
 
-Linux and macOS:
+### Linux and macOS
 
 ```sh
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
@@ -105,13 +106,13 @@ To download a specific version and/or save under a specific filename:
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
 ```
 
-Windows (Powershell):
+### Windows PowerShell
 
 ```powershell
 Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
 ```
 
-Compile from source:
+### Compile from source
 
 ```sh
 cargo install --git https://github.com/kevgo/tricorder
@@ -119,7 +120,8 @@ cargo install --git https://github.com/kevgo/tricorder
 
 ## Configuration
 
-You can define custom linters in a config file **tricorder.toml**.
+You can configure Tricorder and define custom linters
+and formatters in **tricorder.toml**:
 
 ```toml
 # make these files invisible to Tricorder
@@ -144,17 +146,17 @@ stack = "python"
 
 # github.com/google/keep-sorted is disabled by default
 # because it scans the file content of all workspace files for markers
-# to determine the files to sort
+# to determine which files to sort
 [keep-sorted]
 enabled = true
-ignore = ["README.md"]  # these files get only ignored by keep-sorted
+ignore = ["README.md"]  # ignored only by keep-sorted
 ```
 
 ## Usage
 
 ```sh
 tricorder ci            # Check all lints and fixes on CI
-tricorder init:claude   # Install local hooks for claude-compatible coding agents
+tricorder init:claude   # Hook into claude-compatible coding agents
 tricorder init:githook  # Install the Git pre-commit hook
 tricorder fix           # Repair all code quality issues
 tricorder fix-unsafe    # Advanced fixes that might break things
