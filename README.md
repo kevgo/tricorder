@@ -224,7 +224,8 @@ that you need to fix manually.
 
 ### `tricorder precommit`
 
-This command runs `tricorder fix`, but only for the staged files,
+This command ensures that you commit only properly formatted code.
+It runs `tricorder fix`, but only for the staged files,
 and it always exits with code 0 to allow the commit to proceed.
 It stages (`git add <file>`) files that were already staged
 before whose content got formatted during precommit,
