@@ -20,10 +20,8 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     }
     create_file(SETTINGS_PATH, SETTINGS_JSON, FileMode::NotExecutable)?;
     let tricorder_path = absolute_path_from_argv()?;
-    let content = POST_WRITE_SH.replace(
-        TRICORDER_PLACEHOLDER,
-        &shellscripts::escape(&tricorder_path.to_string_lossy()),
-    );
+    let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
+    let content = POST_WRITE_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
     create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
