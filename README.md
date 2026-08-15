@@ -37,7 +37,6 @@ In this example, it runs:
 - [actionlint](https://github.com/rhysd/actionlint)
   for GitHub Action configuration
 - `git diff --check` to detect unresolved merge conflict markers
-  and whitespace errors
 
 Tricorder downloads and runs third-party tools automatically.
 The first time you run `tricorder lint`, you might see:
