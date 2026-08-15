@@ -17,3 +17,12 @@ fn absolute_path_from_argv() -> Result<PathBuf> {
         err: err.to_string(),
     })
 }
+
+pub fn print_skipped(hook: &str, existing_files: &[&str]) {
+    println!("I did not install the {hook} because these files already exist:");
+    for file in existing_files {
+        println!("  {file}");
+    }
+    println!();
+    println!("To install anyway, please run with the \"--force\" flag.");
+}
