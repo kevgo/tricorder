@@ -50,7 +50,6 @@ downloading rumdl 0.2.55 ... extracting ... ok
 To install `rumdl`, Tricorder looks up its latest release and records
 that version in the `run-that-app` file.
 From then on, this repository consistently uses that version.
-
 Tricorder then downloads the release matching your operating system
 and CPU architecture, extracts the executable, and caches it locally.
 
