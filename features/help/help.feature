@@ -23,13 +23,13 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install local hooks for claude-compatible coding agents
+        init:claude   Embed into claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
-        fix           Repair all code quality issues
-        fix-unsafe    Advanced fixes that might break things
-        lint          Find all code quality issues [alias: postgenerate]
-        pitstop       Run fixes and lints
-        precommit     Repair all code quality issues, never fails
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
       Options:
@@ -48,13 +48,13 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install local hooks for claude-compatible coding agents
+        init:claude   Embed into claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
-        fix           Repair all code quality issues
-        fix-unsafe    Advanced fixes that might break things
-        lint          Find all code quality issues [alias: postgenerate]
-        pitstop       Run fixes and lints
-        precommit     Repair all code quality issues, never fails
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
       Options:
@@ -73,13 +73,13 @@ Feature: Displaying help
 
       Commands:
         ci            Check all lints and fixes on CI
-        init:claude   Install local hooks for claude-compatible coding agents
+        init:claude   Embed into claude-compatible coding agents
         init:githook  Install the Git pre-commit hook
-        fix           Repair all code quality issues
-        fix-unsafe    Advanced fixes that might break things
-        lint          Find all code quality issues [alias: postgenerate]
-        pitstop       Run fixes and lints
-        precommit     Repair all code quality issues, never fails
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
       Options:
