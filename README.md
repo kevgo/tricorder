@@ -55,29 +55,27 @@ Then it downloads the release for your operating system and CPU architecture,
 unzips the executable from the archive,
 and stores that executable on the local hard drive.
 
-if it cannot find release doesn't provide a binary for your platform.
+Tricorder can also compile tools from source if it cannot find a binary release.
 
-Many optimizations make Tricorder so incredibly fast:
+Many optimizations make Tricorder incredibly fast:
 
-- it runs modern linters that execute fast
+- written in Rust
+- it runs modern linters that execute quickly
 - it calls all tools with the exact files to lint or format,
   so that the linters don't need to search
-  for files to lint again
-- it executes the linters for the different stacks concurrently
-  because each one operates on a guaranteed non-overlapping set of files
-  - all stacks get processed concurrently
-  - for each stack, Tricorder first runs the formatters and then the linters
+  for files again
+- it processes all stacks concurrently
 
 The things you don't have to do anymore:
 
-- figure out which languages your codebase uses
-- market research which linters and formatters are the best for each language
-- bikeshedding with other developers and teams that use different linters
-  and formatters
-- add even more linters and formatters
-  as you add additional file types to your codebase
-- reading documentation how to install, setup, and configure dozens of tools
-- keep all these tools up to date across all your codebases
+- figure out which file types exist in your codebase
+- research which linters and formatters exist for each file type
+- bikeshed with other developers and teams that use different linters
+  and formatters than you
+- remember to add linters and formatters
+  when somebody adds additional file types to your codebase
+- study how to install, setup, and configure the dozens of tools needed
+- keep all tools up to date across all codebases
 
 ## Q & A
 
