@@ -65,16 +65,6 @@ With Tricorder, you no longer have to:
 - keep those tools up to date across all your codebases
 - waste time waiting until primitive dev scripts have run all tools in sequence
 
-## How is it so fast
-
-Many optimizations make Tricorder incredibly fast:
-
-- It is written in Rust, which makes discovering your source files quick.
-- It favors modern, fast linters and formatters.
-- It passes each tool the exact files it needs to process,
-  so tools don't scan the codebase again.
-- It processes independent file types concurrently.
-
 ## Q & A
 
 > Does Tricorder lock me into its tooling choices?
@@ -85,6 +75,16 @@ file.
 > I want to use a linter or formatter that isn't supported by Tricorder.
 
 Open an issue or send a pull request!
+
+> How is it so fast
+
+Many optimizations make Tricorder incredibly fast:
+
+- It is written in Rust, which makes discovering your source files quick.
+- It favors modern, fast linters and formatters.
+- It passes each tool the exact files it needs to process,
+  so tools don't scan the codebase again.
+- It processes independent file types concurrently.
 
 ## Installation
 
