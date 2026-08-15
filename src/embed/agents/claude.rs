@@ -2,7 +2,7 @@ use crate::cli::input::InitArgs;
 use crate::domain::Result;
 use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::filesystem::any_file_exists;
-use crate::filesystem::create_file;
+use crate::filesystem::{FileMode, create_file};
 use crate::shellscripts;
 use std::process::ExitCode;
 
@@ -18,13 +18,13 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
         print_skipped(&existing_files);
         return Ok(ExitCode::FAILURE);
     }
-    create_file(SETTINGS_PATH, SETTINGS_JSON, false)?;
+    create_file(SETTINGS_PATH, SETTINGS_JSON, FileMode::NotExecutable)?;
     let tricorder_path = absolute_path_from_argv()?;
     let content = POST_WRITE_SH.replace(
         TRICORDER_PLACEHOLDER,
         &shellscripts::escape(&tricorder_path.to_string_lossy()),
     );
-    create_file(POST_WRITE_PATH, &content, true)?;
+    create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }

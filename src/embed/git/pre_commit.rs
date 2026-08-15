@@ -5,7 +5,7 @@ use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
 use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv};
 use crate::filesystem::any_file_exists;
-use crate::filesystem::create_file;
+use crate::filesystem::{FileMode, create_file};
 use crate::shellscripts;
 use std::path::Path;
 use std::process::ExitCode;
@@ -32,7 +32,7 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
         TRICORDER_PLACEHOLDER,
         &shellscripts::escape(&tricorder.to_string_lossy()),
     );
-    create_file(GIT_PRE_COMMIT_PATH, &content, true)?;
+    create_file(GIT_PRE_COMMIT_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
 }

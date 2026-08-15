@@ -1,10 +1,10 @@
 use crate::domain::{Result, UserError};
-use crate::filesystem::{ensure_dir, set_executable};
+use crate::filesystem::{FileMode, ensure_dir, set_executable};
 use std::fs;
 use std::path::Path;
 
 /// creates the given file with the given content and makes it executable if requested
-pub fn create_file(path: &str, content: &str, executable: bool) -> Result<()> {
+pub fn create_file(path: &str, content: &str, executable: FileMode) -> Result<()> {
     if let Some(parent) = Path::new(path).parent() {
         ensure_dir(parent)?;
     }
@@ -13,8 +13,9 @@ pub fn create_file(path: &str, content: &str, executable: bool) -> Result<()> {
         path: path.into(),
         err: err.to_string(),
     })?;
-    if executable {
-        set_executable(dest)?;
+    match executable {
+        FileMode::Executable => set_executable(dest)?,
+        FileMode::NotExecutable => (),
     }
     println!("installed {path}");
     Ok(())
