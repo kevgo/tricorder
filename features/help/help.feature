@@ -92,7 +92,7 @@ Feature: Displaying help
     When executing "tricorder lint --help"
     Then it prints
       """
-      Find all code quality issues
+      Find code quality issues
 
       Usage: tricorder lint [OPTIONS]
 
