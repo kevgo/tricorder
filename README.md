@@ -199,8 +199,8 @@ with no per-developer setup.
 
 ### `tricorder init:githook`
 
-This command installs a Git
-[pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
+This command installs a
+[Git pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
 that runs `tricorder precommit` before every commit.
 
 ### `tricorder fix`
