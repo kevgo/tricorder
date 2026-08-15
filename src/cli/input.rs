@@ -17,23 +17,28 @@ pub enum Command {
     /// Check all lints and fixes on CI
     Ci(RunArgs),
 
-    /// Install coding agent hooks for this project
-    Init(InitArgs),
+    /// Embed into claude-compatible coding agents
+    #[command(name = "init:claude")]
+    InitClaude(InitArgs),
 
-    /// Repair all code quality issues
+    /// Install the Git pre-commit hook
+    #[command(name = "init:githook")]
+    InitGithook(InitArgs),
+
+    /// Apply safe code quality fixes
     Fix(RunArgs),
 
-    /// Advanced fixes that might break things
+    /// Apply advanced fixes that might change behavior
     FixUnsafe(RunArgs),
 
-    /// Find all code quality issues
+    /// Find code quality issues
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
 
-    /// Run fixes and lints
+    /// Apply fixes, then report remaining issues
     Pitstop(RunArgs),
 
-    /// Repair all code quality issues, never fails
+    /// Fix staged files before committing, never fails
     Precommit(RunArgs),
 }
 
