@@ -10,8 +10,8 @@ use std::path::PathBuf;
 /// Placeholder for the path to the Tricorder executable in templates for files that the embed module creates.
 const TRICORDER_PLACEHOLDER: &str = "{{TRICORDER}}";
 
-/// Absolute path of this process from `argv[0]`.
-fn absolute_path_from_argv() -> Result<PathBuf> {
+/// provides the absolute path to the Tricorder executable on the current machine
+fn absolute_path_to_executable() -> Result<PathBuf> {
     let argv0 = env::args_os().next().ok_or(UserError::ArgvIsEmpty)?;
     which::which(&argv0).map_err(|err| UserError::CannotFindTricorderExecutable {
         path: argv0.into(),

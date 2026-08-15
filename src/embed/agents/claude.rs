@@ -1,6 +1,6 @@
 use crate::cli::input::InitArgs;
 use crate::domain::Result;
-use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_from_argv, print_skipped};
+use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_to_executable, print_skipped};
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{FileMode, create_file};
 use crate::shellscripts;
@@ -19,7 +19,7 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
         return Ok(ExitCode::FAILURE);
     }
     create_file(SETTINGS_PATH, SETTINGS_JSON, FileMode::NotExecutable)?;
-    let tricorder_path = absolute_path_from_argv()?;
+    let tricorder_path = absolute_path_to_executable()?;
     let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
     let content = POST_WRITE_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
     create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
