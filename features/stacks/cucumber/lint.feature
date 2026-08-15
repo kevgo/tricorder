@@ -63,7 +63,7 @@ Feature: lint Cucumber
     When executing "tricorder lint --show=all"
     Then it prints
       """
-      lint Cucumber (Gherkin Lint)
+      lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
     And file "features/one.feature" is unchanged
@@ -79,7 +79,7 @@ Feature: lint Cucumber
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      lint Cucumber (Gherkin Lint)
+      lint Cucumber (gherkin-lint)
         4    Wrong indentation for "given", expected indentation level of 4, but got 12    indentation
       """
     And the exit code is 1
@@ -93,7 +93,7 @@ Feature: lint Cucumber
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      lint Cucumber (Gherkin Lint)
+      lint Cucumber (gherkin-lint)
         1    (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'    unexpected-error
       """
     And the exit code is 1
