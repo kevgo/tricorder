@@ -5,16 +5,16 @@ use std::path::Path;
 
 /// creates the given file with the given content and makes it executable if requested
 pub fn create_file(path: &str, content: &str, executable: FileMode) -> Result<()> {
-    if let Some(parent) = Path::new(path).parent() {
+    let file_path = Path::new(path);
+    if let Some(parent) = file_path.parent() {
         ensure_dir(parent)?;
     }
-    let dest = Path::new(path);
-    fs::write(dest, content).map_err(|err| UserError::CannotWriteFile {
-        path: path.into(),
+    fs::write(file_path, content).map_err(|err| UserError::CannotWriteFile {
+        path: path.to_string(),
         err: err.to_string(),
     })?;
     match executable {
-        FileMode::Executable => set_executable(dest)?,
+        FileMode::Executable => set_executable(file_path)?,
         FileMode::NotExecutable => (),
     }
     println!("installed {path}");

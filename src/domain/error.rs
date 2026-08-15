@@ -13,7 +13,7 @@ pub enum UserError {
     CannotDetermineCurrentDirectory { err: String },
     CannotFindTricorderExecutable { path: PathBuf, err: String },
     CannotReadFileMetadata { path: PathBuf, err: String },
-    CannotWriteFile { path: PathBuf, err: String },
+    CannotWriteFile { path: String, err: String },
     ArgvIsEmpty,
     CannotRunGit { msg: String },
     CannotRunRipgrep { msg: String },
@@ -49,7 +49,7 @@ impl UserError {
                 println!("cannot set file permissions: {}: {err}", path.display());
             }
             UserError::CannotWriteFile { path, err } => {
-                println!("cannot write file: {}: {err}", path.display());
+                println!("cannot write file: {path}: {err}");
             }
             UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
