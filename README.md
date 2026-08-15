@@ -216,7 +216,6 @@ Different stacks are processed concurrently.
 
 This command applies more aggressive automatic fixes
 that might change program behavior.
-
 Review the resulting changes
 before committing them and/or verify them by running your automated tests.
 
