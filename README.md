@@ -35,9 +35,10 @@ In this case:
   for Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
   for linting GitHub Action config files
+- `git diff --check` to find unresolved merge conflict markers
 
 Tricorder downloads and runs needed third-party linters on its own.
-Here is what it prints the first time you run it:
+Here is what it prints the first time you run `tricorder lint`:
 
 ```sh
 Talking to GitHub API (<https://api.github.com/repos/rvben/rumdl/releases/latest>) ... ok
@@ -52,102 +53,45 @@ Then it downloads the release archive for your operating system
 and CPU architecture, unzips the executable in it,
 and stores that executable on the local hard drive, so that it can execute it.
 
-Tricorder can also compile linters from source if no binary exists
-for downloading.
+Tricorder can also compile linters from source
+if the release doesn't provide a binary for your platform.
 
-What makes Tricorder so fast is that it is extremely optimized for speed:
+Many optimizations make Tricorder so incredibly fast:
 
-- it executes the linters for the different stacks concurrently
-  because each one operates on non-overlapping files
+- it runs modern linters that execute fast
 - it calls all tools with the exact files to lint or format,
-  so that the linters don't need to scan the directory tree again
+  so that the linters don't need to search
+  for files to lint again
+- it executes the linters for the different stacks concurrently
+  because each one operates on a guaranteed non-overlapping set of files
+  - all stacks get processed concurrently
+  - for each stack, Tricorder first runs the formatters and then the linters
 
-Tricorder runs these tools extremely concurrently:
-
-- all stacks get processed concurrently
-- for each stack, Tricorder first runs the formatters and then the linters
-
-If there is no binary executable available for your platform,
-Tricorder can compile tools from source:
-
-```sh
-Talking to GitHub API (<https://api.github.com/repos/antham/ghokin/releases/latest>) ... ok
-added ghokin@3.10.0 to run-that-app
-downloading ghokin 3.10.0 ... not found, skipping
-go install github.com/antham/ghokin/v3@v3.10.0
-```
-
-To run Node-based applications like Prettier, Tricorder downloads Node.js,
-then runs `npm install prettier` in a folder:
-
-```sh
-Talking to GitHub API (<https://api.github.com/repos/nodejs/node/releases/latest>) ... ok
-added node@26.7.0 to run-that-app
-downloading node 26.7.0 ... extracting ... ok
-Talking to GitHub API (<https://api.github.com/repos/prettier/prettier/releases/latest>) ... ok
-added prettier@3.9.6 to run-that-app
-added 1 package, and audited 2 packages in 430ms
-1 package is looking for funding run `npm fund` for details
-```
-
-## Why
-
-The status quo is painful:
-Every team has to figure out which linters apply to their stack,
-install them consistently across macOS, Linux, and Windows,
-pin every tool to the same version on dev and CI,
-maintain config files across every repo, and keep everything up to date.
-Almost nobody gets this right.
-
-AI-generated code amplifies the cost of getting it wrong:
-Agents produce code at machine speed and need a deterministic,
-locally executed quality signal to fix their own output
-before a human ever sees it.
-
-Tricorder makes "run all automated checks
-for this repo to make the agent improve its own output" a single command.
-Every team gets reliable, reproducible checks with no per-developer setup.
-
-## Example
-
-You have a TypeScript frontend and a Python backend.
-Running `tricorder lint` runs `biome check --error-on-warnings`, `pyright`,
-and `ruff check --quiet`.
-You don't need to download or install any of these tools.
-Tricorder does that for you.
-It can also create config files for these tools in your repo
-that enable all features.
-You can customize them for your use case.
-Later you add shell scripts somewhere in a subfolder.
-Multi-Tool detects this new language and now also runs `shellcheck` and `shfmt`.
-
-The things you don't have to do:
+The things you don't have to do anymore:
 
 - figure out which languages your codebase uses
 - market research which linters and formatters are the best for each language
-- forgetting to add linters and formatters for new languages
-- reading documentation to install, setup, and configure dozens of tools
-- Sisyphean work to keep all these tools up to date
-- inconsistencies with other developers and teams which tool to use
-
-Almost no project or team does all of this well all of the time.
-With Tricorder everybody does this well all of the time.
+- bikeshedding with other developers and teams that use different linters
+  and formatters
+- add even more linters and formatters
+  as you add additional file types to your codebase
+- reading documentation how to install, setup, and configure dozens of tools
+- keep all these tools up to date across all your codebases
 
 ## Q & A
 
 > Does Tricorder lock me into specific tooling choices?
 
-No, you can customize the default selection of tools.
-In this case, Tricorder installs and runs your choice of tools in parallel.
+No. You can customize the tools Tricorder uses in the config file.
 
 > I want to use a linter or formatter that isn't supported by Tricorder.
 
-Send a pull request!
+Send a pull request or ticket!
 
 ## Installation
 
 The installer script places the Tricorder executable into the current directory.
-To install elsewhere, execute the installer from that directory.
+To install into a particular directory, execute the installer there.
 
 Linux and macOS:
 
@@ -155,7 +99,7 @@ Linux and macOS:
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
 ```
 
-To download a specific version or save under a specific filename:
+To download a specific version and/or save under a specific filename:
 
 ```sh
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
@@ -175,47 +119,36 @@ cargo install --git https://github.com/kevgo/tricorder
 
 ## Configuration
 
-You can define custom linters in a config file **Tricorder.toml**.
+You can define custom linters in a config file **tricorder.toml**.
 
 ```toml
-# ignore these files
-ignore = ["file1", "file2"]
+# make these files invisible to Tricorder
+# using gitignore syntax
+ignore = ["two.css", "vendor/", "**/*.min.css"]
 
+# define a custom linter
 [[custom-lints]]
 name = "custom lint 1"
 command = "lints/one.sh"
 
+# define another custom linter
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
 
+# define a custom formatter
 [[custom-fixes]]
 name = "sort alphabetically"
 command = "fixes/sort.py"
 stack = "python"
-```
 
-You can ignore files from being linted and fixed altogether,
-using gitignore-style patterns:
-
-```toml
-ignore = ["two.css", "vendor/", "**/*.min.css"]
-```
-
-You can enable running [keep-sorted](https://github.com/google/keep-sorted) on
-every file that contains a `keep-sorted` marker comment:
-
-```toml
+# github.com/google/keep-sorted is disabled by default
+# because it scans the file content of all workspace files for markers
+# to determine the files to sort
 [keep-sorted]
 enabled = true
-ignore = ["README.md"]
+ignore = ["README.md"]  # these files get only ignored by keep-sorted
 ```
-
-When enabled, Tricorder scans the workspace
-for files containing a `keep-sorted end` marker and runs keep-sorted on them
-as the last fix in each stack's fix sequence.
-The optional `ignore` key excludes the given files from being scanned
-and sorted, using the gitignore-style patterns.
 
 ## Usage
 
