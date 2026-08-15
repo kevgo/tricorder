@@ -79,13 +79,14 @@ The things you don't have to do anymore:
 
 ## Q & A
 
-> Does Tricorder lock me into specific tooling choices?
+> Does Tricorder lock me into its tooling choices?
 
-No. You can customize the tools Tricorder uses in the config file.
+You can enable and disable the tools you want
+or don't want Tricorder to run in the Tricorder config file.
 
 > I want to use a linter or formatter that isn't supported by Tricorder.
 
-Send a pull request or ticket!
+Send a ticket or pull request!
 
 ## Installation
 
@@ -152,91 +153,88 @@ ignore = ["README.md"]  # these files get only ignored by keep-sorted
 ## Usage
 
 ```sh
-tricorder init:claude   # make Tricorder run linters after Code compatible AI agents change files
-tricorder init:githook  # make Tricorder auto-format all code that gets committed to Git
-tricorder lint          # run every applicable linter
-tricorder fix           # fix all safely auto-fixable issues
-tricorder fix-unsafe    # fix all issues that are not safe to auto-fix
-tricorder pitstop       # fix and format everything, then run all linters
-tricorder precommit     # run in the Git pre-commit hook
-tricorder ci            # run on CI
-tricorder postgenerate  # run after the agent generated code
+tricorder ci            # Check all lints and fixes on CI
+tricorder init:claude   # Install local hooks for claude-compatible coding agents
+tricorder init:githook  # Install the Git pre-commit hook
+tricorder fix           # Repair all code quality issues
+tricorder fix-unsafe    # Advanced fixes that might break things
+tricorder lint          # Find all code quality issues (alias: postgenerate)
+tricorder pitstop       # Run fixes and lints
+tricorder precommit     # Repair all code quality issues, never fails
+tricorder help          # Print this message or the help of the given subcommand(s)
 ```
+
+### Tricorder ci
+
+This command is optimized to execute as part of your CI pipeline.
+It runs all formatters and linters and fails the build
+if there are unaddressed linter findings
+or the formatters have resulted in any file changes.
 
 ### `tricorder init:claude`
 
-One command wires Tricorder into AI agents like Claude Code, Codex, Code Puppy,
-or Wibey:
+This command wires Tricorder into AI agents that use Claude configuration files,
+like Claude Code, Codex, Code Puppy, or Wibey.
 
-```sh
-cd your/project
-tricorder init
-git add .claude/ && git commit -m "Add Tricorder hooks"
-```
+When enabled, your agent calls `tricorder lint`
+after every `Write` / `Edit` / `MultiEdit`.
+Tricorder prints instructions to the agent to self-correct code quality issues.
 
-Now every teammate who clones the repo gets the same agentic behavior
-automatically, with zero per-developer setup:
+The result is higher-quality AI-generated code with fewer code smells.
+This goes well together with your own AI-generated linters
+that enforce invariants specific to your domain.
 
-- After every `Write` / `Edit` / `MultiEdit`,
-  Tricorder runs all applicable linters
-  and prints instructions to the agent to self-corrects code quality issues
-  before moving on.
+If you commit the config files this command creates,
+every teammate gets the same agentic behavior automatically,
+with zero per-developer setup.
 
 ### `tricorder init:githook`
 
-Installs a Git `pre-commit` hook that runs Tricorder before every commit.
+This installs a Git `pre-commit`
+[hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks) that runs
+`tricorder precommit` before every commit.
 
-```sh
-tricorder init:githook
-```
+### `tricorder fix`
+
+This command applies all safe auto-fixes to your codebase,
+formatters and linters that clean up auto-fixable code smells.
+Multiple fix tools for a stack are run one at a time,
+but concurrently with fix tools for other stacks.
+
+### `tricorder fix-unsafe`
+
+This command applies advanced auto-fixes
+that might change the meaning of the code.
+You are advised to review the changes before committing
+and verify them by running the automated tests.
 
 ### `tricorder lint`
 
-The `tricorder lint` command runs all applicable linters.
-Since linters don't change files, they all run in parallel.
+This command runs all linters for all file types.
+All linters all run in parallel.
 Inside a Git repository,
 it also runs `git diff HEAD --check` to detect leftover conflict markers in your
 changes.
 
-### `tricorder fix`
-
-The `tricorder fix` command applies all safe auto-fixes to your codebase:
-formatters and linters that clean up code smells.
-Tricorder runs fixes for different languages in parallel.
-
-### `tricorder fix-unsafe`
-
-The `tricorder fix-unsafe` command applies all advanced auto-fixes
-that address code smells but might change the meaning of the code.
-You are advised to review the changes before committing
-and verify them by running the automated tests.
-
 ### `tricorder pitstop`
 
-The `tricorder pitstop` command runs `tricorder fix`
-and then `tricorder fix` in sequence.
+This command is meant as a quick check during active development.
+It first fixes all auto-fixable issues and then prints the remaining issues
+that you need to fix manually.
 
 ### `tricorder precommit`
 
-The `tricorder precommit` command runs `tricorder fix`,
-but only for the staged files,
+This command runs `tricorder fix`, but only for the staged files,
 and it always exits with code 0 to allow the commit to proceed.
-It stages (`git add <file>`) previously staged files whose content got formatted
-during precommit, so that the precommit fixes end up in the commit.
+It stages (`git add <file>`) files that were already staged
+before whose content got formatted during precommit,
+so that the precommit fixes end up in the commit.
 
 This stages the entire file.
 If you want to commit only parts of a file,
-please format the file before partially staging any changes.
-
-### `tricorder ci`
-
-The `tricorder ci` performs all activities necessary on CI:
-
-- determines the uncommitted changes
-- runs `tricorder pitstop` and exits with exit code 1 if there are any issues
-- determines the uncommitted changes again
-- if the uncommitted changes are different now, i.e. some code was unformatted,
-  it fails the build.
+please run `tricorder fix` first and then partially staging any changes.
+This ensures that `tricorder precommit` will not result in any new changes,
+and therefore doesn't stage your files again.
 
 ## Supported stacks
 
@@ -252,6 +250,3 @@ The `tricorder ci` performs all activities necessary on CI:
 | SQL        | sqlfmt        |
 
 Stacks are auto-detected.
-
-````text
-````
