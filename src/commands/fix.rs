@@ -81,8 +81,13 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
                 command: conc::shell_command(&fix.command),
             };
             if let Some(stack) = fix.stack {
-                let stack_executables = stacks_executables.entry(stack).or_default();
-                stack_executables.push(executable);
+                if !stacks.contains_stack(stack) {
+                    continue;
+                }
+                stacks_executables
+                    .entry(stack)
+                    .or_default()
+                    .push(executable);
             } else {
                 global.push(executable);
             }

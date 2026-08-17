@@ -52,6 +52,7 @@ pub struct CustomFix {
 pub struct CustomLint {
     pub name: Option<String>,
     pub command: String,
+    pub stack: Option<StackType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -84,6 +85,7 @@ command = "lints/one.sh"
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
+stack = "python"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
@@ -111,10 +113,12 @@ command = "fixes/sort.py"
                     CustomLint {
                         name: None,
                         command: S("lints/one.sh"),
+                        stack: None,
                     },
                     CustomLint {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
+                        stack: Some(StackType::Python),
                     },
                 ]),
                 ignore: None,
@@ -175,6 +179,18 @@ stack = "PYTHON"
 [[custom-fixes]]
 command = "echo mixed case"
 stack = "PyThOn"
+
+[[custom-lints]]
+command = "echo lint lowercase"
+stack = "python"
+
+[[custom-lints]]
+command = "echo lint uppercase"
+stack = "PYTHON"
+
+[[custom-lints]]
+command = "echo lint mixed case"
+stack = "PyThOn"
 			"#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -195,7 +211,23 @@ stack = "PyThOn"
                         stack: Some(StackType::Python),
                     },
                 ]),
-                custom_lints: None,
+                custom_lints: Some(vec![
+                    CustomLint {
+                        name: None,
+                        command: S("echo lint lowercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomLint {
+                        name: None,
+                        command: S("echo lint uppercase"),
+                        stack: Some(StackType::Python),
+                    },
+                    CustomLint {
+                        name: None,
+                        command: S("echo lint mixed case"),
+                        stack: Some(StackType::Python),
+                    },
+                ]),
                 ignore: None,
                 keep_sorted: None,
             };
@@ -218,6 +250,7 @@ command = "fixes/one.sh"
                 custom_lints: Some(vec![CustomLint {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
+                    stack: None,
                 }]),
                 custom_fixes: Some(vec![CustomFix {
                     name: Some(S("custom fix 1")),

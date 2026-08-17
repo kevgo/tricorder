@@ -131,10 +131,11 @@ ignore = ["two.css", "vendor/", "**/*.min.css"]
 name = "custom lint 1"
 command = "lints/one.sh"
 
-# define another custom linter
+# define another custom linter that only runs when Python files are in scope
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
+stack = "python"
 
 # define a custom formatter
 [[custom-fixes]]
@@ -149,6 +150,11 @@ stack = "python"
 enabled = true
 ignore = ["README.md"]  # ignored only by keep-sorted
 ```
+
+The optional `stack` field on custom lints
+and fixes limits the tool to workspaces
+(or precommit stages) that contain files of that stack.
+Stack-scoped custom fixes run sequentially with that stack's built-in tools.
 
 ## Usage
 

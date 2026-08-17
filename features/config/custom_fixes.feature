@@ -73,3 +73,25 @@ Feature: custom fixes
       custom lint failed
       """
     And the exit code is 4
+
+  Scenario: custom fix with unmatched stack is skipped
+    Given a file "tricorder.toml" with content
+      """
+      [[custom-fixes]]
+      name = "Python custom fix"
+      command = "fixes/python.sh"
+      stack = "python"
+      """
+    And an executable file "fixes/python.sh" with content
+      """
+      #!/usr/bin/env bash
+      echo "Python custom fix should not run"
+      exit 4
+      """
+    When executing "tricorder fix --show=all"
+    Then it does not print any of these lines
+      """
+      Python custom fix
+      Python custom fix should not run
+      """
+    And the exit code is 0
