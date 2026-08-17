@@ -1,4 +1,4 @@
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
@@ -12,7 +12,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(input::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let is_git_repo = git::is_repo(Path::new("./"));
@@ -40,7 +40,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         runnables: vec![global_fixes],
         error_on_output,
         stderr_to_stdout,
-        show: show.into(),
+        show,
     });
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
@@ -50,7 +50,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
-        show: show.into(),
+        show,
         stderr_to_stdout,
     });
     if exit_code != ExitCode::SUCCESS {
@@ -61,7 +61,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         runnables: lints,
         error_on_output,
-        show: show.into(),
+        show,
         stderr_to_stdout,
     });
     Ok(exit_code)

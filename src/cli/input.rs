@@ -1,6 +1,7 @@
 use crate::domain::{Result, UserError};
+use clap::builder::{PossibleValue, PossibleValuesParser, TypedValueParser};
 use clap::error::ErrorKind;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_PKG_NAME"))]
@@ -45,52 +46,48 @@ pub enum Command {
 #[derive(clap::Args)]
 pub struct RunArgs {
     /// how much output to display
-    #[arg(long)]
-    pub show: Option<Show>,
+    #[arg(long, ignore_case = true, value_parser = show_parser())]
+    pub show: Option<conc::Show>,
 }
 
 impl RunArgs {
     /// provides a `RunArgs` with the show set to the given default if not provided
     #[must_use]
-    pub fn with_default_show(self, default_show: Show) -> Self {
+    pub fn with_default_show(self, default_show: conc::Show) -> Self {
         Self {
             show: Some(self.show.unwrap_or(default_show)),
         }
     }
 }
 
-#[derive(Clone, Copy, PartialEq, ValueEnum)]
-pub enum Show {
-    /// all commands including their full command lines, and their output
-    Verbose,
-    /// all commands and their output
-    All,
-    /// all commands but only output of failed ones
-    Names,
-    /// failed commands
-    Failed,
-}
-
-impl Show {
+/// CLI helpers for [`conc::Show`].
+pub trait ShowExt {
     /// indicates whether to display metadata about the detected stacks commands being run
     #[must_use]
-    pub fn display_metadata(self) -> bool {
-        match self {
-            Show::All | Show::Verbose => true,
-            Show::Failed | Show::Names => false,
-        }
+    fn display_metadata(self) -> bool;
+}
+
+impl ShowExt for conc::Show {
+    fn display_metadata(self) -> bool {
+        matches!(self, Self::All | Self::Verbose)
     }
 }
 
-impl From<Show> for conc::Show {
-    fn from(value: Show) -> Self {
-        match value {
-            Show::All => conc::Show::All,
-            Show::Failed => conc::Show::Failed,
-            Show::Names => conc::Show::Names,
-            Show::Verbose => conc::Show::Verbose,
-        }
-    }
+fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
+    PossibleValuesParser::new([
+        PossibleValue::new("verbose")
+            .help("all commands including their full command lines, and their output"),
+        PossibleValue::new("all").help("all commands and their output"),
+        PossibleValue::new("names").help("all commands but only output of failed ones"),
+        PossibleValue::new("failed").help("failed commands"),
+    ])
+    .map(|s| match s.to_ascii_lowercase().as_str() {
+        "verbose" => conc::Show::Verbose,
+        "all" => conc::Show::All,
+        "names" => conc::Show::Names,
+        "failed" => conc::Show::Failed,
+        _ => unreachable!("PossibleValuesParser prevents this"),
+    })
 }
 
 #[derive(clap::Args)]
