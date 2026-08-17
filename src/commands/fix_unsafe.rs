@@ -1,4 +1,4 @@
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::Config;
 use crate::domain::{DetectedStacks, Result, StackType};
@@ -12,17 +12,17 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let show = args.show.unwrap_or(conc::Show::Failed);
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&all_stacks);
     }
 
     // step 3: discover the unsafe fixes
     let unsafe_fixes = determine_unsafe_fixes(&all_stacks)?;
-    if show == conc::Show::All {
+    if show.display_metadata() {
         eprintln!("running {} tools", unsafe_fixes.len());
     }
 

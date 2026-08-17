@@ -67,6 +67,27 @@ Feature: lint multiple stacks with invalid code
       """
     And all files are unchanged
 
+  Scenario: --show=verbose
+    When executing "tricorder lint --show=verbose"
+    Then it prints to STDERR
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 3 tools
+      """
+    And it prints the lines
+      """
+      lint CSS (Biome)
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it prints the lines
+      """
+      lint TypeScript (Biome)
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And all files are unchanged
+
   Scenario: --show=names
     When executing "tricorder lint --show=names"
     Then it prints nothing to STDERR

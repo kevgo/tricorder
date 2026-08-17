@@ -81,6 +81,28 @@ Feature: fix multiple stacks with invalid code
     # no python error message here
     And all files are unchanged
 
+  Scenario: --show=verbose
+    When executing "tricorder fix --show=verbose"
+    Then it prints to STDERR
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 5 tools
+      """
+    And it prints the lines
+      """
+      fix CSS (Biome)
+      Found 1 error.
+      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    And it prints the lines
+      """
+      fix TypeScript (Biome)
+      Found 2 errors.
+      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      """
+    # no python error message here
+    And all files are unchanged
+
   Scenario: --show=names
     When executing "tricorder fix --show=names"
     Then it prints nothing to STDERR

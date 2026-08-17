@@ -87,3 +87,26 @@ Feature: Displaying help
         -V, --version  Print version
       """
     And the exit code is 0
+
+  Scenario: help for a subcommand
+    When executing "tricorder help lint"
+    Then it prints
+      """
+      Find code quality issues
+
+      Usage: tricorder lint [OPTIONS]
+
+      Options:
+            --show <SHOW>
+                how much output to display
+
+                Possible values:
+                - failed:  only output of failed commands
+                - names:   command names and output of failed commands
+                - all:     command names and output of all commands
+                - verbose: command lines and output of all commands
+
+        -h, --help
+                Print help (see a summary with '-h')
+      """
+    And the exit code is 0

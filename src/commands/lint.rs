@@ -1,5 +1,5 @@
 use crate::apps::git_diff_check;
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, CustomLint};
 use crate::domain::{DetectedStacks, IsGitRepo, Result};
@@ -11,20 +11,20 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let is_git_repo = git::is_repo(Path::new("./"));
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&all_stacks);
     }
 
     // step 3: discover all runnables
     let runnables = determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
-    if show == conc::Show::All {
+    if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
 

@@ -1,4 +1,4 @@
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
@@ -12,14 +12,14 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let is_git_repo = git::is_repo(Path::new("./"));
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&all_stacks);
     }
 
@@ -27,7 +27,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
     let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
-    if show == conc::Show::All {
+    if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
     }
     let Runnables {

@@ -1,5 +1,5 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
-use crate::cli::input::{self, RunArgs};
+use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::config::Config;
@@ -14,7 +14,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = conc::Show::from(args.show.unwrap_or(input::Show::Failed));
+    let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
@@ -23,7 +23,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     };
     let staged_stacks = stacks::from_staged(&staged, &ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&staged_stacks);
     }
 
@@ -33,7 +33,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
 
     // step 4: discover all runnables
     let runnables = determine_precommit_fixes(&config, &staged_stacks)?;
-    if show == conc::Show::All {
+    if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
     let Runnables {

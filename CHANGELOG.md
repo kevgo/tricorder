@@ -1,5 +1,9 @@
 # Tricorder changelog
 
+## 0.0.17 (2026-08-15)
+
+- new `--show=verbose` option, prints the full command line (program and arguments) of every command Tricorder runs
+
 ## 0.0.16 (2026-08-10)
 
 - app: [keep-sorted](https://github.com/google/keep-sorted), since this requires grepping for markers, it needs to be enabled via the new `[keep-sorted]` config option

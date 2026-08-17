@@ -185,6 +185,18 @@ fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
     );
 }
 
+#[then("it prints the block matching")]
+fn it_prints_the_block_matching(world: &mut TricorderWorld, step: &Step) {
+    let want = step.docstring.as_ref().unwrap().trim();
+    let output = world.output.as_ref().expect("no command run");
+    let stripped = strip_ansi_escapes::strip(&output.stdout);
+    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    assert!(
+        Regex::new(want).unwrap().is_match(stdout),
+        "output does not match the block\n\nHAVE:\n{stdout}\n\nWANT (regex):\n{want}\n\n"
+    );
+}
+
 #[then("it prints the lines")]
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();

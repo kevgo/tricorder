@@ -54,6 +54,35 @@ Feature: fix multiple good stacks
       """
     And all files are unchanged
 
+  Scenario: --show=verbose
+    When executing "tricorder fix --show=verbose"
+    Then it prints to STDERR
+      """
+      1 CSS, 1 Python, 1 TypeScript, 1 other
+      running 5 tools
+      """
+    And it prints the lines
+      """
+      fix CSS (Biome)
+      """
+    And it prints the lines
+      """
+      fix TypeScript (Biome)
+      """
+    And it prints the block matching
+      """
+      fix Python \(ruff\)
+      \S+/ruff check --fix main\.py
+      All checks passed!
+      """
+    And it prints the block matching
+      """
+      format Python \(ruff\)
+      \S+/ruff format main\.py
+      1 file left unchanged
+      """
+    And all files are unchanged
+
   Scenario: --show=names
     When executing "tricorder fix --show=names"
     Then it prints only these lines in any order
