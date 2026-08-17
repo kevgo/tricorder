@@ -72,7 +72,7 @@ pub enum Show {
 }
 
 impl Show {
-    /// indicates whether to display metadata about the commands being run
+    /// indicates whether to display metadata about the detected stacks commands being run
     #[must_use]
     pub fn display_metadata(self) -> bool {
         match self {
