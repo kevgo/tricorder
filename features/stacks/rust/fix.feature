@@ -13,7 +13,6 @@ Feature: fix Rust
       }
       """
 
-  @this
   Scenario: no custom fixes defined
     When executing "tricorder fix --show=all"
     Then it prints
@@ -31,21 +30,21 @@ Feature: fix Rust
   Scenario: a custom linter is defined
     Given a file "tricorder.toml" with content
       """
-      [[custom-lints]]
-      command = "echo 'custom linter running'"
-      name = "my custom linter"
+      [[custom-fixes]]
+      command = "echo 'custom fix running'"
+      name = "my custom fix"
       stack = "rust"
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      my custom linter
-      custom linter running
+      my custom fix
+      custom fix running
       """
     And it prints to STDERR
       """
       1 Rust, 1 TOML, 1 other
-      running 2 tools
+      running 3 tools
       """
     And the exit code is 0
     And file "hello.rs" is unchanged
