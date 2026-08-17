@@ -13,12 +13,10 @@ use tokio::process::Command;
 async fn all_files_unchanged(world: &mut TricorderWorld) {
     for original in &world.original_files {
         let filepath = world.dir.join(&original.name);
-        let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
-            panic!(
-                "cannot read file '{}', which should still exist",
-                original.name
-            )
-        });
+        let have = fs::read_to_string(filepath).await.expect(&format!(
+            "cannot read file '{}', which should still exist",
+            original.name
+        ));
         assert_eq!(
             have.trim(),
             original.content.trim(),
@@ -44,12 +42,10 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
         .find(|f| f.name == filename)
         .expect("file not found in original files");
     let filepath = world.dir.join(&original.name);
-    let have = fs::read_to_string(filepath).await.unwrap_or_else(|_| {
-        panic!(
-            "cannot read file '{}', which should still exist",
-            original.name
-        )
-    });
+    let have = fs::read_to_string(filepath).await.expect(&format!(
+        "cannot read file '{}', which should still exist",
+        original.name
+    ));
     assert_eq!(
         have.trim(),
         original.content.trim(),
@@ -116,9 +112,7 @@ async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
 #[then("it does not print")]
 fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no output");
-    };
+    let output = world.output.as_ref().expect("no output");
     let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
     assert!(
         !stdout.contains(want),
@@ -134,9 +128,7 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
 #[then("it does not print any of these lines")]
 fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
     for want_line in want.lines() {
         assert!(!stdout.contains(want_line), "STDOUT contains '{want_line}'");
@@ -146,9 +138,7 @@ fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints")]
 fn it_prints(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stdout.trim(), want);
@@ -156,9 +146,7 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
 
 #[then("it prints nothing to STDOUT")]
 fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stdout, "");
@@ -166,9 +154,7 @@ fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
 
 #[then("it prints nothing to STDERR")]
 fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
     let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stderr, "");
@@ -177,9 +163,7 @@ fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
 #[then("it prints to STDERR")]
 fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
     let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
     pretty::assert_eq!(stderr.trim(), want);
@@ -188,9 +172,7 @@ fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints the block")]
 fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     assert!(
@@ -202,9 +184,7 @@ fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints the lines")]
 fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     if snapshots::enabled() {
