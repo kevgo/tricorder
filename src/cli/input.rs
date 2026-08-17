@@ -79,11 +79,10 @@ impl ShowExt for conc::Show {
 /// clap cannot derive `ValueEnum` for `conc::Show` (foreign type), so we parse it manually
 fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
     PossibleValuesParser::new([
-        PossibleValue::new("verbose")
-            .help("all commands including their full command lines, and their output"),
-        PossibleValue::new("all").help("all commands and their output"),
-        PossibleValue::new("names").help("all commands but only output of failed ones"),
-        PossibleValue::new("failed").help("failed commands"),
+        PossibleValue::new("failed").help("only output of failed commands"),
+        PossibleValue::new("names").help("command names and output of failed commands"),
+        PossibleValue::new("all").help("command names and output of all commands"),
+        PossibleValue::new("verbose").help("command lines and output of all commands"),
     ])
     .map(|s| match s.to_ascii_lowercase().as_str() {
         "all" => conc::Show::All,
