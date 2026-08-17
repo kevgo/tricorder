@@ -202,9 +202,7 @@ fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints the block matching")]
 fn it_prints_the_block_matching(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     assert!(
