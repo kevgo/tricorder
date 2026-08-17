@@ -101,10 +101,10 @@ Feature: Displaying help
                 how much output to display
 
                 Possible values:
-                - failed:  failed commands
-                - names:   all commands but only output of failed ones
-                - all:     all commands and their output
-                - verbose: all commands including their full command lines, and their output
+                - failed:  only output of failed commands
+                - names:   command names and output of failed commands
+                - all:     command names and output of all commands
+                - verbose: command lines and output of all commands
 
         -h, --help
                 Print help (see a summary with '-h')
