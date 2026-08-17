@@ -19,7 +19,12 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
         return Ok(ExitCode::FAILURE);
     }
     create_file(SETTINGS_PATH, SETTINGS_JSON, FileMode::NotExecutable)?;
-    let tricorder_path = absolute_path_to_tricorder_executable()?;
+    let mut tricorder_path = absolute_path_to_tricorder_executable()?;
+    if let Ok(cwd) = std::env::current_dir()
+        && let Ok(rel_path) = tricorder_path.strip_prefix(&cwd)
+    {
+        tricorder_path = rel_path.to_path_buf();
+    }
     let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
     let content = POST_WRITE_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
     create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
