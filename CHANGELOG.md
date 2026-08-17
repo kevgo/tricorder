@@ -8,6 +8,7 @@
 ## 0.0.17 (2026-08-15)
 
 - new `--show=verbose` option, prints the full command line (program and arguments) of every command Tricorder runs
+- custom fixes with a `stack` now run only if the current scope contains at least one file of that stack
 
 ## 0.0.16 (2026-08-10)
 

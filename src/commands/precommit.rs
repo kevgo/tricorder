@@ -1,7 +1,7 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::commands::fix::Runnables;
+use crate::commands::fix::{Runnables, add_custom_fixes};
 use crate::config::Config;
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
 use crate::git;
@@ -106,23 +106,12 @@ pub fn determine_precommit_fixes(
 
     // custom fixes
     if let Some(custom_fixes) = &config.custom_fixes {
-        for fix in custom_fixes {
-            let executable = conc::Executable {
-                name: fix.name.clone().unwrap_or_else(|| fix.command.clone()),
-                command: conc::shell_command(&fix.command),
-            };
-            if let Some(stack) = fix.stack {
-                if !staged_stacks.contains_stack(stack) {
-                    continue;
-                }
-                stacks_executables
-                    .entry(stack)
-                    .or_default()
-                    .push(executable);
-            } else {
-                global.push(executable);
-            }
-        }
+        add_custom_fixes(
+            custom_fixes,
+            staged_stacks,
+            &mut global,
+            &mut stacks_executables,
+        );
     }
 
     // keep-sorted
