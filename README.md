@@ -253,13 +253,14 @@ and won't need to re-stage the file.
 
 ## Supported stacks
 
-| Stack      | Linter        |
-| ---------- | ------------- |
-| TypeScript | biome         |
-| CSS        | biome         |
-| JSON       | prettier      |
-| YAML       | prettier      |
-| Python     | ruff          |
-| Go         | golangci-lint |
-| Java       | checkstyle    |
-| SQL        | sqlfmt        |
+| Stack      | Linter                                                             |
+| ---------- | ------------------------------------------------------------------ |
+| TypeScript | biome                                                              |
+| CSS        | biome                                                              |
+| JSON       | prettier                                                           |
+| YAML       | prettier                                                           |
+| Python     | ruff                                                               |
+| Rust       | (none, please define your Rust commands as custom lints and fixes) |
+| Go         | golangci-lint                                                      |
+| Java       | checkstyle                                                         |
+| SQL        | sqlfmt                                                             |
