@@ -76,8 +76,8 @@ impl Show {
     #[must_use]
     pub fn display_metadata(self) -> bool {
         match self {
-            Show::Verbose | Show::All => true,
-            Show::Names | Show::Failed => false,
+            Show::All | Show::Verbose => true,
+            Show::Failed | Show::Names => false,
         }
     }
 }
@@ -85,10 +85,10 @@ impl Show {
 impl From<Show> for conc::Show {
     fn from(value: Show) -> Self {
         match value {
-            Show::Verbose => conc::Show::Verbose,
             Show::All => conc::Show::All,
-            Show::Names => conc::Show::Names,
             Show::Failed => conc::Show::Failed,
+            Show::Names => conc::Show::Names,
+            Show::Verbose => conc::Show::Verbose,
         }
     }
 }
