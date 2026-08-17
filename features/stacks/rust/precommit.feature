@@ -1,4 +1,3 @@
-@this
 Feature: precommit Rust
 
   Background:
