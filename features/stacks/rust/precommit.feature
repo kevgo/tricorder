@@ -1,0 +1,49 @@
+Feature: precommit Rust
+
+  Background:
+    Given a Git repository
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      taplo 0.10.0
+      """
+    Given a file "main.rs" with content
+      """
+      fn main() {
+        println!("Hello!");
+      }
+      """
+
+  Scenario: no custom linters defined
+    When executing "tricorder precommit --show=all"
+    Then it prints
+      """
+      delete empty folders
+      """
+    And it prints to STDERR
+      """
+      running 1 tools
+      """
+    And the exit code is 0
+    And file "main.rs" is unchanged
+
+  Scenario: a custom fix is defined
+    Given a file "tricorder.toml" with content
+      """
+      [[custom-fixes]]
+      command = "echo 'custom fix running'"
+      name = "my custom fix"
+      stack = "rust"
+      """
+    When executing "tricorder precommit --show=all"
+    Then it prints the block
+      """
+      my custom fix
+      custom fix running
+      """
+    And it prints to STDERR
+      """
+      running 2 tools
+      """
+    And the exit code is 0
+    And file "main.rs" is unchanged
