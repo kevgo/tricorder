@@ -105,19 +105,19 @@ Feature: CI multiple formatted stacks
     And it prints the block matching
       """
       fix Python \(ruff\)
-        \S+/ruff check --fix main\.py
+      \S+/ruff check --fix main\.py
       All checks passed!
       """
     And it prints the block matching
       """
       format Python \(ruff\)
-        \S+/ruff format main\.py
+      \S+/ruff format main\.py
       1 file left unchanged
       """
     And it prints the block matching
       """
       lint Python \(ruff\)
-        \S+/ruff check main\.py
+      \S+/ruff check main\.py
       All checks passed!
       """
     And all files are unchanged

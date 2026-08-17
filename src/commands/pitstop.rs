@@ -1,5 +1,5 @@
 use crate::cli::input::{self, RunArgs};
-use crate::cli::output::{self, print_metadata};
+use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
@@ -12,29 +12,23 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let requested = args.show.unwrap_or(input::Show::Failed);
-    let show = conc::Show::from(requested);
-    let verbose = requested == input::Show::Verbose;
+    let show = args.show.unwrap_or(input::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let is_git_repo = git::is_repo(Path::new("./"));
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&all_stacks);
     }
 
     // step 3: discover all runnables
-    let mut fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
-    let mut lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
+    let fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
+    let lints = lint::determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
-    if show == conc::Show::All {
+    if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
-    }
-    if verbose {
-        fix_runnables.add_command_details();
-        output::add_command_details(&mut lints);
     }
     let Runnables {
         global: global_fixes,
@@ -46,7 +40,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         runnables: vec![global_fixes],
         error_on_output,
         stderr_to_stdout,
-        show,
+        show: show.into(),
     });
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
@@ -56,7 +50,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
-        show,
+        show: show.into(),
         stderr_to_stdout,
     });
     if exit_code != ExitCode::SUCCESS {
@@ -67,7 +61,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let exit_code = conc::run(conc::RunArgs {
         runnables: lints,
         error_on_output,
-        show,
+        show: show.into(),
         stderr_to_stdout,
     });
     Ok(exit_code)

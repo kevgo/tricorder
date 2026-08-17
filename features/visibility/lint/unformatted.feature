@@ -68,18 +68,18 @@ Feature: lint multiple stacks with unformatted files
     And it prints the block matching
       """
       lint Python \(ruff\)
-        \S+/ruff check main\.py
+      \S+/ruff check main\.py
       All checks passed!
       """
     And it prints the block matching
       """
       lint CSS \(Biome\)
-        \S+/biome lint main\.css
+      \S+/biome lint main\.css
       """
     And it prints the block matching
       """
       lint TypeScript \(Biome\)
-        \S+/biome lint main\.ts
+      \S+/biome lint main\.ts
       """
     And the exit code is 0
     And all files are unchanged

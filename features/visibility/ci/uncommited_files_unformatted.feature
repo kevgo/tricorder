@@ -121,44 +121,44 @@ Feature: CI doesn't care about uncommitted files that are unformatted
     And it prints the block matching
       """
       delete empty folders
-        \S+/delete-empty-folders
+      \S+/delete-empty-folders
       """
     And it prints the block matching
       """
       fix TypeScript \(Biome\)
-        \S+/biome format --write main\.ts
+      \S+/biome format --write main\.ts
       """
     And it prints the block matching
       """
       fix CSS \(Biome\)
-        \S+/biome format --write main\.css
+      \S+/biome format --write main\.css
       """
     And it prints the block matching
       """
       fix Python \(ruff\)
-        \S+/ruff check --fix main\.py
+      \S+/ruff check --fix main\.py
       All checks passed!
       """
     And it prints the block matching
       """
       format Python \(ruff\)
-        \S+/ruff format main\.py
+      \S+/ruff format main\.py
       1 file reformatted
       """
     And it prints the block matching
       """
       lint Python \(ruff\)
-        \S+/ruff check main\.py
+      \S+/ruff check main\.py
       """
     And it prints the block matching
       """
       lint TypeScript \(Biome\)
-        \S+/biome lint main\.ts
+      \S+/biome lint main\.ts
       """
     And it prints the block matching
       """
       lint CSS \(Biome\)
-        \S+/biome lint main\.css
+      \S+/biome lint main\.css
       """
     And file "main.css" now has content
       """

@@ -91,23 +91,23 @@ Feature: fix multiple stacks
     And it prints the block matching
       """
       fix TypeScript \(Biome\)
-        \S+/biome format --write main\.ts
+      \S+/biome format --write main\.ts
       """
     And it prints the block matching
       """
       fix CSS \(Biome\)
-        \S+/biome format --write main\.css
+      \S+/biome format --write main\.css
       """
     And it prints the block matching
       """
       fix Python \(ruff\)
-        \S+/ruff check --fix main\.py
+      \S+/ruff check --fix main\.py
       All checks passed!
       """
     And it prints the block matching
       """
       format Python \(ruff\)
-        \S+/ruff format main\.py
+      \S+/ruff format main\.py
       1 file reformatted
       """
     And file "main.css" now has content

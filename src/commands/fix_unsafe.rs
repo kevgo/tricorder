@@ -1,5 +1,5 @@
 use crate::cli::input::{self, RunArgs};
-use crate::cli::output::{self, print_metadata};
+use crate::cli::output::print_metadata;
 use crate::config::Config;
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
@@ -12,30 +12,25 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let requested = args.show.unwrap_or(input::Show::Failed);
-    let show = conc::Show::from(requested);
-    let verbose = requested == input::Show::Verbose;
+    let show = args.show.unwrap_or(input::Show::Failed);
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
-    if show == conc::Show::All {
+    if show.display_metadata() {
         print_metadata(&all_stacks);
     }
 
     // step 3: discover the unsafe fixes
-    let mut unsafe_fixes = determine_unsafe_fixes(&all_stacks)?;
-    if show == conc::Show::All {
+    let unsafe_fixes = determine_unsafe_fixes(&all_stacks)?;
+    if show.display_metadata() {
         eprintln!("running {} tools", unsafe_fixes.len());
-    }
-    if verbose {
-        output::add_command_details(&mut unsafe_fixes);
     }
 
     // step 4: run the unsafe fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: unsafe_fixes,
         error_on_output,
-        show,
+        show: show.into(),
         stderr_to_stdout,
     });
     Ok(exit_code)

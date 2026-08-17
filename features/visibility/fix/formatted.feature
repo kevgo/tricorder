@@ -72,13 +72,13 @@ Feature: fix multiple good stacks
     And it prints the block matching
       """
       fix Python \(ruff\)
-        \S+/ruff check --fix main\.py
+      \S+/ruff check --fix main\.py
       All checks passed!
       """
     And it prints the block matching
       """
       format Python \(ruff\)
-        \S+/ruff format main\.py
+      \S+/ruff format main\.py
       1 file left unchanged
       """
     And all files are unchanged

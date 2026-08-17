@@ -67,7 +67,7 @@ Feature: lint multiple stacks
     And it prints the block matching
       """
       lint Python \(ruff\)
-        \S+/ruff check main\.py
+      \S+/ruff check main\.py
       All checks passed!
       """
     And all files are unchanged
