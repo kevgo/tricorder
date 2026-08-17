@@ -13,10 +13,16 @@ impl Stack for Rust {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
+        // The Rust stack does not specify any linters by default
+        // because there are too many Clippy options.
+        // Please define your own Clippy calls as custom lints in tricorder.toml.
         vec![]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
+        // The Rust stack does not specify any fixes by default
+        // because there are too many rustfmt options.
+        // Please define your own rustfmt calls as custom fixes in tricorder.toml.
         vec![]
     }
 }
