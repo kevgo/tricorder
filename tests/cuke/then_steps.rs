@@ -29,6 +29,13 @@ async fn all_files_unchanged(world: &mut TricorderWorld) {
     }
 }
 
+#[then(expr = "file {string} does not exist")]
+async fn file_does_not_exist(world: &mut TricorderWorld, filename: String) {
+    let filepath = world.dir.join(&filename);
+    let exists = fs::try_exists(filepath).await.unwrap();
+    assert!(!exists);
+}
+
 #[then(expr = "file {string} is unchanged")]
 async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
     let original = world
@@ -70,6 +77,40 @@ async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String)
         Regex::new(want).unwrap().is_match(have.trim()),
         "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
     );
+}
+
+#[then(expr = "file {string} now matches these lines")]
+async fn file_matches_lines(world: &mut TricorderWorld, step: &Step, filename: String) {
+    let want = step.docstring.as_ref().unwrap().as_str().trim().lines();
+    let filepath = world.dir.join(&filename);
+    let have = fs::read_to_string(filepath).await.unwrap();
+    let have = have.trim().lines();
+    for (want_line, have_line) in want.zip(have) {
+        if want_line.contains(".*") {
+            let regex = Regex::new(want_line).unwrap();
+            assert!(
+                regex.is_match(have_line),
+                "\n\nHAVE:\n{have_line}\n\nWANT:\n{want_line}\n\n"
+            );
+        } else {
+            assert_eq!(
+                have_line, want_line,
+                "\n\nHAVE:\n{have_line}\n\nWANT:\n{want_line}\n\n"
+            );
+        }
+    }
+}
+
+#[then(expr = "file {string} is executable")]
+async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
+    let filepath = world.dir.join(&filename);
+    let metadata = fs::metadata(&filepath).await.unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let is_executable = metadata.permissions().mode() & 0o111 != 0;
+        assert!(is_executable, "file '{filename}' is not executable");
+    }
 }
 
 #[then("it does not print")]

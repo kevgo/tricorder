@@ -72,7 +72,7 @@ Feature: pitstop Cucumber
       """
       fix Cucumber (Ghokin)
       "." formatted
-      lint Cucumber (Gherkin Lint)
+      lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
     And file "main.feature" now has content
@@ -102,7 +102,7 @@ Feature: pitstop Cucumber
       """
       fix Cucumber (Ghokin)
       "." formatted
-      lint Cucumber (Gherkin Lint)
+      lint Cucumber (gherkin-lint)
         1    Feature file does not have any Scenarios    no-files-without-scenarios
       """
     And the exit code is 1

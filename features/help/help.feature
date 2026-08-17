@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: ci, init, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
+        [subcommands: ci, init:claude, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -22,14 +22,15 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci          Check all lints and fixes on CI
-        init        Install coding agent hooks for this project
-        fix         Repair all code quality issues
-        fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [alias: postgenerate]
-        pitstop     Run fixes and lints
-        precommit   Repair all code quality issues, never fails
-        help        Print this message or the help of the given subcommand(s)
+        ci            Check all lints and fixes on CI
+        init:claude   Embed into claude-compatible coding agents
+        init:githook  Install the Git pre-commit hook
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
+        help          Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -46,14 +47,15 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci          Check all lints and fixes on CI
-        init        Install coding agent hooks for this project
-        fix         Repair all code quality issues
-        fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [alias: postgenerate]
-        pitstop     Run fixes and lints
-        precommit   Repair all code quality issues, never fails
-        help        Print this message or the help of the given subcommand(s)
+        ci            Check all lints and fixes on CI
+        init:claude   Embed into claude-compatible coding agents
+        init:githook  Install the Git pre-commit hook
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
+        help          Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help
@@ -70,14 +72,15 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci          Check all lints and fixes on CI
-        init        Install coding agent hooks for this project
-        fix         Repair all code quality issues
-        fix-unsafe  Advanced fixes that might break things
-        lint        Find all code quality issues [alias: postgenerate]
-        pitstop     Run fixes and lints
-        precommit   Repair all code quality issues, never fails
-        help        Print this message or the help of the given subcommand(s)
+        ci            Check all lints and fixes on CI
+        init:claude   Embed into claude-compatible coding agents
+        init:githook  Install the Git pre-commit hook
+        fix           Apply safe code quality fixes
+        fix-unsafe    Apply advanced fixes that might change behavior
+        lint          Find code quality issues [alias: postgenerate]
+        pitstop       Apply fixes, then report remaining issues
+        precommit     Fix staged files before committing, never fails
+        help          Print this message or the help of the given subcommand(s)
 
       Options:
         -h, --help     Print help

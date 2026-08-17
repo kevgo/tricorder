@@ -1,96 +1,116 @@
 # Tricorder
 
-_One command, every linter, every stack._
+Tricorder runs all linters and formatters that apply to your codebase.
+It downloads third-party tools as needed and runs them concurrently to finish
+as quickly as possible.
 
-Tricorder is a quality gate for manual and agentic software engineering:
-It lints and formats a wide variety of source code files using the best
-available linters for each.
+Tricorder integrates throughout your development workflow.
+In addition to general-purpose commands for linting and formatting,
+it provides specialized commands for interactive development, AI coding agents,
+CI, and Git pre-commit hooks.
 
-- zero-config: works out of the box, but you can configure it if needed
-- zero dependencies: Tricorder downloads
-  and executes third-party linters on its own.
-- fast: Tricorder formats only the files that need formatting,
-  and runs all linters and formatters concurrently.
-- single exit code for all tools
+## Demo
 
-## Why
+Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
+500 ms and prints output like this:
 
-The status quo is painful:
-Every team has to figure out which linters apply to their stack,
-install them consistently across macOS, Linux, and Windows,
-pin every tool to the same version on dev and CI,
-maintain config files across every repo, and keep everything up to date.
-Almost nobody gets this right.
+```sh
+98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
+running 5 tools
 
-AI-generated code amplifies the cost of getting it wrong:
-Agents produce code at machine speed and need a deterministic,
-locally executed quality signal to fix their own output
-before a human ever sees it.
+lint Markdown (rumdl)
+lint TOML (Taplo)
+lint Git (git diff HEAD --check)
+GitHub Actions (actionlint)
+lint Cucumber (gherkin-lint)
+```
 
-Tricorder makes "run all automated checks
-for this repo to make the agent improve its own output" a single command.
-Every team gets reliable, reproducible checks with no per-developer setup.
+Tricorder first discovers the files in the codebase and classifies them by type.
+It then determines which linters apply and runs them concurrently.
 
-## Example
+In this example, it runs:
 
-You have a TypeScript frontend and a Python backend.
-Running `tricorder lint` runs `biome check --error-on-warnings`, `pyright`,
-and `ruff check --quiet`.
-You don't need to download or install any of these tools.
-Tricorder does that for you.
-It can also create config files for these tools in your repo
-that enable all features.
-You can customize them for your use case.
-Later you add shell scripts somewhere in a subfolder.
-Multi-Tool detects this new language and now also runs `shellcheck` and `shfmt`.
+- [Taplo](https://github.com/tamasfe/taplo) for TOML files
+- [rumdl](https://github.com/rvben/rumdl) for Markdown files
+- [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
+  for Cucumber files
+- [actionlint](https://github.com/rhysd/actionlint)
+  for GitHub Action configuration
+- `git diff --check` to detect unresolved merge conflict markers
 
-The things you don't have to do:
+Tricorder downloads and runs third-party tools automatically.
+The first time you run `tricorder lint`, you might see:
 
-- figure out which languages your codebase uses
-- market research which linters and formatters are the best for each language
-- forgetting to add linters and formatters for new languages
-- reading documentation to install, setup, and configure dozens of tools
-- Sisyphean work to keep all these tools up to date
-- inconsistencies with other developers and teams which tool to use
+```sh
+Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
+added rumdl@0.2.55 to run-that-app
+downloading rumdl 0.2.55 ... extracting ... ok
+```
 
-Almost no project or team does all of this well all of the time.
-With Tricorder everybody does this well all of the time.
+To install `rumdl`, Tricorder looks up its latest release and records
+that version in the `run-that-app` file.
+From then on, this repository consistently uses that version.
+Tricorder then downloads the release matching your operating system
+and CPU architecture, extracts the executable, and caches it locally.
+If a tool doesn't provide a compatible binary release,
+Tricorder can compile it from source.
+
+With Tricorder, you no longer have to:
+
+- figure out which file types exist in each codebase
+- research appropriate linters and formatters for every file type
+- bikeshed tooling choices across developers and teams
+- remember to add linters and formatters when new file types appear
+- learn how to install, configure, and invoke dozens of separate tools
+- keep those tools up to date across all your codebases
+- waste time waiting until primitive dev scripts have run all tools in sequence
 
 ## Q & A
 
-> Does Tricorder lock me into specific tooling choices?
+> Does Tricorder lock me into its tooling choices?
 
-No, you can customize the default selection of tools.
-In this case, Tricorder installs and runs your choice of tools in parallel.
+No. You can enable or disable individual tools in the Tricorder configuration
+file.
 
 > I want to use a linter or formatter that isn't supported by Tricorder.
 
-Send a pull request!
+Open an issue or send a pull request!
+
+> How is it so fast
+
+Many optimizations make Tricorder incredibly fast:
+
+- It is written in Rust, which makes discovering your source files quick.
+- It favors modern, fast linters and formatters.
+- It passes each tool the exact files it needs to process,
+  so tools don't scan the codebase again.
+- It processes independent file types concurrently.
 
 ## Installation
 
-The installer script places the Tricorder executable into the current directory.
-To install elsewhere, execute the installer from that directory.
+The installer places the Tricorder executable in the current directory.
+To install Tricorder into a particular directory,
+run the installer from that directory.
 
-Linux and macOS:
+### Linux and macOS
 
 ```sh
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
 ```
 
-To download a specific version or save under a specific filename:
+To download a specific version and/or save under a specific filename:
 
 ```sh
 curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
 ```
 
-Windows (Powershell):
+### Windows PowerShell
 
 ```powershell
 Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
 ```
 
-Compile from source:
+### Compile from source
 
 ```sh
 cargo install --git https://github.com/kevgo/tricorder
@@ -98,129 +118,132 @@ cargo install --git https://github.com/kevgo/tricorder
 
 ## Configuration
 
-You can define custom linters in a config file **Tricorder.toml**.
+You can configure Tricorder and define custom linters
+and formatters in **tricorder.toml**:
 
 ```toml
-# ignore these files
-ignore = ["file1", "file2"]
+# make these files invisible to Tricorder
+# using gitignore syntax
+ignore = ["two.css", "vendor/", "**/*.min.css"]
 
+# define a custom linter
 [[custom-lints]]
 name = "custom lint 1"
 command = "lints/one.sh"
 
+# define another custom linter
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
 
+# define a custom formatter
 [[custom-fixes]]
 name = "sort alphabetically"
 command = "fixes/sort.py"
 stack = "python"
-```
 
-You can ignore files from being linted and fixed altogether,
-using gitignore-style patterns:
-
-```toml
-ignore = ["two.css", "vendor/", "**/*.min.css"]
-```
-
-You can enable running [keep-sorted](https://github.com/google/keep-sorted) on
-every file that contains a `keep-sorted` marker comment:
-
-```toml
+# github.com/google/keep-sorted is disabled by default
+# because it scans the file content of all workspace files for markers
+# to determine which files to sort
 [keep-sorted]
 enabled = true
-ignore = ["README.md"]
+ignore = ["README.md"]  # ignored only by keep-sorted
 ```
-
-When enabled, Tricorder scans the workspace
-for files containing a `keep-sorted end` marker and runs keep-sorted on them
-as the last fix in each stack's fix sequence.
-The optional `ignore` key excludes the given files from being scanned
-and sorted, using the gitignore-style patterns.
 
 ## Usage
 
 ```sh
-tricorder init          # install agentic hooks (see below)
-tricorder lint          # run every applicable linter
-tricorder fix           # fix all safely auto-fixable issues
-tricorder fix-unsafe    # fix all issues that are not safe to auto-fix
-tricorder pitstop       # fix and format everything, then run all linters
-tricorder precommit     # run in the Git pre-commit hook
-tricorder ci            # run on CI
-tricorder postgenerate  # run after the agent generated code
+tricorder ci            # Check all lints and fixes on CI
+tricorder init:claude   # Embed into claude-compatible coding agents
+tricorder init:githook  # Install the Git pre-commit hook
+tricorder fix           # Apply safe code quality fixes
+tricorder fix-unsafe    # Apply advanced fixes that might change behavior
+tricorder lint          # Find code quality issues (alias: postgenerate)
+tricorder pitstop       # Apply fixes, then report remaining issues
+tricorder precommit     # Fix staged files before committing, never fails
+tricorder help          # Print this message or the help of the given subcommands
 ```
-
-### `tricorder init`
-
-One command wires Tricorder into AI agents like Claude Code, Codex, Code Puppy,
-or Wibey:
-
-```sh
-cd your/project
-tricorder init
-git add .claude/ && git commit -m "Add Tricorder hooks"
-```
-
-Now every teammate who clones the repo gets the same agentic behavior
-automatically, with zero per-developer setup:
-
-- After every `Write` / `Edit` / `MultiEdit`,
-  Tricorder runs all applicable linters
-  and prints instructions to the agent to self-corrects code quality issues
-  before moving on.
-- Before every `git commit`,
-  Tricorder formats and auto-fixes the changes to commit.
-
-### `tricorder lint`
-
-The `tricorder lint` command runs all applicable linters.
-Since linters don't change files, they all run in parallel.
-Inside a Git repository,
-it also runs `git diff HEAD --check` to detect leftover conflict markers in your
-changes.
-
-### `tricorder fix`
-
-The `tricorder fix` command applies all safe auto-fixes to your codebase:
-formatters and linters that clean up code smells.
-Tricorder runs fixes for different languages in parallel.
-
-### `tricorder fix-unsafe`
-
-The `tricorder fix-unsafe` command applies all advanced auto-fixes
-that address code smells but might change the meaning of the code.
-You are advised to review the changes before committing
-and verify them by running the automated tests.
-
-### `tricorder pitstop`
-
-The `tricorder pitstop` command runs `tricorder fix`
-and then `tricorder fix` in sequence.
-
-### `tricorder precommit`
-
-The `tricorder precommit` command runs `tricorder fix`,
-but only for the staged files,
-and it always exits with code 0 to allow the commit to proceed.
-It stages (`git add <file>`) previously staged files whose content got formatted
-during precommit, so that the precommit fixes end up in the commit.
-
-This stages the entire file.
-If you want to commit only parts of a file,
-please format the file before partially staging any changes.
 
 ### `tricorder ci`
 
-The `tricorder ci` performs all activities necessary on CI:
+This command makes formatting and linting problems visible in CI pipelines.
+It runs all formatters and linters and fails if either:
 
-- determines the uncommitted changes
-- runs `tricorder pitstop` and exits with exit code 1 if there are any issues
-- determines the uncommitted changes again
-- if the uncommitted changes are different now, i.e. some code was unformatted,
-  it fails the build.
+- a linter reports an unresolved issue, or
+- a formatter modifies a file
+
+### `tricorder init:claude`
+
+This command wires Tricorder into coding agents
+that use Claude-compatible configuration, such as Claude Code, Codex,
+Code Puppy, or Wibey.
+
+Once configured, the agent runs `tricorder lint` after every `Write`, `Edit`,
+or `MultiEdit`.
+When Tricorder finds an issue,
+it prints instructions that help the agent correct the problem itself.
+
+This keeps AI-generated code clean
+while the agent is still working instead of discovering quality problems only
+after generation is complete.
+
+It works particularly well with custom AI-generated linters
+that enforce invariants specific to your domain.
+
+Commit the generated configuration files
+and every teammate gets the same agent behavior automatically,
+with no per-developer setup.
+
+### `tricorder init:githook`
+
+This command installs a
+[Git pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
+that runs `tricorder precommit` before every commit.
+
+### `tricorder fix`
+
+This command applies all safe automatic fixes to the codebase.
+It runs formatters as well as linters
+that can automatically repair code-quality issues.
+Fix tools belonging to the same stack run sequentially to avoid interfering with
+each other.
+Different stacks are processed concurrently.
+
+### `tricorder fix-unsafe`
+
+This command applies more aggressive automatic fixes
+that might change program behavior.
+Review the resulting changes
+before committing them and/or verify them by running your automated tests.
+
+### `tricorder lint`
+
+This command runs all linters that apply to the files in the codebase.
+All linters run in parallel.
+Inside a Git repository,
+Tricorder also runs `git diff HEAD --check` to detect unresolved conflict
+markers in your changes.
+
+### `tricorder pitstop`
+
+This command is optimized for efficient support during interactive development.
+It first applies all safe automatic fixes and then reports any remaining issues
+that require manual attention.
+
+### `tricorder precommit`
+
+This command ensures that staged code is formatted before it gets committed.
+It runs the equivalent of `tricorder fix`, but only on the staged files.
+It always exits with status code 0, so it never blocks the commit.
+
+If this command results in changes to a file that was already staged,
+it stages the updated file again so
+that the formatting changes are included in the commit.
+Re-staging operates on the entire file.
+If you want to commit only part of a modified file,
+run ```tricorder fix``` before partially staging your changes.
+That way, Tricorder precommit won't introduce additional formatting changes
+and won't need to re-stage the file.
 
 ## Supported stacks
 
@@ -234,5 +257,3 @@ The `tricorder ci` performs all activities necessary on CI:
 | Go         | golangci-lint |
 | Java       | checkstyle    |
 | SQL        | sqlfmt        |
-
-Stacks are auto-detected.

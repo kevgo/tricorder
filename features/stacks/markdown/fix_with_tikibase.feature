@@ -82,6 +82,9 @@ Feature: fix Markdown with Tikibase
     Then it prints the block
       """
       fix Markdown (tikibase)
+      """
+    And it prints the block
+      """
       fix Markdown (rumdl)
       main.md:3:1: [MD042] Empty link found: [e]()
       """

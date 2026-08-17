@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::path::PathBuf;
 
 /// a Result that always has a `UserError` as the error and therefore doesn't require to specify it at each call point
 pub type Result<T> = core::result::Result<T, UserError>;
@@ -7,17 +8,50 @@ pub type Result<T> = core::result::Result<T, UserError>;
 #[derive(Debug, PartialEq)]
 #[allow(clippy::module_name_repetitions)]
 pub enum UserError {
+    CannotCanonicalizePath { path: PathBuf },
+    CannotCreateDirectory { path: PathBuf, err: String },
+    CannotDetermineCurrentDirectory { err: String },
+    CannotFindTricorderExecutable { path: PathBuf, err: String },
+    CannotReadFileMetadata { path: PathBuf, err: String },
+    CannotWriteFile { path: String, err: String },
+    ArgvIsEmpty,
     CannotRunGit { msg: String },
     CannotRunRipgrep { msg: String },
+    CannotSetFilePermissions { path: PathBuf, err: String },
     CiUnformatted { diff: Vec<u8> },
     Cli { msg: String },
     Config { msg: String },
+    ExecutableNotFound { path: PathBuf },
+    NoGitRepository,
+    NotMainGitWorktree,
     Rta { err: rta::error::UserError },
 }
 
 impl UserError {
     pub fn print(self) {
         match self {
+            UserError::CannotCanonicalizePath { path } => {
+                println!("cannot canonicalize path: {}", path.display());
+            }
+            UserError::CannotCreateDirectory { path, err } => {
+                println!("cannot create directory {}: {err}", path.display());
+            }
+            UserError::CannotDetermineCurrentDirectory { err } => {
+                println!("cannot determine the current directory: {err}");
+            }
+            UserError::CannotFindTricorderExecutable { path, err } => {
+                println!("cannot locate the {} executable: {err}", path.display());
+            }
+            UserError::CannotReadFileMetadata { path, err } => {
+                println!("cannot read file metadata: {}: {err}", path.display());
+            }
+            UserError::CannotSetFilePermissions { path, err } => {
+                println!("cannot set file permissions: {}: {err}", path.display());
+            }
+            UserError::CannotWriteFile { path, err } => {
+                println!("cannot write file: {path}: {err}");
+            }
+            UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
             UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {
@@ -26,6 +60,13 @@ impl UserError {
             }
             // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } | UserError::Config { msg } => println!("{msg}"),
+            UserError::ExecutableNotFound { path } => {
+                println!("executable not found: {}", path.display());
+            }
+            UserError::NoGitRepository => println!("not a git repository (no .git directory)"),
+            UserError::NotMainGitWorktree => {
+                println!("please run this command in the main Git worktree");
+            }
             UserError::Rta { err } => err.print(),
         }
     }
