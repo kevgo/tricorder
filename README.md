@@ -190,7 +190,8 @@ after generation is complete.
 It works particularly well with custom AI-generated linters
 that enforce invariants specific to your domain.
 
-Commit the generated configuration files
+If the Tricorder executable exists in the same location for all developers,
+you can commit the generated configuration files
 and every teammate gets the same agent behavior automatically,
 with no per-developer setup.
 
