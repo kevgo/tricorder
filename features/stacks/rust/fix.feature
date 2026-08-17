@@ -27,7 +27,7 @@ Feature: fix Rust
     And the exit code is 0
     And file "main.rs" is unchanged
 
-  Scenario: a custom linter is defined
+  Scenario: a custom fix
     Given a file "tricorder.toml" with content
       """
       [[custom-fixes]]
