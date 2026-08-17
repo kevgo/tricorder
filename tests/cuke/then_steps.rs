@@ -13,10 +13,12 @@ use tokio::process::Command;
 async fn all_files_unchanged(world: &mut TricorderWorld) {
     for original in &world.original_files {
         let filepath = world.dir.join(&original.name);
-        let have = fs::read_to_string(filepath).await.expect(&format!(
-            "cannot read file '{}', which should still exist",
-            original.name
-        ));
+        let have = fs::read_to_string(filepath).await.unwrap_or_else(|err| {
+            panic!(
+                "cannot read file '{}', which should still exist: {}",
+                original.name, err
+            );
+        });
         assert_eq!(
             have.trim(),
             original.content.trim(),
@@ -42,10 +44,12 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
         .find(|f| f.name == filename)
         .expect("file not found in original files");
     let filepath = world.dir.join(&original.name);
-    let have = fs::read_to_string(filepath).await.expect(&format!(
-        "cannot read file '{}', which should still exist",
-        original.name
-    ));
+    let have = fs::read_to_string(filepath).await.unwrap_or_else(|err| {
+        panic!(
+            "cannot read file '{}', which should still exist: {}",
+            original.name, err
+        );
+    });
     assert_eq!(
         have.trim(),
         original.content.trim(),
