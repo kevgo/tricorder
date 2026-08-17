@@ -8,9 +8,7 @@ Feature: fix Rust
       """
     And a file "main.rs" with content
       """
-      fn main() {
-        println!("Hello!");
-      }
+      // some Rust code
       """
 
   Scenario: no custom fixes defined
