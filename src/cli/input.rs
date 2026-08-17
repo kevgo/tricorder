@@ -61,7 +61,7 @@ impl RunArgs {
 
 #[derive(Clone, Copy, PartialEq, ValueEnum)]
 pub enum Show {
-    /// all commands including their full command lines, and their output
+    /// all commands including their full command lines and output
     Verbose,
     /// all commands and their output
     All,

@@ -89,10 +89,10 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: help for a subcommand
-    When executing "tricorder lint --help"
+    When executing "tricorder help lint"
     Then it prints
       """
-      Find all code quality issues
+      Find code quality issues
 
       Usage: tricorder lint [OPTIONS]
 
