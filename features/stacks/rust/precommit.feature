@@ -12,7 +12,7 @@ Feature: precommit Rust
       // some Rust code
       """
 
-  Scenario: no custom linters defined
+  Scenario: no custom fixes defined
     When executing "tricorder precommit --show=all"
     Then it prints
       """
