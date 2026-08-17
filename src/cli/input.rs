@@ -73,8 +73,8 @@ impl From<Show> for conc::Show {
     fn from(value: Show) -> Self {
         match value {
             Show::All => conc::Show::All,
-            Show::Names => conc::Show::Names,
             Show::Failed => conc::Show::Failed,
+            Show::Names => conc::Show::Names,
         }
     }
 }
