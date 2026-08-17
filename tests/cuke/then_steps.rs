@@ -212,9 +212,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
 #[then("it prints the lines to STDERR")]
 fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
     let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
     let missing = contains_lines(stderr, want);
@@ -230,9 +228,7 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
     let mut want = step.docstring.as_ref().unwrap()[1..]
         .lines()
         .collect::<Vec<&str>>();
-    let Some(output) = &world.output else {
-        panic!("no command run");
-    };
+    let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
     let mut have = stdout.lines().collect::<Vec<&str>>();
