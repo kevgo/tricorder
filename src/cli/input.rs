@@ -75,7 +75,10 @@ impl Show {
     /// indicates whether to display metadata about the commands being run
     #[must_use]
     pub fn display_metadata(self) -> bool {
-        matches!(self, Show::Verbose | Show::All)
+        match self {
+            Show::Verbose | Show::All => true,
+            Show::Names | Show::Failed => false,
+        }
     }
 }
 
