@@ -1,4 +1,4 @@
-Feature: lint Rust
+Feature: fix Rust
 
   Background:
     Given a file "run-that-app" with content
@@ -13,13 +13,17 @@ Feature: lint Rust
       }
       """
 
-  Scenario: no custom linters defined
-    When executing "tricorder lint --show=all"
-    Then it prints nothing to STDOUT
+  @this
+  Scenario: no custom fixes defined
+    When executing "tricorder fix --show=all"
+    Then it prints
+      """
+      delete empty folders
+      """
     And it prints to STDERR
       """
       1 Rust, 1 other
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "hello.rs" is unchanged
