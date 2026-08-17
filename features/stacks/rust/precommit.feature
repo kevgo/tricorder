@@ -2,12 +2,12 @@ Feature: precommit Rust
 
   Background:
     Given a Git repository
-    Given a file "run-that-app" with content
+    And a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
       taplo 0.10.0
       """
-    Given a file "main.rs" with content
+    And a file "main.rs" with content
       """
       fn main() {
         println!("Hello!");
