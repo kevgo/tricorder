@@ -62,7 +62,7 @@ impl RunArgs {
 
 /// CLI helpers for [`conc::Show`].
 pub trait ShowExt {
-    /// indicates whether to display metadata about the detected stacks commands being run
+    /// indicates whether to display metadata about the detected stacks and commands being run
     #[must_use]
     fn display_metadata(self) -> bool;
 }
