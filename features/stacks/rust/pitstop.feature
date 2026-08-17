@@ -13,7 +13,6 @@ Feature: pitstop Rust
       }
       """
 
-  @this
   Scenario: no custom tools defined
     When executing "tricorder pitstop --show=all"
     Then it prints
@@ -28,24 +27,34 @@ Feature: pitstop Rust
     And the exit code is 0
     And file "main.rs" is unchanged
 
-  Scenario: a custom linter is defined
+  Scenario: custom linters and fixes defined
     Given a file "tricorder.toml" with content
       """
       [[custom-fixes]]
       command = "echo 'custom fix running'"
       name = "my custom fix"
       stack = "rust"
+
+      [[custom-lints]]
+      command = "echo 'custom linter running'"
+      name = "my custom linter"
+      stack = "rust"
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder pitstop --show=all"
     Then it prints the block
       """
       my custom fix
       custom fix running
       """
+    And it prints the block
+      """
+      my custom linter
+      custom linter running
+      """
     And it prints to STDERR
       """
       1 Rust, 1 TOML, 1 other
-      running 3 tools
+      running 5 tools
       """
     And the exit code is 0
     And file "main.rs" is unchanged
