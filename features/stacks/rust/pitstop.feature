@@ -1,4 +1,4 @@
-Feature: lint Rust
+Feature: pitstop Rust
 
   Background:
     Given a file "run-that-app" with content
@@ -13,13 +13,17 @@ Feature: lint Rust
       }
       """
 
-  Scenario: no custom linters defined
-    When executing "tricorder lint --show=all"
-    Then it prints nothing to STDOUT
+  @this
+  Scenario: no custom tools defined
+    When executing "tricorder pitstop --show=all"
+    Then it prints
+      """
+      delete empty folders
+      """
     And it prints to STDERR
       """
       1 Rust, 1 other
-      running 0 tools
+      running 1 tools
       """
     And the exit code is 0
     And file "main.rs" is unchanged
@@ -27,21 +31,21 @@ Feature: lint Rust
   Scenario: a custom linter is defined
     Given a file "tricorder.toml" with content
       """
-      [[custom-lints]]
-      command = "echo 'custom linter running'"
-      name = "my custom linter"
+      [[custom-fixes]]
+      command = "echo 'custom fix running'"
+      name = "my custom fix"
       stack = "rust"
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      my custom linter
-      custom linter running
+      my custom fix
+      custom fix running
       """
     And it prints to STDERR
       """
       1 Rust, 1 TOML, 1 other
-      running 2 tools
+      running 3 tools
       """
     And the exit code is 0
     And file "main.rs" is unchanged
