@@ -25,7 +25,7 @@ Feature: fix Rust
     And the exit code is 0
     And file "main.rs" is unchanged
 
-  Scenario: a custom fix
+  Scenario: a custom fix is defined
     Given a file "tricorder.toml" with content
       """
       [[custom-fixes]]
