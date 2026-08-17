@@ -69,7 +69,10 @@ pub trait ShowExt {
 
 impl ShowExt for conc::Show {
     fn display_metadata(self) -> bool {
-        matches!(self, Self::All | Self::Verbose)
+        match self {
+            Self::All | Self::Verbose => true,
+            Self::Failed | Self::Names => false,
+        }
     }
 }
 
