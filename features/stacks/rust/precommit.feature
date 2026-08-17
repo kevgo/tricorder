@@ -9,9 +9,7 @@ Feature: precommit Rust
       """
     And a file "main.rs" with content
       """
-      fn main() {
-        println!("Hello!");
-      }
+      // some Rust code
       """
 
   Scenario: no custom linters defined
