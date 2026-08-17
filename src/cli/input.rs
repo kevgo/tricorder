@@ -73,6 +73,7 @@ impl ShowExt for conc::Show {
     }
 }
 
+/// clap cannot derive `ValueEnum` for `conc::Show` (foreign type), so we parse it manually
 fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
     PossibleValuesParser::new([
         PossibleValue::new("verbose")
@@ -82,10 +83,10 @@ fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
         PossibleValue::new("failed").help("failed commands"),
     ])
     .map(|s| match s.to_ascii_lowercase().as_str() {
-        "verbose" => conc::Show::Verbose,
         "all" => conc::Show::All,
-        "names" => conc::Show::Names,
         "failed" => conc::Show::Failed,
+        "names" => conc::Show::Names,
+        "verbose" => conc::Show::Verbose,
         _ => unreachable!("PossibleValuesParser prevents this"),
     })
 }
