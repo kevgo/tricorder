@@ -1,4 +1,4 @@
-Feature: stack-specific configuration
+Feature: stack-specific lints
 
   Background:
     Given a file "run-that-app" with content
@@ -8,7 +8,7 @@ Feature: stack-specific configuration
       ruff 0.15.16
       """
 
-  Scenario: add-lint adds custom lints to the built-in ones for that stack
+  Scenario: "add-lint" adds custom lints to the built-in ones for that stack
     Given a file "tricorder.toml" with content
       """
       [[stack.python.add-lint]]
@@ -31,22 +31,22 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: lint replaces the built-in lint
+  Scenario: "lint" replaces the built-in lints for that stack
     Given a file "tricorder.toml" with content
       """
       [[stack.python.lint]]
-      name = "custom python lint"
-      command = "echo CUSTOM LINT RAN"
+      name = "my lint"
+      command = "echo MY LINT RAN"
       """
     And a file "main.py" with content
       """
-      print("hello")
+      # some Python code
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      custom python lint
-      CUSTOM LINT RAN
+      my lint
+      MY LINT RAN
       """
     And it does not print any of these lines
       """
@@ -54,7 +54,7 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: lint = [] disables a stack's lints
+  Scenario: disable a stack's lints
     Given a file "tricorder.toml" with content
       """
       [stack.python]
@@ -62,7 +62,7 @@ Feature: stack-specific configuration
       """
     And a file "main.py" with content
       """
-      print("hello")
+      # some Python code
       """
     When executing "tricorder lint --show=all"
     Then it does not print any of these lines
@@ -71,38 +71,17 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: a stack section does nothing when no files of that stack exist
+  Scenario: runs only when files of that stack exist
     Given a file "tricorder.toml" with content
       """
       [[stack.python.add-lint]]
-      name = "my custom lint"
-      command = "echo MY CUSTOM LINT RAN"
+      name = "my lint"
+      command = "echo MY LINT RAN"
       """
     When executing "tricorder lint --show=all"
     Then it does not print any of these lines
       """
-      my custom lint
-      MY CUSTOM LINT RAN
-      """
-    And the exit code is 0
-
-  Scenario: add-fix runs after the built-in fix within the stack sequence
-    Given a file "tricorder.toml" with content
-      """
-      [[stack.python.add-fix]]
-      name = "my fix"
-      command = "echo MY FIX RAN"
-      """
-    And a file "main.py" with content
-      """
-      print("hello")
-      """
-    When executing "tricorder fix --show=all"
-    Then it prints the lines
-      """
-      fix Python (ruff)
-      format Python (ruff)
-      my fix
-      MY FIX RAN
+      my lint
+      MY LINT RAN
       """
     And the exit code is 0
