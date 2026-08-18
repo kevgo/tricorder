@@ -2,11 +2,12 @@
 
 mod dot_writer;
 mod given_steps;
+mod run_that_app;
 mod then_steps;
 mod when_steps;
 mod world;
 
-use cucumber::{World, WriterExt as _};
+use cucumber::{World, WriterExt as _, event};
 use dot_writer::DotWriter;
 use std::sync::{
     Arc,
@@ -22,6 +23,20 @@ async fn main() {
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
+        })
+        .after(|_feature, _rule, scenario, ev, world| {
+            Box::pin(async move {
+                if !matches!(ev, event::ScenarioFinished::StepPassed) {
+                    return; // the scenario already reports a failure
+                }
+                let Some(world) = world else { return };
+                if run_that_app::is_asserted_by(scenario) {
+                    return;
+                }
+                if let Err(err) = run_that_app::verify_unchanged(world).await {
+                    panic!("{err}");
+                }
+            })
         })
         // .max_concurrent_scenarios(1)
         .with_writer(DotWriter::new(Arc::clone(&had_failures)).normalized())
