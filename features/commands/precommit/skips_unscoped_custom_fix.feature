@@ -17,7 +17,7 @@ Feature: "tricorder precommit" skips stack-scoped custom fixes when no file of t
       """
     And an executable file "fixes/python.sh" with content
       """
-      #!/usr/bin/env bash
+      #!/bin/sh
       echo "PYTHON FIX RAN"
       """
     And a file "main.py" with content
