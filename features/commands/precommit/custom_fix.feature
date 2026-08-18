@@ -31,7 +31,21 @@ Feature: "tricorder precommit" skips stack-scoped custom fixes when no file of t
     And I ran "git add -A"
     And I ran "git commit -m original"
 
-  Scenario: no Python file is staged
+  Scenario: a file of the stack is staged
+    Given I change file "main.py" to
+      """
+      print("world")
+      """
+    And I ran "git add main.py"
+    When executing "tricorder precommit --show=all"
+    Then it prints the block
+      """
+      my python fix
+      PYTHON FIX RAN
+      """
+    And the exit code is 0
+
+  Scenario: no file of the stack is staged
     And I change file "one.md" to
       """
       # New one
@@ -44,20 +58,6 @@ Feature: "tricorder precommit" skips stack-scoped custom fixes when no file of t
       """
     And it does not print
       """
-      PYTHON FIX RAN
-      """
-    And the exit code is 0
-
-  Scenario: a Python file is staged
-    Given I change file "main.py" to
-      """
-      print("world")
-      """
-    And I ran "git add main.py"
-    When executing "tricorder precommit --show=all"
-    Then it prints the block
-      """
-      my python fix
       PYTHON FIX RAN
       """
     And the exit code is 0
