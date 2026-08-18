@@ -80,7 +80,6 @@ Feature: custom lints
       """
     And the exit code is 0
 
-  @this
   Scenario: custom lint with unmatched stack is skipped
     Given a file "tricorder.toml" with content
       """
