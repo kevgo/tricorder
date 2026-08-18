@@ -93,7 +93,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {
-            stacks: detected_stacks,
+            detected_stacks,
             global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
