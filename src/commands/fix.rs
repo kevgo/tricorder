@@ -52,7 +52,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runnables> {
+pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -61,8 +61,8 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
 
     // stack-specific fixes
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
-    for stack in stacks {
-        let stack_type = stack.stack.stack_type();
+    for detected_stack in detected_stacks {
+        let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
         match stack_config.and_then(|sc| sc.fix.as_ref()) {
@@ -70,11 +70,11 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
                 stack_executables.extend(fixes.iter().map(StackCommand::executable));
             }
             None => {
-                for fix in stack.stack.fixes() {
-                    if !stacks.stack_enabled(&fix.enabled_when()) {
+                for fix in detected_stack.stack.fixes() {
+                    if !detected_stacks.stack_enabled(&fix.enabled_when()) {
                         continue;
                     }
-                    stack_executables.extend(fix.fix_commands(stack)?);
+                    stack_executables.extend(fix.fix_commands(detected_stack)?);
                 }
             }
         }
@@ -93,7 +93,7 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {
-            stacks,
+            stacks: detected_stacks,
             global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
