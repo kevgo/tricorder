@@ -8,11 +8,11 @@ Feature: stack-specific configuration
       ruff 0.15.16
       """
 
-  Scenario: add-lints runs alongside a built-in lint
+  Scenario: add-lint runs alongside a built-in lint
     Given a file "tricorder.toml" with content
       """
       [stack.python]
-      add-lints = [{ name = "mypy", command = "echo MYPY RAN" }]
+      add-lint = [{ name = "mypy", command = "echo MYPY RAN" }]
       """
     And a file "main.py" with content
       """
@@ -30,11 +30,11 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: lints replaces the built-in lint
+  Scenario: lint replaces the built-in lint
     Given a file "tricorder.toml" with content
       """
       [stack.python]
-      lints = [{ name = "custom python lint", command = "echo CUSTOM LINT RAN" }]
+      lint = [{ name = "custom python lint", command = "echo CUSTOM LINT RAN" }]
       """
     And a file "main.py" with content
       """
@@ -52,11 +52,11 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: lints = [] disables a stack's lints
+  Scenario: lint = [] disables a stack's lints
     Given a file "tricorder.toml" with content
       """
       [stack.python]
-      lints = []
+      lint = []
       """
     And a file "main.py" with content
       """
@@ -73,7 +73,7 @@ Feature: stack-specific configuration
     Given a file "tricorder.toml" with content
       """
       [stack.python]
-      add-lints = [{ name = "mypy", command = "echo MYPY RAN" }]
+      add-lint = [{ name = "mypy", command = "echo MYPY RAN" }]
       """
     When executing "tricorder lint --show=all"
     Then it does not print any of these lines
@@ -83,11 +83,11 @@ Feature: stack-specific configuration
       """
     And the exit code is 0
 
-  Scenario: add-fixes runs after the built-in fix within the stack sequence
+  Scenario: add-fix runs after the built-in fix within the stack sequence
     Given a file "tricorder.toml" with content
       """
       [stack.python]
-      add-fixes = [{ name = "isort", command = "echo ISORT RAN" }]
+      add-fix = [{ name = "isort", command = "echo ISORT RAN" }]
       """
     And a file "main.py" with content
       """

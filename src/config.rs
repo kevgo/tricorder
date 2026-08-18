@@ -58,12 +58,12 @@ impl Config {
         for (stack_type, stack_config) in stacks {
             if stack_config.lint.is_some() && stack_config.add_lint.is_some() {
                 return Err(UserError::Config {
-                    msg: format!("cannot set both lints and add-lints for stack {stack_type}"),
+                    msg: format!("cannot set both lint and add-lint for stack {stack_type}"),
                 });
             }
             if stack_config.fix.is_some() && stack_config.add_fix.is_some() {
                 return Err(UserError::Config {
-                    msg: format!("cannot set both fixes and add-fixes for stack {stack_type}"),
+                    msg: format!("cannot set both fix and add-fix for stack {stack_type}"),
                 });
             }
         }
@@ -86,10 +86,10 @@ pub struct CustomLint {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct StackConfig {
     pub lint: Option<Vec<StackCommand>>,
-    #[serde(alias = "add-lints")]
+    #[serde(alias = "add-lint")]
     pub add_lint: Option<Vec<StackCommand>>,
     pub fix: Option<Vec<StackCommand>>,
-    #[serde(alias = "add-fixes")]
+    #[serde(alias = "add-fix")]
     pub add_fix: Option<Vec<StackCommand>>,
 }
 
@@ -232,7 +232,7 @@ command = "fixes/sort.py"
         fn stack_type_map_key_is_case_insensitive() {
             let give = r#"
 [stack.PyThOn]
-add-lints = [{ name = "mypy", command = "mypy ." }]
+add-lint = [{ name = "mypy", command = "mypy ." }]
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -257,10 +257,10 @@ add-lints = [{ name = "mypy", command = "mypy ." }]
         }
 
         #[test]
-        fn stack_lints_inline_table() {
+        fn stack_lint_inline_table() {
             let give = r#"
 [stack.rust]
-lints = [{ name = "Clippy", command = "cargo clippy --all-targets" }]
+lint = [{ name = "Clippy", command = "cargo clippy --all-targets" }]
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -285,9 +285,9 @@ lints = [{ name = "Clippy", command = "cargo clippy --all-targets" }]
         }
 
         #[test]
-        fn stack_lints_array_of_tables() {
+        fn stack_lint_array_of_tables() {
             let give = r#"
-[[stack.rust.lints]]
+[[stack.rust.lint]]
 name = "Clippy"
 command = "cargo clippy --all-targets"
 "#;
@@ -314,10 +314,10 @@ command = "cargo clippy --all-targets"
         }
 
         #[test]
-        fn stack_add_lints() {
+        fn stack_add_lint() {
             let give = r#"
 [stack.python]
-add-lints = [{ name = "mypy", command = "mypy ." }]
+add-lint = [{ name = "mypy", command = "mypy ." }]
 "#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
@@ -375,12 +375,12 @@ command = "fixes/one.sh"
         use crate::domain::UserError;
 
         #[test]
-        fn rejects_lints_and_add_lints() {
+        fn rejects_lint_and_add_lint() {
             let config: Config = toml::from_str(
                 r#"
 [stack.python]
-lints = [{ name = "a", command = "a" }]
-add-lints = [{ name = "b", command = "b" }]
+lint = [{ name = "a", command = "a" }]
+add-lint = [{ name = "b", command = "b" }]
 "#,
             )
             .unwrap();
@@ -388,18 +388,18 @@ add-lints = [{ name = "b", command = "b" }]
             pretty::assert_eq!(
                 err,
                 UserError::Config {
-                    msg: "cannot set both lints and add-lints for stack Python".into(),
+                    msg: "cannot set both lint and add-lint for stack Python".into(),
                 }
             );
         }
 
         #[test]
-        fn rejects_fixes_and_add_fixes() {
+        fn rejects_fix_and_add_fix() {
             let config: Config = toml::from_str(
                 r#"
 [stack.python]
-fixes = [{ name = "a", command = "a" }]
-add-fixes = [{ name = "b", command = "b" }]
+fix = [{ name = "a", command = "a" }]
+add-fix = [{ name = "b", command = "b" }]
 "#,
             )
             .unwrap();
@@ -407,7 +407,7 @@ add-fixes = [{ name = "b", command = "b" }]
             pretty::assert_eq!(
                 err,
                 UserError::Config {
-                    msg: "cannot set both fixes and add-fixes for stack Python".into(),
+                    msg: "cannot set both fix and add-fix for stack Python".into(),
                 }
             );
         }
