@@ -65,11 +65,14 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
+        // fixes that override the default fixes
         match stack_config.and_then(|sc| sc.fix.as_ref()) {
             Some(fixes) => {
+                // override fixes defined --> use the override fixes
                 stack_executables.extend(fixes.iter().map(StackCommand::executable));
             }
             None => {
+                // no override fixes defined --> use the default fixes
                 for fix in detected_stack.stack.fixes() {
                     if !detected_stacks.stack_enabled(&fix.enabled_when()) {
                         continue;
@@ -78,6 +81,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
                 }
             }
         }
+        // fixes that are added to the existing fixes
         if let Some(add) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
             stack_executables.extend(add.iter().map(StackCommand::executable));
         }
