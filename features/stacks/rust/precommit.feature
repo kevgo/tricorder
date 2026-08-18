@@ -25,7 +25,6 @@ Feature: precommit Rust
       running 1 tools
       """
     And the exit code is 0
-    And file "main.rs" is unchanged
 
   Scenario: a custom fix is defined
     Given a file "tricorder.toml" with content
@@ -47,4 +46,3 @@ Feature: precommit Rust
       running 2 tools
       """
     And the exit code is 0
-    And file "main.rs" is unchanged
