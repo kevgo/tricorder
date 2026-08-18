@@ -5,6 +5,7 @@ Feature: custom fixes
       """
       taplo 0.10.0
       delete-empty-folders 0.0.2
+      ruff 0.15.16
       """
 
   Scenario: custom fixes run after the stack-specific ones, in the order defined
