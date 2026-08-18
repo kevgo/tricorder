@@ -59,23 +59,28 @@ Feature: custom lints
     Given a file "tricorder.toml" with content
       """
       [[custom-lints]]
-      name = "TOML custom lint"
-      command = "lints/toml.sh"
-      stack = "toml"
+      name = "Python custom lint"
+      command = "lints/python.sh"
+      stack = "python"
       """
-    And an executable file "lints/toml.sh" with content
+    And an executable file "lints/python.sh" with content
       """
       #!/bin/sh
-      echo "TOML custom lint is running"
+      echo "PYTHON LINT RAN"
+      """
+    And a file "main.py" with content
+      """
+      print("hello")
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      TOML custom lint
-      TOML custom lint is running
+      Python custom lint
+      PYTHON LINT RAN
       """
     And the exit code is 0
 
+  @this
   Scenario: custom lint with unmatched stack is skipped
     Given a file "tricorder.toml" with content
       """
@@ -87,13 +92,13 @@ Feature: custom lints
     And an executable file "lints/python.sh" with content
       """
       #!/bin/sh
-      echo "Python custom lint should not run"
+      echo "PYTHON LINT RAN"
       exit 4
       """
     When executing "tricorder lint --show=all"
     Then it does not print any of these lines
       """
       Python custom lint
-      Python custom lint should not run
+      PYTHON LINT RAN
       """
     And the exit code is 0
