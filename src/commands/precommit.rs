@@ -119,7 +119,7 @@ pub fn determine_precommit_fixes(
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {
-            stacks: staged_stacks,
+            detected_stacks: staged_stacks,
             global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };

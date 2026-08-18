@@ -11,7 +11,7 @@ const MARKER: &str = "keep-sorted end";
 /// that contain a "keep-sorted end" marker.
 pub fn fix_commands(
     FixCommandsArgs {
-        stacks,
+        detected_stacks,
         global_ignores,
         keep_sorted_ignores,
     }: FixCommandsArgs,
@@ -32,7 +32,7 @@ pub fn fix_commands(
     // step 3: group the files to sort by stack type
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
-        if let Some(stack_type) = stacks.stack_type_for_file(found.as_ref()) {
+        if let Some(stack_type) = detected_stacks.stack_type_for_file(found.as_ref()) {
             grouped.entry(stack_type).or_default().push(found);
         }
     }
@@ -56,7 +56,7 @@ pub fn fix_commands(
 }
 
 pub struct FixCommandsArgs<'a> {
-    pub stacks: &'a DetectedStacks,
+    pub detected_stacks: &'a DetectedStacks,
     pub global_ignores: Option<&'a Vec<String>>,
     pub keep_sorted_ignores: Option<&'a Vec<String>>,
 }
