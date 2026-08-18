@@ -64,7 +64,17 @@ pub fn determine_lints(
 
     // determine the runnables for the custom lints
     if let Some(custom_lints) = custom_lints {
-        for CustomLint { name, command } in custom_lints {
+        for CustomLint {
+            name,
+            command,
+            stack,
+        } in custom_lints
+        {
+            if let Some(stack) = stack
+                && !stacks.contains_stack(stack)
+            {
+                continue;
+            }
             result.push(conc::Runnable::Single(conc::Executable {
                 name: name.unwrap_or(command.clone()),
                 command: conc::shell_command(&command),

@@ -5,6 +5,7 @@ Feature: custom fixes
       """
       taplo 0.10.0
       delete-empty-folders 0.0.2
+      ruff 0.15.16
       """
 
   Scenario: custom fixes run after the stack-specific ones, in the order defined
@@ -66,14 +67,12 @@ Feature: custom fixes
       """
       #!/bin/sh
       echo "PYTHON FIX RAN"
+      exit 4
       """
     When executing "tricorder fix --show=all"
-    Then it does not print
+    Then it does not print any of these lines
       """
       my python fix
-      """
-    And it does not print
-      """
       PYTHON FIX RAN
       """
     And the exit code is 0

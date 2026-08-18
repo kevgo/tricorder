@@ -1,5 +1,10 @@
 # Tricorder changelog
 
+## Unreleased
+
+- custom lints support an optional `stack` field; when set, the lint runs only if that stack has files in scope
+- stack-scoped custom fixes are skipped when their stack has no files in scope (including in precommit when no files of that stack are staged)
+
 ## 0.0.17 (2026-08-15)
 
 - new `--show=verbose` option, prints the full command line (program and arguments) of every command Tricorder runs
