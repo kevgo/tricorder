@@ -86,7 +86,7 @@ Feature: custom lints
       """
     And an executable file "lints/python.sh" with content
       """
-      #!/usr/bin/env bash
+      #!/bin/sh
       echo "Python custom lint should not run"
       exit 4
       """

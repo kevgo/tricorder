@@ -124,12 +124,9 @@ Feature: custom fixes
       exit 4
       """
     When executing "tricorder fix --show=all"
-    Then it does not print
+    Then it does not print any of these lines
       """
       Python custom fix
-      """
-    And it does not print
-      """
       PYTHON FIX RAN
       """
     And the exit code is 0
