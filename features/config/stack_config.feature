@@ -8,16 +8,16 @@ Feature: stack-specific configuration
       ruff 0.15.16
       """
 
-  Scenario: add-lint runs alongside a built-in lint
+  Scenario: add-lint adds custom lints to the built-in ones for that stack
     Given a file "tricorder.toml" with content
       """
       [[stack.python.add-lint]]
-      name = "mypy"
-      command = "echo MYPY RAN"
+      name = "my lint"
+      command = "echo MY LINT RAN"
       """
     And a file "main.py" with content
       """
-      print("hello")
+      # some Python code
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
@@ -26,8 +26,8 @@ Feature: stack-specific configuration
       """
     And it prints the block
       """
-      mypy
-      MYPY RAN
+      my lint
+      MY LINT RAN
       """
     And the exit code is 0
 
