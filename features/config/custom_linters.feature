@@ -80,7 +80,7 @@ Feature: custom lints
       """
     And the exit code is 0
 
-  Scenario: custom lint with unmatched stack is skipped
+  Scenario: custom lint with unmatched stack does not run
     Given a file "tricorder.toml" with content
       """
       [[custom-lints]]
