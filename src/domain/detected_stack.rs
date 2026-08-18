@@ -51,11 +51,6 @@ impl DetectedStacks {
         stack.files.contains(file)
     }
 
-    #[must_use]
-    pub fn contains_stack(&self, stack_type: StackType) -> bool {
-        self.0.iter().any(|s| s.stack.stack_type() == stack_type)
-    }
-
     /// indicates whether a folder with the given name exists in the files,
     /// and whether it contains at least one file of the given type
     #[must_use]

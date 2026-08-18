@@ -1,4 +1,5 @@
 use crate::domain::{Ignores, Result, StackType, UserError};
+use ahash::AHashMap;
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -17,6 +18,8 @@ pub struct Config {
 
     #[serde(alias = "keep-sorted")]
     pub keep_sorted: Option<KeepSorted>,
+
+    pub stack: Option<AHashMap<StackType, StackConfig>>,
 }
 
 impl Config {
@@ -30,14 +33,41 @@ impl Config {
                 });
             }
         };
-        toml::from_str(&text).map_err(|err| UserError::Config {
+        let config: Self = toml::from_str(&text).map_err(|err| UserError::Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
-        })
+        })?;
+        config.validate()?;
+        Ok(config)
     }
 
     /// provides the matcher for the files that should not be linted
     pub fn ignores(&self) -> Result<Ignores> {
         Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+    }
+
+    /// the per-stack configuration for the given stack type, if any
+    #[must_use]
+    pub fn stack_config(&self, stack_type: StackType) -> Option<&StackConfig> {
+        self.stack.as_ref()?.get(&stack_type)
+    }
+
+    fn validate(&self) -> Result<()> {
+        let Some(stacks) = &self.stack else {
+            return Ok(());
+        };
+        for (stack_type, stack_config) in stacks {
+            if stack_config.lint.is_some() && stack_config.add_lint.is_some() {
+                return Err(UserError::Config {
+                    msg: format!("cannot set both lints and add-lints for stack {stack_type}"),
+                });
+            }
+            if stack_config.fix.is_some() && stack_config.add_fix.is_some() {
+                return Err(UserError::Config {
+                    msg: format!("cannot set both fixes and add-fixes for stack {stack_type}"),
+                });
+            }
+        }
+        Ok(())
     }
 }
 
@@ -45,14 +75,39 @@ impl Config {
 pub struct CustomFix {
     pub name: Option<String>,
     pub command: String,
-    pub stack: Option<StackType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct CustomLint {
     pub name: Option<String>,
     pub command: String,
-    pub stack: Option<StackType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+pub struct StackConfig {
+    pub lint: Option<Vec<StackCommand>>,
+    #[serde(alias = "add-lints")]
+    pub add_lint: Option<Vec<StackCommand>>,
+    pub fix: Option<Vec<StackCommand>>,
+    #[serde(alias = "add-fixes")]
+    pub add_fix: Option<Vec<StackCommand>>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq)]
+pub struct StackCommand {
+    pub name: String,
+    pub command: String,
+}
+
+impl StackCommand {
+    /// converts this stack command into a conc executable
+    #[must_use]
+    pub fn executable(&self) -> conc::Executable {
+        conc::Executable {
+            name: self.name.clone(),
+            command: conc::shell_command(&self.command),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -72,9 +127,19 @@ impl KeepSorted {
 mod tests {
 
     mod parse {
-        use crate::config::{Config, CustomFix, CustomLint};
+        use crate::config::{Config, CustomFix, CustomLint, StackCommand, StackConfig};
         use crate::domain::StackType;
+        use ahash::AHashMap;
         use big_s::S;
+
+        fn stack_map(
+            stack_type: StackType,
+            config: StackConfig,
+        ) -> AHashMap<StackType, StackConfig> {
+            let mut map = AHashMap::new();
+            map.insert(stack_type, config);
+            map
+        }
 
         #[test]
         fn defined() {
@@ -85,11 +150,9 @@ command = "lints/one.sh"
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
-stack = "python"
 
 [[custom-fixes]]
 command = "fixes/organize.py"
-stack = "python"
 
 [[custom-fixes]]
 name = "sort alphabetically"
@@ -101,28 +164,25 @@ command = "fixes/sort.py"
                     CustomFix {
                         name: None,
                         command: S("fixes/organize.py"),
-                        stack: Some(StackType::Python),
                     },
                     CustomFix {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
-                        stack: None,
                     },
                 ]),
                 custom_lints: Some(vec![
                     CustomLint {
                         name: None,
                         command: S("lints/one.sh"),
-                        stack: None,
                     },
                     CustomLint {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
-                        stack: Some(StackType::Python),
                     },
                 ]),
                 ignore: None,
                 keep_sorted: None,
+                stack: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -136,6 +196,7 @@ command = "fixes/sort.py"
                 custom_fixes: Some(vec![]),
                 ignore: None,
                 keep_sorted: None,
+                stack: None,
             };
             assert_eq!(have, want);
         }
@@ -148,6 +209,7 @@ command = "fixes/sort.py"
                 custom_fixes: None,
                 ignore: None,
                 keep_sorted: None,
+                stack: None,
             };
             assert_eq!(have, want);
         }
@@ -161,77 +223,122 @@ command = "fixes/sort.py"
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 keep_sorted: None,
+                stack: None,
             };
             pretty::assert_eq!(have, want);
         }
 
         #[test]
-        fn case_insensitive_stack_type() {
+        fn stack_type_map_key_is_case_insensitive() {
             let give = r#"
-[[custom-fixes]]
-command = "echo lowercase"
-stack = "python"
-
-[[custom-fixes]]
-command = "echo uppercase"
-stack = "PYTHON"
-
-[[custom-fixes]]
-command = "echo mixed case"
-stack = "PyThOn"
-
-[[custom-lints]]
-command = "echo lint lowercase"
-stack = "python"
-
-[[custom-lints]]
-command = "echo lint uppercase"
-stack = "PYTHON"
-
-[[custom-lints]]
-command = "echo lint mixed case"
-stack = "PyThOn"
-			"#;
+[stack.PyThOn]
+add-lints = [{ name = "mypy", command = "mypy ." }]
+"#;
             let have: Config = toml::from_str(give).unwrap();
             let want = Config {
-                custom_fixes: Some(vec![
-                    CustomFix {
-                        name: None,
-                        command: S("echo lowercase"),
-                        stack: Some(StackType::Python),
-                    },
-                    CustomFix {
-                        name: None,
-                        command: S("echo uppercase"),
-                        stack: Some(StackType::Python),
-                    },
-                    CustomFix {
-                        name: None,
-                        command: S("echo mixed case"),
-                        stack: Some(StackType::Python),
-                    },
-                ]),
-                custom_lints: Some(vec![
-                    CustomLint {
-                        name: None,
-                        command: S("echo lint lowercase"),
-                        stack: Some(StackType::Python),
-                    },
-                    CustomLint {
-                        name: None,
-                        command: S("echo lint uppercase"),
-                        stack: Some(StackType::Python),
-                    },
-                    CustomLint {
-                        name: None,
-                        command: S("echo lint mixed case"),
-                        stack: Some(StackType::Python),
-                    },
-                ]),
+                custom_fixes: None,
+                custom_lints: None,
                 ignore: None,
                 keep_sorted: None,
+                stack: Some(stack_map(
+                    StackType::Python,
+                    StackConfig {
+                        lint: None,
+                        add_lint: Some(vec![StackCommand {
+                            name: S("mypy"),
+                            command: S("mypy ."),
+                        }]),
+                        fix: None,
+                        add_fix: None,
+                    },
+                )),
             };
-            assert_eq!(have, want);
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn stack_lints_inline_table() {
+            let give = r#"
+[stack.rust]
+lints = [{ name = "Clippy", command = "cargo clippy --all-targets" }]
+"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_fixes: None,
+                custom_lints: None,
+                ignore: None,
+                keep_sorted: None,
+                stack: Some(stack_map(
+                    StackType::Rust,
+                    StackConfig {
+                        lint: Some(vec![StackCommand {
+                            name: S("Clippy"),
+                            command: S("cargo clippy --all-targets"),
+                        }]),
+                        add_lint: None,
+                        fix: None,
+                        add_fix: None,
+                    },
+                )),
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn stack_lints_array_of_tables() {
+            let give = r#"
+[[stack.rust.lints]]
+name = "Clippy"
+command = "cargo clippy --all-targets"
+"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_fixes: None,
+                custom_lints: None,
+                ignore: None,
+                keep_sorted: None,
+                stack: Some(stack_map(
+                    StackType::Rust,
+                    StackConfig {
+                        lint: Some(vec![StackCommand {
+                            name: S("Clippy"),
+                            command: S("cargo clippy --all-targets"),
+                        }]),
+                        add_lint: None,
+                        fix: None,
+                        add_fix: None,
+                    },
+                )),
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn stack_add_lints() {
+            let give = r#"
+[stack.python]
+add-lints = [{ name = "mypy", command = "mypy ." }]
+"#;
+            let have: Config = toml::from_str(give).unwrap();
+            let want = Config {
+                custom_fixes: None,
+                custom_lints: None,
+                ignore: None,
+                keep_sorted: None,
+                stack: Some(stack_map(
+                    StackType::Python,
+                    StackConfig {
+                        lint: None,
+                        add_lint: Some(vec![StackCommand {
+                            name: S("mypy"),
+                            command: S("mypy ."),
+                        }]),
+                        fix: None,
+                        add_fix: None,
+                    },
+                )),
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -250,17 +357,59 @@ command = "fixes/one.sh"
                 custom_lints: Some(vec![CustomLint {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
-                    stack: None,
                 }]),
                 custom_fixes: Some(vec![CustomFix {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
-                    stack: None,
                 }]),
                 ignore: None,
                 keep_sorted: None,
+                stack: None,
             };
             pretty::assert_eq!(have, want);
+        }
+    }
+
+    mod validate {
+        use crate::config::Config;
+        use crate::domain::UserError;
+
+        #[test]
+        fn rejects_lints_and_add_lints() {
+            let config: Config = toml::from_str(
+                r#"
+[stack.python]
+lints = [{ name = "a", command = "a" }]
+add-lints = [{ name = "b", command = "b" }]
+"#,
+            )
+            .unwrap();
+            let err = config.validate().unwrap_err();
+            pretty::assert_eq!(
+                err,
+                UserError::Config {
+                    msg: "cannot set both lints and add-lints for stack Python".into(),
+                }
+            );
+        }
+
+        #[test]
+        fn rejects_fixes_and_add_fixes() {
+            let config: Config = toml::from_str(
+                r#"
+[stack.python]
+fixes = [{ name = "a", command = "a" }]
+add-fixes = [{ name = "b", command = "b" }]
+"#,
+            )
+            .unwrap();
+            let err = config.validate().unwrap_err();
+            pretty::assert_eq!(
+                err,
+                UserError::Config {
+                    msg: "cannot set both fixes and add-fixes for stack Python".into(),
+                }
+            );
         }
     }
 

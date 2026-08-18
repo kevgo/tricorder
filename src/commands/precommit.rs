@@ -2,7 +2,7 @@ use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::{Runnables, add_custom_fixes};
-use crate::config::Config;
+use crate::config::{Config, StackCommand};
 use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
@@ -81,37 +81,42 @@ pub fn determine_precommit_fixes(
     // stack-specific fixes
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in staged_stacks {
-        let stack_executables = stacks_executables
-            .entry(stack.stack.stack_type())
-            .or_default();
-        for fix in stack.stack.fixes() {
-            let enabled = match fix.enabled_when() {
-                EnabledWhen::Always => true,
-                EnabledWhen::FilePresent {
-                    filename,
-                    stack_type: _,
-                } => Path::new(filename).exists(),
-                EnabledWhen::FolderContainingFileOfType {
-                    file_type: _,
-                    folder: name,
-                    // in the precommit hook, we don't scan for all files in the workspace,
-                    // so we can't check if the folder exists there and need to look for the folder directly
-                } => Path::new(name).exists(),
-            };
-            if enabled {
-                stack_executables.extend(fix.fix_commands(stack)?);
+        let stack_type = stack.stack.stack_type();
+        let stack_config = config.stack_config(stack_type);
+        let stack_executables = stacks_executables.entry(stack_type).or_default();
+        match stack_config.and_then(|sc| sc.fix.as_ref()) {
+            Some(fixes) => {
+                stack_executables.extend(fixes.iter().map(StackCommand::executable));
             }
+            None => {
+                for fix in stack.stack.fixes() {
+                    let enabled = match fix.enabled_when() {
+                        EnabledWhen::Always => true,
+                        EnabledWhen::FilePresent {
+                            filename,
+                            stack_type: _,
+                        } => Path::new(filename).exists(),
+                        EnabledWhen::FolderContainingFileOfType {
+                            file_type: _,
+                            folder: name,
+                            // in the precommit hook, we don't scan for all files in the workspace,
+                            // so we can't check if the folder exists there and need to look for the folder directly
+                        } => Path::new(name).exists(),
+                    };
+                    if enabled {
+                        stack_executables.extend(fix.fix_commands(stack)?);
+                    }
+                }
+            }
+        }
+        if let Some(add) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
+            stack_executables.extend(add.iter().map(StackCommand::executable));
         }
     }
 
     // custom fixes
     if let Some(custom_fixes) = &config.custom_fixes {
-        add_custom_fixes(
-            custom_fixes,
-            staged_stacks,
-            &mut global,
-            &mut stacks_executables,
-        );
+        add_custom_fixes(custom_fixes, &mut global);
     }
 
     // keep-sorted

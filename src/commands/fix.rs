@@ -1,7 +1,7 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomFix};
+use crate::config::{Config, CustomFix, StackCommand};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -62,20 +62,30 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
     // stack-specific fixes
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in stacks {
-        let stack_executables = stacks_executables
-            .entry(stack.stack.stack_type())
-            .or_default();
-        for fix in stack.stack.fixes() {
-            if !stacks.stack_enabled(&fix.enabled_when()) {
-                continue;
+        let stack_type = stack.stack.stack_type();
+        let stack_config = config.stack_config(stack_type);
+        let stack_executables = stacks_executables.entry(stack_type).or_default();
+        match stack_config.and_then(|sc| sc.fix.as_ref()) {
+            Some(fixes) => {
+                stack_executables.extend(fixes.iter().map(StackCommand::executable));
             }
-            stack_executables.extend(fix.fix_commands(stack)?);
+            None => {
+                for fix in stack.stack.fixes() {
+                    if !stacks.stack_enabled(&fix.enabled_when()) {
+                        continue;
+                    }
+                    stack_executables.extend(fix.fix_commands(stack)?);
+                }
+            }
+        }
+        if let Some(add) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
+            stack_executables.extend(add.iter().map(StackCommand::executable));
         }
     }
 
     // custom fixes
     if let Some(custom_fixes) = &config.custom_fixes {
-        add_custom_fixes(custom_fixes, stacks, &mut global, &mut stacks_executables);
+        add_custom_fixes(custom_fixes, &mut global);
     }
 
     // keep-sorted
@@ -127,30 +137,13 @@ impl Runnables {
     }
 }
 
-/// adds the custom fixes defined in the config file to the given fix collections
-///
-/// A custom fix with a `stack` runs only if at least one file of that stack is in scope.
-pub(crate) fn add_custom_fixes(
-    custom_fixes: &[CustomFix],
-    stacks: &DetectedStacks,
-    global: &mut Vec<conc::Executable>,
-    stacks_executables: &mut AHashMap<StackType, Vec<conc::Executable>>,
-) {
+/// adds the custom fixes defined in the config file to the global fix collection
+pub(crate) fn add_custom_fixes(custom_fixes: &[CustomFix], global: &mut Vec<conc::Executable>) {
     for fix in custom_fixes {
-        let executable = conc::Executable {
+        global.push(conc::Executable {
             name: fix.name.clone().unwrap_or_else(|| fix.command.clone()),
             command: conc::shell_command(&fix.command),
-        };
-        match fix.stack {
-            None => global.push(executable),
-            Some(stack_type) if stacks.contains_stack(stack_type) => {
-                stacks_executables
-                    .entry(stack_type)
-                    .or_default()
-                    .push(executable);
-            }
-            Some(_) => {}
-        }
+        });
     }
 }
 
@@ -158,26 +151,7 @@ pub(crate) fn add_custom_fixes(
 mod tests {
     use super::add_custom_fixes;
     use crate::config::CustomFix;
-    use crate::domain::{DetectedStack, DetectedStacks, Files, StackType};
-    use crate::stacks::Python;
-    use ahash::AHashMap;
     use big_s::S;
-    use std::path::PathBuf;
-
-    fn python_stacks() -> DetectedStacks {
-        DetectedStacks::new(vec![DetectedStack {
-            stack: Box::new(Python {}),
-            files: Files::from(vec![PathBuf::from("main.py")]),
-        }])
-    }
-
-    fn python_fix() -> CustomFix {
-        CustomFix {
-            name: Some(S("python fix")),
-            command: S("echo python"),
-            stack: Some(StackType::Python),
-        }
-    }
 
     fn executable_names(executables: &[conc::Executable]) -> Vec<&str> {
         executables
@@ -187,54 +161,24 @@ mod tests {
     }
 
     #[test]
-    fn stack_in_scope() {
-        let stacks = python_stacks();
+    fn custom_fixes_go_global() {
         let mut global = Vec::new();
-        let mut stacks_executables = AHashMap::new();
         add_custom_fixes(
-            &[python_fix()],
-            &stacks,
+            &[
+                CustomFix {
+                    name: Some(S("global fix")),
+                    command: S("echo global"),
+                },
+                CustomFix {
+                    name: None,
+                    command: S("echo unnamed"),
+                },
+            ],
             &mut global,
-            &mut stacks_executables,
         );
-        assert!(global.is_empty());
         pretty::assert_eq!(
-            executable_names(stacks_executables.get(&StackType::Python).unwrap()),
-            vec!["python fix"]
+            executable_names(&global),
+            vec!["global fix", "echo unnamed"]
         );
-    }
-
-    #[test]
-    fn stack_not_in_scope() {
-        let stacks = DetectedStacks::new(vec![]);
-        let mut global = Vec::new();
-        let mut stacks_executables = AHashMap::new();
-        add_custom_fixes(
-            &[python_fix()],
-            &stacks,
-            &mut global,
-            &mut stacks_executables,
-        );
-        assert!(global.is_empty());
-        assert!(stacks_executables.is_empty());
-    }
-
-    #[test]
-    fn no_stack() {
-        let stacks = python_stacks();
-        let mut global = Vec::new();
-        let mut stacks_executables = AHashMap::new();
-        add_custom_fixes(
-            &[CustomFix {
-                name: Some(S("global fix")),
-                command: S("echo global"),
-                stack: None,
-            }],
-            &stacks,
-            &mut global,
-            &mut stacks_executables,
-        );
-        pretty::assert_eq!(executable_names(&global), vec!["global fix"]);
-        assert!(stacks_executables.is_empty());
     }
 }
