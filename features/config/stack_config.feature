@@ -11,8 +11,9 @@ Feature: stack-specific configuration
   Scenario: add-lint runs alongside a built-in lint
     Given a file "tricorder.toml" with content
       """
-      [stack.python]
-      add-lint = [{ name = "mypy", command = "echo MYPY RAN" }]
+      [[stack.python.add-lint]]
+      name = "mypy"
+      command = "echo MYPY RAN"
       """
     And a file "main.py" with content
       """
@@ -33,8 +34,9 @@ Feature: stack-specific configuration
   Scenario: lint replaces the built-in lint
     Given a file "tricorder.toml" with content
       """
-      [stack.python]
-      lint = [{ name = "custom python lint", command = "echo CUSTOM LINT RAN" }]
+      [[stack.python.lint]]
+      name = "custom python lint"
+      command = "echo CUSTOM LINT RAN"
       """
     And a file "main.py" with content
       """
@@ -72,22 +74,24 @@ Feature: stack-specific configuration
   Scenario: a stack section does nothing when no files of that stack exist
     Given a file "tricorder.toml" with content
       """
-      [stack.python]
-      add-lint = [{ name = "mypy", command = "echo MYPY RAN" }]
+      [[stack.python.add-lint]]
+      name = "my custom lint"
+      command = "echo MY CUSTOM LINT RAN"
       """
     When executing "tricorder lint --show=all"
     Then it does not print any of these lines
       """
-      mypy
-      MYPY RAN
+      my custom lint
+      MY CUSTOM LINT RAN
       """
     And the exit code is 0
 
   Scenario: add-fix runs after the built-in fix within the stack sequence
     Given a file "tricorder.toml" with content
       """
-      [stack.python]
-      add-fix = [{ name = "isort", command = "echo ISORT RAN" }]
+      [[stack.python.add-fix]]
+      name = "my fix"
+      command = "echo MY FIX RAN"
       """
     And a file "main.py" with content
       """
@@ -98,7 +102,7 @@ Feature: stack-specific configuration
       """
       fix Python (ruff)
       format Python (ruff)
-      isort
-      ISORT RAN
+      my fix
+      MY FIX RAN
       """
     And the exit code is 0
