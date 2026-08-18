@@ -66,14 +66,12 @@ Feature: custom fixes
       """
       #!/bin/sh
       echo "PYTHON FIX RAN"
+      exit 4
       """
     When executing "tricorder fix --show=all"
-    Then it does not print
+    Then it does not print any of these lines
       """
       my python fix
-      """
-    And it does not print
-      """
       PYTHON FIX RAN
       """
     And the exit code is 0
@@ -105,28 +103,6 @@ Feature: custom fixes
     Then it prints the block
       """
       my python fix
-      PYTHON FIX RAN
-      """
-    And the exit code is 0
-
-  Scenario: a stack-scoped custom fix is skipped when no file of that stack exists
-    Given a file "tricorder.toml" with content
-      """
-      [[custom-fixes]]
-      name = "Python custom fix"
-      command = "fixes/python.sh"
-      stack = "python"
-      """
-    And an executable file "fixes/python.sh" with content
-      """
-      #!/bin/sh
-      echo "PYTHON FIX RAN"
-      exit 4
-      """
-    When executing "tricorder fix --show=all"
-    Then it does not print any of these lines
-      """
-      Python custom fix
       PYTHON FIX RAN
       """
     And the exit code is 0
