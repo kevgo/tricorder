@@ -52,7 +52,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runnables> {
+pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
     if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
@@ -61,21 +61,26 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
 
     // stack-specific fixes
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
-    for stack in stacks {
+    for detected_stack in detected_stacks {
         let stack_executables = stacks_executables
-            .entry(stack.stack.stack_type())
+            .entry(detected_stack.stack.stack_type())
             .or_default();
-        for fix in stack.stack.fixes() {
-            if !stacks.stack_enabled(&fix.enabled_when()) {
+        for fix in detected_stack.stack.fixes() {
+            if !detected_stacks.stack_enabled(&fix.enabled_when()) {
                 continue;
             }
-            stack_executables.extend(fix.fix_commands(stack)?);
+            stack_executables.extend(fix.fix_commands(detected_stack)?);
         }
     }
 
     // custom fixes
     if let Some(custom_fixes) = &config.custom_fixes {
-        add_custom_fixes(custom_fixes, stacks, &mut global, &mut stacks_executables);
+        add_custom_fixes(
+            custom_fixes,
+            detected_stacks,
+            &mut global,
+            &mut stacks_executables,
+        );
     }
 
     // keep-sorted
@@ -83,7 +88,7 @@ pub fn determine_fixes(config: &Config, stacks: &DetectedStacks) -> Result<Runna
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {
-            stacks,
+            detected_stacks,
             global_ignores: config.ignore.as_ref(),
             keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
         };
