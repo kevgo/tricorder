@@ -99,13 +99,11 @@ pub struct StackCommand {
     pub command: String,
 }
 
-impl StackCommand {
-    /// converts this stack command into a conc executable
-    #[must_use]
-    pub fn executable(&self) -> conc::Executable {
+impl From<&StackCommand> for conc::Executable {
+    fn from(command: &StackCommand) -> Self {
         conc::Executable {
-            name: self.name.clone(),
-            command: conc::shell_command(&self.command),
+            name: command.name.clone(),
+            command: conc::shell_command(&command.command),
         }
     }
 }

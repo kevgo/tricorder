@@ -56,7 +56,7 @@ pub fn determine_lints(
                 result.extend(
                     lints
                         .iter()
-                        .map(|lint| conc::Runnable::Single(lint.executable())),
+                        .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
                 );
             }
             None => {
@@ -75,7 +75,7 @@ pub fn determine_lints(
         if let Some(add) = stack_config.and_then(|sc| sc.add_lint.as_ref()) {
             result.extend(
                 add.iter()
-                    .map(|lint| conc::Runnable::Single(lint.executable())),
+                    .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
             );
         }
     }

@@ -1,7 +1,7 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomFix, StackCommand};
+use crate::config::{Config, CustomFix};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -69,7 +69,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         match stack_config.and_then(|sc| sc.fix.as_ref()) {
             Some(fixes) => {
                 // override fixes defined --> use the override fixes
-                stack_executables.extend(fixes.iter().map(StackCommand::executable));
+                stack_executables.extend(fixes.iter().map(conc::Executable::from));
             }
             None => {
                 // no override fixes defined --> use the default fixes
@@ -83,7 +83,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         }
         // fixes that are added to the existing fixes
         if let Some(add) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
-            stack_executables.extend(add.iter().map(StackCommand::executable));
+            stack_executables.extend(add.iter().map(conc::Executable::from));
         }
     }
 
