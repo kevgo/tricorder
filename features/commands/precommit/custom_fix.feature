@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" skips stack-scoped custom fixes when no file of that stack is staged
+Feature: stack-scoped custom fixes
 
   Background:
     Given a Git repository
