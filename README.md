@@ -131,7 +131,7 @@ ignore = ["two.css", "vendor/", "**/*.min.css"]
 name = "custom lint 1"
 command = "lints/one.sh"
 
-# define another custom linter that only runs when Python files are in scope
+# define another custom linter (runs only if Python files are in scope)
 [[custom-lints]]
 name = "custom lint 2"
 command = "lints/two.sh"
