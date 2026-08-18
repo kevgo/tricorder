@@ -64,7 +64,7 @@ Feature: custom fixes
       """
     And an executable file "fixes/python.sh" with content
       """
-      #!/usr/bin/env bash
+      #!/bin/sh
       echo "PYTHON FIX RAN"
       """
     When executing "tricorder fix --show=all"
