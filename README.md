@@ -152,9 +152,8 @@ ignore = ["README.md"]  # ignored only by keep-sorted
 ```
 
 The optional `stack` field on custom lints
-and fixes limits the tool to workspaces
-(or precommit stages) that contain files of that stack.
-Stack-scoped custom fixes run sequentially with that stack's built-in tools.
+and fixes limits the tool to situations where files of
+that stack would be processed.
 
 ## Usage
 
