@@ -65,7 +65,7 @@ Feature: custom lints
       """
     And an executable file "lints/toml.sh" with content
       """
-      #!/usr/bin/env bash
+      #!/bin/sh
       echo "TOML custom lint is running"
       """
     When executing "tricorder lint --show=all"
