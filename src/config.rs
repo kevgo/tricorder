@@ -20,7 +20,7 @@ pub struct Config {
     #[serde(alias = "keep-sorted")]
     pub keep_sorted: Option<KeepSorted>,
 
-    pub stack: Option<AHashMap<StackType, StackConfig>>,
+    pub stacks: Option<AHashMap<StackType, StackConfig>>,
 }
 
 impl Config {
@@ -60,7 +60,7 @@ impl Config {
     /// provides the configuration for the given stack type
     #[must_use]
     pub fn stack_config(&self, stack_type: StackType) -> Option<&StackConfig> {
-        self.stack.as_ref()?.get(&stack_type)
+        self.stacks.as_ref()?.get(&stack_type)
     }
 }
 
@@ -170,7 +170,7 @@ mod tests {
                 ]),
                 ignore: None,
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -184,7 +184,7 @@ mod tests {
                 custom_fixes: Some(vec![]),
                 ignore: None,
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             assert_eq!(have, want);
         }
@@ -197,7 +197,7 @@ mod tests {
                 custom_fixes: None,
                 ignore: None,
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             assert_eq!(have, want);
         }
@@ -211,7 +211,7 @@ mod tests {
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -230,7 +230,7 @@ mod tests {
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -248,7 +248,7 @@ mod tests {
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -266,7 +266,7 @@ mod tests {
         fn stack_type_map_key_is_case_insensitive() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "PyThOn": {
       "add-lint": [{ "name": "mypy", "command": "mypy ." }]
     }
@@ -279,7 +279,7 @@ mod tests {
                 custom_lints: None,
                 ignore: None,
                 keep_sorted: None,
-                stack: Some(stack_map(
+                stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
                         lint: None,
@@ -299,7 +299,7 @@ mod tests {
         fn stack_lint() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "rust": {
       "lint": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
     }
@@ -312,7 +312,7 @@ mod tests {
                 custom_lints: None,
                 ignore: None,
                 keep_sorted: None,
-                stack: Some(stack_map(
+                stacks: Some(stack_map(
                     StackType::Rust,
                     StackConfig {
                         lint: Some(vec![StackCommand {
@@ -332,7 +332,7 @@ mod tests {
         fn stack_add_lint() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "python": {
       "add-lint": [{ "name": "mypy", "command": "mypy ." }]
     }
@@ -345,7 +345,7 @@ mod tests {
                 custom_lints: None,
                 ignore: None,
                 keep_sorted: None,
-                stack: Some(stack_map(
+                stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
                         lint: None,
@@ -385,7 +385,7 @@ mod tests {
                 }]),
                 ignore: None,
                 keep_sorted: None,
-                stack: None,
+                stacks: None,
             };
             pretty::assert_eq!(have, want);
         }
