@@ -1,0 +1,30 @@
+{
+  // current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
+  "ignore": ["Cargo.toml"],
+  "keep-sorted": {
+    "enabled": true,
+    "ignore": ["README.md", "src/apps/keep_sorted.rs"],
+  },
+  "stack": {
+    "rust": {
+      "lint": [
+        {
+          "name": "cargo clippy",
+          "command": "cargo clippy --all-targets --all-features -- --deny=warnings",
+        },
+        {
+          "name": "cargo clippy for Cucumber code",
+          "command": "cargo clippy --test=cuke --all-features -- --deny=warnings",
+        },
+      ],
+      "fix": [
+        { "name": "cargo fix", "command": "cargo +nightly fix --allow-dirty" },
+        {
+          "name": "cargo clippy --fix",
+          "command": "cargo clippy --fix --allow-dirty",
+        },
+        { "name": "cargo fmt", "command": "cargo +nightly fmt" },
+      ],
+    },
+  },
+}

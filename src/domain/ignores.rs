@@ -11,15 +11,19 @@ impl Ignores {
     pub fn new(patterns: &[String], dir: &Path) -> Result<Self> {
         let mut builder = GitignoreBuilder::new(dir);
         for pattern in patterns {
-            builder
-                .add_line(None, pattern)
-                .map_err(|err| UserError::Config {
-                    msg: format!("invalid ignore pattern \"{pattern}\": {err}"),
-                })?;
+            builder.add_line(None, pattern).map_err(|err| {
+                UserError::ConfigInvalidIgnorePattern {
+                    pattern: Some(pattern.clone()),
+                    err: err.to_string(),
+                }
+            })?;
         }
-        let gitignore = builder.build().map_err(|err| UserError::Config {
-            msg: format!("invalid ignore patterns: {err}"),
-        })?;
+        let gitignore = builder
+            .build()
+            .map_err(|err| UserError::ConfigInvalidIgnorePattern {
+                pattern: None,
+                err: err.to_string(),
+            })?;
         Ok(Self(gitignore))
     }
 

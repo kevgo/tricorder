@@ -8,11 +8,17 @@ Feature: stack-scoped custom fixes
       rumdl 0.2.14
       ruff 0.15.16
       """
-    And a file "tricorder.toml" with content
+    And a file "tricorder.json" with content
       """
-      [[stack.python.fix]]
-      name = "my python fix"
-      command = "fixes/python.sh"
+      {
+        "stack": {
+          "python": {
+            "fix": [
+              { "name": "my python fix", "command": "fixes/python.sh" }
+            ]
+          }
+        }
+      }
       """
     And an executable file "fixes/python.sh" with content
       """

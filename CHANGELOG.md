@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- breaking: the config file is now JSON (`tricorder.json` / `tricorder.jsonc`); `tricorder.toml` is no longer read
 - breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 
 ## 0.0.17 (2026-08-15)
