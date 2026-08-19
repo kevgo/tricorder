@@ -5,7 +5,7 @@
     "enabled": true,
     "ignore": ["README.md", "src/apps/keep_sorted.rs"],
   },
-  "stack": {
+  "stacks": {
     "rust": {
       "lint": [
         {

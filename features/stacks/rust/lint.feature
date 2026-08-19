@@ -25,7 +25,7 @@ Feature: lint Rust
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "rust": {
             "lint": [
               {
