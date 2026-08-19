@@ -82,6 +82,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
+    // TODO: receive a &dyn Tool instead of an EnabledWhen because that leads to cleaner call sites
     pub fn stack_enabled(&self, enabled_when: &EnabledWhen) -> bool {
         match enabled_when {
             EnabledWhen::Always => true,
