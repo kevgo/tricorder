@@ -23,7 +23,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_lints(&all_stacks, config.custom_lints, is_git_repo)?;
+    let runnables = determine_lints(&config, &all_stacks, is_git_repo)?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
@@ -42,42 +42,44 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 }
 
 pub fn determine_lints(
+    config: &Config,
     detected_stacks: &DetectedStacks,
-    custom_lints: Option<Vec<CustomLint>>,
     is_git_repo: IsGitRepo,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
     // determine the lints for the stacks
     for detected_stack in detected_stacks {
-        for lint in detected_stack.stack.lints() {
-            if !detected_stacks.stack_enabled(&lint.enabled_when()) {
-                continue;
+        let stack_config = config.stack_config(detected_stack.stack.stack_type());
+        // schedule either the override lints or the default lints
+        if let Some(override_lints) = stack_config.and_then(|sc| sc.lint.as_ref()) {
+            for override_lint in override_lints {
+                let executable = conc::Executable::from(override_lint);
+                result.push(conc::Runnable::Single(executable));
             }
-            if let Some(executable) = lint.lint_commands(detected_stack)? {
-                result.push(executable);
-            } else {
-                // this app is not available for this platform --> don't run it
+        } else {
+            for default_lint in detected_stack.stack.lints() {
+                if detected_stacks.stack_enabled(&default_lint.enabled_when())
+                    && let Some(executable) = default_lint.lint_commands(detected_stack)?
+                {
+                    result.push(executable);
+                }
+            }
+        }
+        if let Some(additional_lints) = stack_config.and_then(|sc| sc.add_lint.as_ref()) {
+            for additional_lint in additional_lints {
+                let executable = conc::Executable::from(additional_lint);
+                result.push(conc::Runnable::Single(executable));
             }
         }
     }
 
     // determine the runnables for the custom lints
-    if let Some(custom_lints) = custom_lints {
-        for CustomLint {
-            name,
-            command,
-            stack,
-        } in custom_lints
-        {
-            if let Some(stack) = stack
-                && !detected_stacks.contains_stack(stack)
-            {
-                continue;
-            }
+    if let Some(custom_lints) = &config.custom_lints {
+        for CustomLint { name, command } in custom_lints {
             result.push(conc::Runnable::Single(conc::Executable {
-                name: name.unwrap_or(command.clone()),
-                command: conc::shell_command(&command),
+                name: name.clone().unwrap_or_else(|| command.clone()),
+                command: conc::shell_command(command),
             }));
         }
     }

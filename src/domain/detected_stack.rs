@@ -51,11 +51,6 @@ impl DetectedStacks {
         stack.files.contains(file)
     }
 
-    #[must_use]
-    pub fn contains_stack(&self, stack_type: StackType) -> bool {
-        self.0.iter().any(|s| s.stack.stack_type() == stack_type)
-    }
-
     /// indicates whether a folder with the given name exists in the files,
     /// and whether it contains at least one file of the given type
     #[must_use]
@@ -87,6 +82,7 @@ impl DetectedStacks {
     }
 
     #[must_use]
+    // TODO: receive a &dyn Tool instead of an EnabledWhen because that leads to cleaner call sites
     pub fn stack_enabled(&self, enabled_when: &EnabledWhen) -> bool {
         match enabled_when {
             EnabledWhen::Always => true,
