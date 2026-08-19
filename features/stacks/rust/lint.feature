@@ -21,16 +21,20 @@ Feature: lint Rust
     And the exit code is 0
     And file "main.rs" is unchanged
 
-  Scenario: a custom linter is defined
+  Scenario: rust-specific linters
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
-          {
-            "command": "echo 'custom linter running'",
-            "name": "my custom linter"
+        "stack": {
+          "rust": {
+            "lint": [
+              {
+                "command": "echo 'custom linter running'",
+                "name": "my custom linter"
+              }
+            ]
           }
-        ]
+        }
       }
       """
     When executing "tricorder lint --show=all"
