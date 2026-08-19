@@ -395,20 +395,16 @@ mod tests {
         use crate::config::{Config, KeepSorted};
         use big_s::S;
 
-        fn parse(text: &str) -> Config {
-            Config::parse(text, "test.json").unwrap()
-        }
-
         #[test]
         fn absent() {
-            let have = parse("");
+            let have = Config::parse("", "test.json").unwrap();
             assert_eq!(have.keep_sorted, None);
         }
 
         #[test]
         fn enabled_true() {
             let give = r#"{ "keep-sorted": { "enabled": true } }"#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
@@ -421,7 +417,7 @@ mod tests {
         #[test]
         fn enabled_false() {
             let give = r#"{ "keep-sorted": { "enabled": false } }"#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
@@ -434,7 +430,7 @@ mod tests {
         #[test]
         fn ignore() {
             let give = r#"{ "keep-sorted": { "enabled": true, "ignore": ["README.md"] } }"#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
