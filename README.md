@@ -148,7 +148,7 @@ command = "isort ."
 
 # override stack-specific lints and fixes
 [[stack.rust.lint]]
-name = "Clippy"
+name = "clippy"
 command = "cargo clippy --all-targets"
 
 [[stack.rust.fix]]
