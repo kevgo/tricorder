@@ -36,7 +36,7 @@ Feature: install all Go tools
       	fmt.Println("Hello, world!")
       }
       """
-    And file "run-that-app" now matches
+    And file "run-that-app" now has an additional line matching
       """
       # more info at https://github.com/kevgo/run-that-app
 

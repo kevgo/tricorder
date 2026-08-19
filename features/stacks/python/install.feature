@@ -34,7 +34,7 @@ Feature: install all Python tools
       """
     And the exit code is 0
     And file "main.py" is unchanged
-    And file "run-that-app" now matches
+    And file "run-that-app" now has an additional line matching
       """
       # more info at https://github.com/kevgo/run-that-app
 
