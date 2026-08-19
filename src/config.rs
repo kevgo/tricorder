@@ -28,13 +28,15 @@ impl Config {
             Ok(text) => text,
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(Self::default()),
             Err(err) => {
-                return Err(UserError::Config {
-                    msg: format!("cannot read {CONFIG_FILENAME}: {err}"),
+                return Err(UserError::ConfigCannotRead {
+                    filename: CONFIG_FILENAME.to_string(),
+                    err: err.to_string(),
                 });
             }
         };
-        toml::from_str(&text).map_err(|err| UserError::Config {
-            msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
+        toml::from_str(&text).map_err(|err| UserError::ConfigCannotParse {
+            filename: CONFIG_FILENAME.to_string(),
+            err: err.to_string(),
         })
     }
 
