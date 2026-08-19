@@ -43,7 +43,7 @@ impl Config {
         Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
     }
 
-    /// the per-stack configuration for the given stack type, if any
+    /// provides the configuration for the given stack type
     #[must_use]
     pub fn stack_config(&self, stack_type: StackType) -> Option<&StackConfig> {
         self.stack.as_ref()?.get(&stack_type)
