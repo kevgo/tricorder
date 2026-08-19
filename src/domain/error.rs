@@ -109,12 +109,14 @@ impl UserError {
                 println!("cannot read config file {filename}: {err}")
             }
             UserError::ConfigInvalidIgnorePattern { pattern, err } => {
-                println!("config file contains invalid ignore pattern: {err}");
+                println!("Cannot parse the gitignore patterns defined in the config file: {err}");
                 println!();
-                println!("The problematic pattern is: {pattern:?}");
-                println!();
-                println!("These must be valid gitignore patterns.");
-                println!("See https://git-scm.com/docs/gitignore#_pattern_format for the syntax.");
+                if let Some(pattern) = pattern {
+                    println!("The problematic pattern is: {pattern:?}");
+                    println!();
+                }
+                println!("These must be valid gitignore patterns,");
+                println!("see https://git-scm.com/docs/gitignore#_pattern_format for the syntax.");
             }
             UserError::ExecutableNotFound { path } => {
                 println!("executable not found: {}", path.display());
