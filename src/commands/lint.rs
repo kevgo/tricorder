@@ -43,14 +43,14 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 
 pub fn determine_lints(
     config: &Config,
-    stacks: &DetectedStacks,
+    detected_stacks: &DetectedStacks,
     is_git_repo: IsGitRepo,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
     // determine the lints for the stacks
-    for stack in stacks {
-        let stack_config = config.stack_config(stack.stack.stack_type());
+    for detected_stack in detected_stacks {
+        let stack_config = config.stack_config(detected_stack.stack.stack_type());
         match stack_config.and_then(|sc| sc.lint.as_ref()) {
             Some(lints) => {
                 result.extend(
@@ -60,11 +60,11 @@ pub fn determine_lints(
                 );
             }
             None => {
-                for lint in stack.stack.lints() {
-                    if !stacks.stack_enabled(&lint.enabled_when()) {
+                for lint in detected_stack.stack.lints() {
+                    if !detected_stacks.stack_enabled(&lint.enabled_when()) {
                         continue;
                     }
-                    if let Some(executable) = lint.lint_commands(stack)? {
+                    if let Some(executable) = lint.lint_commands(detected_stack)? {
                         result.push(executable);
                     } else {
                         // this app is not available for this platform --> don't run it
