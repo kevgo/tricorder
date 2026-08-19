@@ -36,10 +36,6 @@ Feature: install all Python tools
     And file "main.py" is unchanged
     And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
-      node 26.4.0
-      prettier 3.7.0
       ruff \d+\.\d+\.\d+
       uv \d+\.\d+\.\d+
       """

@@ -38,7 +38,5 @@ Feature: install all Go tools
       """
     And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
       gofumpt \d+\.\d+\.\d+
       """

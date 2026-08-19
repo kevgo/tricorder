@@ -2,12 +2,16 @@
 Feature: install all YML tools
 
   Scenario: not installed
-    Given a file "main.yml" with content
+    Given a file "run-that-app" with content
+      """
+      node 26.4.0
+      """
+    And a file "main.yml" with content
       """
       key:     value
       """
     When executing "tricorder fix --show=all"
-    And it prints the lines
+    Then it prints the lines
       """
       fix YML (Prettier)
       """
@@ -18,7 +22,5 @@ Feature: install all YML tools
       """
     And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
       prettier \d+\.\d+\.\d+
       """

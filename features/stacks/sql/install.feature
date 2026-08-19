@@ -22,7 +22,5 @@ Feature: install all SQL tools
       """
     And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
       uv \d+\.\d+\.\d+
       """

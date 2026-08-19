@@ -59,6 +59,61 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
     );
 }
 
+#[then(expr = "file {string} now has an additional line matching")]
+async fn file_has_additional_line_matching(
+    world: &mut TricorderWorld,
+    step: &Step,
+    filename: String,
+) {
+    let docstring = step.docstring.as_ref().unwrap();
+    let previous = world
+        .original_files
+        .iter()
+        .find(|file| file.name == filename)
+        .map_or("", |file| file.content.as_str());
+    let filepath = world.dir.join(&filename);
+    let have = fs::read_to_string(&filepath).await.unwrap();
+    let mut remaining = content_lines(&have);
+    // all non-comment lines the file had before must still be there
+    for want in content_lines(previous) {
+        let Some(pos) = remaining.iter().position(|line| *line == want) else {
+            panic!("file '{filename}' no longer contains line '{want}'\n\nHAVE:\n{have}\n\n");
+        };
+        remaining.remove(pos);
+    }
+    // each regex must match exactly one of the new lines
+    for want in content_lines(docstring) {
+        let regex = Regex::new(&format!("^{want}$")).unwrap();
+        let matching: Vec<usize> = remaining
+            .iter()
+            .enumerate()
+            .filter(|(_, line)| regex.is_match(line))
+            .map(|(i, _)| i)
+            .collect();
+        assert_eq!(
+            matching.len(),
+            1,
+            "\n\nHAVE:\n{have}\n\nWANT exactly one new line matching:\n{want}\n\n"
+        );
+        remaining.remove(matching[0]);
+    }
+    // no other lines were added
+    assert!(
+        remaining.is_empty(),
+        "file '{filename}' has unexpected additional lines:\n{}\n\nHAVE:\n{have}\n\n",
+        remaining.join("\n")
+    );
+}
+
+fn content_lines(text: &str) -> Vec<&str> {
+    text.lines()
+        .filter(|line| {
+            let trimmed = line.trim();
+            !trimmed.is_empty() && !trimmed.starts_with('#')
+        })
+        .collect()
+}
+
 #[then(expr = "file {string} now has content")]
 async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str();

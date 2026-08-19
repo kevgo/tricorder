@@ -23,9 +23,5 @@ Feature: install all JSON tools
       """
     And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
-      delete-empty-folders 0.0.2
-      node 26.4.0
       prettier \d+\.\d+\.\d+
       """
