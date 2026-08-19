@@ -13,7 +13,7 @@ Feature: stack-specific fixes
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "add-fix": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
@@ -42,7 +42,7 @@ Feature: stack-specific fixes
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "fix": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
@@ -71,7 +71,7 @@ Feature: stack-specific fixes
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "fix": []
           }
@@ -93,7 +93,7 @@ Feature: stack-specific fixes
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "add-fix": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
