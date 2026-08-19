@@ -29,12 +29,16 @@ Feature: precommit Rust
     Given a file "tricorder.json" with content
       """
       {
-        "custom-fixes": [
-          {
-            "command": "echo 'custom fix running'",
-            "name": "my custom fix"
+        "stack": {
+          "rust": {
+            "fix": [
+              {
+                "command": "echo 'custom fix running'",
+                "name": "my custom fix"
+              }
+            ]
           }
-        ]
+        }
       }
       """
     When executing "tricorder precommit --show=all"
