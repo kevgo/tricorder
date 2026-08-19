@@ -66,11 +66,11 @@ pub fn determine_lints(
                 }
             }
         }
-        if let Some(add) = stack_config.and_then(|sc| sc.add_lint.as_ref()) {
-            result.extend(
-                add.iter()
-                    .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
-            );
+        if let Some(additional_lints) = stack_config.and_then(|sc| sc.add_lint.as_ref()) {
+            for additional_lint in additional_lints {
+                let executable = conc::Executable::from(additional_lint);
+                result.push(conc::Runnable::Single(executable));
+            }
         }
     }
 
