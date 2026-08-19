@@ -169,9 +169,11 @@ If both exist, **tricorder.json** takes precedence.
   // github.com/google/keep-sorted is disabled by default
   // because it scans the file content of all workspace files for markers
   // to determine which files to sort
-  "keep-sorted": {
-    "enabled": true,
-    "ignore": ["README.md"] // ignored only by keep-sorted
+  "applications": {
+    "keep-sorted": {
+      "enabled": true,
+      "ignore": ["README.md"] // ignored only by keep-sorted
+    }
   }
 }
 ```

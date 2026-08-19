@@ -38,8 +38,10 @@ Feature: keep-sorted support
     Given a file "tricorder.json" with content
       """
       {
-        "keep-sorted": {
-          "enabled": true
+        "applications": {
+          "keep-sorted": {
+            "enabled": true
+          }
         }
       }
       """
@@ -69,8 +71,10 @@ Feature: keep-sorted support
       """
       {
         "ignore": ["unsorted_1.toml"],
-        "keep-sorted": {
-          "enabled": true
+        "applications": {
+          "keep-sorted": {
+            "enabled": true
+          }
         }
       }
       """
@@ -92,9 +96,11 @@ Feature: keep-sorted support
     Given a file "tricorder.json" with content
       """
       {
-        "keep-sorted": {
-          "enabled": true,
-          "ignore": ["unsorted_1.toml"]
+        "applications": {
+          "keep-sorted": {
+            "enabled": true,
+            "ignore": ["unsorted_1.toml"]
+          }
         }
       }
       """
