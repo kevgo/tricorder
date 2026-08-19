@@ -30,8 +30,9 @@ impl Config {
                 Ok(text) => return Self::parse(&text, filename),
                 Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
                 Err(err) => {
-                    return Err(UserError::Config {
-                        msg: format!("cannot read {filename}: {err}"),
+                    return Err(UserError::ConfigCannotRead {
+                        filename: filename.to_string(),
+                        err: err.to_string(),
                     });
                 }
             }
@@ -43,8 +44,9 @@ impl Config {
         // empty or comment-only files deserialize as null, hence Option
         let config: Option<Self> =
             jsonc_parser::parse_to_serde_value(text, &ParseOptions::default()).map_err(|err| {
-                UserError::Config {
-                    msg: format!("cannot parse {filename}: {err}"),
+                UserError::ConfigCannotParse {
+                    filename: filename.to_string(),
+                    err: err.to_string(),
                 }
             })?;
         Ok(config.unwrap_or_default())
