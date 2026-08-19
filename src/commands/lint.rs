@@ -58,14 +58,11 @@ pub fn determine_lints(
                 result.push(conc::Runnable::Single(executable));
             }
         } else {
-            for lint in detected_stack.stack.lints() {
-                if !detected_stacks.stack_enabled(&lint.enabled_when()) {
-                    continue;
-                }
-                if let Some(executable) = lint.lint_commands(detected_stack)? {
+            for default_lint in detected_stack.stack.lints() {
+                if detected_stacks.stack_enabled(&default_lint.enabled_when())
+                    && let Some(executable) = default_lint.lint_commands(detected_stack)?
+                {
                     result.push(executable);
-                } else {
-                    // this app is not available for this platform --> don't run it
                 }
             }
         }
