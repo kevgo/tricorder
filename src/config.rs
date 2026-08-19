@@ -17,8 +17,7 @@ pub struct Config {
 
     pub ignore: Option<Vec<String>>,
 
-    #[serde(alias = "keep-sorted")]
-    pub keep_sorted: Option<KeepSorted>,
+    pub applications: Option<Applications>,
 
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
 }
@@ -62,6 +61,12 @@ impl Config {
     pub fn stack_config(&self, stack_type: StackType) -> Option<&StackConfig> {
         self.stacks.as_ref()?.get(&stack_type)
     }
+
+    /// provides keep-sorted configuration if present
+    #[must_use]
+    pub fn keep_sorted(&self) -> Option<&KeepSorted> {
+        self.applications.as_ref()?.keep_sorted.as_ref()
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -99,6 +104,12 @@ impl From<&StackCommand> for conc::Executable {
             command: conc::shell_command(&command.command),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+pub struct Applications {
+    #[serde(alias = "keep-sorted")]
+    pub keep_sorted: Option<KeepSorted>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
@@ -169,7 +180,7 @@ mod tests {
                     },
                 ]),
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
@@ -183,7 +194,7 @@ mod tests {
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             assert_eq!(have, want);
@@ -196,7 +207,7 @@ mod tests {
                 custom_lints: None,
                 custom_fixes: None,
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             assert_eq!(have, want);
@@ -210,7 +221,7 @@ mod tests {
                 custom_lints: None,
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
@@ -229,7 +240,7 @@ mod tests {
                 custom_lints: None,
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
@@ -247,7 +258,7 @@ mod tests {
                 custom_lints: None,
                 custom_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
@@ -278,7 +289,7 @@ mod tests {
                 custom_fixes: None,
                 custom_lints: None,
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
@@ -311,7 +322,7 @@ mod tests {
                 custom_fixes: None,
                 custom_lints: None,
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: Some(stack_map(
                     StackType::Rust,
                     StackConfig {
@@ -344,7 +355,7 @@ mod tests {
                 custom_fixes: None,
                 custom_lints: None,
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
@@ -384,7 +395,7 @@ mod tests {
                     command: S("fixes/one.sh"),
                 }]),
                 ignore: None,
-                keep_sorted: None,
+                applications: None,
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
@@ -392,50 +403,57 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{Config, KeepSorted};
+        use crate::config::{Applications, Config, KeepSorted};
         use big_s::S;
 
         #[test]
         fn absent() {
             let have = Config::parse("", "test.json").unwrap();
-            assert_eq!(have.keep_sorted, None);
+            assert_eq!(have.applications, None);
+            assert_eq!(have.keep_sorted(), None);
         }
 
         #[test]
         fn enabled_true() {
-            let give = r#"{ "keep-sorted": { "enabled": true } }"#;
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": true } } }"#;
             let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
-                have.keep_sorted,
-                Some(KeepSorted {
-                    enabled: true,
-                    ignore: None
+                have.applications,
+                Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: true,
+                        ignore: None
+                    })
                 })
             );
         }
 
         #[test]
         fn enabled_false() {
-            let give = r#"{ "keep-sorted": { "enabled": false } }"#;
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": false } } }"#;
             let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
-                have.keep_sorted,
-                Some(KeepSorted {
-                    enabled: false,
-                    ignore: None
+                have.applications,
+                Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: false,
+                        ignore: None
+                    })
                 })
             );
         }
 
         #[test]
         fn ignore() {
-            let give = r#"{ "keep-sorted": { "enabled": true, "ignore": ["README.md"] } }"#;
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": true, "ignore": ["README.md"] } } }"#;
             let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
-                have.keep_sorted,
-                Some(KeepSorted {
-                    enabled: true,
-                    ignore: Some(vec![S("README.md")]),
+                have.applications,
+                Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: true,
+                        ignore: Some(vec![S("README.md")]),
+                    })
                 })
             );
         }
