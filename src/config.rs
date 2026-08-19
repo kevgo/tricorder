@@ -266,7 +266,7 @@ mod tests {
         fn stack_type_map_key_is_case_insensitive() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "PyThOn": {
       "add-lint": [{ "name": "mypy", "command": "mypy ." }]
     }
@@ -299,7 +299,7 @@ mod tests {
         fn stack_lint() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "rust": {
       "lint": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
     }
@@ -332,7 +332,7 @@ mod tests {
         fn stack_add_lint() {
             let give = r#"
 {
-  "stack": {
+  "stacks": {
     "python": {
       "add-lint": [{ "name": "mypy", "command": "mypy ." }]
     }

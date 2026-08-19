@@ -30,7 +30,7 @@ Feature: fix Rust
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "rust": {
             "fix": [
               {

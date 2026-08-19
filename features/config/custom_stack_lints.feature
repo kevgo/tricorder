@@ -11,7 +11,7 @@ Feature: stack-specific lints
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "add-lint": [
               { "name": "my lint", "command": "echo MY LINT RAN" }
@@ -40,7 +40,7 @@ Feature: stack-specific lints
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "lint": [
               { "name": "my lint", "command": "echo MY LINT RAN" }
@@ -69,7 +69,7 @@ Feature: stack-specific lints
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "lint": []
           }
@@ -91,7 +91,7 @@ Feature: stack-specific lints
     Given a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "add-lint": [
               { "name": "my lint", "command": "echo MY LINT RAN" }

@@ -138,7 +138,7 @@ If both exist, **tricorder.json** takes precedence.
     },
   ],
 
-  "stack": {
+  "stacks": {
     // add stack-specific lint to the default lints for that stack
     "python": {
       // these lints run in addition to the default lints

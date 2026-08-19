@@ -11,7 +11,7 @@ Feature: stack-scoped custom fixes
     And a file "tricorder.json" with content
       """
       {
-        "stack": {
+        "stacks": {
           "python": {
             "fix": [
               { "name": "my python fix", "command": "fixes/python.sh" }
