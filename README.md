@@ -119,54 +119,67 @@ cargo install --git https://github.com/kevgo/tricorder
 ## Configuration
 
 You can configure Tricorder and define custom linters
-and formatters in **tricorder.toml**:
+and formatters in **tricorder.json** or **tricorder.jsonc**.
+Comments and trailing commas are allowed in either file.
+If both exist, **tricorder.json** takes precedence.
 
-```toml
-# make these files invisible to Tricorder
-# using gitignore syntax
-ignore = ["two.css", "vendor/", "**/*.min.css"]
+```jsonc
+{
+  // make these files invisible to Tricorder
+  // using gitignore syntax
+  "ignore": ["two.css", "vendor/", "**/*.min.css"],
 
-# define a custom lint (always runs)
-# TODO: rename this to "global-lints" ?
-[[custom-lints]]
-name = "custom lint 1"
-command = "lints/one.sh"
+  // define a custom lint (always runs)
+  // TODO: rename this to "global-lints" ?
+  "custom-lints": [
+    {
+      "name": "custom lint 1",
+      "command": "lints/one.sh"
+    },
+  ],
 
-# define another custom lint
-[[custom-lints]]
-name = "custom lint 2"
-command = "lints/two.sh"
+  "stack": {
+    // add stack-specific lint to the default lints for that stack
+    "python": {
+      // these lints run in addition to the default lints
+      "add-lint": [
+        { "name": "mypy", "command": "mypy ." }
+      ],
+      // these fixes run in addition to the default fixes
+      "add-fix": [
+        { "name": "isort", "command": "isort ." }
+      ]
+    },
+    // override stack-specific lints and fixes
+    "rust": {
+      // these lints run instead of the default lints
+      "lint": [
+        {
+          "name": "clippy",
+          "command": "cargo clippy --all-targets"
+        }
+      ],
+      // these fixes run instead of the default fixes
+      "fix": [
+        { "name": "rustfmt", "command": "cargo +nightly fmt" }
+      ]
+    }
+  },
 
-# add stack-specific lint to the default lints for that stack
-[[stack.python.add-lint]]
-name = "mypy"
-command = "mypy ."
-
-[[stack.python.add-fix]]
-name = "isort"
-command = "isort ."
-
-# override stack-specific lints and fixes
-[[stack.rust.lint]]
-name = "clippy"
-command = "cargo clippy --all-targets"
-
-[[stack.rust.fix]]
-name = "rustfmt"
-command = "cargo +nightly fmt"
-
-# github.com/google/keep-sorted is disabled by default
-# because it scans the file content of all workspace files for markers
-# to determine which files to sort
-[keep-sorted]
-enabled = true
-ignore = ["README.md"]  # ignored only by keep-sorted
+  // github.com/google/keep-sorted is disabled by default
+  // because it scans the file content of all workspace files for markers
+  // to determine which files to sort
+  "keep-sorted": {
+    "enabled": true,
+    "ignore": ["README.md"] // ignored only by keep-sorted
+  }
+}
 ```
 
-The `[stack.<name>]` section configures a specific stack.
-It's `lint` and `fix` attributes replace that stack's built-in tools.
-Configure an empty set (`lint = []` disables them.
-`add-lint` and `add-fix` adds the given tools without replacing the built-ins.
+The `stack.<name>` object configures a specific stack.
+Its `lint` and `fix` attributes replace that stack's built-in tools.
+Configure an empty array (`"lint": []`) to disable them.
+`add-lint` and `add-fix` add the given tools without replacing the built-ins.
 These entries run only when that stack has files in scope.
 
 ## Usage
