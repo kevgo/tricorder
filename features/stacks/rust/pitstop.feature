@@ -30,18 +30,22 @@ Feature: pitstop Rust
     Given a file "tricorder.json" with content
       """
       {
-        "custom-fixes": [
-          {
-            "command": "echo 'custom fix running'",
-            "name": "my custom fix"
+        "stack": {
+          "rust": {
+            "fix": [
+              {
+                "command": "echo 'custom fix running'",
+                "name": "my custom fix"
+              }
+            ],
+            "lint": [
+              {
+                "command": "echo 'custom linter running'",
+                "name": "my custom linter"
+              }
+            ]
           }
-        ],
-        "custom-lints": [
-          {
-            "command": "echo 'custom linter running'",
-            "name": "my custom linter"
-          }
-        ]
+        }
       }
       """
     When executing "tricorder pitstop --show=all"
