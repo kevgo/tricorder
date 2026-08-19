@@ -51,24 +51,22 @@ pub fn determine_lints(
     // determine the lints for the stacks
     for detected_stack in detected_stacks {
         let stack_config = config.stack_config(detected_stack.stack.stack_type());
-        match stack_config.and_then(|sc| sc.lint.as_ref()) {
-            Some(lints) => {
-                result.extend(
-                    lints
-                        .iter()
-                        .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
-                );
-            }
-            None => {
-                for lint in detected_stack.stack.lints() {
-                    if !detected_stacks.stack_enabled(&lint.enabled_when()) {
-                        continue;
-                    }
-                    if let Some(executable) = lint.lint_commands(detected_stack)? {
-                        result.push(executable);
-                    } else {
-                        // this app is not available for this platform --> don't run it
-                    }
+        // schedule either the override lints or the default lints
+        if let Some(override_lints) = stack_config.and_then(|sc| sc.lint.as_ref()) {
+            result.extend(
+                override_lints
+                    .iter()
+                    .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
+            );
+        } else {
+            for lint in detected_stack.stack.lints() {
+                if !detected_stacks.stack_enabled(&lint.enabled_when()) {
+                    continue;
+                }
+                if let Some(executable) = lint.lint_commands(detected_stack)? {
+                    result.push(executable);
+                } else {
+                    // this app is not available for this platform --> don't run it
                 }
             }
         }
