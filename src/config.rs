@@ -132,10 +132,6 @@ mod tests {
             map
         }
 
-        fn parse(text: &str) -> Config {
-            Config::parse(text, "test.json").unwrap()
-        }
-
         #[test]
         fn defined() {
             let give = r#"
@@ -150,7 +146,7 @@ mod tests {
   ]
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_fixes: Some(vec![
                     CustomFix {
@@ -182,7 +178,7 @@ mod tests {
         #[test]
         fn empty() {
             let give = r#"{ "custom-lints": [], "custom-fixes": [] }"#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
@@ -195,7 +191,7 @@ mod tests {
 
         #[test]
         fn none() {
-            let have = parse("");
+            let have = Config::parse("", "test.json").unwrap();
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -209,7 +205,7 @@ mod tests {
         #[test]
         fn ignore() {
             let give = r#"{ "ignore": ["a.css", "b/"] }"#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -228,7 +224,7 @@ mod tests {
   "ignore": ["a.css", "b/"]
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -246,7 +242,7 @@ mod tests {
   "ignore": ["a.css", "b/"],
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -259,8 +255,11 @@ mod tests {
 
         #[test]
         fn empty_or_comment_only() {
-            pretty::assert_eq!(parse(""), Config::default());
-            pretty::assert_eq!(parse("  // only a comment\n"), Config::default());
+            pretty::assert_eq!(Config::parse("", "test.json").unwrap(), Config::default());
+            pretty::assert_eq!(
+                Config::parse("  // only a comment\n", "test.json").unwrap(),
+                Config::default()
+            );
         }
 
         #[test]
@@ -274,7 +273,7 @@ mod tests {
   }
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -307,7 +306,7 @@ mod tests {
   }
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -340,7 +339,7 @@ mod tests {
   }
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -374,7 +373,7 @@ mod tests {
   ]
 }
 "#;
-            let have = parse(give);
+            let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 custom_lints: Some(vec![CustomLint {
                     name: Some(S("custom lint 1")),
