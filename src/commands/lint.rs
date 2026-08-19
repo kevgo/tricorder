@@ -54,8 +54,8 @@ pub fn determine_lints(
         // schedule either the override lints or the default lints
         if let Some(override_lints) = stack_config.and_then(|sc| sc.lint.as_ref()) {
             for override_lint in override_lints {
-                let runnable = conc::Runnable::Single(conc::Executable::from(override_lint));
-                result.push(runnable);
+                let executable = conc::Executable::from(override_lint);
+                result.push(conc::Runnable::Single(executable));
             }
         } else {
             for lint in detected_stack.stack.lints() {
