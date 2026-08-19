@@ -36,7 +36,6 @@ impl Config {
         let config: Config = toml::from_str(&text).map_err(|err| UserError::Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })?;
-        config.validate()?;
         Ok(config)
     }
 
@@ -49,25 +48,6 @@ impl Config {
     #[must_use]
     pub fn stack_config(&self, stack_type: StackType) -> Option<&StackConfig> {
         self.stack.as_ref()?.get(&stack_type)
-    }
-
-    fn validate(&self) -> Result<()> {
-        let Some(stacks) = &self.stack else {
-            return Ok(());
-        };
-        for (stack_type, stack_config) in stacks {
-            if stack_config.lint.is_some() && stack_config.add_lint.is_some() {
-                return Err(UserError::Config {
-                    msg: format!("cannot set both lint and add-lint for stack {stack_type}"),
-                });
-            }
-            if stack_config.fix.is_some() && stack_config.add_fix.is_some() {
-                return Err(UserError::Config {
-                    msg: format!("cannot set both fix and add-fix for stack {stack_type}"),
-                });
-            }
-        }
-        Ok(())
     }
 }
 
@@ -365,49 +345,6 @@ command = "fixes/one.sh"
                 stack: None,
             };
             pretty::assert_eq!(have, want);
-        }
-    }
-
-    mod validate {
-        use crate::config::Config;
-        use crate::domain::UserError;
-
-        #[test]
-        fn rejects_lint_and_add_lint() {
-            let config: Config = toml::from_str(
-                r#"
-[stack.python]
-lint = [{ name = "a", command = "a" }]
-add-lint = [{ name = "b", command = "b" }]
-"#,
-            )
-            .unwrap();
-            let err = config.validate().unwrap_err();
-            pretty::assert_eq!(
-                err,
-                UserError::Config {
-                    msg: "cannot set both lint and add-lint for stack Python".into(),
-                }
-            );
-        }
-
-        #[test]
-        fn rejects_fix_and_add_fix() {
-            let config: Config = toml::from_str(
-                r#"
-[stack.python]
-fix = [{ name = "a", command = "a" }]
-add-fix = [{ name = "b", command = "b" }]
-"#,
-            )
-            .unwrap();
-            let err = config.validate().unwrap_err();
-            pretty::assert_eq!(
-                err,
-                UserError::Config {
-                    msg: "cannot set both fix and add-fix for stack Python".into(),
-                }
-            );
         }
     }
 
