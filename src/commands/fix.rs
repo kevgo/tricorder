@@ -65,25 +65,19 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
-        // fixes that override the default fixes
-        match stack_config.and_then(|sc| sc.fix.as_ref()) {
-            Some(fixes) => {
-                // override fixes defined --> use the override fixes
-                stack_executables.extend(fixes.iter().map(conc::Executable::from));
-            }
-            None => {
-                // no override fixes defined --> use the default fixes
-                for fix in detected_stack.stack.fixes() {
-                    if !detected_stacks.stack_enabled(&fix.enabled_when()) {
-                        continue;
-                    }
-                    stack_executables.extend(fix.fix_commands(detected_stack)?);
+        // schedule either the override fixes or the default fixes
+        if let Some(override_fixes) = stack_config.and_then(|sc| sc.fix.as_ref()) {
+            stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
+        } else {
+            for default_fix in detected_stack.stack.fixes() {
+                if detected_stacks.stack_enabled(&default_fix.enabled_when()) {
+                    stack_executables.extend(default_fix.fix_commands(detected_stack)?);
                 }
             }
         }
-        // fixes that are added to the existing fixes
-        if let Some(add) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
-            stack_executables.extend(add.iter().map(conc::Executable::from));
+        // schedule the additional fixes
+        if let Some(additional_fix) = stack_config.and_then(|sc| sc.add_fix.as_ref()) {
+            stack_executables.extend(additional_fix.iter().map(conc::Executable::from));
         }
     }
 
