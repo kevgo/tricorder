@@ -7,6 +7,8 @@ Feature: keep-sorted support
       delete-empty-folders 0.0.2
       ripgrep 15.2.0
       keep-sorted 0.9.1
+      node 26.4.0
+      prettier 3.7.0
       """
     And a file "unsorted_1.toml" with content
       """
@@ -33,10 +35,13 @@ Feature: keep-sorted support
     And file "unsorted_2.toml" is unchanged
 
   Scenario: keep-sorted sorts marker-bearing files when enabled
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      [keep-sorted]
-      enabled = true
+      {
+        "keep-sorted": {
+          "enabled": true
+        }
+      }
       """
     When executing "tricorder fix --show=all"
     Then it prints the block
@@ -60,12 +65,14 @@ Feature: keep-sorted support
     And the exit code is 0
 
   Scenario: does not sort globally ignored files
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      ignore = ["unsorted_1.toml"]
-
-      [keep-sorted]
-      enabled = true
+      {
+        "ignore": ["unsorted_1.toml"],
+        "keep-sorted": {
+          "enabled": true
+        }
+      }
       """
     When executing "tricorder fix --show=all"
     Then it prints the block
@@ -82,11 +89,14 @@ Feature: keep-sorted support
       """
 
   Scenario: does not sort files that should not be sorted
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      [keep-sorted]
-      enabled = true
-      ignore = ["unsorted_1.toml"]
+      {
+        "keep-sorted": {
+          "enabled": true,
+          "ignore": ["unsorted_1.toml"]
+        }
+      }
       """
     When executing "tricorder fix --show=all"
     Then it prints the block

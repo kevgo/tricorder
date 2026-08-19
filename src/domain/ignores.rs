@@ -13,7 +13,7 @@ impl Ignores {
         for pattern in patterns {
             builder.add_line(None, pattern).map_err(|err| {
                 UserError::ConfigInvalidIgnorePattern {
-                    pattern: Some(pattern.to_string()),
+                    pattern: Some(pattern.clone()),
                     err: err.to_string(),
                 }
             })?;

@@ -16,11 +16,11 @@ clap = { version = "4.6.4", features = ["derive"] }
 conc = { package = "concurrent_shell_commands", version = "0.7.0" }
 ignore = "0.4.31"
 itertools = "0.14.0"
+jsonc-parser = { version = "0.33.1", features = ["serde"] }
 rta = { package = "run-that-app", version = "0.42.2" }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_with = "3.21.0"
 strum = { version = "0.28.0", features = ["derive"] }
-toml = "1.1.3"
 which = "8.0.5"
 
 [dev-dependencies]

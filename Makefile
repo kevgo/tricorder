@@ -1,10 +1,9 @@
 RUN_THAT_APP_VERSION = 0.42.1  # run-that-app version to use
-TRICORDER_VERSION = 0.0.16     # tricorder version to use
 
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
-TRICORDER    = tools/tricorder@$(TRICORDER_VERSION)
+TRICORDER    = target/debug/tricorder
 
 build:  # builds the project in debug mode
 	cargo build
@@ -38,7 +37,7 @@ demo:  # runs Tricorder in the "demo" folder
 install:  # installs Tricorder into the global path
 	cargo install --path . --locked
 
-fix: ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
+fix: build ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
 	$(TRICORDER) fix --show=names
 
 ghokin: ${RTA}  # format the Cucumber files
@@ -47,7 +46,7 @@ ghokin: ${RTA}  # format the Cucumber files
 help:  # prints all available targets
 	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-lint: ${RTA} ${TRICORDER}  # runs all linters
+lint: build ${RTA} ${TRICORDER}  # runs all linters
 	$(TRICORDER) lint --show=names
 
 setup: setup-ci  # install development dependencies on this computer
@@ -78,11 +77,6 @@ ${RTA}:
 	rm -f tools/rta*
 	(cd tools && curl https://raw.githubusercontent.com/kevgo/run-that-app/main/download.sh | sh -s -- --version ${RUN_THAT_APP_VERSION} --name rta@${RUN_THAT_APP_VERSION})
 	ln -s rta@$(RUN_THAT_APP_VERSION) tools/rta
-
-${TRICORDER}:
-	rm -f tools/tricorder*
-	(cd tools && curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -s -- --version ${TRICORDER_VERSION} --name tricorder@${TRICORDER_VERSION})
-	ln -s tricorder@$(TRICORDER_VERSION) tools/tricorder
 
 .DEFAULT_GOAL := help
 .SILENT:

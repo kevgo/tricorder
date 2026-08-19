@@ -103,10 +103,10 @@ impl UserError {
             // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } => println!("{msg}"),
             UserError::ConfigCannotParse { filename, err } => {
-                println!("config file {filename} seems to contain invalid JSON: {err}")
+                println!("config file {filename} seems to contain invalid JSON: {err}");
             }
             UserError::ConfigCannotRead { filename, err } => {
-                println!("cannot read config file {filename}: {err}")
+                println!("cannot read config file {filename}: {err}");
             }
             UserError::ConfigInvalidIgnorePattern { pattern, err } => {
                 println!("Cannot parse the gitignore patterns defined in the config file: {err}");
