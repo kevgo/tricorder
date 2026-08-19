@@ -163,10 +163,10 @@ enabled = true
 ignore = ["README.md"]  # ignored only by keep-sorted
 ```
 
-The `[stack.<name>]` section configures tools for a detected stack.
-`lint` and `fix` replace that stack's built-in tools
-(`lint = []` disables them).
-`add-lint` and `add-fix` run in addition to the built-ins.
+The `[stack.<name>]` section configures a specific stack.
+It's `lint` and `fix` attributes replace that stack's built-in tools.
+Configure an empty set (`lint = []` disables them.
+`add-lint` and `add-fix` adds the given tools without replacing the built-ins.
 These entries run only when that stack has files in scope.
 
 ## Usage
