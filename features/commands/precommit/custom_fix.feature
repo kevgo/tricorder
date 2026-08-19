@@ -10,10 +10,9 @@ Feature: stack-scoped custom fixes
       """
     And a file "tricorder.toml" with content
       """
-      [[custom-fixes]]
-      command = "fixes/python.sh"
+      [[stack.python.fix]]
       name = "my python fix"
-      stack = "python"
+      command = "fixes/python.sh"
       """
     And an executable file "fixes/python.sh" with content
       """

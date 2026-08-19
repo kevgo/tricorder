@@ -2,8 +2,7 @@
 
 ## Unreleased
 
-- custom lints support an optional `stack` field; when set, the lint runs only if that stack has files in scope
-- stack-scoped custom fixes are skipped when their stack has no files in scope (including in precommit when no files of that stack are staged)
+- breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 
 ## 0.0.17 (2026-08-15)
 
