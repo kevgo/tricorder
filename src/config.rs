@@ -33,7 +33,7 @@ impl Config {
                 });
             }
         };
-        let config: Self = toml::from_str(&text).map_err(|err| UserError::Config {
+        let config: Config = toml::from_str(&text).map_err(|err| UserError::Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
         })?;
         config.validate()?;
