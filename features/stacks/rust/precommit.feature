@@ -5,7 +5,6 @@ Feature: precommit Rust
     And a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
-      taplo 0.10.0
       """
     And a file "main.rs" with content
       """
@@ -27,12 +26,16 @@ Feature: precommit Rust
     And the exit code is 0
 
   Scenario: a custom fix is defined
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      [[custom-fixes]]
-      command = "echo 'custom fix running'"
-      name = "my custom fix"
-      stack = "rust"
+      {
+        "custom-fixes": [
+          {
+            "command": "echo 'custom fix running'",
+            "name": "my custom fix"
+          }
+        ]
+      }
       """
     When executing "tricorder precommit --show=all"
     Then it prints the block

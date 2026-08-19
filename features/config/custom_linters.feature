@@ -3,20 +3,22 @@ Feature: custom lints
   Background:
     Given a file "run-that-app" with content
       """
-      taplo 0.10.0
       delete-empty-folders 0.0.2
       ruff 0.15.16
       """
 
   Scenario: custom lint passes
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      [[custom-lints]]
-      command = "lints/one.sh"
-
-      [[custom-lints]]
-      name = "list all files"
-      command = "find . | sort | xargs echo"
+      {
+        "custom-lints": [
+          { "command": "lints/one.sh" },
+          {
+            "name": "list all files",
+            "command": "find . | sort | xargs echo"
+          }
+        ]
+      }
       """
     And an executable file "lints/one.sh" with content
       """
@@ -32,15 +34,18 @@ Feature: custom lints
     And it prints the block
       """
       list all files
-      . ./lints ./lints/one.sh ./run-that-app ./tricorder.toml
+      . ./lints ./lints/one.sh ./run-that-app ./tricorder.json
       """
     And the exit code is 0
 
   Scenario: custom lint fails
-    Given a file "tricorder.toml" with content
+    Given a file "tricorder.json" with content
       """
-      [[custom-lints]]
-      command = "lints/fail.sh"
+      {
+        "custom-lints": [
+          { "command": "lints/fail.sh" }
+        ]
+      }
       """
     And an executable file "lints/fail.sh" with content
       """

@@ -4,7 +4,7 @@ use serde::Deserialize;
 use std::fs;
 use std::path::Path;
 
-const CONFIG_FILENAME: &str = "tricorder.toml";
+const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", "tricorder.jsonc"];
 
 #[derive(Debug, Default, Deserialize, PartialEq)]
 pub struct Config {
@@ -24,18 +24,27 @@ pub struct Config {
 
 impl Config {
     pub fn load() -> Result<Self> {
-        let text = match fs::read_to_string(CONFIG_FILENAME) {
-            Ok(text) => text,
-            Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(Self::default()),
-            Err(err) => {
-                return Err(UserError::Config {
-                    msg: format!("cannot read {CONFIG_FILENAME}: {err}"),
-                });
+        for filename in CONFIG_FILENAMES {
+            match fs::read_to_string(filename) {
+                Ok(text) => return Self::parse(&text, filename),
+                Err(err) if err.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(err) => {
+                    return Err(UserError::Config {
+                        msg: format!("cannot read {filename}: {err}"),
+                    });
+                }
             }
-        };
-        toml::from_str(&text).map_err(|err| UserError::Config {
-            msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
-        })
+        }
+        Ok(Self::default())
+    }
+
+    fn parse(text: &str, filename: &str) -> Result<Self> {
+        // empty or comment-only files deserialize as null, hence Option
+        let config: Option<Self> = jsonc_parser::parse_to_serde_value(text, &Default::default())
+            .map_err(|err| UserError::Config {
+                msg: format!("cannot parse {filename}: {err}"),
+            })?;
+        Ok(config.unwrap_or_default())
     }
 
     /// provides the matcher for the files that should not be linted
@@ -118,24 +127,25 @@ mod tests {
             map
         }
 
+        fn parse(text: &str) -> Config {
+            Config::parse(text, "test.json").unwrap()
+        }
+
         #[test]
         fn defined() {
             let give = r#"
-[[custom-lints]]
-command = "lints/one.sh"
-
-[[custom-lints]]
-name = "custom lint 2"
-command = "lints/two.sh"
-
-[[custom-fixes]]
-command = "fixes/organize.py"
-
-[[custom-fixes]]
-name = "sort alphabetically"
-command = "fixes/sort.py"
+{
+  "custom-lints": [
+    { "command": "lints/one.sh" },
+    { "name": "custom lint 2", "command": "lints/two.sh" }
+  ],
+  "custom-fixes": [
+    { "command": "fixes/organize.py" },
+    { "name": "sort alphabetically", "command": "fixes/sort.py" }
+  ]
+}
 "#;
-            let have: Config = toml::from_str(give).unwrap();
+            let have = parse(give);
             let want = Config {
                 custom_fixes: Some(vec![
                     CustomFix {
@@ -166,8 +176,8 @@ command = "fixes/sort.py"
 
         #[test]
         fn empty() {
-            let give = "custom-lints = []\ncustom-fixes = []";
-            let have: Config = toml::from_str(give).unwrap();
+            let give = r#"{ "custom-lints": [], "custom-fixes": [] }"#;
+            let have = parse(give);
             let want = Config {
                 custom_lints: Some(vec![]),
                 custom_fixes: Some(vec![]),
@@ -180,7 +190,7 @@ command = "fixes/sort.py"
 
         #[test]
         fn none() {
-            let have: Config = toml::from_str("").unwrap();
+            let have = parse("");
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -193,8 +203,8 @@ command = "fixes/sort.py"
 
         #[test]
         fn ignore() {
-            let give = r#"ignore = ["a.css", "b/"]"#;
-            let have: Config = toml::from_str(give).unwrap();
+            let give = r#"{ "ignore": ["a.css", "b/"] }"#;
+            let have = parse(give);
             let want = Config {
                 custom_lints: None,
                 custom_fixes: None,
@@ -206,12 +216,60 @@ command = "fixes/sort.py"
         }
 
         #[test]
+        fn comments() {
+            let give = r#"
+{
+  // files Tricorder should skip
+  "ignore": ["a.css", "b/"]
+}
+"#;
+            let have = parse(give);
+            let want = Config {
+                custom_lints: None,
+                custom_fixes: None,
+                ignore: Some(vec![S("a.css"), S("b/")]),
+                keep_sorted: None,
+                stack: None,
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn trailing_comma() {
+            let give = r#"
+{
+  "ignore": ["a.css", "b/"],
+}
+"#;
+            let have = parse(give);
+            let want = Config {
+                custom_lints: None,
+                custom_fixes: None,
+                ignore: Some(vec![S("a.css"), S("b/")]),
+                keep_sorted: None,
+                stack: None,
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn empty_or_comment_only() {
+            pretty::assert_eq!(parse(""), Config::default());
+            pretty::assert_eq!(parse("  // only a comment\n"), Config::default());
+        }
+
+        #[test]
         fn stack_type_map_key_is_case_insensitive() {
             let give = r#"
-[stack.PyThOn]
-add-lint = [{ name = "mypy", command = "mypy ." }]
+{
+  "stack": {
+    "PyThOn": {
+      "add-lint": [{ "name": "mypy", "command": "mypy ." }]
+    }
+  }
+}
 "#;
-            let have: Config = toml::from_str(give).unwrap();
+            let have = parse(give);
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -234,41 +292,17 @@ add-lint = [{ name = "mypy", command = "mypy ." }]
         }
 
         #[test]
-        fn stack_lint_inline_table() {
+        fn stack_lint() {
             let give = r#"
-[stack.rust]
-lint = [{ name = "Clippy", command = "cargo clippy --all-targets" }]
+{
+  "stack": {
+    "rust": {
+      "lint": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
+    }
+  }
+}
 "#;
-            let have: Config = toml::from_str(give).unwrap();
-            let want = Config {
-                custom_fixes: None,
-                custom_lints: None,
-                ignore: None,
-                keep_sorted: None,
-                stack: Some(stack_map(
-                    StackType::Rust,
-                    StackConfig {
-                        lint: Some(vec![StackCommand {
-                            name: S("Clippy"),
-                            command: S("cargo clippy --all-targets"),
-                        }]),
-                        add_lint: None,
-                        fix: None,
-                        add_fix: None,
-                    },
-                )),
-            };
-            pretty::assert_eq!(have, want);
-        }
-
-        #[test]
-        fn stack_lint_array_of_tables() {
-            let give = r#"
-[[stack.rust.lint]]
-name = "Clippy"
-command = "cargo clippy --all-targets"
-"#;
-            let have: Config = toml::from_str(give).unwrap();
+            let have = parse(give);
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -293,10 +327,15 @@ command = "cargo clippy --all-targets"
         #[test]
         fn stack_add_lint() {
             let give = r#"
-[stack.python]
-add-lint = [{ name = "mypy", command = "mypy ." }]
+{
+  "stack": {
+    "python": {
+      "add-lint": [{ "name": "mypy", "command": "mypy ." }]
+    }
+  }
+}
 "#;
-            let have: Config = toml::from_str(give).unwrap();
+            let have = parse(give);
             let want = Config {
                 custom_fixes: None,
                 custom_lints: None,
@@ -321,15 +360,16 @@ add-lint = [{ name = "mypy", command = "mypy ." }]
         #[test]
         fn name_allows_underscore() {
             let give = r#"
-[[custom_lints]]
-name = "custom lint 1"
-command = "lints/one.sh"
-
-[[custom_fixes]]
-name = "custom fix 1"
-command = "fixes/one.sh"
+{
+  "custom_lints": [
+    { "name": "custom lint 1", "command": "lints/one.sh" }
+  ],
+  "custom_fixes": [
+    { "name": "custom fix 1", "command": "fixes/one.sh" }
+  ]
+}
 "#;
-            let have: Config = toml::from_str(give).unwrap();
+            let have = parse(give);
             let want = Config {
                 custom_lints: Some(vec![CustomLint {
                     name: Some(S("custom lint 1")),
@@ -351,16 +391,20 @@ command = "fixes/one.sh"
         use crate::config::{Config, KeepSorted};
         use big_s::S;
 
+        fn parse(text: &str) -> Config {
+            Config::parse(text, "test.json").unwrap()
+        }
+
         #[test]
         fn absent() {
-            let have: Config = toml::from_str("").unwrap();
+            let have = parse("");
             assert_eq!(have.keep_sorted, None);
         }
 
         #[test]
         fn enabled_true() {
-            let give = "[keep-sorted]\nenabled = true";
-            let have: Config = toml::from_str(give).unwrap();
+            let give = r#"{ "keep-sorted": { "enabled": true } }"#;
+            let have = parse(give);
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
@@ -372,8 +416,8 @@ command = "fixes/one.sh"
 
         #[test]
         fn enabled_false() {
-            let give = "[keep-sorted]\nenabled = false";
-            let have: Config = toml::from_str(give).unwrap();
+            let give = r#"{ "keep-sorted": { "enabled": false } }"#;
+            let have = parse(give);
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
@@ -385,8 +429,8 @@ command = "fixes/one.sh"
 
         #[test]
         fn ignore() {
-            let give = "[keep-sorted]\nenabled = true\nignore = [\"README.md\"]";
-            let have: Config = toml::from_str(give).unwrap();
+            let give = r#"{ "keep-sorted": { "enabled": true, "ignore": ["README.md"] } }"#;
+            let have = parse(give);
             assert_eq!(
                 have.keep_sorted,
                 Some(KeepSorted {
