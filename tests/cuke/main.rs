@@ -27,7 +27,8 @@ async fn main() {
         .after(|_feature, _rule, scenario, ev, world| {
             Box::pin(async move {
                 if !matches!(ev, event::ScenarioFinished::StepPassed) {
-                    return; // the scenario already reports a failure
+                    // the scenario already reports a failure
+                    return;
                 }
                 let Some(world) = world else { return };
                 if run_that_app::is_asserted_by(scenario) {
