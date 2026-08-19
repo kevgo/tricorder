@@ -80,32 +80,29 @@ pub fn determine_precommit_fixes(
 
     // stack-specific fixes
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
-    for stack in staged_stacks {
-        let stack_type = stack.stack.stack_type();
+    for staged_stack in staged_stacks {
+        let stack_type = staged_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
-        match stack_config.and_then(|sc| sc.fix.as_ref()) {
-            Some(fixes) => {
-                stack_executables.extend(fixes.iter().map(conc::Executable::from));
-            }
-            None => {
-                for fix in stack.stack.fixes() {
-                    let enabled = match fix.enabled_when() {
-                        EnabledWhen::Always => true,
-                        EnabledWhen::FilePresent {
-                            filename,
-                            stack_type: _,
-                        } => Path::new(filename).exists(),
-                        EnabledWhen::FolderContainingFileOfType {
-                            file_type: _,
-                            folder: name,
-                            // in the precommit hook, we don't scan for all files in the workspace,
-                            // so we can't check if the folder exists there and need to look for the folder directly
-                        } => Path::new(name).exists(),
-                    };
-                    if enabled {
-                        stack_executables.extend(fix.fix_commands(stack)?);
-                    }
+        if let Some(override_fixes) = stack_config.and_then(|sc| sc.fix.as_ref()) {
+            stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
+        } else {
+            for default_fix in staged_stack.stack.fixes() {
+                let enabled = match default_fix.enabled_when() {
+                    EnabledWhen::Always => true,
+                    EnabledWhen::FilePresent {
+                        filename,
+                        stack_type: _,
+                    } => Path::new(filename).exists(),
+                    EnabledWhen::FolderContainingFileOfType {
+                        file_type: _,
+                        folder: name,
+                        // in the precommit hook, we don't scan for all files in the workspace,
+                        // so we can't check if the folder exists there and need to look for the folder directly
+                    } => Path::new(name).exists(),
+                };
+                if enabled {
+                    stack_executables.extend(default_fix.fix_commands(staged_stack)?);
                 }
             }
         }
