@@ -33,10 +33,9 @@ impl Config {
                 });
             }
         };
-        let config: Config = toml::from_str(&text).map_err(|err| UserError::Config {
+        toml::from_str(&text).map_err(|err| UserError::Config {
             msg: format!("cannot parse {CONFIG_FILENAME}: {err}"),
-        })?;
-        Ok(config)
+        })
     }
 
     /// provides the matcher for the files that should not be linted
