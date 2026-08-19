@@ -1,5 +1,6 @@
 use crate::domain::{Ignores, Result, StackType, UserError};
 use ahash::AHashMap;
+use jsonc_parser::ParseOptions;
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -27,7 +28,7 @@ impl Config {
         for filename in CONFIG_FILENAMES {
             match fs::read_to_string(filename) {
                 Ok(text) => return Self::parse(&text, filename),
-                Err(err) if err.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
                 Err(err) => {
                     return Err(UserError::Config {
                         msg: format!("cannot read {filename}: {err}"),
@@ -40,9 +41,11 @@ impl Config {
 
     fn parse(text: &str, filename: &str) -> Result<Self> {
         // empty or comment-only files deserialize as null, hence Option
-        let config: Option<Self> = jsonc_parser::parse_to_serde_value(text, &Default::default())
-            .map_err(|err| UserError::Config {
-                msg: format!("cannot parse {filename}: {err}"),
+        let config: Option<Self> =
+            jsonc_parser::parse_to_serde_value(text, &ParseOptions::default()).map_err(|err| {
+                UserError::Config {
+                    msg: format!("cannot parse {filename}: {err}"),
+                }
             })?;
         Ok(config.unwrap_or_default())
     }
