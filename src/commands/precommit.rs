@@ -117,7 +117,7 @@ pub fn determine_precommit_fixes(
     }
 
     // keep-sorted
-    if let Some(keep_sorted_config) = &config.keep_sorted
+    if let Some(keep_sorted_config) = config.keep_sorted()
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {

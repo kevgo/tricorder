@@ -87,7 +87,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     }
 
     // keep-sorted
-    if let Some(keep_sorted_config) = &config.keep_sorted
+    if let Some(keep_sorted_config) = config.keep_sorted()
         && keep_sorted_config.enabled
     {
         let args = keep_sorted::FixCommandsArgs {

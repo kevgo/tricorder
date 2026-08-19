@@ -1,9 +1,11 @@
 {
   // current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
   "ignore": ["Cargo.toml"],
-  "keep-sorted": {
-    "enabled": true,
-    "ignore": ["README.md", "src/apps/keep_sorted.rs"],
+  "applications": {
+    "keep-sorted": {
+      "enabled": true,
+      "ignore": ["README.md", "src/apps/keep_sorted.rs"],
+    },
   },
   "stacks": {
     "rust": {
