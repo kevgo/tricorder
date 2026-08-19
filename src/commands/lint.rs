@@ -53,11 +53,10 @@ pub fn determine_lints(
         let stack_config = config.stack_config(detected_stack.stack.stack_type());
         // schedule either the override lints or the default lints
         if let Some(override_lints) = stack_config.and_then(|sc| sc.lint.as_ref()) {
-            result.extend(
-                override_lints
-                    .iter()
-                    .map(|lint| conc::Runnable::Single(conc::Executable::from(lint))),
-            );
+            for override_lint in override_lints {
+                let runnable = conc::Runnable::Single(conc::Executable::from(override_lint));
+                result.push(runnable);
+            }
         } else {
             for lint in detected_stack.stack.lints() {
                 if !detected_stacks.stack_enabled(&lint.enabled_when()) {
