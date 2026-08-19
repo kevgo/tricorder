@@ -42,7 +42,7 @@ impl Config {
 
     fn parse(text: &str, filename: &str) -> Result<Self> {
         // empty or comment-only files deserialize as null, hence Option
-        let config: Option<Self> =
+        let config: Option<Config> =
             jsonc_parser::parse_to_serde_value(text, &ParseOptions::default()).map_err(|err| {
                 UserError::ConfigCannotParse {
                     filename: filename.to_string(),
