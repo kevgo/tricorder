@@ -71,7 +71,7 @@ prettier 3.7.0
     #[test]
     fn missing_previous_line() {
         let have = has_additional_lines("foo 1.0.0\nbar 2.0.0\n", "foo 1.0.0\n", "baz 3.0.0");
-        assert_eq!(have, Err("no longer contains line 'bar 2.0.0'".into()));
+        assert_eq!(have, Err("no longer contains lines:\nbar 2.0.0".into()));
     }
 
     #[test]
@@ -120,6 +120,6 @@ prettier \d+\.\d+\.\d+
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
         let have = has_additional_lines("foo\nfoo\n", "foo\n", "");
-        assert_eq!(have, Err("no longer contains line 'foo'".into()));
+        assert_eq!(have, Err("no longer contains lines:\nfoo".into()));
     }
 }
