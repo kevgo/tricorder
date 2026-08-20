@@ -1,4 +1,5 @@
 use crate::content_lines;
+use crate::remove_lines;
 use itertools::Itertools;
 use regex::Regex;
 
@@ -11,13 +12,7 @@ pub fn additional_lines_matching(
     patterns: &str,
 ) -> Result<(), String> {
     let mut remaining: Vec<&str> = content_lines(current).collect();
-    // remove `previous` from `remaining`
-    for want in content_lines(previous) {
-        let Some(pos) = remaining.iter().position(|line| *line == want) else {
-            return Err(format!("no longer contains line '{want}'"));
-        };
-        remaining.remove(pos);
-    }
+    remove_lines(&mut remaining, content_lines(previous))?;
     for pattern in content_lines(patterns) {
         let regex = Regex::new(&format!("^{pattern}$")).unwrap();
         let matches: Vec<usize> = remaining
