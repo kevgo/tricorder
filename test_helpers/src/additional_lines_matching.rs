@@ -40,10 +40,9 @@ pub fn additional_lines_matching(
 }
 
 fn content_lines(text: &str) -> impl Iterator<Item = &str> {
-    text.lines().filter(|line| {
-        let trimmed = line.trim();
-        !trimmed.is_empty() && !trimmed.starts_with('#')
-    })
+    text.lines()
+        .map(|line| line.trim())
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
 }
 
 #[cfg(test)]
