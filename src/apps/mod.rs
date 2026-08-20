@@ -59,7 +59,7 @@ pub(crate) fn get_rta_command(
                         return Err(UserError::Rta { err });
                     }
                     let add_args = rta::commands::AddArgs {
-                        app_name: app.clone(),
+                        app_name: app.to_owned(),
                         verbose: true,
                     };
                     if let Err(err) = rta::commands::add(add_args, &apps) {
