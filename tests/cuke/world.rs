@@ -47,6 +47,18 @@ impl TricorderWorld {
             None => panic!(),
         }
     }
+
+    pub fn original_file_content(&self, filename: &str) -> Option<&str> {
+        self.original_files
+            .iter()
+            .find(|file| file.name == filename)
+            .map(|file| file.content.as_str())
+    }
+
+    pub async fn current_file_content(&self, filename: &str) -> Option<String> {
+        let filepath = self.dir.join(filename);
+        fs::read_to_string(filepath).await
+    }
 }
 
 #[derive(Debug)]

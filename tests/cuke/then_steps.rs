@@ -66,18 +66,15 @@ async fn file_has_additional_line_matching(
     filename: String,
 ) {
     let docstring = step.docstring.as_ref().unwrap();
-    let previous = world
-        .original_files
-        .iter()
-        .find(|file| file.name == filename)
-        .map_or("", |file| file.content.as_str());
-    let filepath = world.dir.join(&filename);
-    let have = fs::read_to_string(&filepath).await.unwrap();
-    let mut remaining = content_lines(&have);
+    let previous_content = world.original_file_content(&filename).unwrap_or_default();
+    let current_content = world.current_file_content(&filename).await.unwrap();
+    let mut remaining = content_lines(&current_content);
     // all non-comment lines the file had before must still be there
-    for want in content_lines(previous) {
+    for want in content_lines(previous_content) {
         let Some(pos) = remaining.iter().position(|line| *line == want) else {
-            panic!("file '{filename}' no longer contains line '{want}'\n\nHAVE:\n{have}\n\n");
+            panic!(
+                "file '{filename}' no longer contains line '{want}'\n\nHAVE:\n{current_content}\n\n"
+            );
         };
         remaining.remove(pos);
     }
@@ -93,14 +90,14 @@ async fn file_has_additional_line_matching(
         assert_eq!(
             matching.len(),
             1,
-            "\n\nHAVE:\n{have}\n\nWANT exactly one new line matching:\n{want}\n\n"
+            "\n\nHAVE:\n{current_content}\n\nWANT exactly one new line matching:\n{want}\n\n"
         );
         remaining.remove(matching[0]);
     }
     // no other lines were added
     assert!(
         remaining.is_empty(),
-        "file '{filename}' has unexpected additional lines:\n{}\n\nHAVE:\n{have}\n\n",
+        "file '{filename}' has unexpected additional lines:\n{}\n\nHAVE:\n{current_content}\n\n",
         remaining.join("\n")
     );
 }
