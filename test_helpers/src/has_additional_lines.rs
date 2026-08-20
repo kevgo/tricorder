@@ -7,7 +7,10 @@ use crate::remove_lines;
 pub fn has_additional_lines(old: &str, new: &str, patterns: &str) -> Result<(), String> {
     let mut new_lines: Vec<&str> = content_lines(new).collect();
     // remove `old` from `new_lines`
-    remove_lines(&mut new_lines, content_lines(old))?;
+    let missing = remove_lines(&mut new_lines, content_lines(old));
+    if !missing.is_empty() {
+        return Err(format!("no longer contains lines:\n{}", missing.join("\n")));
+    }
     // all remaining lines must match one of the patterns
     for pattern in content_lines(patterns) {
         remove_line_matching(&mut new_lines, pattern)?;
