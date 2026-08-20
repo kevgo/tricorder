@@ -48,16 +48,14 @@ pub(crate) fn get_rta_command(
                     command: (&command).into(),
                 }));
             }
-            Err(err) => match err {
+            Err(err) => match &err {
                 rta::error::UserError::RunRequestMissingVersion { app }
                 | rta::error::UserError::NoVersionsFound { app } => {
-                    if added.contains(&app) {
+                    if added.contains(app) {
                         // We have tried to install this missing app before,
                         // and it didn't work.
                         // Now we know it cannot be installed on this platform.
-                        return Err(UserError::Rta {
-                            err: rta::error::UserError::NoVersionsFound { app },
-                        });
+                        return Err(UserError::Rta { err });
                     }
                     let add_args = rta::commands::AddArgs {
                         app_name: app.clone(),
@@ -66,7 +64,7 @@ pub(crate) fn get_rta_command(
                     if let Err(err) = rta::commands::add(add_args, &apps) {
                         return Err(UserError::Rta { err });
                     }
-                    added.push(app);
+                    added.push(app.clone());
                 }
                 _ => return Err(UserError::Rta { err }),
             },
