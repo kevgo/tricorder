@@ -6,6 +6,7 @@
 /// `remaining`.
 ///
 /// Returns `Err` naming the first missing line.
+#[must_use]
 pub(crate) fn remove_lines<'a>(
     remaining: &mut Vec<&'a str>,
     to_remove: impl IntoIterator<Item = &'a str>,
@@ -42,7 +43,10 @@ mod tests {
     #[test]
     fn removes_matching_lines() {
         let mut remaining = vec!["foo", "bar", "baz"];
-        pretty::assert_eq!(remove_lines(&mut remaining, ["foo", "baz"]), Vec::<&str>::new());
+        pretty::assert_eq!(
+            remove_lines(&mut remaining, ["foo", "baz"]),
+            Vec::<&str>::new()
+        );
         pretty::assert_eq!(remaining, vec!["bar"]);
     }
 
