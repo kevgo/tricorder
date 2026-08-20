@@ -26,8 +26,9 @@ use rta::applications::AppDefinition;
 pub(crate) fn get_rta_command(
     args: &GetRTACmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
-    // Keep trying until the command is available.
-    // Apps like Prettier need to install multiple apps to run (Node and Prettier).
+    // Apps like Prettier need to install multiple apps to run (first Node, then Prettier).
+    // So we keep trying in a loop until either the command is available,
+    // or we get stuck needing the same app installed again after having already installed it.
     let apps = rta::applications::all();
     let mut added = Vec::new();
     loop {
