@@ -2,7 +2,8 @@ use crate::content_lines;
 use crate::remove_line_matching;
 use crate::remove_lines;
 
-/// Verifies that `new` is `old` plus each line in `patterns` at any position, but exactly once.
+/// Verifies that `new` == `old` + `patterns`
+/// where each line in `patterns` matches exactly one line in `new`.
 /// Ignores empty lines and `#` comments.
 pub fn has_additional_lines(old: &str, new: &str, patterns: &str) -> Result<(), String> {
     let mut new_lines: Vec<&str> = content_lines(new).collect();
