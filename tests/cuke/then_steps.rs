@@ -123,17 +123,6 @@ async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: Str
     assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
 
-#[then(expr = "file {string} now matches")]
-async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.join(&filename);
-    let have = fs::read_to_string(filepath).await.unwrap();
-    assert!(
-        Regex::new(want).unwrap().is_match(have.trim()),
-        "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
-    );
-}
-
 #[then(expr = "file {string} now matches these lines")]
 async fn file_matches_lines(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str().trim().lines();
