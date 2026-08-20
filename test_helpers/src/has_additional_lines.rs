@@ -1,36 +1,21 @@
 use crate::content_lines;
+use crate::remove_line_matching;
 use crate::remove_lines;
-use itertools::Itertools;
-use regex::Regex;
 
-/// Verifies that `current` still contains every content line from `previous`,
-/// and that each regex in `patterns` matches exactly one newly added content line.
-/// Empty lines and `#` comments are ignored.
-pub fn additional_lines_matching(
-    previous: &str,
-    current: &str,
-    patterns: &str,
-) -> Result<(), String> {
-    let mut remaining: Vec<&str> = content_lines(current).collect();
-    remove_lines(&mut remaining, content_lines(previous))?;
+/// Verifies that `new` is `old` plus each line in `patterns` at any position, but exactly once.
+/// Ignores empty lines and `#` comments.
+pub fn has_additional_lines(old: &str, new: &str, patterns: &str) -> Result<(), String> {
+    let mut new_lines: Vec<&str> = content_lines(new).collect();
+    // remove `old` from `new_lines`
+    remove_lines(&mut new_lines, content_lines(old))?;
+    // all remaining lines must match one of the patterns
     for pattern in content_lines(patterns) {
-        let regex = Regex::new(&format!("^{pattern}$")).unwrap();
-        let matches: Vec<usize> = remaining
-            .iter()
-            .positions(|line| regex.is_match(line))
-            .collect();
-        let [pos] = matches[..] else {
-            return Err(format!(
-                "want exactly one new line matching:\n{pattern}\n(matched {})",
-                matches.len()
-            ));
-        };
-        remaining.remove(pos);
+        remove_line_matching(&mut new_lines, pattern)?;
     }
-    if !remaining.is_empty() {
+    if !new_lines.is_empty() {
         return Err(format!(
             "unexpected additional lines:\n{}",
-            remaining.join("\n")
+            new_lines.join("\n")
         ));
     }
     Ok(())
@@ -52,7 +37,7 @@ prettier 3.7.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert_eq!(additional_lines_matching("", current, patterns), Ok(()));
+        assert_eq!(has_additional_lines("", current, patterns), Ok(()));
     }
 
     #[test]
@@ -69,10 +54,7 @@ node 26.4.0
 prettier 3.7.0
 ";
         let patterns = r"prettier \d+\.\d+\.\d+";
-        assert_eq!(
-            additional_lines_matching(previous, current, patterns),
-            Ok(())
-        );
+        assert_eq!(has_additional_lines(previous, current, patterns), Ok(()));
     }
 
     #[test]
@@ -80,21 +62,18 @@ prettier 3.7.0
         let previous = "\n# old comment\n\nfoo 1.0.0\n";
         let current = "\n# new comment\n\nfoo 1.0.0\n\nbar 2.0.0\n";
         let patterns = r"bar \d+\.\d+\.\d+";
-        assert_eq!(
-            additional_lines_matching(previous, current, patterns),
-            Ok(())
-        );
+        assert_eq!(has_additional_lines(previous, current, patterns), Ok(()));
     }
 
     #[test]
     fn missing_previous_line() {
-        let have = additional_lines_matching("foo 1.0.0\nbar 2.0.0\n", "foo 1.0.0\n", "baz 3.0.0");
+        let have = has_additional_lines("foo 1.0.0\nbar 2.0.0\n", "foo 1.0.0\n", "baz 3.0.0");
         assert_eq!(have, Err("no longer contains line 'bar 2.0.0'".into()));
     }
 
     #[test]
     fn pattern_matches_no_new_line() {
-        let have = additional_lines_matching("", "node 22.1.0\n", r"prettier \d+\.\d+\.\d+");
+        let have = has_additional_lines("", "node 22.1.0\n", r"prettier \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err(
@@ -106,7 +85,7 @@ prettier 3.7.0
 
     #[test]
     fn pattern_matches_two_new_lines() {
-        let have = additional_lines_matching("", "foo 1.0.0\nfoo 2.0.0\n", r"foo \d+\.\d+\.\d+");
+        let have = has_additional_lines("", "foo 1.0.0\nfoo 2.0.0\n", r"foo \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err("want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)".into())
@@ -115,8 +94,7 @@ prettier 3.7.0
 
     #[test]
     fn unexpected_additional_line() {
-        let have =
-            additional_lines_matching("", "node 22.1.0\nprettier 3.7.0\n", r"node \d+\.\d+\.\d+");
+        let have = has_additional_lines("", "node 22.1.0\nprettier 3.7.0\n", r"node \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err("unexpected additional lines:\nprettier 3.7.0".into())
@@ -133,12 +111,12 @@ node 22.1.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert_eq!(additional_lines_matching("", current, patterns), Ok(()));
+        assert_eq!(has_additional_lines("", current, patterns), Ok(()));
     }
 
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
-        let have = additional_lines_matching("foo\nfoo\n", "foo\n", "");
+        let have = has_additional_lines("foo\nfoo\n", "foo\n", "");
         assert_eq!(have, Err("no longer contains line 'foo'".into()));
     }
 }
