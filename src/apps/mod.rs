@@ -26,12 +26,11 @@ use rta::applications::AppDefinition;
 pub(crate) fn get_rta_command(
     args: &GetRTACmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
-    // try twice to get the command:
-    // - first to get the command
-    // - if that fails because the app is not listed in the config file,
-    //   add the app to the config and try a second time.
+    // Keep trying until the command is available.
+    // Apps like Prettier need to install multiple apps to run (Node and Prettier).
     let apps = rta::applications::all();
-    for _ in 0..2 {
+    let mut added = Vec::new();
+    loop {
         let get_cmd_args = rta::GetCmdArgs {
             app: args.app,
             app_args: args.args.clone(),
@@ -52,19 +51,27 @@ pub(crate) fn get_rta_command(
             Err(err) => match err {
                 rta::error::UserError::RunRequestMissingVersion { app }
                 | rta::error::UserError::NoVersionsFound { app } => {
+                    if added.contains(&app) {
+                        // We have tried to install this missing app before,
+                        // and it didn't work.
+                        // Now we know it cannot be installed on this platform.
+                        return Err(UserError::Rta {
+                            err: rta::error::UserError::NoVersionsFound { app },
+                        });
+                    }
                     let add_args = rta::commands::AddArgs {
-                        app_name: app,
+                        app_name: app.clone(),
                         verbose: true,
                     };
                     if let Err(err) = rta::commands::add(add_args, &apps) {
                         return Err(UserError::Rta { err });
                     }
+                    added.push(app);
                 }
                 _ => return Err(UserError::Rta { err }),
             },
         }
     }
-    Ok(None)
 }
 
 pub struct GetRTACmdArgs<'a> {
