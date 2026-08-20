@@ -1,6 +1,8 @@
 use cucumber::World;
+use std::io;
 use std::path::PathBuf;
 use std::process::Output;
+use tokio::fs;
 
 #[derive(Debug, World)]
 #[world(init = Self::new)]
@@ -55,7 +57,7 @@ impl TricorderWorld {
             .map(|file| file.content.as_str())
     }
 
-    pub async fn current_file_content(&self, filename: &str) -> Option<String> {
+    pub async fn current_file_content(&self, filename: &str) -> io::Result<String> {
         let filepath = self.dir.join(filename);
         fs::read_to_string(filepath).await
     }

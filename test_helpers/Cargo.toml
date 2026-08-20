@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 itertools = "0.14.0"
+regex = "1.13.1"
 
 [dev-dependencies]
 pretty = { package = "pretty_assertions", version = "1.4.1" }
