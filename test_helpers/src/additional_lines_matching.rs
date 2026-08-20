@@ -30,14 +30,13 @@ pub fn additional_lines_matching(
         };
         remaining.remove(pos);
     }
-    if remaining.is_empty() {
-        Ok(())
-    } else {
-        Err(format!(
+    if !remaining.is_empty() {
+        return Err(format!(
             "unexpected additional lines:\n{}",
             remaining.join("\n")
-        ))
+        ));
     }
+    Ok(())
 }
 
 fn content_lines(text: &str) -> Vec<&str> {
