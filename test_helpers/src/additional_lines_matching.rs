@@ -9,7 +9,7 @@ pub fn additional_lines_matching(
     current: &str,
     patterns: &str,
 ) -> Result<(), String> {
-    let mut remaining = content_lines(current);
+    let mut remaining: Vec<_> = content_lines(current).collect();
     for want in content_lines(previous) {
         let Some(pos) = remaining.iter().position(|line| *line == want) else {
             return Err(format!("no longer contains line '{want}'"));
@@ -39,13 +39,11 @@ pub fn additional_lines_matching(
     Ok(())
 }
 
-fn content_lines(text: &str) -> Vec<&str> {
-    text.lines()
-        .filter(|line| {
-            let trimmed = line.trim();
-            !trimmed.is_empty() && !trimmed.starts_with('#')
-        })
-        .collect()
+fn content_lines(text: &str) -> impl Iterator<Item = &str> {
+    text.lines().filter(|line| {
+        let trimmed = line.trim();
+        !trimmed.is_empty() && !trimmed.starts_with('#')
+    })
 }
 
 #[cfg(test)]
