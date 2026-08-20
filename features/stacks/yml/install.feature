@@ -1,12 +1,9 @@
 @online
 Feature: install all YML tools
 
+  @this
   Scenario: not installed
-    Given a file "run-that-app" with content
-      """
-      node 26.4.0
-      """
-    And a file "main.yml" with content
+    Given a file "main.yml" with content
       """
       key:     value
       """
@@ -22,5 +19,6 @@ Feature: install all YML tools
       """
     And file "run-that-app" now has an additional line matching
       """
+      node \d+\.\d+\.\d+
       prettier \d+\.\d+\.\d+
       """
