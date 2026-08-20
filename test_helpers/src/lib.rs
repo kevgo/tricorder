@@ -5,3 +5,4 @@ pub mod snapshots;
 
 pub use additional_lines_matching::additional_lines_matching;
 pub use compare_lines_any_order::compare_lines_any_order;
+use content_lines::content_lines;

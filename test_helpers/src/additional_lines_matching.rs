@@ -1,4 +1,4 @@
-use crate::content_lines::content_lines;
+use crate::content_lines;
 use itertools::Itertools;
 use regex::Regex;
 
