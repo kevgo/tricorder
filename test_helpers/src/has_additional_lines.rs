@@ -82,42 +82,69 @@ bar 2.0.0
 
     #[test]
     fn unexpected_removal() {
-        let old = "foo 1.0.0\nbar 2.0.0\n";
-        let new = "foo 1.0.0\n";
+        let old = "\
+foo 1.0.0
+bar 2.0.0
+";
+        let new = "\
+foo 1.0.0
+";
         let patterns = "baz 3.0.0";
         let have = has_additional_lines(old, new, patterns);
-        assert_eq!(have, Err(S("no longer contains lines:\nbar 2.0.0")));
+        assert_eq!(
+            have,
+            Err(S("\
+no longer contains lines:
+bar 2.0.0"))
+        );
     }
 
     #[test]
     fn pattern_not_added() {
         let old = "";
-        let new = "node 22.1.0\n";
+        let new = "\
+node 22.1.0
+";
         let patterns = r"prettier \d+\.\d+\.\d+";
         let have = has_additional_lines(old, new, patterns);
         assert_eq!(
             have,
-            Err(S(
-                "want exactly one new line matching:\nprettier \\d+\\.\\d+\\.\\d+\n(matched 0)"
-            ))
+            Err(S("\
+want exactly one new line matching:
+prettier \\d+\\.\\d+\\.\\d+
+(matched 0)"))
         );
     }
 
     #[test]
     fn pattern_matches_two_new_lines() {
-        let have = has_additional_lines("", "foo 1.0.0\nfoo 2.0.0\n", r"foo \d+\.\d+\.\d+");
+        let new = "\
+foo 1.0.0
+foo 2.0.0
+";
+        let have = has_additional_lines("", new, r"foo \d+\.\d+\.\d+");
         assert_eq!(
             have,
-            Err(S(
-                "want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)"
-            ))
+            Err(S("\
+want exactly one new line matching:
+foo \\d+\\.\\d+\\.\\d+
+(matched 2)"))
         );
     }
 
     #[test]
     fn unexpected_additional_line() {
-        let have = has_additional_lines("", "node 22.1.0\nprettier 3.7.0\n", r"node \d+\.\d+\.\d+");
-        assert_eq!(have, Err(S("unexpected additional lines:\nprettier 3.7.0")));
+        let new = "\
+node 22.1.0
+prettier 3.7.0
+";
+        let have = has_additional_lines("", new, r"node \d+\.\d+\.\d+");
+        assert_eq!(
+            have,
+            Err(S("\
+unexpected additional lines:
+prettier 3.7.0"))
+        );
     }
 
     #[test]
@@ -135,7 +162,19 @@ prettier \d+\.\d+\.\d+
 
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
-        let have = has_additional_lines("foo\nfoo\n", "foo\n", "");
-        assert_eq!(have, Err(S("no longer contains lines:\nfoo")));
+        let old = "\
+foo
+foo
+";
+        let new = "\
+foo
+";
+        let have = has_additional_lines(old, new, "");
+        assert_eq!(
+            have,
+            Err(S("\
+no longer contains lines:
+foo"))
+        );
     }
 }
