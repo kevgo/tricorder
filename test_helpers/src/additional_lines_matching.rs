@@ -9,7 +9,7 @@ pub fn additional_lines_matching(
     current: &str,
     patterns: &str,
 ) -> Result<(), String> {
-    let mut remaining: Vec<_> = content_lines(current).collect();
+    let mut remaining: Vec<&str> = content_lines(current).collect();
     for want in content_lines(previous) {
         let Some(pos) = remaining.iter().position(|line| *line == want) else {
             return Err(format!("no longer contains line '{want}'"));
