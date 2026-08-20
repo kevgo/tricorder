@@ -28,10 +28,12 @@ pub fn has_additional_lines(old: &str, new: &str, patterns: &str) -> Result<(), 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use big_s::S;
 
     #[test]
-    fn empty_previous_matching_new_lines() {
-        let current = "\
+    fn expected_additional_lines() {
+        let old = "";
+        let new = "\
 # more info at https://github.com/kevgo/run-that-app
 
 node 22.1.0
@@ -41,16 +43,16 @@ prettier 3.7.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert_eq!(has_additional_lines("", current, patterns), Ok(()));
+        assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
 
     #[test]
-    fn keeps_previous_lines_and_matches_new_ones() {
-        let previous = "\
+    fn existing_lines_one_expected_additional() {
+        let old = "\
 delete-empty-folders 0.0.2
 node 26.4.0
 ";
-        let current = "\
+        let new = "\
 # more info at https://github.com/kevgo/run-that-app
 
 delete-empty-folders 0.0.2
@@ -58,32 +60,37 @@ node 26.4.0
 prettier 3.7.0
 ";
         let patterns = r"prettier \d+\.\d+\.\d+";
-        assert_eq!(has_additional_lines(previous, current, patterns), Ok(()));
+        assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
 
     #[test]
-    fn ignores_blank_lines_and_comments() {
-        let previous = "\n# old comment\n\nfoo 1.0.0\n";
-        let current = "\n# new comment\n\nfoo 1.0.0\n\nbar 2.0.0\n";
+    fn ignores_changes_to_comments() {
+        let old = "\n# old comment\n\nfoo 1.0.0\n";
+        let new = "\n# new comment\n\nfoo 1.0.0\n\nbar 2.0.0\n";
         let patterns = r"bar \d+\.\d+\.\d+";
-        assert_eq!(has_additional_lines(previous, current, patterns), Ok(()));
+        assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
 
     #[test]
-    fn missing_previous_line() {
-        let have = has_additional_lines("foo 1.0.0\nbar 2.0.0\n", "foo 1.0.0\n", "baz 3.0.0");
-        assert_eq!(have, Err("no longer contains lines:\nbar 2.0.0".into()));
+    fn unexpected_removal() {
+        let old = "foo 1.0.0\nbar 2.0.0\n";
+        let new = "foo 1.0.0\n";
+        let patterns = "baz 3.0.0";
+        let have = has_additional_lines(old, new, patterns);
+        assert_eq!(have, Err(S("no longer contains lines:\nbar 2.0.0")));
     }
 
     #[test]
-    fn pattern_matches_no_new_line() {
-        let have = has_additional_lines("", "node 22.1.0\n", r"prettier \d+\.\d+\.\d+");
+    fn pattern_not_added() {
+        let old = "";
+        let new = "node 22.1.0\n";
+        let patterns = r"prettier \d+\.\d+\.\d+";
+        let have = has_additional_lines(old, new, patterns);
         assert_eq!(
             have,
-            Err(
+            Err(S(
                 "want exactly one new line matching:\nprettier \\d+\\.\\d+\\.\\d+\n(matched 0)"
-                    .into()
-            )
+            ))
         );
     }
 
@@ -92,17 +99,16 @@ prettier 3.7.0
         let have = has_additional_lines("", "foo 1.0.0\nfoo 2.0.0\n", r"foo \d+\.\d+\.\d+");
         assert_eq!(
             have,
-            Err("want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)".into())
+            Err(S(
+                "want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)"
+            ))
         );
     }
 
     #[test]
     fn unexpected_additional_line() {
         let have = has_additional_lines("", "node 22.1.0\nprettier 3.7.0\n", r"node \d+\.\d+\.\d+");
-        assert_eq!(
-            have,
-            Err("unexpected additional lines:\nprettier 3.7.0".into())
-        );
+        assert_eq!(have, Err(S("unexpected additional lines:\nprettier 3.7.0")));
     }
 
     #[test]
@@ -121,6 +127,6 @@ prettier \d+\.\d+\.\d+
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
         let have = has_additional_lines("foo\nfoo\n", "foo\n", "");
-        assert_eq!(have, Err("no longer contains lines:\nfoo".into()));
+        assert_eq!(have, Err(S("no longer contains lines:\nfoo")));
     }
 }

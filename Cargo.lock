@@ -1935,6 +1935,7 @@ dependencies = [
 name = "test_helpers"
 version = "0.0.0"
 dependencies = [
+ "big_s",
  "itertools",
  "pretty_assertions",
  "regex",
