@@ -65,8 +65,17 @@ prettier 3.7.0
 
     #[test]
     fn ignores_changes_to_comments() {
-        let old = "\n# old comment\n\nfoo 1.0.0\n";
-        let new = "\n# new comment\n\nfoo 1.0.0\n\nbar 2.0.0\n";
+        let old = "\
+# old comment
+
+foo 1.0.0
+";
+        let new = "\
+# new comment
+
+foo 1.0.0
+bar 2.0.0
+";
         let patterns = r"bar \d+\.\d+\.\d+";
         assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
