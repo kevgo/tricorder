@@ -68,12 +68,9 @@ async fn file_has_additional_line_matching(
     let docstring = step.docstring.as_ref().unwrap();
     let previous = world.original_file_content(&filename).unwrap_or_default();
     let current = world.current_file_content(&filename).await.unwrap();
-    let result = test_helpers::additional_lines_matching(previous, &current, docstring);
-    assert!(
-        result.success(),
-        "file '{filename}' {}\n\nHAVE:\n{current}\n\n",
-        result.message()
-    );
+    if let Err(problem) = test_helpers::additional_lines_matching(previous, &current, docstring) {
+        panic!("file '{filename}' {problem}\n\nHAVE:\n{current}\n\n");
+    }
 }
 
 #[then(expr = "file {string} now has content")]

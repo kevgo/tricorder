@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use regex::Regex;
 
 /// Verifies that `current` still contains every content line from `previous`,
@@ -7,44 +8,35 @@ pub fn additional_lines_matching(
     previous: &str,
     current: &str,
     patterns: &str,
-) -> AdditionalLinesResult {
+) -> Result<(), String> {
     let mut remaining = content_lines(current);
     for want in content_lines(previous) {
         let Some(pos) = remaining.iter().position(|line| *line == want) else {
-            return AdditionalLinesResult {
-                error: Some(AdditionalLinesError::MissingPreviousLine {
-                    line: want.to_string(),
-                }),
-            };
+            return Err(format!("no longer contains line '{want}'"));
         };
         remaining.remove(pos);
     }
-    for want in content_lines(patterns) {
-        let regex = Regex::new(&format!("^{want}$")).unwrap();
-        let matching: Vec<usize> = remaining
+    for pattern in content_lines(patterns) {
+        let regex = Regex::new(&format!("^{pattern}$")).unwrap();
+        let matches: Vec<usize> = remaining
             .iter()
-            .enumerate()
-            .filter(|(_, line)| regex.is_match(line))
-            .map(|(i, _)| i)
+            .positions(|line| regex.is_match(line))
             .collect();
-        if matching.len() != 1 {
-            return AdditionalLinesResult {
-                error: Some(AdditionalLinesError::WrongMatchCount {
-                    pattern: want.to_string(),
-                    count: matching.len(),
-                }),
-            };
-        }
-        remaining.remove(matching[0]);
+        let [pos] = matches[..] else {
+            return Err(format!(
+                "want exactly one new line matching:\n{pattern}\n(matched {})",
+                matches.len()
+            ));
+        };
+        remaining.remove(pos);
     }
     if remaining.is_empty() {
-        AdditionalLinesResult { error: None }
+        Ok(())
     } else {
-        AdditionalLinesResult {
-            error: Some(AdditionalLinesError::UnexpectedLines {
-                lines: remaining.into_iter().map(str::to_string).collect(),
-            }),
-        }
+        Err(format!(
+            "unexpected additional lines:\n{}",
+            remaining.join("\n")
+        ))
     }
 }
 
@@ -55,39 +47,6 @@ fn content_lines(text: &str) -> Vec<&str> {
             !trimmed.is_empty() && !trimmed.starts_with('#')
         })
         .collect()
-}
-
-#[derive(Debug, PartialEq)]
-pub struct AdditionalLinesResult {
-    pub error: Option<AdditionalLinesError>,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum AdditionalLinesError {
-    MissingPreviousLine { line: String },
-    WrongMatchCount { pattern: String, count: usize },
-    UnexpectedLines { lines: Vec<String> },
-}
-
-impl AdditionalLinesResult {
-    pub fn message(&self) -> String {
-        match &self.error {
-            None => String::new(),
-            Some(AdditionalLinesError::MissingPreviousLine { line }) => {
-                format!("no longer contains line '{line}'")
-            }
-            Some(AdditionalLinesError::WrongMatchCount { pattern, count }) => {
-                format!("want exactly one new line matching:\n{pattern}\n(matched {count})")
-            }
-            Some(AdditionalLinesError::UnexpectedLines { lines }) => {
-                format!("unexpected additional lines:\n{}", lines.join("\n"))
-            }
-        }
-    }
-
-    pub fn success(&self) -> bool {
-        self.error.is_none()
-    }
 }
 
 #[cfg(test)]
@@ -106,7 +65,7 @@ prettier 3.7.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert!(additional_lines_matching("", current, patterns).success());
+        assert_eq!(additional_lines_matching("", current, patterns), Ok(()));
     }
 
     #[test]
@@ -123,7 +82,10 @@ node 26.4.0
 prettier 3.7.0
 ";
         let patterns = r"prettier \d+\.\d+\.\d+";
-        assert!(additional_lines_matching(previous, current, patterns).success());
+        assert_eq!(
+            additional_lines_matching(previous, current, patterns),
+            Ok(())
+        );
     }
 
     #[test]
@@ -131,44 +93,36 @@ prettier 3.7.0
         let previous = "\n# old comment\n\nfoo 1.0.0\n";
         let current = "\n# new comment\n\nfoo 1.0.0\n\nbar 2.0.0\n";
         let patterns = r"bar \d+\.\d+\.\d+";
-        assert!(additional_lines_matching(previous, current, patterns).success());
+        assert_eq!(
+            additional_lines_matching(previous, current, patterns),
+            Ok(())
+        );
     }
 
     #[test]
     fn missing_previous_line() {
         let have = additional_lines_matching("foo 1.0.0\nbar 2.0.0\n", "foo 1.0.0\n", "baz 3.0.0");
-        assert!(!have.success());
-        assert_eq!(
-            have.error,
-            Some(AdditionalLinesError::MissingPreviousLine {
-                line: "bar 2.0.0".into(),
-            })
-        );
+        assert_eq!(have, Err("no longer contains line 'bar 2.0.0'".into()));
     }
 
     #[test]
     fn pattern_matches_no_new_line() {
         let have = additional_lines_matching("", "node 22.1.0\n", r"prettier \d+\.\d+\.\d+");
-        assert!(!have.success());
         assert_eq!(
-            have.error,
-            Some(AdditionalLinesError::WrongMatchCount {
-                pattern: r"prettier \d+\.\d+\.\d+".into(),
-                count: 0,
-            })
+            have,
+            Err(
+                "want exactly one new line matching:\nprettier \\d+\\.\\d+\\.\\d+\n(matched 0)"
+                    .into()
+            )
         );
     }
 
     #[test]
     fn pattern_matches_two_new_lines() {
         let have = additional_lines_matching("", "foo 1.0.0\nfoo 2.0.0\n", r"foo \d+\.\d+\.\d+");
-        assert!(!have.success());
         assert_eq!(
-            have.error,
-            Some(AdditionalLinesError::WrongMatchCount {
-                pattern: r"foo \d+\.\d+\.\d+".into(),
-                count: 2,
-            })
+            have,
+            Err("want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)".into())
         );
     }
 
@@ -176,12 +130,9 @@ prettier 3.7.0
     fn unexpected_additional_line() {
         let have =
             additional_lines_matching("", "node 22.1.0\nprettier 3.7.0\n", r"node \d+\.\d+\.\d+");
-        assert!(!have.success());
         assert_eq!(
-            have.error,
-            Some(AdditionalLinesError::UnexpectedLines {
-                lines: vec!["prettier 3.7.0".into()],
-            })
+            have,
+            Err("unexpected additional lines:\nprettier 3.7.0".into())
         );
     }
 
@@ -195,16 +146,12 @@ node 22.1.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert!(additional_lines_matching("", current, patterns).success());
+        assert_eq!(additional_lines_matching("", current, patterns), Ok(()));
     }
 
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
         let have = additional_lines_matching("foo\nfoo\n", "foo\n", "");
-        assert!(!have.success());
-        assert_eq!(
-            have.error,
-            Some(AdditionalLinesError::MissingPreviousLine { line: "foo".into() })
-        );
+        assert_eq!(have, Err("no longer contains line 'foo'".into()));
     }
 }
