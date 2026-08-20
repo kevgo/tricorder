@@ -64,7 +64,7 @@ pub(crate) fn get_rta_command(
                     if let Err(err) = rta::commands::add(add_args, &apps) {
                         return Err(UserError::Rta { err });
                     }
-                    added.push(app.clone());
+                    added.push(app.to_owned());
                 }
                 _ => return Err(UserError::Rta { err }),
             },

@@ -1,7 +1,6 @@
 @online
 Feature: install all YML tools
 
-  @this
   Scenario: not installed
     Given a file "main.yml" with content
       """
