@@ -1,3 +1,4 @@
+use crate::content_lines::content_lines;
 use itertools::Itertools;
 use regex::Regex;
 
@@ -10,6 +11,7 @@ pub fn additional_lines_matching(
     patterns: &str,
 ) -> Result<(), String> {
     let mut remaining: Vec<&str> = content_lines(current).collect();
+    // remove `previous` from `remaining`
     for want in content_lines(previous) {
         let Some(pos) = remaining.iter().position(|line| *line == want) else {
             return Err(format!("no longer contains line '{want}'"));
@@ -37,12 +39,6 @@ pub fn additional_lines_matching(
         ));
     }
     Ok(())
-}
-
-fn content_lines(text: &str) -> impl Iterator<Item = &str> {
-    text.lines()
-        .map(|line| line.trim())
-        .filter(|line| !line.is_empty() && !line.starts_with('#'))
 }
 
 #[cfg(test)]
