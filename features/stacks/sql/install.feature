@@ -20,9 +20,7 @@ Feature: install all SQL tools
       """
       select id, name from one
       """
-    And file "run-that-app" now matches
+    And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
       uv \d+\.\d+\.\d+
       """
