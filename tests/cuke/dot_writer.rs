@@ -1,4 +1,5 @@
 use cucumber::{Event, event, writer};
+use std::future::Future;
 use std::io::{self, Write as _};
 use std::str;
 use std::sync::{
@@ -130,11 +131,11 @@ impl writer::NonTransforming for DotWriter {}
 impl cucumber::Writer<TricorderWorld> for DotWriter {
     type Cli = cucumber::cli::Empty;
 
-    async fn handle_event(
+    fn handle_event(
         &mut self,
         event: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
         _cli: &Self::Cli,
-    ) {
+    ) -> impl Future<Output = ()> {
         match event {
             Ok(Event { value, .. }) => match value {
                 event::Cucumber::ParsingFinished {
@@ -181,5 +182,6 @@ impl cucumber::Writer<TricorderWorld> for DotWriter {
             },
             Err(e) => eprintln!("Error: {e}"),
         }
+        std::future::ready(())
     }
 }
