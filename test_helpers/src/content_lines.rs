@@ -20,16 +20,16 @@ mod tests {
 
     #[test]
     fn keeps_content_lines() {
-        let given = "one 1.0.0\nbar 2.0.0\n";
-        let want: Vec<&str> = vec!["one 1.0.0", "bar 2.0.0"];
+        let given = "one 1.0.0\ntwo 2.0.0\n";
+        let want: Vec<&str> = vec!["one 1.0.0", "two 2.0.0"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn skips_blank_lines() {
-        let given = "\none\n\n  \nbar\n";
-        let want: Vec<&str> = vec!["one", "bar"];
+        let given = "\none\n\n  \ntwo\n";
+        let want: Vec<&str> = vec!["one", "two"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
@@ -52,8 +52,8 @@ mod tests {
 
     #[test]
     fn trims_surrounding_whitespace() {
-        let given = "  one 1.0.0  \n\tbar\t\n";
-        let want: Vec<&str> = vec!["one 1.0.0", "bar"];
+        let given = "  one 1.0.0  \n\ttwo\t\n";
+        let want: Vec<&str> = vec!["one 1.0.0", "two"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
