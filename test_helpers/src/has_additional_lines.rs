@@ -71,26 +71,26 @@ prettier 3.7.0
         let old = "\
 # old comment
 
-foo 1.0.0
+one 1.0.0
 ";
         let new = "\
 # new comment
 
-foo 1.0.0
-bar 2.0.0
+one 1.0.0
+two 2.0.0
 ";
-        let patterns = r"bar \d+\.\d+\.\d+";
+        let patterns = r"two \d+\.\d+\.\d+";
         assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
 
     #[test]
     fn unexpected_removal() {
         let old = "\
-foo 1.0.0
-bar 2.0.0
+one 1.0.0
+two 2.0.0
 ";
         let new = "\
-foo 1.0.0
+one 1.0.0
 ";
         let patterns = "baz 3.0.0";
         let have = has_additional_lines(old, new, patterns);
@@ -98,7 +98,7 @@ foo 1.0.0
             have,
             Err(S("\
 no longer contains lines:
-bar 2.0.0"))
+two 2.0.0"))
         );
     }
 
@@ -123,15 +123,15 @@ prettier \\d+\\.\\d+\\.\\d+
     fn pattern_matches_two_new_lines() {
         let old = "";
         let new = "\
-foo 1.0.0
-foo 2.0.0
+one 1.0.0
+one 2.0.0
 ";
-        let have = has_additional_lines(old, new, r"foo \d+\.\d+\.\d+");
+        let have = has_additional_lines(old, new, r"one \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err(S("\
 want exactly one new line matching:
-foo \\d+\\.\\d+\\.\\d+
+one \\d+\\.\\d+\\.\\d+
 (matched 2)"))
         );
     }
@@ -169,18 +169,18 @@ prettier \d+\.\d+\.\d+
     #[test]
     fn duplicate_previous_lines_must_all_remain() {
         let old = "\
-foo
-foo
+one
+one
 ";
         let new = "\
-foo
+one
 ";
         let have = has_additional_lines(old, new, "");
         assert_eq!(
             have,
             Err(S("\
 no longer contains lines:
-foo"))
+one"))
         );
     }
 }
