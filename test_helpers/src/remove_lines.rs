@@ -50,11 +50,11 @@ mod tests {
 
     #[test]
     fn matching_is_order_independent() {
-        let mut content = vec!["c", "b", "a"];
-        let removes: Vec<&str> = vec!["a", "c"];
+        let mut content = vec!["three", "two", "one"];
+        let removes: Vec<&str> = vec!["one", "three"];
         let missing = remove_lines(&mut content, removes);
         pretty::assert_eq!(missing, Vec::<&str>::new());
-        pretty::assert_eq!(content, vec!["b"]);
+        pretty::assert_eq!(content, vec!["two"]);
     }
 
     #[test]
