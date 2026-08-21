@@ -65,11 +65,11 @@ async fn file_has_additional_line_matching(
     step: &Step,
     filename: String,
 ) {
-    let docstring = step.docstring.as_ref().unwrap();
-    let previous = world.original_file_content(&filename).unwrap_or_default();
-    let current = world.current_file_content(&filename).await.unwrap();
-    if let Err(problem) = test_helpers::has_additional_lines(previous, &current, docstring) {
-        panic!("file '{filename}' {problem}\n\nHAVE:\n{current}\n\n");
+    let want = step.docstring.as_ref().unwrap();
+    let have_old = world.original_file_content(&filename).unwrap_or_default();
+    let have_new = world.current_file_content(&filename).await.unwrap();
+    if let Err(problem) = test_helpers::has_additional_lines(have_old, &have_new, want) {
+        panic!("file '{filename}' {problem}\n\nHAVE:\n{have_new}\n\n");
     }
 }
 
