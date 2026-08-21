@@ -34,7 +34,7 @@ mod tests {
     use big_s::S;
 
     #[test]
-    fn expected_additional_lines() {
+    fn added_matching_lines() {
         let old = "";
         let new = "\
 # more info at https://github.com/kevgo/run-that-app
