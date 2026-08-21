@@ -41,7 +41,7 @@ mod tests {
     }
 
     #[test]
-    fn matches_by_regex() {
+    fn removes_the_last_line() {
         let mut lines = vec!["node 22.1.0"];
         let pattern = r"node \d+\.\d+\.\d+";
         let want = Vec::<&str>::new();
