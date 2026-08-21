@@ -20,48 +20,48 @@ mod tests {
 
     #[test]
     fn keeps_content_lines() {
-        let given = "foo 1.0.0\nbar 2.0.0\n";
-        let want: Vec<&str> = vec!["foo 1.0.0", "bar 2.0.0"];
+        let given = "one 1.0.0\nbar 2.0.0\n";
+        let want: Vec<&str> = vec!["one 1.0.0", "bar 2.0.0"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn skips_blank_lines() {
-        let given = "\nfoo\n\n  \nbar\n";
-        let want: Vec<&str> = vec!["foo", "bar"];
+        let given = "\none\n\n  \nbar\n";
+        let want: Vec<&str> = vec!["one", "bar"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn skips_comments() {
-        let given = "# header\nfoo\n# trailing\n";
-        let want: Vec<&str> = vec!["foo"];
+        let given = "# header\none\n# trailing\n";
+        let want: Vec<&str> = vec!["one"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn skips_indented_comments() {
-        let given = "  # indented\nfoo\n";
-        let want: Vec<&str> = vec!["foo"];
+        let given = "  # indented\none\n";
+        let want: Vec<&str> = vec!["one"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn trims_surrounding_whitespace() {
-        let given = "  foo 1.0.0  \n\tbar\t\n";
-        let want: Vec<&str> = vec!["foo 1.0.0", "bar"];
+        let given = "  one 1.0.0  \n\tbar\t\n";
+        let want: Vec<&str> = vec!["one 1.0.0", "bar"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn keeps_hash_that_is_not_a_comment() {
-        let given = "foo # not a comment\n";
-        let want: Vec<&str> = vec!["foo # not a comment"];
+        let given = "one # not a comment\n";
+        let want: Vec<&str> = vec!["one # not a comment"];
         let have: Vec<&str> = content_lines(given).collect();
         pretty::assert_eq!(have, want);
     }
