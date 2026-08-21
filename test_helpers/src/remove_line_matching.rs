@@ -1,10 +1,10 @@
 use itertools::Itertools;
 use regex::Regex;
 
-/// removes the given pattern from the given content
-pub fn remove_line_matching(content: &mut Vec<&str>, pattern: &str) -> Result<(), String> {
+/// removes all lines from the given Vec matching the given pattern
+pub fn remove_line_matching(lines: &mut Vec<&str>, pattern: &str) -> Result<(), String> {
     let regex = Regex::new(&format!("^{pattern}$")).unwrap();
-    let matches: Vec<usize> = content
+    let matches: Vec<usize> = lines
         .iter()
         .positions(|line| regex.is_match(line))
         .collect();
@@ -14,7 +14,7 @@ pub fn remove_line_matching(content: &mut Vec<&str>, pattern: &str) -> Result<()
             matches.len()
         ));
     };
-    content.remove(pos);
+    lines.remove(pos);
     Ok(())
 }
 
