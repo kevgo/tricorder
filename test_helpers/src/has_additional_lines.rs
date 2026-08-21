@@ -92,7 +92,7 @@ two 2.0.0
         let new = "\
 one 1.0.0
 ";
-        let patterns = "baz 3.0.0";
+        let patterns = "three 3.0.0";
         let have = has_additional_lines(old, new, patterns);
         assert_eq!(
             have,
