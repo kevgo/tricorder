@@ -41,8 +41,8 @@ mod tests {
 
     #[test]
     fn remove_multiple_lines() {
-        let mut content = vec!["one", "two", "baz"];
-        let removes: Vec<&str> = vec!["one", "baz"];
+        let mut content = vec!["one", "two", "three"];
+        let removes: Vec<&str> = vec!["one", "three"];
         let missing = remove_lines(&mut content, removes);
         pretty::assert_eq!(missing, Vec::<&str>::new());
         pretty::assert_eq!(content, vec!["two"]);
