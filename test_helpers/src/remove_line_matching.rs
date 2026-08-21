@@ -77,7 +77,7 @@ mod tests {
     }
 
     #[test]
-    fn errors_on_empty_content() {
+    fn errors_on_empty_lines() {
         let mut lines: Vec<&str> = vec![];
         let pattern = "foo";
         let want: Vec<&str> = vec![];
