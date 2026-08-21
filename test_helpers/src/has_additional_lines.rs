@@ -121,11 +121,12 @@ prettier \\d+\\.\\d+\\.\\d+
 
     #[test]
     fn pattern_matches_two_new_lines() {
+        let old = "";
         let new = "\
 foo 1.0.0
 foo 2.0.0
 ";
-        let have = has_additional_lines("", new, r"foo \d+\.\d+\.\d+");
+        let have = has_additional_lines(old, new, r"foo \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err(S("\
@@ -137,11 +138,12 @@ foo \\d+\\.\\d+\\.\\d+
 
     #[test]
     fn unexpected_additional_line() {
+        let old = "";
         let new = "\
 node 22.1.0
 prettier 3.7.0
 ";
-        let have = has_additional_lines("", new, r"node \d+\.\d+\.\d+");
+        let have = has_additional_lines(old, new, r"node \d+\.\d+\.\d+");
         assert_eq!(
             have,
             Err(S("\
@@ -152,7 +154,8 @@ prettier 3.7.0"))
 
     #[test]
     fn new_lines_can_be_in_any_order() {
-        let current = "\
+        let old = "";
+        let new = "\
 prettier 3.7.0
 node 22.1.0
 ";
@@ -160,7 +163,7 @@ node 22.1.0
 node \d+\.\d+\.\d+
 prettier \d+\.\d+\.\d+
 ";
-        assert_eq!(has_additional_lines("", current, patterns), Ok(()));
+        assert_eq!(has_additional_lines(old, new, patterns), Ok(()));
     }
 
     #[test]
