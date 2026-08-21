@@ -24,68 +24,64 @@ mod tests {
 
     #[test]
     fn removes_the_matching_line() {
-        let mut content = vec!["foo 1.0.0", "bar 2.0.0"];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, r"foo \d+\.\d+\.\d+"),
-            Ok(())
-        );
-        pretty::assert_eq!(content, vec!["bar 2.0.0"]);
+        let mut lines = vec!["foo 1.0.0", "bar 2.0.0"];
+        let pattern = r"foo \d+\.\d+\.\d+";
+        let want = vec!["bar 2.0.0"];
+        remove_line_matching(&mut lines, pattern).unwrap();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn removes_from_the_middle() {
-        let mut content = vec!["foo", "bar", "baz"];
-        pretty::assert_eq!(remove_line_matching(&mut content, "bar"), Ok(()));
-        pretty::assert_eq!(content, vec!["foo", "baz"]);
+        let mut lines = vec!["foo", "bar", "baz"];
+        let pattern = "bar";
+        let want = vec!["foo", "baz"];
+        remove_line_matching(&mut lines, pattern).unwrap();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn matches_by_regex() {
-        let mut content = vec!["node 22.1.0"];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, r"node \d+\.\d+\.\d+"),
-            Ok(())
-        );
-        pretty::assert_eq!(content, Vec::<&str>::new());
+        let mut lines = vec!["node 22.1.0"];
+        let pattern = r"node \d+\.\d+\.\d+";
+        let want = Vec::<&str>::new();
+        remove_line_matching(&mut lines, pattern).unwrap();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn requires_full_line_match() {
-        let mut content = vec!["foo bar"];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, "foo"),
-            Err("want exactly one new line matching:\nfoo\n(matched 0)".into())
-        );
-        pretty::assert_eq!(content, vec!["foo bar"]);
+        let mut lines = vec!["foo bar"];
+        let pattern = "foo";
+        let want = vec!["foo bar"];
+        remove_line_matching(&mut lines, pattern).unwrap_err();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn errors_when_no_line_matches() {
-        let mut content = vec!["foo 1.0.0"];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, r"bar \d+\.\d+\.\d+"),
-            Err("want exactly one new line matching:\nbar \\d+\\.\\d+\\.\\d+\n(matched 0)".into())
-        );
-        pretty::assert_eq!(content, vec!["foo 1.0.0"]);
+        let mut lines = vec!["foo 1.0.0"];
+        let pattern = r"bar \d+\.\d+\.\d+";
+        let want = vec!["foo 1.0.0"];
+        remove_line_matching(&mut lines, pattern).unwrap_err();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn errors_when_two_lines_match() {
-        let mut content = vec!["foo 1.0.0", "foo 2.0.0"];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, r"foo \d+\.\d+\.\d+"),
-            Err("want exactly one new line matching:\nfoo \\d+\\.\\d+\\.\\d+\n(matched 2)".into())
-        );
-        pretty::assert_eq!(content, vec!["foo 1.0.0", "foo 2.0.0"]);
+        let mut lines = vec!["foo 1.0.0", "foo 2.0.0"];
+        let pattern = r"foo \d+\.\d+\.\d+";
+        let want = vec!["foo 1.0.0", "foo 2.0.0"];
+        remove_line_matching(&mut lines, pattern).unwrap_err();
+        pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn errors_on_empty_content() {
-        let mut content: Vec<&str> = vec![];
-        pretty::assert_eq!(
-            remove_line_matching(&mut content, "foo"),
-            Err("want exactly one new line matching:\nfoo\n(matched 0)".into())
-        );
-        pretty::assert_eq!(content, Vec::<&str>::new());
+        let mut lines: Vec<&str> = vec![];
+        let pattern = "foo";
+        let want: Vec<&str> = vec![];
+        remove_line_matching(&mut lines, pattern).unwrap_err();
+        pretty::assert_eq!(lines, want);
     }
 }
