@@ -23,11 +23,11 @@ mod tests {
 
     #[test]
     fn no_lines_to_remove() {
-        let mut content = vec!["one", "bar"];
+        let mut content = vec!["one", "two"];
         let removes: Vec<&str> = vec![];
         let missing = remove_lines(&mut content, removes);
         pretty::assert_eq!(missing, Vec::<&str>::new());
-        pretty::assert_eq!(content, vec!["one", "bar"]);
+        pretty::assert_eq!(content, vec!["one", "two"]);
     }
 
     #[test]
@@ -41,11 +41,11 @@ mod tests {
 
     #[test]
     fn remove_multiple_lines() {
-        let mut content = vec!["one", "bar", "baz"];
+        let mut content = vec!["one", "two", "baz"];
         let removes: Vec<&str> = vec!["one", "baz"];
         let missing = remove_lines(&mut content, removes);
         pretty::assert_eq!(missing, Vec::<&str>::new());
-        pretty::assert_eq!(content, vec!["bar"]);
+        pretty::assert_eq!(content, vec!["two"]);
     }
 
     #[test]
@@ -60,9 +60,9 @@ mod tests {
     #[test]
     fn a_missing_line() {
         let mut content = vec!["one"];
-        let removes: Vec<&str> = vec!["one", "bar"];
+        let removes: Vec<&str> = vec!["one", "two"];
         let missing = remove_lines(&mut content, removes);
-        pretty::assert_eq!(missing, vec!["bar"]);
+        pretty::assert_eq!(missing, vec!["two"]);
         pretty::assert_eq!(content, Vec::<&str>::new());
     }
 
@@ -77,11 +77,11 @@ mod tests {
 
     #[test]
     fn multiple_similar_lines_to_remove() {
-        let mut content = vec!["one", "one", "bar"];
+        let mut content = vec!["one", "one", "two"];
         let removes: Vec<&str> = vec!["one", "one"];
         let missing = remove_lines(&mut content, removes);
         pretty::assert_eq!(missing, Vec::<&str>::new());
-        pretty::assert_eq!(content, vec!["bar"]);
+        pretty::assert_eq!(content, vec!["two"]);
     }
 
     #[test]
