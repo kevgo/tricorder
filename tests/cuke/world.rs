@@ -50,6 +50,7 @@ impl TricorderWorld {
         }
     }
 
+    /// provides the content that the file with the given filename had before the tested logic ran
     pub fn original_file_content(&self, filename: &str) -> Option<&str> {
         self.original_files
             .iter()
@@ -57,6 +58,7 @@ impl TricorderWorld {
             .map(|file| file.content.as_str())
     }
 
+    /// provides the content that the file with the given filename has after the tested logic ran
     pub async fn current_file_content(&self, filename: &str) -> io::Result<String> {
         let filepath = self.dir.join(filename);
         fs::read_to_string(filepath).await
