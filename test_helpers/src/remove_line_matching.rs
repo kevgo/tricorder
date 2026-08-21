@@ -24,18 +24,18 @@ mod tests {
 
     #[test]
     fn removes_the_matching_line() {
-        let mut lines = vec!["foo 1.0.0", "bar 2.0.0"];
-        let pattern = r"foo \d+\.\d+\.\d+";
-        let want = vec!["bar 2.0.0"];
+        let mut lines = vec!["one 1.0.0", "two 2.0.0"];
+        let pattern = r"one \d+\.\d+\.\d+";
+        let want = vec!["two 2.0.0"];
         remove_line_matching(&mut lines, pattern).unwrap();
         pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn removes_from_the_middle() {
-        let mut lines = vec!["foo", "bar", "baz"];
-        let pattern = "bar";
-        let want = vec!["foo", "baz"];
+        let mut lines = vec!["one", "two", "three"];
+        let pattern = "two";
+        let want = vec!["one", "three"];
         remove_line_matching(&mut lines, pattern).unwrap();
         pretty::assert_eq!(lines, want);
     }
@@ -51,27 +51,27 @@ mod tests {
 
     #[test]
     fn requires_full_line_match() {
-        let mut lines = vec!["foo bar"];
-        let pattern = "foo";
-        let want = vec!["foo bar"];
+        let mut lines = vec!["one two"];
+        let pattern = "one";
+        let want = vec!["one two"];
         remove_line_matching(&mut lines, pattern).unwrap_err();
         pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn errors_when_no_line_matches() {
-        let mut lines = vec!["foo 1.0.0"];
-        let pattern = r"bar \d+\.\d+\.\d+";
-        let want = vec!["foo 1.0.0"];
+        let mut lines = vec!["one 1.0.0"];
+        let pattern = r"two \d+\.\d+\.\d+";
+        let want = vec!["one 1.0.0"];
         remove_line_matching(&mut lines, pattern).unwrap_err();
         pretty::assert_eq!(lines, want);
     }
 
     #[test]
     fn errors_when_two_lines_match() {
-        let mut lines = vec!["foo 1.0.0", "foo 2.0.0"];
-        let pattern = r"foo \d+\.\d+\.\d+";
-        let want = vec!["foo 1.0.0", "foo 2.0.0"];
+        let mut lines = vec!["one 1.0.0", "one 2.0.0"];
+        let pattern = r"one \d+\.\d+\.\d+";
+        let want = vec!["one 1.0.0", "one 2.0.0"];
         remove_line_matching(&mut lines, pattern).unwrap_err();
         pretty::assert_eq!(lines, want);
     }
@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn errors_on_empty_lines() {
         let mut lines: Vec<&str> = vec![];
-        let pattern = "foo";
+        let pattern = "one";
         let want: Vec<&str> = vec![];
         remove_line_matching(&mut lines, pattern).unwrap_err();
         pretty::assert_eq!(lines, want);
