@@ -85,7 +85,7 @@ mod tests {
     }
 
     #[test]
-    fn duplicate_must_appear_as_many_times_as_requested() {
+    fn duplicate_removes() {
         let mut content = vec!["one"];
         let removes: Vec<&str> = vec!["one", "one"];
         let missing = remove_lines(&mut content, removes);
@@ -94,7 +94,7 @@ mod tests {
     }
 
     #[test]
-    fn extra_duplicates_in_content_are_kept() {
+    fn duplicate_content() {
         let mut content = vec!["one", "one"];
         let removes: Vec<&str> = vec!["one"];
         let missing = remove_lines(&mut content, removes);
