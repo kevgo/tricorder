@@ -1,11 +1,12 @@
 use crate::domain::File;
-use crate::git::{GitStatusOutput, porcelain};
+use crate::git::GitStatusOutput;
+use crate::git::status;
 use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
 #[must_use]
 pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
-    let output = porcelain::status(dir, &["--untracked-files=all"])?;
+    let output = status::statuss(dir, &["--untracked-files=all"])?;
     let files = parse_output(&output)
         .into_iter()
         .filter(|file| {

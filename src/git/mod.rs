@@ -1,5 +1,4 @@
 mod is_repo;
-mod porcelain;
 mod stage;
 mod status;
 mod status_output;
