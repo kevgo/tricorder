@@ -1,0 +1,50 @@
+Feature: "tricorder postedit" runs "git diff --check"
+
+  Background:
+    Given a Git repository
+    And a committed file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      """
+    And a committed file "main.txt" with content
+      """
+      line one
+      """
+
+  Scenario: clean repository
+    When executing "tricorder postedit"
+    Then it prints nothing to STDOUT
+    And it prints nothing to STDERR
+    And the exit code is 0
+
+  Scenario: whitespace error in a changed file
+    Given I change file "main.txt" to
+      """
+      line one
+       \tindented
+      """
+    When executing "tricorder postedit"
+    Then it prints the block
+      """
+      main.txt:2: space before tab in indent.
+      """
+    And the exit code is 2
+
+  Scenario: conflict markers in a changed file
+    Given I change file "main.txt" to
+      """
+      line one
+      <<<<<<< HEAD:main.txt
+      Hello world
+      =======
+      Goodbye
+      >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
+      """
+    When executing "tricorder postedit"
+    Then it prints the block
+      """
+      main.txt:2: leftover conflict marker
+      main.txt:4: leftover conflict marker
+      main.txt:6: leftover conflict marker
+      """
+    And the exit code is 2

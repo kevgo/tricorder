@@ -1,0 +1,49 @@
+Feature: postedit Go
+
+  Background:
+    Given a Git repository
+    And a file "go.mod" with content
+      """
+      module example.com/demo
+      go 1.21
+      """
+    And a committed file "run-that-app" with content
+      """
+      golangci-lint 2.12.2
+      delete-empty-folders 0.0.2
+      """
+
+  Scenario: valid Go
+    Given a file "main.go" with content
+      """
+      package main
+      import "fmt"
+      func main() {
+      	fmt.Println("Hello, world!")
+      }
+      """
+    When executing "tricorder postedit --show=all"
+    Then it prints the lines
+      """
+      lint Go (golangci-lint)
+      """
+    And the exit code is 0
+    And file "main.go" is unchanged
+
+  Scenario: invalid Go
+    Given a file "main.go" with content
+      """
+      package main
+      import "fmt"
+      func main() {
+      	fmt.Println("
+      }
+      """
+    When executing "tricorder postedit --show=all"
+    Then it prints the lines
+      """
+      lint Go (golangci-lint)
+      3 issues:
+      """
+    And the exit code is 1
+    And file "main.go" is unchanged
