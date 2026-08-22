@@ -83,12 +83,14 @@ pub struct CustomLint {
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 pub struct StackConfig {
-    pub lint: Option<Vec<StackCommand>>,
-    #[serde(alias = "add-lint")]
-    pub add_lint: Option<Vec<StackCommand>>,
-    pub fix: Option<Vec<StackCommand>>,
-    #[serde(alias = "add-fix")]
-    pub add_fix: Option<Vec<StackCommand>>,
+    #[serde(alias = "replace-lints")]
+    pub replace_lints: Option<Vec<StackCommand>>,
+    #[serde(alias = "additional-lints")]
+    pub additional_lints: Option<Vec<StackCommand>>,
+    #[serde(alias = "replace-fixes")]
+    pub replace_fixes: Option<Vec<StackCommand>>,
+    #[serde(alias = "additional-fixes")]
+    pub additional_fixes: Option<Vec<StackCommand>>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq)]
@@ -293,13 +295,13 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
-                        lint: None,
-                        add_lint: Some(vec![StackCommand {
+                        replace_lints: None,
+                        additional_lints: Some(vec![StackCommand {
                             name: S("mypy"),
                             command: S("mypy ."),
                         }]),
-                        fix: None,
-                        add_fix: None,
+                        replace_fixes: None,
+                        additional_fixes: None,
                     },
                 )),
             };
@@ -326,13 +328,13 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Rust,
                     StackConfig {
-                        lint: Some(vec![StackCommand {
+                        replace_lints: Some(vec![StackCommand {
                             name: S("Clippy"),
                             command: S("cargo clippy --all-targets"),
                         }]),
-                        add_lint: None,
-                        fix: None,
-                        add_fix: None,
+                        additional_lints: None,
+                        replace_fixes: None,
+                        additional_fixes: None,
                     },
                 )),
             };
@@ -359,13 +361,13 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
-                        lint: None,
-                        add_lint: Some(vec![StackCommand {
+                        replace_lints: None,
+                        additional_lints: Some(vec![StackCommand {
                             name: S("mypy"),
                             command: S("mypy ."),
                         }]),
-                        fix: None,
-                        add_fix: None,
+                        replace_fixes: None,
+                        additional_fixes: None,
                     },
                 )),
             };
