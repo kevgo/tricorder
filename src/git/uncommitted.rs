@@ -100,6 +100,51 @@ fn is_present_change(status: char) -> bool {
 mod tests {
     use crate::domain::File;
     use maplit::hashmap;
+    use std::fs;
+    use std::process::Command;
+    use tempfile::TempDir;
+
+    #[test]
+    fn expands_untracked_folder_to_files() {
+        let dir = TempDir::new().unwrap();
+        let init = Command::new("git")
+            .arg("init")
+            .arg("-q")
+            .current_dir(dir.path())
+            .output()
+            .unwrap();
+        assert!(init.status.success(), "git init failed");
+        let sub = dir.path().join("sub");
+        fs::create_dir(&sub).unwrap();
+        fs::write(sub.join("one.txt"), "one").unwrap();
+        fs::write(sub.join("two.txt"), "two").unwrap();
+        // Git collapses untracked files in a new folder to just the folder name.
+        let status = Command::new("git")
+            .arg("-c")
+            .arg("status.showUntrackedFiles=normal")
+            .arg("status")
+            .arg("--short")
+            .arg("--porcelain=v1")
+            .current_dir(dir.path())
+            .output()
+            .unwrap();
+        assert_eq!(
+            str::from_utf8(&status.stdout).unwrap().trim(),
+            "?? sub/",
+            "precondition: git should report only the folder"
+        );
+        // verify that the uncommitted files are correctly reported
+        let original_dir = std::env::current_dir().unwrap();
+        std::env::set_current_dir(dir.path()).unwrap();
+        let have = super::uncommitted();
+        std::env::set_current_dir(original_dir).unwrap();
+        let mut have = have.expect("uncommitted should return files in a Git repo");
+        have.sort();
+        pretty::assert_eq!(
+            have,
+            vec![File::from("sub/one.txt"), File::from("sub/two.txt")]
+        );
+    }
 
     #[test]
     fn parse_line() {
