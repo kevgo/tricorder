@@ -27,18 +27,17 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
         eprintln!("ERROR: \"git status --short\" returned non-UTF-8 output");
         return None;
     };
-    Some(
-        parse_output(output)
-            .into_iter()
-            .filter(|file| {
-                let path = Path::new(file.as_str());
-                match dir {
-                    Some(dir) => dir.join(path).is_file(),
-                    None => path.is_file(),
-                }
-            })
-            .collect(),
-    )
+    let files = parse_output(output)
+        .into_iter()
+        .filter(|file| {
+            let path = Path::new(file.as_str());
+            match dir {
+                Some(dir) => dir.join(path).is_file(),
+                None => path.is_file(),
+            }
+        })
+        .collect();
+    Some(files)
 }
 
 /// parses the output of "git status --short --porcelain=v1 --untracked-files=all"
