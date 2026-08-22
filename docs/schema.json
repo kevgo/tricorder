@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tricorder configuration",
+  "type": "object",
+  "properties": {
+    "custom-fixes": {
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "#/$defs/CustomFix"
+      }
+    },
+    "custom-lints": {
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "#/$defs/CustomLint"
+      }
+    },
+    "ignore": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "string"
+      }
+    },
+    "applications": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Applications"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stacks": {
+      "type": ["object", "null"],
+      "properties": {
+        "css": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "cucumber": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "go": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "java": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "json": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "jsonc": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "markdown": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "python": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "rust": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "sql": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "toml": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "typescript": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "unknown": {
+          "$ref": "#/$defs/StackConfig"
+        },
+        "yml": {
+          "$ref": "#/$defs/StackConfig"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "CustomFix": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": ["string", "null"]
+        },
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": ["command"]
+    },
+    "CustomLint": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": ["string", "null"]
+        },
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": ["command"]
+    },
+    "Applications": {
+      "type": "object",
+      "properties": {
+        "keep-sorted": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KeepSorted"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "KeepSorted": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "ignore": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["enabled"]
+    },
+    "StackConfig": {
+      "type": "object",
+      "properties": {
+        "replace-lints": {
+          "type": ["array", "null"],
+          "items": {
+            "$ref": "#/$defs/StackCommand"
+          }
+        },
+        "additional-lints": {
+          "type": ["array", "null"],
+          "items": {
+            "$ref": "#/$defs/StackCommand"
+          }
+        },
+        "replace-fixes": {
+          "type": ["array", "null"],
+          "items": {
+            "$ref": "#/$defs/StackCommand"
+          }
+        },
+        "additional-fixes": {
+          "type": ["array", "null"],
+          "items": {
+            "$ref": "#/$defs/StackCommand"
+          }
+        }
+      }
+    },
+    "StackCommand": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "command"]
+    }
+  }
+}
