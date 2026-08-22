@@ -26,22 +26,13 @@ impl StagedFiles {
     fn new(output: &GitStatusOutput) -> StagedFiles {
         let mut result = StagedFiles::default();
         for line in output.records() {
-            result.parse_line(line);
+            result.add_line(line);
         }
         result
     }
 
-    /// provides all staged files, i.e. fully and partially staged ones
-    #[must_use]
-    pub fn all(&self) -> Vec<&File> {
-        let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
-        result.extend(self.partial.iter());
-        result.extend(self.full.iter());
-        result
-    }
-
-    /// parses a line from the output of "git status --porcelain=v1 -z"
-    fn parse_line(&mut self, line: &str) {
+    /// parses a line from the output of "git status --porcelain=v1 -z" and adds it to this instance
+    fn add_line(&mut self, line: &str) {
         let Some(record) = GitStatusOutput::parse_record(line) else {
             return;
         };
@@ -52,6 +43,15 @@ impl StagedFiles {
         } else if is_staged {
             self.full.push(record.path.into());
         }
+    }
+
+    /// provides all staged files, i.e. fully and partially staged ones
+    #[must_use]
+    pub fn all(&self) -> Vec<&File> {
+        let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
+        result.extend(self.partial.iter());
+        result.extend(self.full.iter());
+        result
     }
 }
 
@@ -172,6 +172,52 @@ mod tests {
         use maplit::hashmap;
 
         #[test]
+        fn all() {
+            let partial_1 = File::from("partial_1.txt");
+            let partial_2 = File::from("partial_2.txt");
+            let full_1 = File::from("full_1.txt");
+            let full_2 = File::from("full_2.txt");
+            let give = StagedFiles {
+                partial: vec![partial_1.clone(), partial_2.clone()],
+                full: vec![full_1.clone(), full_2.clone()],
+            };
+            let want = vec![&partial_1, &partial_2, &full_1, &full_2];
+            let have = give.all();
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn new() {
+            let give = [
+                "MM partial.txt",
+                "M  full.txt",
+                " A unstaged.txt",
+                "?? untracked",
+                "R  dir/new.rs",
+                "dir/old.rs",
+                "C  copy.rs",
+                "original.rs",
+                "M  my file.txt",
+                "R  new file.txt",
+                "old file.txt",
+            ]
+            .join("\0");
+            let give = GitStatusOutput::from(give);
+            let want = StagedFiles {
+                partial: vec!["partial.txt".into()],
+                full: vec![
+                    "full.txt".into(),
+                    "dir/new.rs".into(),
+                    "copy.rs".into(),
+                    "my file.txt".into(),
+                    "new file.txt".into(),
+                ],
+            };
+            let have = StagedFiles::new(&give);
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
         fn parse_line() {
             let tests = hashmap! {
                 "MM file.rs" => StagedFiles {
@@ -233,55 +279,9 @@ mod tests {
             };
             for (give, want) in tests {
                 let mut have = StagedFiles::default();
-                have.parse_line(give);
+                have.add_line(give);
                 assert_eq!(have, want, "{give}");
             }
-        }
-
-        #[test]
-        fn new() {
-            let give = [
-                "MM partial.txt",
-                "M  full.txt",
-                " A unstaged.txt",
-                "?? untracked",
-                "R  dir/new.rs",
-                "dir/old.rs",
-                "C  copy.rs",
-                "original.rs",
-                "M  my file.txt",
-                "R  new file.txt",
-                "old file.txt",
-            ]
-            .join("\0");
-            let give = GitStatusOutput::from(give);
-            let want = StagedFiles {
-                partial: vec!["partial.txt".into()],
-                full: vec![
-                    "full.txt".into(),
-                    "dir/new.rs".into(),
-                    "copy.rs".into(),
-                    "my file.txt".into(),
-                    "new file.txt".into(),
-                ],
-            };
-            let have = StagedFiles::new(&give);
-            pretty::assert_eq!(have, want);
-        }
-
-        #[test]
-        fn all() {
-            let partial_1 = File::from("partial_1.txt");
-            let partial_2 = File::from("partial_2.txt");
-            let full_1 = File::from("full_1.txt");
-            let full_2 = File::from("full_2.txt");
-            let give = StagedFiles {
-                partial: vec![partial_1.clone(), partial_2.clone()],
-                full: vec![full_1.clone(), full_2.clone()],
-            };
-            let want = vec![&partial_1, &partial_2, &full_1, &full_2];
-            let have = give.all();
-            assert_eq!(have, want);
         }
     }
 }
