@@ -41,7 +41,7 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
 
       TRICORDER=".*/tricorder"
       [ -x "$TRICORDER" ] || exit 0
-      "$TRICORDER" lint
+      "$TRICORDER" postedit
       """
     And file ".claude/tricorder-hooks/post_write.sh" is executable
 
@@ -130,6 +130,6 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
 
       TRICORDER=".*/tricorder"
       [ -x "$TRICORDER" ] || exit 0
-      "$TRICORDER" lint
+      "$TRICORDER" postedit
       """
     And file ".claude/tricorder-hooks/post_write.sh" is executable

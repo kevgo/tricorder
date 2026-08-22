@@ -1,5 +1,6 @@
 use crate::domain::StackType;
 use std::fmt::Display;
+use std::path::Path;
 
 /// a tool (lint or fix) that Tricorder can run
 pub trait Tool: Display {
@@ -23,4 +24,19 @@ pub enum EnabledWhen {
         folder: &'static str,
         file_type: StackType,
     },
+}
+
+impl EnabledWhen {
+    /// whether the tool is enabled based on files present on disk
+    ///
+    /// This is useful when the detected stacks contains only a subset of workspace files
+    /// (uncommitted or staged).
+    #[must_use]
+    pub fn enabled_on_disk(&self) -> bool {
+        match self {
+            Self::Always => true,
+            Self::FilePresent { filename, .. } => Path::new(filename).exists(),
+            Self::FolderContainingFileOfType { folder, .. } => Path::new(folder).exists(),
+        }
+    }
 }

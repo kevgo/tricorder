@@ -12,7 +12,7 @@ mod typescript;
 mod unknown;
 mod yml;
 
-use crate::domain::{DetectedStack, DetectedStacks, Files, Ignores, Stack};
+use crate::domain::{DetectedStack, DetectedStacks, File, Files, Ignores, Stack};
 use crate::git::StagedFiles;
 pub use css::Css;
 pub use cucumber::Cucumber;
@@ -55,6 +55,15 @@ pub fn all() -> Vec<Box<dyn Stack>> {
 /// provides the stacks for the given staged files
 #[must_use]
 pub fn from_staged(staged: &StagedFiles, ignores: &Ignores) -> DetectedStacks {
+    from_files(staged.all(), ignores)
+}
+
+/// provides the stacks for the given files
+#[must_use]
+pub fn from_files<'a>(
+    files: impl IntoIterator<Item = &'a File>,
+    ignores: &Ignores,
+) -> DetectedStacks {
     let all_stacks = all();
     let mut detected_stacks: Vec<DetectedStack> = all_stacks
         .into_iter()
@@ -63,7 +72,7 @@ pub fn from_staged(staged: &StagedFiles, ignores: &Ignores) -> DetectedStacks {
             files: Files::new(),
         })
         .collect();
-    for file in staged.all() {
+    for file in files {
         if ignores.matches_self_or_parent(file.as_ref()) {
             continue;
         }

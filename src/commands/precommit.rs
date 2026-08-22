@@ -3,11 +3,10 @@ use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::{Runnables, add_custom_fixes};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, EnabledWhen, Result, StackType, fingerprint};
+use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
 use ahash::AHashMap;
-use std::path::Path;
 use std::process::ExitCode;
 
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
@@ -88,20 +87,7 @@ pub fn determine_precommit_fixes(
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in staged_stack.stack.fixes() {
-                let enabled = match default_fix.enabled_when() {
-                    EnabledWhen::Always => true,
-                    EnabledWhen::FilePresent {
-                        filename,
-                        stack_type: _,
-                    } => Path::new(filename).exists(),
-                    EnabledWhen::FolderContainingFileOfType {
-                        file_type: _,
-                        folder: name,
-                        // in the precommit hook, we don't scan for all files in the workspace,
-                        // so we can't check if the folder exists there and need to look for the folder directly
-                    } => Path::new(name).exists(),
-                };
-                if enabled {
+                if default_fix.enabled_when().enabled_on_disk() {
                     stack_executables.extend(default_fix.fix_commands(staged_stack)?);
                 }
             }
