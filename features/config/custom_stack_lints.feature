@@ -36,7 +36,7 @@ Feature: stack-specific lints
       """
     And the exit code is 0
 
-  Scenario: "lint" replaces the built-in lints for that stack
+  Scenario: "replace-lints" replaces the built-in lints for that stack
     Given a file "tricorder.json" with content
       """
       {

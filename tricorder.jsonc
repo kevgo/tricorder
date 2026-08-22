@@ -9,7 +9,7 @@
   },
   "stacks": {
     "rust": {
-      "lint": [
+      "replace-lints": [
         {
           "name": "cargo clippy",
           "command": "cargo clippy --all-targets --all-features -- --deny=warnings",
@@ -19,7 +19,7 @@
           "command": "cargo clippy --test=cuke --all-features -- --deny=warnings",
         },
       ],
-      "fix": [
+      "replace-fixes": [
         { "name": "cargo fix", "command": "cargo +nightly fix --allow-dirty" },
         {
           "name": "cargo clippy --fix",
