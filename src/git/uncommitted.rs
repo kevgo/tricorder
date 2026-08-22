@@ -137,8 +137,7 @@ mod tests {
             "precondition: git should report only the folder"
         );
         // verify that the uncommitted files are correctly reported
-        let have = super::uncommitted(Some(dir.path()));
-        let mut have = have.expect("uncommitted should return files in a Git repo");
+        let mut have = super::uncommitted(Some(dir.path())).unwrap();
         have.sort();
         pretty::assert_eq!(
             have,
