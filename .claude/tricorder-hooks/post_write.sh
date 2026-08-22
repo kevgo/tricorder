@@ -6,4 +6,4 @@
 
 TRICORDER="target/debug/tricorder"
 [ -x "$TRICORDER" ] || exit 0
-"$TRICORDER" lint
+"$TRICORDER" postedit
