@@ -28,7 +28,6 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
         return None;
     };
     let files = parse_output(output)
-        .into_iter()
         .filter(|file| {
             let path = Path::new(file.as_str());
             match dir {
@@ -41,45 +40,41 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
 }
 
 /// parses the output of "git status --short --porcelain=v1 --untracked-files=all"
-fn parse_output(output: &str) -> Vec<File> {
-    let mut result = Vec::new();
-    for line in output.lines() {
-        parse_line(line, &mut result);
-    }
-    result
+fn parse_output(output: &str) -> impl Iterator<Item = File> + '_ {
+    output.lines().filter_map(parse_line)
 }
 
-/// parses a line from the output of "git status --short --porcelain=v1" and adds it to the given vector
-fn parse_line(line: &str, result: &mut Vec<File>) {
+/// parses a line from the output of "git status --short --porcelain=v1"
+fn parse_line(line: &str) -> Option<File> {
     if line.len() < 3 {
-        return;
+        return None;
     }
     let mut chars = line.chars();
     let Some(index_status) = chars.next() else {
         log_unexpected_line(line);
-        return;
+        return None;
     };
     let Some(worktree_status) = chars.next() else {
         log_unexpected_line(line);
-        return;
+        return None;
     };
     if !is_known_status(index_status) || !is_known_status(worktree_status) {
         log_unexpected_line(line);
-        return;
+        return None;
     }
     let Some(space) = chars.next() else {
         log_unexpected_line(line);
-        return;
+        return None;
     };
     if space != ' ' {
         log_unexpected_line(line);
-        return;
+        return None;
     }
     if !is_uncommitted(index_status, worktree_status) {
-        return;
+        return None;
     }
     let (_, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
-    result.push(filename.into());
+    Some(filename.into())
 }
 
 fn log_unexpected_line(line: &str) {
@@ -154,22 +149,21 @@ mod tests {
     #[test]
     fn parse_line() {
         let tests = hashmap! {
-            "MM file.rs" => vec![File::from("file.rs")],
-            "M  file.rs" => vec![File::from("file.rs")],
-            " M file.rs" => vec![File::from("file.rs")],
-            "?? file.rs" => vec![File::from("file.rs")],
-            "!! file.rs" => vec![],
-            "UU file.rs" => vec![], // unmerged conflict in file
-            "D  file.rs" => vec![],
-            " D file.rs" => vec![],
-            "A  file.rs" => vec![File::from("file.rs")],
-            " A file.rs" => vec![File::from("file.rs")],
-            "R  dir/old.rs -> dir/new.rs" => vec![File::from("dir/new.rs")], // renamed file
-            "C  dir/old.rs -> dir/new.rs" => vec![File::from("dir/new.rs")], // copied file
+            "MM file.rs" => Some(File::from("file.rs")),
+            "M  file.rs" => Some(File::from("file.rs")),
+            " M file.rs" => Some(File::from("file.rs")),
+            "?? file.rs" => Some(File::from("file.rs")),
+            "!! file.rs" => None,
+            "UU file.rs" => None, // unmerged conflict in file
+            "D  file.rs" => None,
+            " D file.rs" => None,
+            "A  file.rs" => Some(File::from("file.rs")),
+            " A file.rs" => Some(File::from("file.rs")),
+            "R  dir/old.rs -> dir/new.rs" => Some(File::from("dir/new.rs")), // renamed file
+            "C  dir/old.rs -> dir/new.rs" => Some(File::from("dir/new.rs")), // copied file
         };
         for (give, want) in tests {
-            let mut have = Vec::new();
-            super::parse_line(give, &mut have);
+            let have = super::parse_line(give);
             assert_eq!(have, want, "{give}");
         }
     }
@@ -194,7 +188,7 @@ D  deleted.txt
             ]
         };
         for (give, want) in tests {
-            let have = super::parse_output(&give[1..]);
+            let have: Vec<File> = super::parse_output(&give[1..]).collect();
             pretty::assert_eq!(have, want, "{give}");
         }
     }
