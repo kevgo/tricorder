@@ -47,3 +47,17 @@ Feature: lint Markdown
       """
     And the exit code is 1
     And file "main.md" is unchanged
+
+  Scenario: file with spaces in the name
+    Given a file "my file.md" with content
+      """
+      text
+      """
+    When executing "tricorder lint --show=all"
+    Then it prints the lines
+      """
+      lint Markdown (rumdl)
+      my file.md:1:1: [MD041] First line in file should be a level 1 heading
+      """
+    And the exit code is 1
+    And file "my file.md" is unchanged
