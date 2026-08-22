@@ -1,29 +1,12 @@
 use crate::domain::File;
+use crate::git::porcelain;
 use std::path::Path;
-use std::process::Command;
 
 /// determines which files are staged in the current directory
 #[must_use]
 pub fn status(dir: Option<&Path>) -> Option<StagedFiles> {
-    let mut command = Command::new("git");
-    command.arg("status").arg("--porcelain=v1").arg("-z");
-    if let Some(dir) = dir {
-        command.current_dir(dir);
-    }
-    let Ok(output) = command.output() else {
-        // Git not installed
-        return None;
-    };
-    if !output.status.success() {
-        // probably not a Git repo
-        return None;
-    }
-    let Ok(output) = str::from_utf8(&output.stdout) else {
-        // we don't support non-UTF-8 filenames for now
-        eprintln!("ERROR: \"git status --porcelain=v1 -z\" returned non-UTF-8 output");
-        return None;
-    };
-    Some(parse_output(output))
+    let output = porcelain::status_z(dir, &[])?;
+    Some(parse_output(&output))
 }
 
 /// represents the files that are staged in the current directory
@@ -50,16 +33,7 @@ impl StagedFiles {
 /// parses the output of "git status --porcelain=v1 -z"
 fn parse_output(output: &str) -> StagedFiles {
     let mut result = StagedFiles::default();
-    let mut lines = output.split('\0');
-    while let Some(line) = lines.next() {
-        if line.is_empty() {
-            continue;
-        }
-        // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
-        // so we must not treat the orig path as part of this record.
-        if has_orig_path(line) {
-            lines.next();
-        }
+    for line in porcelain::records(output) {
         parse_line(line, &mut result);
     }
     result
@@ -67,69 +41,29 @@ fn parse_output(output: &str) -> StagedFiles {
 
 /// parses a line from the output of "git status --porcelain=v1 -z"
 fn parse_line(line: &str, result: &mut StagedFiles) {
-    if line.len() < 3 {
-        return;
-    }
-    let mut chars = line.chars();
-    let Some(staging_prefix) = chars.next() else {
-        log_unexpected_line(line);
+    let Some(record) = porcelain::parse_record(line) else {
         return;
     };
-    let Some(is_staged) = prefix_is_staged(staging_prefix) else {
-        log_unexpected_line(line);
-        return;
-    };
-    let Some(working_prefix) = chars.next() else {
-        log_unexpected_line(line);
-        return;
-    };
-    let Some(is_working) = prefix_is_staged(working_prefix) else {
-        log_unexpected_line(line);
-        return;
-    };
-    let Some(space) = chars.next() else {
-        log_unexpected_line(line);
-        return;
-    };
-    if space != ' ' {
-        log_unexpected_line(line);
-        return;
-    }
-    let filename = chars.as_str();
+    let is_staged = is_index_change(record.index);
+    let is_working = is_index_change(record.worktree);
     if is_staged && is_working {
-        result.partial.push(filename.into());
+        result.partial.push(record.path.into());
     } else if is_staged {
-        result.full.push(filename.into());
+        result.full.push(record.path.into());
     }
 }
 
-fn log_unexpected_line(line: &str) {
-    println!("unexpected line in output of \"git status --porcelain=v1 -z\": {line}");
-}
-
-/// parses the status code that Git prints when running "git status --porcelain=v1"
-fn prefix_is_staged(prefix: char) -> Option<bool> {
-    match prefix {
-        'A' | 'M' | 'R' | 'C' | 'T' => Some(true),
-        ' ' | 'D' | 'U' | '?' | '!' => Some(false),
-        _ => None,
-    }
-}
-
-/// indicates whether the record contains the original path of a rename or copy operation
-fn has_orig_path(record: &str) -> bool {
-    let mut chars = record.chars();
-    matches!(chars.next(), Some('R' | 'C')) || matches!(chars.next(), Some('R' | 'C'))
+fn is_index_change(status: char) -> bool {
+    matches!(status, 'A' | 'M' | 'R' | 'C' | 'T')
 }
 
 #[cfg(test)]
 mod tests {
     use crate::domain::File;
     use crate::git::StagedFiles;
+    use crate::git::testing::{git, git_repo};
     use maplit::hashmap;
     use std::fs;
-    use std::process::Command;
-    use tempfile::TempDir;
 
     #[test]
     fn includes_fully_staged_file_with_spaces() {
@@ -322,25 +256,6 @@ mod tests {
         };
         let have = super::parse_output(&give);
         pretty::assert_eq!(have, want);
-    }
-
-    fn git_repo() -> TempDir {
-        let dir = TempDir::new().unwrap();
-        git(&dir, &["init", "-q"]);
-        dir
-    }
-
-    fn git(dir: &TempDir, args: &[&str]) {
-        let output = Command::new("git")
-            .args(args)
-            .current_dir(dir.path())
-            .output()
-            .unwrap();
-        assert!(
-            output.status.success(),
-            "git {args:?} failed: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
     }
 
     mod staged_files {
