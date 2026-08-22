@@ -55,7 +55,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Apply fixes, then report remaining issues
-        postedit      Find code quality issues in uncommitted files
+        postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
@@ -81,7 +81,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Apply fixes, then report remaining issues
-        postedit      Find code quality issues in uncommitted files
+        postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
