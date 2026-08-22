@@ -1,24 +1,29 @@
 use crate::domain::{Ignores, Result, StackType, UserError};
 use ahash::AHashMap;
 use jsonc_parser::ParseOptions;
+use schemars::JsonSchema;
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
 
 const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", "tricorder.jsonc"];
 
-#[derive(Debug, Default, Deserialize, PartialEq)]
+#[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[schemars(title = "Tricorder configuration")]
 pub struct Config {
     #[serde(alias = "custom-fixes")]
+    #[schemars(rename = "custom-fixes")]
     pub custom_fixes: Option<Vec<CustomFix>>,
 
     #[serde(alias = "custom-lints")]
+    #[schemars(rename = "custom-lints")]
     pub custom_lints: Option<Vec<CustomLint>>,
 
     pub ignore: Option<Vec<String>>,
 
     pub applications: Option<Applications>,
 
+    #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
 }
 
@@ -69,31 +74,35 @@ impl Config {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 pub struct CustomFix {
     pub name: Option<String>,
     pub command: String,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 pub struct CustomLint {
     pub name: Option<String>,
     pub command: String,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 pub struct StackConfig {
     #[serde(alias = "replace-lints")]
+    #[schemars(rename = "replace-lints")]
     pub replace_lints: Option<Vec<StackCommand>>,
     #[serde(alias = "additional-lints")]
+    #[schemars(rename = "additional-lints")]
     pub additional_lints: Option<Vec<StackCommand>>,
     #[serde(alias = "replace-fixes")]
+    #[schemars(rename = "replace-fixes")]
     pub replace_fixes: Option<Vec<StackCommand>>,
     #[serde(alias = "additional-fixes")]
+    #[schemars(rename = "additional-fixes")]
     pub additional_fixes: Option<Vec<StackCommand>>,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
 pub struct StackCommand {
     pub name: String,
     pub command: String,
@@ -108,13 +117,14 @@ impl From<&StackCommand> for conc::Executable {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 pub struct Applications {
     #[serde(alias = "keep-sorted")]
+    #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<KeepSorted>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 pub struct KeepSorted {
     pub enabled: bool,
     pub ignore: Option<Vec<String>>,

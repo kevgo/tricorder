@@ -1,9 +1,11 @@
+use schemars::JsonSchema;
 use serde_with::DeserializeFromStr;
 use std::fmt::Display;
 use strum::EnumString;
 
-#[derive(Clone, Copy, Debug, DeserializeFromStr, PartialEq, Eq, Hash, EnumString)]
+#[derive(Clone, Copy, Debug, DeserializeFromStr, JsonSchema, PartialEq, Eq, Hash, EnumString)]
 #[strum(ascii_case_insensitive)]
+#[schemars(rename_all = "lowercase")]
 pub enum StackType {
     Css,
     Cucumber,
