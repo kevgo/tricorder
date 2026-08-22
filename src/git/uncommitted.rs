@@ -4,14 +4,17 @@ use std::process::Command;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
 #[must_use]
-pub fn uncommitted() -> Option<Vec<File>> {
-    let Ok(output) = Command::new("git")
+pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
+    let mut command = Command::new("git");
+    command
         .arg("status")
         .arg("--short")
         .arg("--porcelain=v1")
-        .arg("--untracked-files=all")
-        .output()
-    else {
+        .arg("--untracked-files=all");
+    if let Some(dir) = dir {
+        command.current_dir(dir);
+    }
+    let Ok(output) = command.output() else {
         // Git not installed
         return None;
     };
@@ -27,7 +30,13 @@ pub fn uncommitted() -> Option<Vec<File>> {
     Some(
         parse_output(output)
             .into_iter()
-            .filter(|file| Path::new(file.as_str()).is_file())
+            .filter(|file| {
+                let path = Path::new(file.as_str());
+                match dir {
+                    Some(dir) => dir.join(path).is_file(),
+                    None => path.is_file(),
+                }
+            })
             .collect(),
     )
 }
@@ -134,10 +143,7 @@ mod tests {
             "precondition: git should report only the folder"
         );
         // verify that the uncommitted files are correctly reported
-        let original_dir = std::env::current_dir().unwrap();
-        std::env::set_current_dir(dir.path()).unwrap();
-        let have = super::uncommitted();
-        std::env::set_current_dir(original_dir).unwrap();
+        let have = super::uncommitted(Some(dir.path()));
         let mut have = have.expect("uncommitted should return files in a Git repo");
         have.sort();
         pretty::assert_eq!(

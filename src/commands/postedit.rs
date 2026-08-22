@@ -15,7 +15,7 @@ pub fn postedit(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the uncommitted files and their stacks
-    let Some(files) = git::uncommitted() else {
+    let Some(files) = git::uncommitted(None) else {
         return Ok(ExitCode::SUCCESS);
     };
     let stacks = stacks::from_files(&files, &ignores);
