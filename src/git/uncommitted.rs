@@ -1,5 +1,6 @@
 use crate::domain::File;
-use crate::git::{GitStatusOutput, status};
+use crate::git::status;
+use crate::git::status::GitStatusOutput;
 use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
@@ -51,7 +52,7 @@ fn is_present_change(status: char) -> bool {
 #[cfg(test)]
 mod tests {
     use crate::domain::File;
-    use crate::git::GitStatusOutput;
+    use crate::git::status::GitStatusOutput;
     use crate::git::testing::{git, git_repo};
     use maplit::hashmap;
     use std::fs;
