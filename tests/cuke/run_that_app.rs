@@ -5,20 +5,18 @@ use tokio::fs;
 
 pub const FILENAME: &str = "run-that-app";
 
-const ASSERTIONS: [&str; 5] = [
-    r#"file "run-that-app" now matches"#,
-    r#"file "run-that-app" now matches these lines"#,
-    r#"file "run-that-app" now has content"#,
+const ASSERTING_STEPS: [&str; 2] = [
+    r#"file "run-that-app" now has an additional line matching"#,
     r#"file "run-that-app" is unchanged"#,
-    r#"file "run-that-app" does not exist"#,
 ];
 
 /// Returns true when the scenario already asserts on `run-that-app`.
 pub fn is_asserted_by(scenario: &Scenario) -> bool {
-    scenario
-        .steps
-        .iter()
-        .any(|step| ASSERTIONS.iter().any(|assertion| step.value == *assertion))
+    scenario.steps.iter().any(|actual_step| {
+        ASSERTING_STEPS
+            .iter()
+            .any(|asserting_step| actual_step.value == *asserting_step)
+    })
 }
 
 /// Fails if `run-that-app` changed without an explicit assertion step.

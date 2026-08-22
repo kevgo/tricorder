@@ -35,7 +35,7 @@ async fn main() {
                     return;
                 }
                 if let Err(err) = run_that_app::verify_unchanged(world).await {
-                    panic!("{err}");
+                    panic!("Scenario unexpectedly changed file run-that-app: {err}");
                 }
             })
         })
