@@ -8,5 +8,5 @@ mod uncommitted;
 
 pub use is_repo::is_repo;
 pub use stage::stage;
-pub use staged::{StagedFiles, staged_files};
+pub use staged::{StagedFiles, staged};
 pub use uncommitted::uncommitted;
