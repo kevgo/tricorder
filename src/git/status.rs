@@ -5,13 +5,13 @@ use std::process::Command;
 
 /// determines which files are staged in the current directory
 #[must_use]
-pub fn status(dir: Option<&Path>) -> Option<StagedFiles> {
-    let output = statuss(dir, &[])?;
+pub fn status_files(dir: Option<&Path>) -> Option<StagedFiles> {
+    let output = status_output(dir, &[])?;
     Some(parse_output(&output))
 }
 
 /// runs `git status --porcelain=v1 -z` and returns its stdout
-pub(crate) fn statuss(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
+pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
     let mut command = Command::new("git");
     command.arg("status").arg("--porcelain=v1").arg("-z");
     command.args(extra_args);
@@ -92,13 +92,13 @@ mod tests {
     use std::fs;
 
     mod statuss {
-        use super::super::statuss;
+        use super::super::status_output;
         use tempfile::TempDir;
 
         #[test]
         fn none_outside_git_repo() {
             let dir = TempDir::new().unwrap();
-            assert_eq!(statuss(Some(dir.path()), &[]), None);
+            assert_eq!(status_output(Some(dir.path()), &[]), None);
         }
     }
 
@@ -107,7 +107,7 @@ mod tests {
         let dir = git_repo();
         fs::write(dir.path().join("my file.txt"), "hello").unwrap();
         git(&dir, &["add", "my file.txt"]);
-        let have = super::status(Some(dir.path())).unwrap();
+        let have = super::status_files(Some(dir.path())).unwrap();
         pretty::assert_eq!(
             have,
             StagedFiles {
@@ -122,7 +122,7 @@ mod tests {
         let dir = git_repo();
         fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
         git(&dir, &["add", "file\"quote.txt"]);
-        let have = super::status(Some(dir.path())).unwrap();
+        let have = super::status_files(Some(dir.path())).unwrap();
         pretty::assert_eq!(
             have,
             StagedFiles {
@@ -150,7 +150,7 @@ mod tests {
             ],
         );
         git(&dir, &["mv", "old file.txt", "new file.txt"]);
-        let have = super::status(Some(dir.path())).unwrap();
+        let have = super::status_files(Some(dir.path())).unwrap();
         pretty::assert_eq!(
             have,
             StagedFiles {
@@ -180,7 +180,7 @@ mod tests {
         fs::write(dir.path().join("my file.txt"), "v2").unwrap();
         git(&dir, &["add", "my file.txt"]);
         fs::write(dir.path().join("my file.txt"), "v3").unwrap();
-        let have = super::status(Some(dir.path())).unwrap();
+        let have = super::status_files(Some(dir.path())).unwrap();
         pretty::assert_eq!(
             have,
             StagedFiles {
@@ -194,7 +194,7 @@ mod tests {
     fn ignores_untracked_file_with_spaces() {
         let dir = git_repo();
         fs::write(dir.path().join("my file.txt"), "hello").unwrap();
-        let have = super::status(Some(dir.path())).unwrap();
+        let have = super::status_files(Some(dir.path())).unwrap();
         pretty::assert_eq!(have, StagedFiles::default());
     }
 
