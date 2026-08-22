@@ -139,10 +139,8 @@ mod tests {
         // verify that the uncommitted files are correctly reported
         let mut have = super::uncommitted(Some(dir.path())).unwrap();
         have.sort();
-        pretty::assert_eq!(
-            have,
-            vec![File::from("sub/one.txt"), File::from("sub/two.txt")]
-        );
+        let want = vec![File::from("sub/one.txt"), File::from("sub/two.txt")];
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
