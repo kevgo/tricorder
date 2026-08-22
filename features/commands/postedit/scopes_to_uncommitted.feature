@@ -28,7 +28,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
     And the exit code is 0
 
-  Scenario: lints only uncommitted but not committed files
+  Scenario: has uncommitted files
     Given a committed file "already_committed.md" with content
       """
       missing header
