@@ -59,6 +59,20 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
     );
 }
 
+#[then(expr = "file {string} now has an additional line matching")]
+async fn file_has_additional_line_matching(
+    world: &mut TricorderWorld,
+    step: &Step,
+    filename: String,
+) {
+    let want = step.docstring.as_ref().unwrap();
+    let have_old = world.original_file_content(&filename).unwrap_or_default();
+    let have_new = world.current_file_content(&filename).await.unwrap();
+    if let Err(problem) = test_helpers::has_additional_lines(have_old, &have_new, want) {
+        panic!("file '{filename}' {problem}\n\nHAVE:\n{have_new}\n\n");
+    }
+}
+
 #[then(expr = "file {string} now has content")]
 async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str();
@@ -66,17 +80,6 @@ async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: Str
     let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
-}
-
-#[then(expr = "file {string} now matches")]
-async fn file_matches(world: &mut TricorderWorld, step: &Step, filename: String) {
-    let want = step.docstring.as_ref().unwrap().trim();
-    let filepath = world.dir.join(&filename);
-    let have = fs::read_to_string(filepath).await.unwrap();
-    assert!(
-        Regex::new(want).unwrap().is_match(have.trim()),
-        "HAVE:\n{have}\n\nWANT:\n{want}\n\n"
-    );
 }
 
 #[then(expr = "file {string} now matches these lines")]

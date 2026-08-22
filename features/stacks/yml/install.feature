@@ -7,7 +7,7 @@ Feature: install all YML tools
       key:     value
       """
     When executing "tricorder fix --show=all"
-    And it prints the lines
+    Then it prints the lines
       """
       fix YML (Prettier)
       """
@@ -16,9 +16,8 @@ Feature: install all YML tools
       """
       key: value
       """
-    And file "run-that-app" now matches
+    And file "run-that-app" now has an additional line matching
       """
-      # more info at https://github.com/kevgo/run-that-app
-
+      node \d+\.\d+\.\d+
       prettier \d+\.\d+\.\d+
       """

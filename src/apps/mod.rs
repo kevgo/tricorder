@@ -26,12 +26,12 @@ use rta::applications::AppDefinition;
 pub(crate) fn get_rta_command(
     args: &GetRTACmdArgs<'_>,
 ) -> Result<Option<conc::Executable>, UserError> {
-    // try twice to get the command:
-    // - first to get the command
-    // - if that fails because the app is not listed in the config file,
-    //   add the app to the config and try a second time.
+    // Apps like Prettier need to install multiple apps to run (first Node, then Prettier).
+    // So we keep trying in a loop until either the command is available,
+    // or we get stuck needing the same app installed again after having already installed it.
     let apps = rta::applications::all();
-    for _ in 0..2 {
+    let mut added = Vec::new();
+    loop {
         let get_cmd_args = rta::GetCmdArgs {
             app: args.app,
             app_args: args.args.clone(),
@@ -49,22 +49,28 @@ pub(crate) fn get_rta_command(
                     command: (&command).into(),
                 }));
             }
-            Err(err) => match err {
+            Err(err) => match &err {
                 rta::error::UserError::RunRequestMissingVersion { app }
                 | rta::error::UserError::NoVersionsFound { app } => {
+                    if added.contains(app) {
+                        // We have tried to install this missing app before,
+                        // and it didn't work.
+                        // Now we know it cannot be installed on this platform.
+                        return Err(UserError::Rta { err });
+                    }
                     let add_args = rta::commands::AddArgs {
-                        app_name: app,
+                        app_name: app.to_owned(),
                         verbose: true,
                     };
                     if let Err(err) = rta::commands::add(add_args, &apps) {
                         return Err(UserError::Rta { err });
                     }
+                    added.push(app.to_owned());
                 }
                 _ => return Err(UserError::Rta { err }),
             },
         }
     }
-    Ok(None)
 }
 
 pub struct GetRTACmdArgs<'a> {
