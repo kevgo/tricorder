@@ -2,7 +2,7 @@
 
 mod dot_writer;
 mod given_steps;
-mod run_that_app;
+mod run_that_app_file;
 mod then_steps;
 mod when_steps;
 mod world;
@@ -31,10 +31,10 @@ async fn main() {
                     return;
                 }
                 let Some(world) = world else { return };
-                if run_that_app::is_asserted_by(scenario) {
+                if run_that_app_file::is_asserted_by(scenario) {
                     return;
                 }
-                if let Err(err) = run_that_app::verify_unchanged(world).await {
+                if let Err(err) = run_that_app_file::verify_unchanged(world).await {
                     panic!("Scenario unexpectedly changed file run-that-app: {err}");
                 }
             })
