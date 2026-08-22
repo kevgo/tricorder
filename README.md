@@ -142,25 +142,25 @@ If both exist, **tricorder.json** takes precedence.
     // add stack-specific lint to the default lints for that stack
     "python": {
       // these lints run in addition to the default lints
-      "add-lint": [
+      "additional-lints": [
         { "name": "mypy", "command": "mypy ." }
       ],
       // these fixes run in addition to the default fixes
-      "add-fix": [
+      "additional-fixes": [
         { "name": "isort", "command": "isort ." }
       ]
     },
     // override stack-specific lints and fixes
     "rust": {
       // these lints run instead of the default lints
-      "lint": [
+      "replace-lints": [
         {
           "name": "clippy",
           "command": "cargo clippy --all-targets"
         }
       ],
       // these fixes run instead of the default fixes
-      "fix": [
+      "replace-fixes": [
         { "name": "rustfmt", "command": "cargo +nightly fmt" }
       ]
     }
@@ -181,7 +181,8 @@ If both exist, **tricorder.json** takes precedence.
 The `stack.<name>` object configures a specific stack.
 Its `lint` and `fix` attributes replace that stack's built-in tools.
 Configure an empty array (`"lint": []`) to disable them.
-`add-lint` and `add-fix` add the given tools without replacing the built-ins.
+`additional-lints` and `additional-fixes` add the given tools without replacing
+the built-ins.
 These entries run only when that stack has files in scope.
 
 ## Usage
