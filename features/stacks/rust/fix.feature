@@ -32,7 +32,7 @@ Feature: fix Rust
       {
         "stacks": {
           "rust": {
-            "fix": [
+            "replace-fixes": [
               {
                 "command": "echo 'custom fix running'",
                 "name": "my custom fix"

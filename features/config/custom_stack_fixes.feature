@@ -9,13 +9,13 @@ Feature: stack-specific fixes
       ruff 0.15.16
       """
 
-  Scenario: "add-fix" adds custom fixes to the built-in ones for that stack
+  Scenario: "additional-fixes" adds custom fixes to the built-in ones for that stack
     Given a file "tricorder.json" with content
       """
       {
         "stacks": {
           "python": {
-            "add-fix": [
+            "additional-fixes": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
             ]
           }
@@ -38,13 +38,13 @@ Feature: stack-specific fixes
       """
     And the exit code is 0
 
-  Scenario: "fix" replaces the built-in fixes for that stack
+  Scenario: "replace-fixes" replaces the built-in fixes for that stack
     Given a file "tricorder.json" with content
       """
       {
         "stacks": {
           "python": {
-            "fix": [
+            "replace-fixes": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
             ]
           }
@@ -73,7 +73,7 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "fix": []
+            "replace-fixes": []
           }
         }
       }
@@ -95,7 +95,7 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "add-fix": [
+            "additional-fixes": [
               { "name": "my fix", "command": "echo MY FIX RAN" }
             ]
           }

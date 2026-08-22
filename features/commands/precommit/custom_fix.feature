@@ -13,7 +13,7 @@ Feature: stack-scoped custom fixes
       {
         "stacks": {
           "python": {
-            "fix": [
+            "replace-fixes": [
               { "name": "my python fix", "command": "fixes/python.sh" }
             ]
           }
