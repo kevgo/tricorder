@@ -10,7 +10,7 @@ pub(crate) struct Record<'a> {
 }
 
 /// runs `git status --porcelain=v1 -z` and returns its stdout
-pub(crate) fn status_z(dir: Option<&Path>, extra_args: &[&str]) -> Option<String> {
+pub(crate) fn status(dir: Option<&Path>, extra_args: &[&str]) -> Option<String> {
     let mut command = Command::new("git");
     command.arg("status").arg("--porcelain=v1").arg("-z");
     command.args(extra_args);
@@ -34,7 +34,7 @@ pub(crate) fn status_z(dir: Option<&Path>, extra_args: &[&str]) -> Option<String
 }
 
 /// destination records from `git status --porcelain=v1 -z` output
-pub(crate) fn records(output: &str) -> Vec<&str> {
+pub(crate) fn lines(output: &str) -> Vec<&str> {
     let mut result = Vec::new();
     let mut lines = output.split('\0');
     while let Some(line) = lines.next() {
@@ -103,7 +103,7 @@ fn is_known_status(status: char) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{Record, has_orig_path, parse_record, records, status_z};
+    use super::{Record, has_orig_path, lines, parse_record, status};
     use maplit::hashmap;
     use tempfile::TempDir;
 
@@ -141,7 +141,7 @@ mod tests {
             "M  file.rs",
         ]
         .join("\0");
-        let have = records(&give);
+        let have = lines(&give);
         pretty::assert_eq!(
             have,
             vec![
@@ -155,9 +155,9 @@ mod tests {
 
     #[test]
     fn records_skips_empty_entries() {
-        pretty::assert_eq!(records(""), Vec::<&str>::new());
-        pretty::assert_eq!(records("\0"), Vec::<&str>::new());
-        pretty::assert_eq!(records("M  file.rs\0"), vec!["M  file.rs"]);
+        pretty::assert_eq!(lines(""), Vec::<&str>::new());
+        pretty::assert_eq!(lines("\0"), Vec::<&str>::new());
+        pretty::assert_eq!(lines("M  file.rs\0"), vec!["M  file.rs"]);
     }
 
     #[test]
@@ -179,6 +179,6 @@ mod tests {
     #[test]
     fn status_z_none_outside_git_repo() {
         let dir = TempDir::new().unwrap();
-        assert_eq!(status_z(Some(dir.path()), &[]), None);
+        assert_eq!(status(Some(dir.path()), &[]), None);
     }
 }

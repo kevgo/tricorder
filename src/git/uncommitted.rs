@@ -5,7 +5,7 @@ use std::path::Path;
 /// provides the uncommitted files (staged, unstaged, and untracked)
 #[must_use]
 pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
-    let output = porcelain::status_z(dir, &["--untracked-files=all"])?;
+    let output = porcelain::status(dir, &["--untracked-files=all"])?;
     let files = parse_output(&output)
         .into_iter()
         .filter(|file| {
@@ -21,7 +21,7 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
 
 /// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
 fn parse_output(output: &str) -> Vec<File> {
-    porcelain::records(output)
+    porcelain::lines(output)
         .into_iter()
         .filter_map(parse_line)
         .collect()

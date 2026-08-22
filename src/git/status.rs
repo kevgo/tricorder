@@ -5,7 +5,7 @@ use std::path::Path;
 /// determines which files are staged in the current directory
 #[must_use]
 pub fn status(dir: Option<&Path>) -> Option<StagedFiles> {
-    let output = porcelain::status_z(dir, &[])?;
+    let output = porcelain::status(dir, &[])?;
     Some(parse_output(&output))
 }
 
@@ -33,7 +33,7 @@ impl StagedFiles {
 /// parses the output of "git status --porcelain=v1 -z"
 fn parse_output(output: &str) -> StagedFiles {
     let mut result = StagedFiles::default();
-    for line in porcelain::records(output) {
+    for line in porcelain::lines(output) {
         parse_line(line, &mut result);
     }
     result
