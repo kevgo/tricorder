@@ -4,9 +4,10 @@ use std::io::ErrorKind;
 
 pub const FILENAME: &str = "run-that-app";
 
-const ASSERTING_STEPS: [&str; 2] = [
+const ASSERTING_STEPS: [&str; 3] = [
     r#"file "run-that-app" now has an additional line matching"#,
     r#"file "run-that-app" is unchanged"#,
+    r#"file "run-that-app" does not exist"#,
 ];
 
 /// indicates whether the given scenario already verified the content of the run-that-app file
