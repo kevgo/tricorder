@@ -6,4 +6,4 @@
 
 TRICORDER="{{TRICORDER}}"
 [ -x "$TRICORDER" ] || exit 0
-"$TRICORDER" lint
+"$TRICORDER" postedit
