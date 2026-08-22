@@ -7,13 +7,13 @@ Feature: stack-specific lints
       ruff 0.15.16
       """
 
-  Scenario: "add-lint" adds custom lints to the built-in ones for that stack
+  Scenario: "additional-lints" adds custom lints to the built-in ones for that stack
     Given a file "tricorder.json" with content
       """
       {
         "stacks": {
           "python": {
-            "add-lint": [
+            "additional-lints": [
               { "name": "my lint", "command": "echo MY LINT RAN" }
             ]
           }
@@ -42,7 +42,7 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "lint": [
+            "replace-lints": [
               { "name": "my lint", "command": "echo MY LINT RAN" }
             ]
           }
@@ -71,7 +71,7 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "lint": []
+            "replace-lints": []
           }
         }
       }
@@ -93,7 +93,7 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "add-lint": [
+            "additional-lints": [
               { "name": "my lint", "command": "echo MY LINT RAN" }
             ]
           }

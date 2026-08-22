@@ -281,7 +281,7 @@ mod tests {
 {
   "stacks": {
     "PyThOn": {
-      "add-lint": [{ "name": "mypy", "command": "mypy ." }]
+      "additional-lints": [{ "name": "mypy", "command": "mypy ." }]
     }
   }
 }
@@ -314,7 +314,7 @@ mod tests {
 {
   "stacks": {
     "rust": {
-      "lint": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
+      "replace-lints": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
     }
   }
 }
@@ -347,7 +347,7 @@ mod tests {
 {
   "stacks": {
     "python": {
-      "add-lint": [{ "name": "mypy", "command": "mypy ." }]
+      "additional-lints": [{ "name": "mypy", "command": "mypy ." }]
     }
   }
 }
