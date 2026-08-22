@@ -1,5 +1,5 @@
 use crate::domain::File;
-use crate::git::porcelain;
+use crate::git::{ZString, porcelain};
 use std::path::Path;
 
 /// determines which files are staged in the current directory
@@ -31,9 +31,9 @@ impl StagedFiles {
 }
 
 /// parses the output of "git status --porcelain=v1 -z"
-fn parse_output(output: &str) -> StagedFiles {
+fn parse_output(output: &ZString) -> StagedFiles {
     let mut result = StagedFiles::default();
-    for line in porcelain::lines(output) {
+    for line in porcelain::records(output) {
         parse_line(line, &mut result);
     }
     result
@@ -61,6 +61,7 @@ fn is_index_change(status: char) -> bool {
 mod tests {
     use crate::domain::File;
     use crate::git::StagedFiles;
+    use crate::git::ZString;
     use crate::git::testing::{git, git_repo};
     use maplit::hashmap;
     use std::fs;
@@ -244,6 +245,7 @@ mod tests {
             "old file.txt",
         ]
         .join("\0");
+        let give = ZString::from(give);
         let want = StagedFiles {
             partial: vec!["partial.txt".into()],
             full: vec![

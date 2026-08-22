@@ -1,5 +1,5 @@
 use crate::domain::File;
-use crate::git::porcelain;
+use crate::git::{ZString, porcelain};
 use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
@@ -20,8 +20,8 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
 }
 
 /// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
-fn parse_output(output: &str) -> Vec<File> {
-    porcelain::lines(output)
+fn parse_output(output: &ZString) -> Vec<File> {
+    porcelain::records(output)
         .into_iter()
         .filter_map(parse_line)
         .collect()
@@ -50,6 +50,7 @@ fn is_present_change(status: char) -> bool {
 #[cfg(test)]
 mod tests {
     use crate::domain::File;
+    use crate::git::ZString;
     use crate::git::testing::{git, git_repo};
     use maplit::hashmap;
     use std::fs;
@@ -167,6 +168,7 @@ mod tests {
             "old file.txt",
         ]
         .join("\0");
+        let give = ZString::from(give);
         let want = vec![
             File::from("partial.txt"),
             File::from("staged.txt"),

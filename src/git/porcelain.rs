@@ -1,3 +1,4 @@
+use crate::git::ZString;
 use std::path::Path;
 use std::process::Command;
 
@@ -10,7 +11,7 @@ pub(crate) struct Record<'a> {
 }
 
 /// runs `git status --porcelain=v1 -z` and returns its stdout
-pub(crate) fn status(dir: Option<&Path>, extra_args: &[&str]) -> Option<String> {
+pub(crate) fn status(dir: Option<&Path>, extra_args: &[&str]) -> Option<ZString> {
     let mut command = Command::new("git");
     command.arg("status").arg("--porcelain=v1").arg("-z");
     command.args(extra_args);
@@ -30,17 +31,14 @@ pub(crate) fn status(dir: Option<&Path>, extra_args: &[&str]) -> Option<String> 
         eprintln!("ERROR: \"git status --porcelain=v1 -z\" returned non-UTF-8 output");
         return None;
     };
-    Some(output.to_owned())
+    Some(output.into())
 }
 
 /// destination records from `git status --porcelain=v1 -z` output
-pub(crate) fn lines(output: &str) -> Vec<&str> {
+pub(crate) fn records(output: &ZString) -> Vec<&str> {
     let mut result = Vec::new();
-    let mut lines = output.split('\0');
+    let mut lines = output.lines();
     while let Some(line) = lines.next() {
-        if line.is_empty() {
-            continue;
-        }
         // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
         // so we must not treat the orig path as part of this record.
         if has_orig_path(line) {
@@ -103,7 +101,8 @@ fn is_known_status(status: char) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{Record, has_orig_path, lines, parse_record, status};
+    use super::{Record, has_orig_path, parse_record, records, status};
+    use crate::git::ZString;
     use maplit::hashmap;
     use tempfile::TempDir;
 
@@ -141,7 +140,8 @@ mod tests {
             "M  file.rs",
         ]
         .join("\0");
-        let have = lines(&give);
+        let give = ZString::from(give);
+        let have = records(&give);
         pretty::assert_eq!(
             have,
             vec![
@@ -155,9 +155,9 @@ mod tests {
 
     #[test]
     fn records_skips_empty_entries() {
-        pretty::assert_eq!(lines(""), Vec::<&str>::new());
-        pretty::assert_eq!(lines("\0"), Vec::<&str>::new());
-        pretty::assert_eq!(lines("M  file.rs\0"), vec!["M  file.rs"]);
+        pretty::assert_eq!(records(&ZString::from("")), Vec::<&str>::new());
+        pretty::assert_eq!(records(&ZString::from("\0")), Vec::<&str>::new());
+        pretty::assert_eq!(records(&ZString::from("M  file.rs\0")), vec!["M  file.rs"]);
     }
 
     #[test]
