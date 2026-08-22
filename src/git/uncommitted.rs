@@ -1,6 +1,5 @@
 use crate::domain::File;
-use crate::git::GitStatusOutput;
-use crate::git::status;
+use crate::git::{GitStatusOutput, status};
 use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
