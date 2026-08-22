@@ -31,14 +31,6 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct GitStatusOutput(String);
 
-/// a record from `git status --porcelain=v1 -z`
-#[derive(Debug, Eq, PartialEq)]
-pub(crate) struct Record<'a> {
-    pub index: char,
-    pub worktree: char,
-    pub path: &'a str,
-}
-
 impl GitStatusOutput {
     /// splits into NUL-delimited records, omitting empty entries
     fn lines(&self) -> impl Iterator<Item = &str> {
@@ -117,6 +109,14 @@ impl From<String> for GitStatusOutput {
     fn from(value: String) -> Self {
         Self(value)
     }
+}
+
+/// a record from `git status --porcelain=v1 -z`
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) struct Record<'a> {
+    pub index: char,
+    pub worktree: char,
+    pub path: &'a str,
 }
 
 fn log_unexpected_line(line: &str) {
