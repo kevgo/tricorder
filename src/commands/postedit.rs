@@ -14,17 +14,17 @@ pub fn postedit(args: &RunArgs) -> Result<ExitCode> {
     let error_on_output = false;
     let stderr_to_stdout = true;
 
-    // step 2: discover the uncommitted files and their stacks
-    let Some(files) = git::uncommitted(None) else {
-        return Ok(ExitCode::SUCCESS);
+    // step 2: discover the files and their stacks
+    let (stacks, is_git_repo) = match git::uncommitted(None) {
+        Some(files) => (stacks::from_files(&files, &ignores), true.into()),
+        None => (stacks::discover_all(&ignores), false.into()),
     };
-    let stacks = stacks::from_files(&files, &ignores);
     if show.display_metadata() {
         print_metadata(&stacks);
     }
 
     // step 3: discover all runnables
-    let runnables = lint::determine_lints(&config, &stacks, true.into())?;
+    let runnables = lint::determine_lints(&config, &stacks, is_git_repo)?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
