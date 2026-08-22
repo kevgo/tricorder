@@ -43,17 +43,17 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
 /// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
 fn parse_output(output: &str) -> Vec<File> {
     let mut files = Vec::new();
-    let mut records = output.split('\0');
-    while let Some(record) = records.next() {
-        if record.is_empty() {
+    let mut lines = output.split('\0');
+    while let Some(line) = lines.next() {
+        if line.is_empty() {
             continue;
         }
         // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
-        // so we must not treat the orig path as part of this record.
-        if has_orig_path(record) {
-            records.next();
+        // so we must not treat the orig path as part of this line.
+        if has_orig_path(line) {
+            lines.next();
         }
-        if let Some(file) = parse_line(record) {
+        if let Some(file) = parse_line(line) {
             files.push(file);
         }
     }
@@ -114,6 +114,7 @@ fn is_present_change(status: char) -> bool {
     matches!(status, 'A' | 'M' | 'R' | 'C' | 'T' | '?')
 }
 
+/// indicates whether the line contains the original path of a rename or copy operation
 fn has_orig_path(record: &str) -> bool {
     let mut chars = record.chars();
     matches!(chars.next(), Some('R' | 'C')) || matches!(chars.next(), Some('R' | 'C'))
