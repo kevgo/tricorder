@@ -195,6 +195,7 @@ tricorder fix           # Apply safe code quality fixes
 tricorder fix-unsafe    # Apply advanced fixes that might change behavior
 tricorder lint          # Find code quality issues (alias: postgenerate)
 tricorder pitstop       # Apply fixes, then report remaining issues
+tricorder postedit      # Lint new changes
 tricorder precommit     # Fix staged files before committing, never fails
 tricorder help          # Print this message or the help of the given subcommands
 ```
@@ -265,6 +266,14 @@ markers in your changes.
 This command is optimized for efficient support during interactive development.
 It first applies all safe automatic fixes and then reports any remaining issues
 that require manual attention.
+
+### `tricorder postedit`
+
+This command runs the same linters as `tricorder lint`,
+but only against files that are currently uncommitted: staged, unstaged,
+and untracked.
+It fails when a linter reports an issue.
+Outside a Git repository it does nothing and exits successfully.
 
 ### `tricorder precommit`
 

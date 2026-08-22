@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: ci, init:claude, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, precommit, help]
+        [subcommands: ci, init:claude, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, postedit, precommit, help]
 
       Usage: tricorder <COMMAND>
 
@@ -29,6 +29,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Apply fixes, then report remaining issues
+        postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
@@ -54,6 +55,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Apply fixes, then report remaining issues
+        postedit      Find code quality issues in uncommitted files
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 
@@ -79,6 +81,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Apply fixes, then report remaining issues
+        postedit      Find code quality issues in uncommitted files
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
 

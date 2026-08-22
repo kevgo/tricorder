@@ -23,6 +23,7 @@ fn inner() -> tricorder::domain::Result<ExitCode> {
         Command::InitGithook(args) => tricorder::embed::git::pre_commit(&args),
         Command::Lint(args) => tricorder::commands::lint(&args),
         Command::Pitstop(args) => tricorder::commands::pitstop(&args),
+        Command::Postedit(args) => tricorder::commands::postedit(&args),
         Command::Precommit(args) => tricorder::commands::precommit(&args),
     }
 }

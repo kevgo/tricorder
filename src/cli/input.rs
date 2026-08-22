@@ -39,6 +39,9 @@ pub enum Command {
     /// Apply fixes, then report remaining issues
     Pitstop(RunArgs),
 
+    /// Lint uncommitted changes
+    Postedit(RunArgs),
+
     /// Fix staged files before committing, never fails
     Precommit(RunArgs),
 }
