@@ -269,7 +269,8 @@ that require manual attention.
 
 ### `tricorder postedit`
 
-This command is meant to run inside the agentic loop.
+This command is meant to run to check changes that were just made
+for code smells, for example inside an agentic loop.
 It runs the same linters as `tricorder lint`,
 but only against files that are currently uncommitted: staged, unstaged,
 and untracked.
