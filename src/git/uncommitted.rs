@@ -167,8 +167,7 @@ mod tests {
 
     #[test]
     fn test_parse_output() {
-        let tests = hashmap! {
-            r"
+        let give = r"
 MM partial.txt
 M  staged.txt
  M unstaged.txt
@@ -176,17 +175,15 @@ M  staged.txt
 ?? untracked.txt
 !! ignored.txt
 D  deleted.txt
- D unstaged-deleted.txt" => vec![
-                File::from("partial.txt"),
-                File::from("staged.txt"),
-                File::from("unstaged.txt"),
-                File::from("intent.txt"),
-                File::from("untracked.txt"),
-            ]
-        };
-        for (give, want) in tests {
-            let have: Vec<File> = super::parse_output(&give[1..]).collect();
-            pretty::assert_eq!(have, want, "{give}");
-        }
+ D unstaged-deleted.txt";
+        let want = vec![
+            File::from("partial.txt"),
+            File::from("staged.txt"),
+            File::from("unstaged.txt"),
+            File::from("intent.txt"),
+            File::from("untracked.txt"),
+        ];
+        let have: Vec<File> = super::parse_output(&give[1..]).collect();
+        pretty::assert_eq!(have, want, "{give}");
     }
 }
