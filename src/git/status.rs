@@ -7,7 +7,7 @@ use std::process::Command;
 #[must_use]
 pub fn status_files(dir: Option<&Path>) -> Option<StagedFiles> {
     let output = status_output(dir, &[])?;
-    Some(parse_output(&output))
+    Some(StagedFiles::new(&output))
 }
 
 /// runs `git status --porcelain=v1 -z` and returns its stdout
@@ -54,6 +54,15 @@ impl StagedFiles {
         result
     }
 
+    /// parses the output of "git status --porcelain=v1 -z"
+    fn new(output: &GitStatusOutput) -> StagedFiles {
+        let mut result = StagedFiles::default();
+        for line in output.records() {
+            result.parse_line(line);
+        }
+        result
+    }
+
     /// parses a line from the output of "git status --porcelain=v1 -z"
     fn parse_line(&mut self, line: &str) {
         let Some(record) = GitStatusOutput::parse_record(line) else {
@@ -67,15 +76,6 @@ impl StagedFiles {
             self.full.push(record.path.into());
         }
     }
-}
-
-/// parses the output of "git status --porcelain=v1 -z"
-fn parse_output(output: &GitStatusOutput) -> StagedFiles {
-    let mut result = StagedFiles::default();
-    for line in output.records() {
-        result.parse_line(line);
-    }
-    result
 }
 
 fn is_index_change(status: char) -> bool {
@@ -292,7 +292,7 @@ mod tests {
                 "new file.txt".into(),
             ],
         };
-        let have = super::parse_output(&give);
+        let have = StagedFiles::new(&give);
         pretty::assert_eq!(have, want);
     }
 
