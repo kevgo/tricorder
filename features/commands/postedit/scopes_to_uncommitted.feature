@@ -5,74 +5,66 @@ Feature: "tricorder postedit" lints only uncommitted files
     And a committed file "run-that-app" with content
       """
       rumdl 0.2.14
-      ruff 0.15.16
       delete-empty-folders 0.0.2
       """
-    And a committed file "main.py" with content
+
+  Scenario: no uncommitted files
+    Given a committed file "main.md" with content
       """
       "unterminated string
-      """
-
-  Scenario: ignores committed files of another stack
-    Given a file "main.md" with content
-      """
-      text
       """
     When executing "tricorder postedit --show=all"
     Then it prints to STDERR
       """
-      1 Markdown
+      running 1 tools
+      """
+    And it prints the lines
+      """
+      lint Git (git diff HEAD --check)
+      """
+    And it does not print
+      """
+      lint Markdown
+      """
+    And the exit code is 0
+
+  Scenario: lints only uncommitted but not committed files
+    Given a committed file "already_committed.md" with content
+      """
+      missing header
+      """
+    And a committed file "modified.md" with content
+      """
+      # correct header
+      """
+    And I change file "modified.md" to
+      """
+      missing header
+      """
+    And a file "untracked.md" with content
+      """
+      missing header
+      """
+    When executing "tricorder postedit --show=all"
+    Then it prints to STDERR
+      """
+      2 Markdown
       running 2 tools
       """
     And it prints the lines
       """
       lint Markdown (rumdl)
       """
-    And it does not print
+    And it prints the lines
       """
-      lint Python
+      modified.md:1:1: [MD041] First line in file should be a level 1 heading
       """
-    And the exit code is 1
-
-  Scenario: lints untracked files
-    Given a file "untracked.md" with content
+    And it prints the lines
       """
-      missing header
-      """
-    When executing "tricorder postedit --show=all"
-    Then it prints the lines
-      """
-      lint Markdown (rumdl)
       untracked.md:1:1: [MD041] First line in file should be a level 1 heading
       """
-    And the exit code is 1
-
-  Scenario: lints unstaged files
-    Given a committed file "main.md" with content
+    And it does not print
       """
-      # Hello
-      """
-    And I change file "main.md" to
-      """
-      missing header
-      """
-    When executing "tricorder postedit --show=all"
-    Then it prints the lines
-      """
-      lint Markdown (rumdl)
-      main.md:1:1: [MD041] First line in file should be a level 1 heading
-      """
-    And the exit code is 1
-
-  Scenario: lints staged files
-    Given a file "main.md" with content
-      """
-      missing header
-      """
-    And I ran "git add main.md"
-    When executing "tricorder postedit --show=all"
-    Then it prints the lines
-      """
-      lint Markdown (rumdl)
+      already_committed.md
       """
     And the exit code is 1
