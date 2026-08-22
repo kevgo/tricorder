@@ -10,7 +10,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
     And a committed file "main.py" with content
       """
-      print    (    "hello")
+      "unterminated string
       """
 
   Scenario: ignores committed files of another stack
