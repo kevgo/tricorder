@@ -26,15 +26,13 @@ pub async fn verify_unchanged(world: &TricorderWorld) -> Result<(), String> {
         Err(err) if err.kind() == ErrorKind::NotFound => None,
         Err(err) => return Err(format!("cannot read '{FILENAME}': {err}")),
     };
-
     match (old, new) {
         (None, None) => Ok(()),
         (Some(original), Some(have)) if have.trim() == original.trim() => Ok(()),
         (Some(original), Some(have)) => Err(format!(
             "file '{FILENAME}' was modified without an assertion step\n\n\
-             ORIGINAL:\n{}\n\nNEW:\n{have}\n\n\
-             If this change is intentional, add: And file \"{FILENAME}\" now matches",
-            original
+             ORIGINAL:\n{original}\n\nNEW:\n{have}\n\n\
+             If this change is intentional, add: And file \"{FILENAME}\" now has an additional line matching",
         )),
         (Some(original), None) => Err(format!(
             "file '{FILENAME}' was deleted without an assertion step\n\n\
@@ -45,7 +43,7 @@ pub async fn verify_unchanged(world: &TricorderWorld) -> Result<(), String> {
         (None, Some(have)) => Err(format!(
             "file '{FILENAME}' was created without an assertion step\n\n\
              ORIGINAL: (file did not exist)\n\nNEW:\n{have}\n\n\
-             If this change is intentional, add: And file \"{FILENAME}\" now matches"
+             If this change is intentional, add: And file \"{FILENAME}\" now has an additional line matching"
         )),
     }
 }
