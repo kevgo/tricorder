@@ -269,11 +269,11 @@ that require manual attention.
 
 ### `tricorder postedit`
 
-This command runs the same linters as `tricorder lint`,
+This command is meant to run inside the agentic loop.
+It runs the same linters as `tricorder lint`,
 but only against files that are currently uncommitted: staged, unstaged,
 and untracked.
-It fails when a linter reports an issue.
-Outside a Git repository it does nothing and exits successfully.
+Outside a Git repository it lints all files.
 
 ### `tricorder precommit`
 
