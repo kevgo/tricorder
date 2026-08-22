@@ -8,8 +8,8 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
     let mut command = Command::new("git");
     command
         .arg("status")
-        .arg("--short")
         .arg("--porcelain=v1")
+        .arg("-z")
         .arg("--untracked-files=all");
     if let Some(dir) = dir {
         command.current_dir(dir);
@@ -24,10 +24,11 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
     }
     let Ok(output) = str::from_utf8(&output.stdout) else {
         // we don't support non-UTF-8 filenames for now
-        eprintln!("ERROR: \"git status --short\" returned non-UTF-8 output");
+        eprintln!("ERROR: \"git status --porcelain=v1 -z\" returned non-UTF-8 output");
         return None;
     };
     let files = parse_output(output)
+        .into_iter()
         .filter(|file| {
             let path = Path::new(file.as_str());
             match dir {
@@ -39,12 +40,27 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
     Some(files)
 }
 
-/// parses the output of "git status --short --porcelain=v1 --untracked-files=all"
-fn parse_output(output: &str) -> impl Iterator<Item = File> + '_ {
-    output.lines().filter_map(parse_line)
+/// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
+fn parse_output(output: &str) -> Vec<File> {
+    let mut files = Vec::new();
+    let mut records = output.split('\0');
+    while let Some(record) = records.next() {
+        if record.is_empty() {
+            continue;
+        }
+        // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
+        // so we must not treat the orig path as part of this record.
+        if has_orig_path(record) {
+            records.next();
+        }
+        if let Some(file) = parse_line(record) {
+            files.push(file);
+        }
+    }
+    files
 }
 
-/// parses a line from the output of "git status --short --porcelain=v1"
+/// parses a record from the output of "git status --porcelain=v1 -z"
 fn parse_line(line: &str) -> Option<File> {
     if line.len() < 3 {
         return None;
@@ -73,12 +89,11 @@ fn parse_line(line: &str) -> Option<File> {
     if !is_uncommitted(index_status, worktree_status) {
         return None;
     }
-    let (_, filename) = line[3..].rsplit_once(' ').unwrap_or(("", &line[3..]));
-    Some(filename.into())
+    Some(chars.as_str().into())
 }
 
 fn log_unexpected_line(line: &str) {
-    println!("unexpected line in output of \"git status --short --porcelain=v1\": {line}");
+    println!("unexpected line in output of \"git status --porcelain=v1 -z\": {line}");
 }
 
 fn is_known_status(status: char) -> bool {
@@ -99,6 +114,11 @@ fn is_present_change(status: char) -> bool {
     matches!(status, 'A' | 'M' | 'R' | 'C' | 'T' | '?')
 }
 
+fn has_orig_path(record: &str) -> bool {
+    let mut chars = record.chars();
+    matches!(chars.next(), Some('R' | 'C')) || matches!(chars.next(), Some('R' | 'C'))
+}
+
 #[cfg(test)]
 mod tests {
     use crate::domain::File;
@@ -109,14 +129,7 @@ mod tests {
 
     #[test]
     fn expands_untracked_folder_to_files() {
-        let dir = TempDir::new().unwrap();
-        let init = Command::new("git")
-            .arg("init")
-            .arg("-q")
-            .current_dir(dir.path())
-            .output()
-            .unwrap();
-        assert!(init.status.success(), "git init failed");
+        let dir = git_repo();
         let sub = dir.path().join("sub");
         fs::create_dir(&sub).unwrap();
         fs::write(sub.join("one.txt"), "one").unwrap();
@@ -144,20 +157,61 @@ mod tests {
     }
 
     #[test]
+    fn includes_untracked_file_with_spaces() {
+        let dir = git_repo();
+        fs::write(dir.path().join("my file.txt"), "hello").unwrap();
+        let have = super::uncommitted(Some(dir.path())).unwrap();
+        pretty::assert_eq!(have, vec![File::from("my file.txt")]);
+    }
+
+    #[test]
+    fn includes_untracked_file_with_quotes() {
+        let dir = git_repo();
+        fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
+        let have = super::uncommitted(Some(dir.path())).unwrap();
+        pretty::assert_eq!(have, vec![File::from("file\"quote.txt")]);
+    }
+
+    #[test]
+    fn includes_renamed_file_with_spaces() {
+        let dir = git_repo();
+        fs::write(dir.path().join("old file.txt"), "hello").unwrap();
+        git(&dir, &["add", "old file.txt"]);
+        git(
+            &dir,
+            &[
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit",
+                "-qm",
+                "init",
+            ],
+        );
+        git(&dir, &["mv", "old file.txt", "new file.txt"]);
+        let have = super::uncommitted(Some(dir.path())).unwrap();
+        pretty::assert_eq!(have, vec![File::from("new file.txt")]);
+    }
+
+    #[test]
     fn parse_line() {
         let tests = hashmap! {
             "MM file.rs" => Some(File::from("file.rs")),
             "M  file.rs" => Some(File::from("file.rs")),
             " M file.rs" => Some(File::from("file.rs")),
             "?? file.rs" => Some(File::from("file.rs")),
+            "?? my file.txt" => Some(File::from("my file.txt")),
+            "?? file\"quote.txt" => Some(File::from("file\"quote.txt")),
             "!! file.rs" => None,
             "UU file.rs" => None, // unmerged conflict in file
             "D  file.rs" => None,
             " D file.rs" => None,
             "A  file.rs" => Some(File::from("file.rs")),
             " A file.rs" => Some(File::from("file.rs")),
-            "R  dir/old.rs -> dir/new.rs" => Some(File::from("dir/new.rs")), // renamed file
-            "C  dir/old.rs -> dir/new.rs" => Some(File::from("dir/new.rs")), // copied file
+            "R  dir/new.rs" => Some(File::from("dir/new.rs")), // renamed file (dest path)
+            "C  dir/new.rs" => Some(File::from("dir/new.rs")), // copied file (dest path)
+            "R  new file.txt" => Some(File::from("new file.txt")),
         };
         for (give, want) in tests {
             let have = super::parse_line(give);
@@ -167,23 +221,55 @@ mod tests {
 
     #[test]
     fn test_parse_output() {
-        let give = r"
-MM partial.txt
-M  staged.txt
- M unstaged.txt
- A intent.txt
-?? untracked.txt
-!! ignored.txt
-D  deleted.txt
- D unstaged-deleted.txt";
+        let give = [
+            "MM partial.txt",
+            "M  staged.txt",
+            " M unstaged.txt",
+            " A intent.txt",
+            "?? untracked.txt",
+            "!! ignored.txt",
+            "D  deleted.txt",
+            " D unstaged-deleted.txt",
+            "R  dir/new.rs",
+            "dir/old.rs",
+            "C  copy.rs",
+            "original.rs",
+            "?? my file.txt",
+            "R  new file.txt",
+            "old file.txt",
+        ]
+        .join("\0");
         let want = vec![
             File::from("partial.txt"),
             File::from("staged.txt"),
             File::from("unstaged.txt"),
             File::from("intent.txt"),
             File::from("untracked.txt"),
+            File::from("dir/new.rs"),
+            File::from("copy.rs"),
+            File::from("my file.txt"),
+            File::from("new file.txt"),
         ];
-        let have: Vec<File> = super::parse_output(&give[1..]).collect();
-        pretty::assert_eq!(have, want, "{give}");
+        let have = super::parse_output(&give);
+        pretty::assert_eq!(have, want);
+    }
+
+    fn git_repo() -> TempDir {
+        let dir = TempDir::new().unwrap();
+        git(&dir, &["init", "-q"]);
+        dir
+    }
+
+    fn git(dir: &TempDir, args: &[&str]) {
+        let output = Command::new("git")
+            .args(args)
+            .current_dir(dir.path())
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "git {args:?} failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
     }
 }

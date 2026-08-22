@@ -68,3 +68,20 @@ Feature: "tricorder postedit" lints only uncommitted files
       already_committed.md
       """
     And the exit code is 1
+
+  Scenario: untracked file with spaces in the name
+    Given a file "my file.md" with content
+      """
+      missing header
+      """
+    When executing "tricorder postedit --show=all"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      running 2 tools
+      """
+    And it prints the lines
+      """
+      my file.md:1:1: [MD041] First line in file should be a level 1 heading
+      """
+    And the exit code is 1
