@@ -36,9 +36,8 @@ pub async fn verify_unchanged(world: &TricorderWorld) -> Result<(), String> {
         )),
         (Some(original), None) => Err(format!(
             "file '{FILENAME}' was deleted without an assertion step\n\n\
-             ORIGINAL:\n{}\n\nNEW: (file does not exist)\n\n\
+             ORIGINAL:\n{original}\n\nNEW: (file does not exist)\n\n\
              If this change is intentional, add: And file \"{FILENAME}\" does not exist",
-            original
         )),
         (None, Some(have)) => Err(format!(
             "file '{FILENAME}' was created without an assertion step\n\n\
