@@ -9,9 +9,9 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
 
   Scenario: no uncommitted files
-    Given a committed file "main.md" with content
+    Given a committed file "committed.md" with content
       """
-      "unterminated string
+      missing header
       """
     When executing "tricorder postedit --show=all"
     Then it prints to STDERR
