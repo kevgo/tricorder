@@ -34,7 +34,7 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
     Some(output.into())
 }
 
-/// represents the files that are staged in the current directory
+/// the files that are staged in the current directory
 #[derive(Debug, Default, Eq, Hash, PartialEq)]
 pub struct StagedFiles {
     /// partially staged files: some changes made to this file are staged, other changes are not
@@ -53,29 +53,29 @@ impl StagedFiles {
         result.extend(self.full.iter());
         result
     }
+
+    /// parses a line from the output of "git status --porcelain=v1 -z"
+    fn parse_line(&mut self, line: &str) {
+        let Some(record) = GitStatusOutput::parse_record(line) else {
+            return;
+        };
+        let is_staged = is_index_change(record.index);
+        let is_working = is_index_change(record.worktree);
+        if is_staged && is_working {
+            self.partial.push(record.path.into());
+        } else if is_staged {
+            self.full.push(record.path.into());
+        }
+    }
 }
 
 /// parses the output of "git status --porcelain=v1 -z"
 fn parse_output(output: &GitStatusOutput) -> StagedFiles {
     let mut result = StagedFiles::default();
     for line in output.records() {
-        parse_line(line, &mut result);
+        result.parse_line(line);
     }
     result
-}
-
-/// parses a line from the output of "git status --porcelain=v1 -z"
-fn parse_line(line: &str, result: &mut StagedFiles) {
-    let Some(record) = GitStatusOutput::parse_record(line) else {
-        return;
-    };
-    let is_staged = is_index_change(record.index);
-    let is_working = is_index_change(record.worktree);
-    if is_staged && is_working {
-        result.partial.push(record.path.into());
-    } else if is_staged {
-        result.full.push(record.path.into());
-    }
 }
 
 fn is_index_change(status: char) -> bool {
@@ -260,7 +260,7 @@ mod tests {
         };
         for (give, want) in tests {
             let mut have = StagedFiles::default();
-            super::parse_line(give, &mut have);
+            have.parse_line(give);
             assert_eq!(have, want, "{give}");
         }
     }
