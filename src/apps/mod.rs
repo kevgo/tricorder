@@ -32,7 +32,7 @@ pub(crate) fn get_rta_command(
     let apps = rta::applications::all();
     let mut added = Vec::new();
     loop {
-        let get_cmd_args = rta::GetCmdArgs {
+        let cmd_result = rta::get_cmd(rta::GetCmdArgs {
             app: args.app,
             app_args: args.args.clone(),
             version: args.version.clone(),
@@ -41,8 +41,8 @@ pub(crate) fn get_rta_command(
             include_apps: vec![],
             optional: true,
             verbose: false,
-        };
-        match rta::get_cmd(get_cmd_args) {
+        });
+        match cmd_result {
             Ok(cmd) => {
                 return Ok(cmd.map(|command| conc::Executable {
                     name: args.name.clone(),
