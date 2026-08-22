@@ -179,6 +179,25 @@ mod tests {
         }
 
         #[test]
+        fn parse_record_reads_status_and_path() {
+            let tests = hashmap! {
+                "MM file.rs" => Some(Record { index: 'M', worktree: 'M', path: "file.rs" }),
+                "M  my file.txt" => Some(Record { index: 'M', worktree: ' ', path: "my file.txt" }),
+                "?? file\"quote.txt" => Some(Record { index: '?', worktree: '?', path: "file\"quote.txt" }),
+                "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
+                "XY file.rs" => None,
+                "M" => None,
+                "" => None,
+            };
+            for (give, want) in tests {
+                pretty::assert_eq!(GitStatusOutput::parse_record(give), want, "{give}");
+            }
+        }
+    }
+
+    mod records {
+        use super::super::GitStatusOutput;
+        #[test]
         fn records_skips_rename_and_copy_orig_paths() {
             let give = [
                 "R  new file.txt",
@@ -209,22 +228,6 @@ mod tests {
                 GitStatusOutput::from("M  file.rs\0").records(),
                 vec!["M  file.rs"]
             );
-        }
-
-        #[test]
-        fn parse_record_reads_status_and_path() {
-            let tests = hashmap! {
-                "MM file.rs" => Some(Record { index: 'M', worktree: 'M', path: "file.rs" }),
-                "M  my file.txt" => Some(Record { index: 'M', worktree: ' ', path: "my file.txt" }),
-                "?? file\"quote.txt" => Some(Record { index: '?', worktree: '?', path: "file\"quote.txt" }),
-                "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
-                "XY file.rs" => None,
-                "M" => None,
-                "" => None,
-            };
-            for (give, want) in tests {
-                pretty::assert_eq!(GitStatusOutput::parse_record(give), want, "{give}");
-            }
         }
     }
 
