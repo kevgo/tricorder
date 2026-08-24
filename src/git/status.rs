@@ -3,10 +3,10 @@
 use std::path::Path;
 use std::process::Command;
 
-/// runs `git status --porcelain=v1 -z` and returns its stdout
+/// runs `git status` and returns its stdout
 pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
     let mut command = Command::new("git");
-    command.arg("status").arg("--porcelain=v1").arg("-z");
+    command.args(["status", "--porcelain=v1", "-z"]);
     command.args(extra_args);
     if let Some(dir) = dir {
         command.current_dir(dir);
