@@ -53,6 +53,7 @@ impl StagedFiles {
         let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
         result.extend(self.partial.iter());
         result.extend(self.full.iter());
+        result.sort();
         result
     }
 }
@@ -183,7 +184,7 @@ mod tests {
                 partial: vec![partial_1.clone(), partial_2.clone()],
                 full: vec![full_1.clone(), full_2.clone()],
             };
-            let want = vec![&partial_1, &partial_2, &full_1, &full_2];
+            let want = vec![&full_1, &full_2, &partial_1, &partial_2];
             let have = give.all();
             assert_eq!(have, want);
         }
