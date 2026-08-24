@@ -40,7 +40,7 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
 pub(crate) struct GitStatusOutput(String);
 
 impl GitStatusOutput {
-    /// splits into NUL-delimited records, omitting empty entries
+    /// emits all non-empty lines
     fn lines(&self) -> impl Iterator<Item = &str> {
         self.0.split('\0').filter(|line| !line.is_empty())
     }
