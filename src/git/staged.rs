@@ -8,7 +8,7 @@ use std::path::Path;
 #[must_use]
 pub fn staged(dir: Option<&Path>) -> Option<StagedFiles> {
     let output = status_output(dir, &[])?;
-    Some(StagedFiles::new(&output))
+    Some(StagedFiles::from(&output))
 }
 
 /// the files that are staged in the current directory
@@ -23,7 +23,7 @@ pub struct StagedFiles {
 
 impl StagedFiles {
     /// parses the output of "git status --porcelain=v1 -z"
-    fn new(output: &GitStatusOutput) -> StagedFiles {
+    fn from(output: &GitStatusOutput) -> StagedFiles {
         let mut result = StagedFiles::default();
         for line in output.records() {
             result.add_line(line);
@@ -213,7 +213,7 @@ mod tests {
                     "new file.txt".into(),
                 ],
             };
-            let have = StagedFiles::new(&give);
+            let have = StagedFiles::from(&give);
             pretty::assert_eq!(have, want);
         }
 
