@@ -21,7 +21,7 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
     }
     let Ok(output) = str::from_utf8(&output.stdout) else {
         // we don't support non-UTF-8 filenames for now
-        eprintln!("ERROR: \"git status --porcelain=v1 -z\" returned non-UTF-8 output");
+        eprintln!("ERROR: \"git status\" returned non-UTF-8 output");
         return None;
     };
     Some(output.into())
