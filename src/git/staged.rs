@@ -184,21 +184,22 @@ mod tests {
 
         #[test]
         fn new() {
-            let give = [
-                "MM partial.txt",
-                "M  full.txt",
-                " A unstaged.txt",
-                "?? untracked",
-                "R  dir/new.rs",
-                "dir/old.rs",
-                "C  copy.rs",
-                "original.rs",
-                "M  my file.txt",
-                "R  new file.txt",
-                "old file.txt",
-            ]
-            .join("\0");
-            let give = GitStatusOutput::from(give);
+            let give = GitStatusOutput::from(
+                [
+                    "MM partial.txt",
+                    "M  full.txt",
+                    " A unstaged.txt",
+                    "?? untracked",
+                    "R  dir/new.rs",
+                    "dir/old.rs",
+                    "C  copy.rs",
+                    "original.rs",
+                    "M  my file.txt",
+                    "R  new file.txt",
+                    "old file.txt",
+                ]
+                .join("\0"),
+            );
             let want = StagedFiles {
                 partial: vec!["partial.txt".into()],
                 full: vec![
