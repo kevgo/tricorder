@@ -77,13 +77,11 @@ mod tests {
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
             git(&dir, &["add", "my file.txt"]);
             let have = super::super::staged(Some(dir.path())).unwrap();
-            pretty::assert_eq!(
-                have,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("my file.txt")],
-                }
-            );
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![File::from("my file.txt")],
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -92,13 +90,11 @@ mod tests {
             fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             git(&dir, &["add", "file\"quote.txt"]);
             let have = super::super::staged(Some(dir.path())).unwrap();
-            pretty::assert_eq!(
-                have,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("file\"quote.txt")],
-                }
-            );
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![File::from("file\"quote.txt")],
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -120,13 +116,11 @@ mod tests {
             );
             git(&dir, &["mv", "old file.txt", "new file.txt"]);
             let have = super::super::staged(Some(dir.path())).unwrap();
-            pretty::assert_eq!(
-                have,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("new file.txt")],
-                }
-            );
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![File::from("new file.txt")],
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -150,13 +144,11 @@ mod tests {
             git(&dir, &["add", "my file.txt"]);
             fs::write(dir.path().join("my file.txt"), "v3").unwrap();
             let have = super::super::staged(Some(dir.path())).unwrap();
-            pretty::assert_eq!(
-                have,
-                StagedFiles {
-                    partial: vec![File::from("my file.txt")],
-                    full: vec![],
-                }
-            );
+            let want = StagedFiles {
+                partial: vec![File::from("my file.txt")],
+                full: vec![],
+            };
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
@@ -164,7 +156,8 @@ mod tests {
             let dir = git_repo();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let have = super::super::staged(Some(dir.path())).unwrap();
-            pretty::assert_eq!(have, StagedFiles::default());
+            let want = StagedFiles::default();
+            pretty::assert_eq!(have, want);
         }
     }
 
