@@ -207,6 +207,8 @@ mod tests {
 
     mod records {
         use super::super::GitStatusOutput;
+        use maplit::hashmap;
+
         #[test]
         fn records_skips_rename_and_copy_orig_paths() {
             let give = [
@@ -232,20 +234,17 @@ mod tests {
 
         #[test]
         fn records_skips_empty_entries() {
-            pretty::assert_eq!(
-                GitStatusOutput::from("").records().collect::<Vec<_>>(),
-                Vec::<&str>::new()
-            );
-            pretty::assert_eq!(
-                GitStatusOutput::from("\0").records().collect::<Vec<_>>(),
-                Vec::<&str>::new()
-            );
-            pretty::assert_eq!(
-                GitStatusOutput::from("M  file.rs\0")
-                    .records()
-                    .collect::<Vec<_>>(),
-                vec!["M  file.rs"]
-            );
+            let tests = hashmap! {
+                "" => vec![],
+                "\0" => vec![],
+                "M  file.rs\0" => vec!["M  file.rs"],
+            };
+            for (give, want) in tests {
+                pretty::assert_eq!(
+                    GitStatusOutput::from(give).records().collect::<Vec<_>>(),
+                    want
+                );
+            }
         }
     }
 
