@@ -2090,7 +2090,7 @@ dependencies = [
 
 [[package]]
 name = "tricorder"
-version = "0.0.16"
+version = "0.1.0"
 dependencies = [
  "ahash",
  "big_s",
