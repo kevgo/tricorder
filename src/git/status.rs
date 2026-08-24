@@ -46,18 +46,17 @@ impl GitStatusOutput {
     }
 
     /// destination records, skipping rename/copy original paths
-    pub(crate) fn records(&self) -> Vec<&str> {
-        let mut result = Vec::new();
+    pub(crate) fn records(&self) -> impl Iterator<Item = &str> {
         let mut lines = self.lines();
-        while let Some(line) = lines.next() {
+        std::iter::from_fn(move || {
+            let line = lines.next()?;
             // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
             // so we must not treat the orig path as part of this record.
             if Self::has_orig_path(line) {
                 lines.next();
             }
-            result.push(line);
-        }
-        result
+            Some(line)
+        })
     }
 
     /// parses the XY status prefix and path from a porcelain record
@@ -221,7 +220,7 @@ mod tests {
             .join("\0");
             let give = GitStatusOutput::from(give);
             pretty::assert_eq!(
-                give.records(),
+                give.records().collect::<Vec<_>>(),
                 vec![
                     "R  new file.txt",
                     "?? my file.txt",
@@ -233,10 +232,18 @@ mod tests {
 
         #[test]
         fn records_skips_empty_entries() {
-            pretty::assert_eq!(GitStatusOutput::from("").records(), Vec::<&str>::new());
-            pretty::assert_eq!(GitStatusOutput::from("\0").records(), Vec::<&str>::new());
             pretty::assert_eq!(
-                GitStatusOutput::from("M  file.rs\0").records(),
+                GitStatusOutput::from("").records().collect::<Vec<_>>(),
+                Vec::<&str>::new()
+            );
+            pretty::assert_eq!(
+                GitStatusOutput::from("\0").records().collect::<Vec<_>>(),
+                Vec::<&str>::new()
+            );
+            pretty::assert_eq!(
+                GitStatusOutput::from("M  file.rs\0")
+                    .records()
+                    .collect::<Vec<_>>(),
                 vec!["M  file.rs"]
             );
         }

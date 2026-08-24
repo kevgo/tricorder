@@ -22,11 +22,7 @@ pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
 
 /// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
 fn parse_output(output: &GitStatusOutput) -> Vec<File> {
-    output
-        .records()
-        .into_iter()
-        .filter_map(parse_line)
-        .collect()
+    output.records().filter_map(parse_line).collect()
 }
 
 /// parses a record from the output of "git status --porcelain=v1 -z"
