@@ -6,7 +6,33 @@ use serde::Deserialize;
 use std::fs;
 use std::path::Path;
 
-const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", "tricorder.jsonc"];
+/// name of the config file written by `tricorder init:config`
+pub const FILENAME: &str = "tricorder.json";
+
+const CONFIG_FILENAMES: [&str; 2] = [FILENAME, "tricorder.jsonc"];
+
+/// VS Code / JSON language-server schema URL for `tricorder.json`
+pub const SCHEMA_URL: &str =
+    "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json";
+
+/// default `tricorder.json` contents written by `tricorder init:config`
+#[must_use]
+pub fn default_json() -> String {
+    format!(
+        r#"{{
+  "$schema": "{SCHEMA_URL}",
+  "custom-fixes": [],
+  "custom-lints": [],
+  "ignore": [],
+  "applications": {{
+    "keep-sorted": {{
+      "enabled": false
+    }}
+  }}
+}}
+"#
+    )
+}
 
 #[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[schemars(title = "Tricorder configuration")]
@@ -139,6 +165,40 @@ impl KeepSorted {
 
 #[cfg(test)]
 mod tests {
+
+    mod default_json {
+        use crate::config::{Applications, Config, KeepSorted, SCHEMA_URL, default_json};
+
+        #[test]
+        fn contains_vscode_schema_link() {
+            let have = default_json();
+            let want = format!(r#""$schema": "{SCHEMA_URL}""#);
+            assert!(
+                have.contains(&want),
+                "default config should contain the VS Code schema link `{want}`\n\nHAVE:\n{have}"
+            );
+        }
+
+        #[test]
+        fn parses_as_default_settings() {
+            let have = Config::parse(&default_json(), "tricorder.json").unwrap();
+            pretty::assert_eq!(
+                have,
+                Config {
+                    custom_fixes: Some(vec![]),
+                    custom_lints: Some(vec![]),
+                    ignore: Some(vec![]),
+                    applications: Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: false,
+                            ignore: None,
+                        }),
+                    }),
+                    stacks: None,
+                }
+            );
+        }
+    }
 
     mod parse {
         use crate::config::{Config, CustomFix, CustomLint, StackCommand, StackConfig};

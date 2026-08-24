@@ -22,6 +22,10 @@ pub enum Command {
     #[command(name = "init:claude")]
     InitClaude(InitArgs),
 
+    /// Write the default tricorder.json config file
+    #[command(name = "init:config")]
+    InitConfig(InitArgs),
+
     /// Install the Git pre-commit hook
     #[command(name = "init:githook")]
     InitGithook(InitArgs),
