@@ -122,8 +122,11 @@ impl From<String> for GitStatusOutput {
 /// a record from `git status --porcelain=v1 -z`
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct Record<'a> {
+    /// X status: how the index (staging area) differs from HEAD
     pub index: char,
+    /// Y status: how the working tree differs from the index
     pub worktree: char,
+    /// file path, for rename/copy this is the destination path
     pub path: &'a str,
 }
 
