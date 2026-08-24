@@ -74,7 +74,7 @@ mod tests {
         #[test]
         fn includes_fully_staged_file_with_spaces() {
             let dir = git_repo();
-            fs::write(dir.path().join("my file.txt"), "hello").unwrap();
+            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             git(&dir, &["add", "my file.txt"]);
             let have = super::super::staged(Some(dir.path())).unwrap();
             pretty::assert_eq!(
@@ -89,7 +89,7 @@ mod tests {
         #[test]
         fn includes_fully_staged_file_with_quotes() {
             let dir = git_repo();
-            fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
+            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             git(&dir, &["add", "file\"quote.txt"]);
             let have = super::super::staged(Some(dir.path())).unwrap();
             pretty::assert_eq!(
@@ -104,7 +104,7 @@ mod tests {
         #[test]
         fn includes_renamed_file_with_spaces() {
             let dir = git_repo();
-            fs::write(dir.path().join("old file.txt"), "hello").unwrap();
+            fs::write(dir.path().join("old file.txt"), "content").unwrap();
             git(&dir, &["add", "old file.txt"]);
             git(
                 &dir,
@@ -162,7 +162,7 @@ mod tests {
         #[test]
         fn ignores_untracked_file_with_spaces() {
             let dir = git_repo();
-            fs::write(dir.path().join("my file.txt"), "hello").unwrap();
+            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let have = super::super::staged(Some(dir.path())).unwrap();
             pretty::assert_eq!(have, StagedFiles::default());
         }
