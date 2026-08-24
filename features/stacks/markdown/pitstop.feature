@@ -24,6 +24,23 @@ Feature: pitstop Markdown
       # Hello
       """
 
+  Scenario: file with spaces in the name
+    Given a file "my file.md" with content
+      """
+      #     Hello
+      """
+    When executing "tricorder pitstop --show=all"
+    Then it prints the lines
+      """
+      fix Markdown (rumdl)
+      my file.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And the exit code is 0
+    And file "my file.md" now has content
+      """
+      # Hello
+      """
+
   Scenario: unformatted Markdown with lint errors
     Given a file "main.md" with content
       """
