@@ -3,6 +3,8 @@
 use std::path::Path;
 use std::process::Command;
 
+use itertools::Itertools;
+
 /// runs `git status` and returns its stdout
 pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
     let mut command = Command::new("git");
@@ -21,7 +23,13 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
     }
     let Ok(output) = str::from_utf8(&output.stdout) else {
         // we don't support non-UTF-8 filenames for now
-        eprintln!("ERROR: \"git status\" returned non-UTF-8 output");
+        eprintln!(
+            "ERROR: \"git {}\" returned non-UTF-8 output",
+            command
+                .get_args()
+                .map(|arg| arg.to_string_lossy())
+                .join(" ")
+        );
         return None;
     };
     Some(output.into())
