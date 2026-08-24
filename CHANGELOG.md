@@ -6,6 +6,7 @@
 - A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
 - The configuration file is now in JSON/JSONC and has an improved structure.
 - new `rust` stack, but you need to define the commands for linting and fixing yourself
+- The new `--show=verbose` option displays the exact commands ran
 
 ## 0.0.17 (2026-08-15)
 
