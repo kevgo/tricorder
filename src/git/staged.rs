@@ -21,6 +21,17 @@ pub struct StagedFiles {
     pub full: Vec<File>,
 }
 
+impl From<&GitStatusOutput> for StagedFiles {
+    /// parses the output of "git status --porcelain=v1 -z"
+    fn from(output: &GitStatusOutput) -> StagedFiles {
+        let mut result = StagedFiles::default();
+        for line in output.records() {
+            result.add_line(line);
+        }
+        result
+    }
+}
+
 impl StagedFiles {
     /// parses a line from the output of "git status --porcelain=v1 -z" and adds it to this instance
     fn add_line(&mut self, line: &str) {
@@ -42,17 +53,6 @@ impl StagedFiles {
         let mut result = Vec::with_capacity(self.partial.len() + self.full.len());
         result.extend(self.partial.iter());
         result.extend(self.full.iter());
-        result
-    }
-}
-
-impl From<&GitStatusOutput> for StagedFiles {
-    /// parses the output of "git status --porcelain=v1 -z"
-    fn from(output: &GitStatusOutput) -> StagedFiles {
-        let mut result = StagedFiles::default();
-        for line in output.records() {
-            result.add_line(line);
-        }
         result
     }
 }
