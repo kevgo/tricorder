@@ -20,7 +20,7 @@ pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
 fn create_config(path: &str, force: bool) -> Result<()> {
     if !any_file_exists(&[path]).is_empty() && !force {
         return Err(UserError::ConfigAlreadyExists {
-            filename: config::FILENAME.to_string(),
+            filename: path.to_string(),
         });
     }
     create_file(path, &default_json(), FileMode::NotExecutable)
@@ -44,17 +44,17 @@ mod tests {
 
     #[test]
     fn fails_if_file_already_exists() {
-        let dir = TempDir::new().unwrap();
-        let path = dir.path().join(config::FILENAME);
-        fs::write(&path, "existing").unwrap();
-        let have = create_config(&path.to_string_lossy(), false).unwrap_err();
-        pretty::assert_eq!(
-            have,
-            UserError::ConfigAlreadyExists {
-                filename: config::FILENAME.to_string(),
-            }
-        );
-        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), "existing");
+        for filename in config::CONFIG_FILENAMES {
+            let dir = TempDir::new().unwrap();
+            let path = dir.path().join(filename);
+            fs::write(&path, "existing").unwrap();
+            let have = create_config(&path.to_string_lossy(), false).unwrap_err();
+            let want = UserError::ConfigAlreadyExists {
+                filename: path.to_string_lossy().to_string(),
+            };
+            pretty::assert_eq!(have, want);
+            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), "existing");
+        }
     }
 
     #[test]
