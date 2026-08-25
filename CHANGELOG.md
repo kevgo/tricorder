@@ -1,13 +1,18 @@
 # Tricorder changelog
 
-## Unreleased
+## 0.1.0
 
-- `tricorder init:config` writes a `tricorder.json` with default settings
-- breaking: the config file is now JSON (`tricorder.json` / `tricorder.jsonc`); `tricorder.toml` is no longer read
+- The new "postedit" command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
+- The configuration file is now in JSON/JSONC and has an improved structure.
+- A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
+- new `rust` stack, but you need to define the commands for linting and fixing yourself
 - breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 - breaking: the `keep-sorted` config key now lives under `applications`
 - breaking: unknown keys in the config file are now an error
+- breaking: renamed init commands to `init:claude` and `init:githook`
 - breaking: the `ignore` config key is renamed to `ignore-files`
+- `tricorder init:config` writes a `tricorder.json` with default settings
+- app: actionlint
 
 ## 0.0.17 (2026-08-15)
 
