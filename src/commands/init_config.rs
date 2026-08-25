@@ -5,7 +5,7 @@ use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::path::Path;
 use std::process::ExitCode;
 
-/// writes `tricorder.json` with the default configuration
+/// writes the default configuration into the existing config file, or `tricorder.json` if none exists
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
     let existing = any_file_exists(&config::CONFIG_FILENAMES);
     if !existing.is_empty() && !args.force {
@@ -13,7 +13,8 @@ pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
             filename: existing[0].to_string(),
         });
     }
-    write_default_config(Path::new(config::FILENAME), args.force)?;
+    let filename = existing.first().unwrap_or(&config::FILENAME);
+    write_default_config(Path::new(filename), args.force)?;
     Ok(ExitCode::SUCCESS)
 }
 
