@@ -3,29 +3,39 @@ use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::Result;
+use crate::domain::{DetectedStacks, IsGitRepo, Result};
 use crate::{git, stacks};
 use std::path::Path;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
-    // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
+    let is_git_repo = git::is_repo(Path::new("./"));
+    let stacks = match git::branch_changed(None) {
+        Some(files) => stacks::from_files(&files, &ignores),
+        None => stacks::discover_all(&ignores),
+    };
+    run_fix_then_lint(args, &config, &stacks, is_git_repo)
+}
+
+/// runs global fixes, then stack-specific fixes, then lints on the given stacks
+pub(crate) fn run_fix_then_lint(
+    args: &RunArgs,
+    config: &Config,
+    stacks: &DetectedStacks,
+    is_git_repo: IsGitRepo,
+) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let is_git_repo = git::is_repo(Path::new("./"));
 
-    // step 2: discover the stacks
-    let all_stacks = stacks::discover_all(&ignores);
     if show.display_metadata() {
-        print_metadata(&all_stacks);
+        print_metadata(stacks);
     }
 
-    // step 3: discover all runnables
-    let fix_runnables = fix::determine_fixes(&config, &all_stacks)?;
-    let lints = lint::determine_lints(&config, &all_stacks, is_git_repo)?;
+    let fix_runnables = fix::determine_fixes(config, stacks)?;
+    let lints = lint::determine_lints(config, stacks, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
@@ -35,7 +45,6 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         stack_specific: stack_specific_fixes,
     } = fix_runnables;
 
-    // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global_fixes],
         error_on_output,
@@ -46,7 +55,6 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
@@ -57,7 +65,6 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    // step 6: run the lints
     let exit_code = conc::run(conc::RunArgs {
         runnables: lints,
         error_on_output,

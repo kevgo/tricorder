@@ -1,12 +1,24 @@
+use super::pitstop::run_fix_then_lint;
 use crate::cli::input::RunArgs;
-use crate::commands::pitstop;
+use crate::config::Config;
 use crate::domain::{Result, UserError};
+use crate::{git, stacks};
+use std::path::Path;
 use std::process::{Command, ExitCode};
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let before_diff = git_diff()?;
 
-    let exit_code = pitstop(&args.with_default_show(conc::Show::Names))?;
+    let config = Config::load()?;
+    let ignores = config.ignores()?;
+    let is_git_repo = git::is_repo(Path::new("./"));
+    let stacks = stacks::discover_all(&ignores);
+    let exit_code = run_fix_then_lint(
+        &args.with_default_show(conc::Show::Names),
+        &config,
+        &stacks,
+        is_git_repo,
+    )?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
