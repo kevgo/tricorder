@@ -195,7 +195,6 @@ mod tests {
                 }),
                 stacks: None,
             };
-
             pretty::assert_eq!(have, want);
         }
     }
