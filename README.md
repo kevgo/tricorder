@@ -1,14 +1,11 @@
 # Tricorder
 
-Tricorder runs all linters and formatters that apply to your codebase.
-It downloads third-party tools as needed and runs them concurrently to finish
-as quickly as possible.
-
-Tricorder integrates throughout your development workflow.
-In addition to general-purpose commands for linting and formatting,
-it provides specialized commands for running inside AI coding agents, on CI,
-and inside Git pre-commit hooks.
-It also provides first-grade support for interactive development.
+Tricorder maximizes the utility of automated code smell checks
+for software development.
+It downloads and runs all applicable linters and formatters.
+It provides specific support
+for all phases of the software development lifecycle.
+It aggressively optimizes for getting results as quickly as possible.
 
 ## Demo
 
@@ -27,9 +24,10 @@ lint Cucumber (gherkin-lint)
 ```
 
 Tricorder first discovers the files in the codebase and classifies them by type.
-It then determines which linters apply and runs them concurrently.
+Then it determines which linters apply and runs them all at the same time.
+That's why it is so fast.
 
-In this example, it runs:
+In this example, Tricorder runs:
 
 - [Taplo](https://github.com/tamasfe/taplo) for TOML files
 - [rumdl](https://github.com/rvben/rumdl) for Markdown files
@@ -65,6 +63,15 @@ With Tricorder, you no longer have to:
 - learn how to install, configure, and invoke dozens of separate tools
 - keep those tools up to date across all your codebases
 - waste time waiting until primitive dev scripts have run all tools in sequence
+
+In addition to general-purpose commands for linting
+and formatting interactively,
+Tricorder provides special commands that integrate linting
+and formatting deeply into your development workflow:
+
+- inside AI coding agents
+- inside your CI pipeline
+- inside a Git pre-commit hook
 
 ## Q & A
 
