@@ -183,21 +183,20 @@ mod tests {
         #[test]
         fn parses_as_default_settings() {
             let have = Config::parse(&default_json(), "tricorder.json").unwrap();
-            pretty::assert_eq!(
-                have,
-                Config {
-                    custom_fixes: Some(vec![]),
-                    custom_lints: Some(vec![]),
-                    ignore: Some(vec![]),
-                    applications: Some(Applications {
-                        keep_sorted: Some(KeepSorted {
-                            enabled: false,
-                            ignore: None,
-                        }),
+            let want = Config {
+                custom_fixes: Some(vec![]),
+                custom_lints: Some(vec![]),
+                ignore: Some(vec![]),
+                applications: Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: false,
+                        ignore: None,
                     }),
-                    stacks: None,
-                }
-            );
+                }),
+                stacks: None,
+            };
+
+            pretty::assert_eq!(have, want);
         }
     }
 
