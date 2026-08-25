@@ -11,7 +11,7 @@ Feature: ignore a CSS file
     And a file "tricorder.json" with content
       """
       {
-        "ignore": ["bad.css"]
+        "ignore-files": ["bad.css"]
       }
       """
 

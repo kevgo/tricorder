@@ -24,7 +24,7 @@ pub fn default_json() -> String {
   "$schema": "{SCHEMA_URL}",
   "global-fixes": [],
   "global-lints": [],
-  "ignore": [],
+  "ignore-files": [],
   "applications": {{
     "keep-sorted": {{
       "enabled": false
@@ -52,7 +52,9 @@ pub struct Config {
     #[schemars(rename = "global-lints")]
     pub global_lints: Option<Vec<GlobalLint>>,
 
-    pub ignore: Option<Vec<String>>,
+    #[serde(alias = "ignore-files")]
+    #[schemars(rename = "ignore-files")]
+    pub ignore_files: Option<Vec<String>>,
 
     pub applications: Option<Applications>,
 
@@ -91,7 +93,10 @@ impl Config {
 
     /// provides the matcher for the files that should not be linted
     pub fn ignores(&self) -> Result<Ignores> {
-        Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+        Ignores::new(
+            self.ignore_files.as_deref().unwrap_or_default(),
+            Path::new("./"),
+        )
     }
 
     /// provides the configuration for the given stack type
@@ -166,13 +171,18 @@ pub struct Applications {
 #[serde(deny_unknown_fields)]
 pub struct KeepSorted {
     pub enabled: bool,
-    pub ignore: Option<Vec<String>>,
+    #[serde(alias = "ignore-files")]
+    #[schemars(rename = "ignore-files")]
+    pub ignore_files: Option<Vec<String>>,
 }
 
 impl KeepSorted {
     /// provides the matcher for the files that keep-sorted should not sort
     pub fn ignores(&self) -> Result<Ignores> {
-        Ignores::new(self.ignore.as_deref().unwrap_or_default(), Path::new("./"))
+        Ignores::new(
+            self.ignore_files.as_deref().unwrap_or_default(),
+            Path::new("./"),
+        )
     }
 }
 
@@ -199,11 +209,11 @@ mod tests {
                 schema: Some(SCHEMA_URL.to_string()),
                 global_fixes: Some(vec![]),
                 global_lints: Some(vec![]),
-                ignore: Some(vec![]),
+                ignore_files: Some(vec![]),
                 applications: Some(Applications {
                     keep_sorted: Some(KeepSorted {
                         enabled: false,
-                        ignore: None,
+                        ignore_files: None,
                     }),
                 }),
                 stacks: None,
@@ -264,7 +274,7 @@ mod tests {
                         command: S("lints/two.sh"),
                     },
                 ]),
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: None,
             };
@@ -279,7 +289,7 @@ mod tests {
                 schema: None,
                 global_lints: Some(vec![]),
                 global_fixes: Some(vec![]),
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: None,
             };
@@ -293,7 +303,7 @@ mod tests {
                 schema: None,
                 global_lints: None,
                 global_fixes: None,
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: None,
             };
@@ -302,13 +312,13 @@ mod tests {
 
         #[test]
         fn ignore() {
-            let give = r#"{ "ignore": ["a.css", "b/"] }"#;
+            let give = r#"{ "ignore-files": ["a.css", "b/"] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: None,
                 global_lints: None,
                 global_fixes: None,
-                ignore: Some(vec![S("a.css"), S("b/")]),
+                ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
             };
@@ -320,7 +330,7 @@ mod tests {
             let give = r#"
 {
   // files Tricorder should skip
-  "ignore": ["a.css", "b/"]
+  "ignore-files": ["a.css", "b/"]
 }
 "#;
             let have = Config::parse(give, "test.json").unwrap();
@@ -328,7 +338,7 @@ mod tests {
                 schema: None,
                 global_lints: None,
                 global_fixes: None,
-                ignore: Some(vec![S("a.css"), S("b/")]),
+                ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
             };
@@ -339,7 +349,7 @@ mod tests {
         fn trailing_comma() {
             let give = r#"
 {
-  "ignore": ["a.css", "b/"],
+  "ignore-files": ["a.css", "b/"],
 }
 "#;
             let have = Config::parse(give, "test.json").unwrap();
@@ -347,7 +357,7 @@ mod tests {
                 schema: None,
                 global_lints: None,
                 global_fixes: None,
-                ignore: Some(vec![S("a.css"), S("b/")]),
+                ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
             };
@@ -379,7 +389,7 @@ mod tests {
                 schema: None,
                 global_fixes: None,
                 global_lints: None,
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: Some(stack_map(
                     StackType::Python,
@@ -413,7 +423,7 @@ mod tests {
                 schema: None,
                 global_fixes: None,
                 global_lints: None,
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: Some(stack_map(
                     StackType::Rust,
@@ -447,7 +457,7 @@ mod tests {
                 schema: None,
                 global_fixes: None,
                 global_lints: None,
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: Some(stack_map(
                     StackType::Python,
@@ -488,7 +498,7 @@ mod tests {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),
-                ignore: None,
+                ignore_files: None,
                 applications: None,
                 stacks: None,
             };
@@ -497,13 +507,13 @@ mod tests {
 
         #[test]
         fn schema_key_is_allowed() {
-            let give = r#"{ "$schema": "./docs/schema.json", "ignore": ["a.css"] }"#;
+            let give = r#"{ "$schema": "./docs/schema.json", "ignore-files": ["a.css"] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: Some(S("./docs/schema.json")),
                 global_lints: None,
                 global_fixes: None,
-                ignore: Some(vec![S("a.css")]),
+                ignore_files: Some(vec![S("a.css")]),
                 applications: None,
                 stacks: None,
             };
@@ -545,7 +555,7 @@ mod tests {
                 Some(Applications {
                     keep_sorted: Some(KeepSorted {
                         enabled: true,
-                        ignore: None
+                        ignore_files: None
                     })
                 })
             );
@@ -560,7 +570,7 @@ mod tests {
                 Some(Applications {
                     keep_sorted: Some(KeepSorted {
                         enabled: false,
-                        ignore: None
+                        ignore_files: None
                     })
                 })
             );
@@ -568,14 +578,14 @@ mod tests {
 
         #[test]
         fn ignore() {
-            let give = r#"{ "applications": { "keep-sorted": { "enabled": true, "ignore": ["README.md"] } } }"#;
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": true, "ignore-files": ["README.md"] } } }"#;
             let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
                 have.applications,
                 Some(Applications {
                     keep_sorted: Some(KeepSorted {
                         enabled: true,
-                        ignore: Some(vec![S("README.md")]),
+                        ignore_files: Some(vec![S("README.md")]),
                     })
                 })
             );

@@ -127,7 +127,7 @@ If both exist, **tricorder.json** takes precedence.
 {
   // make these files invisible to Tricorder
   // using gitignore syntax
-  "ignore": ["two.css", "vendor/", "**/*.min.css"],
+  "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
 
   // define a custom lint (always runs)
   // TODO: rename this to "global-lints" ?
@@ -172,7 +172,7 @@ If both exist, **tricorder.json** takes precedence.
   "applications": {
     "keep-sorted": {
       "enabled": true,
-      "ignore": ["README.md"] // ignored only by keep-sorted
+      "ignore-files": ["README.md"] // ignored only by keep-sorted
     }
   }
 }
