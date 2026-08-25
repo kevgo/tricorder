@@ -2,7 +2,6 @@ use crate::cli::input::InitArgs;
 use crate::config::{self, default_json};
 use crate::domain::{Result, UserError};
 use crate::filesystem::{FileMode, any_file_exists, create_file};
-use std::path::Path;
 use std::process::ExitCode;
 
 /// writes the default configuration into the existing config file, or `tricorder.json` if none exists
@@ -14,21 +13,17 @@ pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
         });
     }
     let filename = existing.first().unwrap_or(&config::FILENAME);
-    create_config(Path::new(filename), args.force)?;
+    create_config(filename, args.force)?;
     Ok(ExitCode::SUCCESS)
 }
 
-fn create_config(path: &Path, force: bool) -> Result<()> {
-    if path.exists() && !force {
+fn create_config(path: &str, force: bool) -> Result<()> {
+    if !any_file_exists(&[path]).is_empty() && !force {
         return Err(UserError::ConfigAlreadyExists {
             filename: config::FILENAME.to_string(),
         });
     }
-    create_file(
-        &path.display().to_string(),
-        &default_json(),
-        FileMode::NotExecutable,
-    )
+    create_file(path, &default_json(), FileMode::NotExecutable)
 }
 
 #[cfg(test)]
@@ -43,7 +38,7 @@ mod tests {
     fn creates_config_file() {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
-        create_config(&path, false).unwrap();
+        create_config(&path.to_string_lossy(), false).unwrap();
         pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
     }
 
@@ -52,7 +47,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         fs::write(&path, "existing").unwrap();
-        let have = create_config(&path, false).unwrap_err();
+        let have = create_config(&path.to_string_lossy(), false).unwrap_err();
         pretty::assert_eq!(
             have,
             UserError::ConfigAlreadyExists {
@@ -67,7 +62,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         fs::write(&path, "existing").unwrap();
-        create_config(&path, true).unwrap();
+        create_config(&path.to_string_lossy(), true).unwrap();
         pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
     }
 }
