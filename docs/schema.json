@@ -3,6 +3,10 @@
   "title": "Tricorder configuration",
   "type": "object",
   "properties": {
+    "$schema": {
+      "description": "JSON Schema URL for editor support",
+      "type": ["string", "null"]
+    },
     "global-fixes": {
       "type": ["array", "null"],
       "items": {
@@ -80,6 +84,7 @@
       "additionalProperties": false
     }
   },
+  "additionalProperties": false,
   "$defs": {
     "GlobalFix": {
       "type": "object",
@@ -91,6 +96,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["command"]
     },
     "GlobalLint": {
@@ -103,6 +109,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["command"]
     },
     "Applications": {
@@ -118,7 +125,8 @@
             }
           ]
         }
-      }
+      },
+      "additionalProperties": false
     },
     "KeepSorted": {
       "type": "object",
@@ -133,6 +141,7 @@
           }
         }
       },
+      "additionalProperties": false,
       "required": ["enabled"]
     },
     "StackConfig": {
@@ -162,7 +171,8 @@
             "$ref": "#/$defs/StackCommand"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "StackCommand": {
       "type": "object",
@@ -174,6 +184,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["name", "command"]
     }
   }
