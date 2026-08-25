@@ -98,7 +98,7 @@ pub fn determine_precommit_fixes(
     }
 
     // custom fixes
-    if let Some(custom_fixes) = &config.custom_fixes {
+    if let Some(custom_fixes) = &config.global_fixes {
         add_custom_fixes(custom_fixes, &mut global);
     }
 

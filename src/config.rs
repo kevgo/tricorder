@@ -11,13 +11,13 @@ const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", "tricorder.jsonc"];
 #[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[schemars(title = "Tricorder configuration")]
 pub struct Config {
-    #[serde(alias = "custom-fixes")]
-    #[schemars(rename = "custom-fixes")]
-    pub custom_fixes: Option<Vec<CustomFix>>,
+    #[serde(alias = "global-fixes")]
+    #[schemars(rename = "global-fixes")]
+    pub global_fixes: Option<Vec<GlobalFix>>,
 
-    #[serde(alias = "custom-lints")]
-    #[schemars(rename = "custom-lints")]
-    pub custom_lints: Option<Vec<CustomLint>>,
+    #[serde(alias = "global-lints")]
+    #[schemars(rename = "global-lints")]
+    pub global_lints: Option<Vec<GlobalLint>>,
 
     pub ignore: Option<Vec<String>>,
 
@@ -75,13 +75,13 @@ impl Config {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-pub struct CustomFix {
+pub struct GlobalFix {
     pub name: Option<String>,
     pub command: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-pub struct CustomLint {
+pub struct GlobalLint {
     pub name: Option<String>,
     pub command: String,
 }
@@ -141,7 +141,7 @@ impl KeepSorted {
 mod tests {
 
     mod parse {
-        use crate::config::{Config, CustomFix, CustomLint, StackCommand, StackConfig};
+        use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
         use crate::domain::StackType;
         use ahash::AHashMap;
         use big_s::S;
@@ -159,11 +159,11 @@ mod tests {
         fn defined() {
             let give = r#"
 {
-  "custom-lints": [
+  "global-lints": [
     { "command": "lints/one.sh" },
     { "name": "custom lint 2", "command": "lints/two.sh" }
   ],
-  "custom-fixes": [
+  "global-fixes": [
     { "command": "fixes/organize.py" },
     { "name": "sort alphabetically", "command": "fixes/sort.py" }
   ]
@@ -171,22 +171,22 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_fixes: Some(vec![
-                    CustomFix {
+                global_fixes: Some(vec![
+                    GlobalFix {
                         name: None,
                         command: S("fixes/organize.py"),
                     },
-                    CustomFix {
+                    GlobalFix {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                     },
                 ]),
-                custom_lints: Some(vec![
-                    CustomLint {
+                global_lints: Some(vec![
+                    GlobalLint {
                         name: None,
                         command: S("lints/one.sh"),
                     },
-                    CustomLint {
+                    GlobalLint {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
                     },
@@ -200,11 +200,11 @@ mod tests {
 
         #[test]
         fn empty() {
-            let give = r#"{ "custom-lints": [], "custom-fixes": [] }"#;
+            let give = r#"{ "global-lints": [], "global-fixes": [] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_lints: Some(vec![]),
-                custom_fixes: Some(vec![]),
+                global_lints: Some(vec![]),
+                global_fixes: Some(vec![]),
                 ignore: None,
                 applications: None,
                 stacks: None,
@@ -216,8 +216,8 @@ mod tests {
         fn none() {
             let have = Config::parse("", "test.json").unwrap();
             let want = Config {
-                custom_lints: None,
-                custom_fixes: None,
+                global_lints: None,
+                global_fixes: None,
                 ignore: None,
                 applications: None,
                 stacks: None,
@@ -230,8 +230,8 @@ mod tests {
             let give = r#"{ "ignore": ["a.css", "b/"] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_lints: None,
-                custom_fixes: None,
+                global_lints: None,
+                global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
@@ -249,8 +249,8 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_lints: None,
-                custom_fixes: None,
+                global_lints: None,
+                global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
@@ -267,8 +267,8 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_lints: None,
-                custom_fixes: None,
+                global_lints: None,
+                global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
@@ -298,8 +298,8 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_fixes: None,
-                custom_lints: None,
+                global_fixes: None,
+                global_lints: None,
                 ignore: None,
                 applications: None,
                 stacks: Some(stack_map(
@@ -331,8 +331,8 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_fixes: None,
-                custom_lints: None,
+                global_fixes: None,
+                global_lints: None,
                 ignore: None,
                 applications: None,
                 stacks: Some(stack_map(
@@ -364,8 +364,8 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_fixes: None,
-                custom_lints: None,
+                global_fixes: None,
+                global_lints: None,
                 ignore: None,
                 applications: None,
                 stacks: Some(stack_map(
@@ -398,11 +398,11 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
-                custom_lints: Some(vec![CustomLint {
+                global_lints: Some(vec![GlobalLint {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
                 }]),
-                custom_fixes: Some(vec![CustomFix {
+                global_fixes: Some(vec![GlobalFix {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),

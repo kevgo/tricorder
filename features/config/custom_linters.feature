@@ -11,7 +11,7 @@ Feature: custom lints
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "command": "lints/one.sh" },
           {
             "name": "list all files",
@@ -42,7 +42,7 @@ Feature: custom lints
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "command": "lints/fail.sh" }
         ]
       }
