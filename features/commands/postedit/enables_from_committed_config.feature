@@ -11,7 +11,7 @@ Feature: "tricorder postedit" enables linters whose config is already committed
     And a committed file "tikibase.json" with content
       """
       {
-        "ignore": [
+        "ignore-files": [
           "run-that-app"
         ],
         "bidiLinks": true

@@ -108,8 +108,8 @@ pub fn determine_precommit_fixes(
     {
         let sort_result = keep_sorted::fix_commands(keep_sorted::FixCommandsArgs {
             detected_stacks: staged_stacks,
-            global_ignores: config.ignore.as_ref(),
-            keep_sorted_ignores: keep_sorted_config.ignore.as_ref(),
+            global_ignores: config.ignore_files.as_ref(),
+            keep_sorted_ignores: keep_sorted_config.ignore_files.as_ref(),
         })?;
         for (stack_type, executable) in sort_result {
             stacks_executables

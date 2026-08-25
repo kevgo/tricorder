@@ -12,7 +12,7 @@ Feature: fix Markdown with Tikibase
     And a file "tikibase.json" with content
       """
       {
-        "ignore": [
+        "ignore-files": [
           "run-that-app"
         ],
         "bidiLinks": true
