@@ -22,8 +22,8 @@ pub fn default_json() -> String {
     format!(
         r#"{{
   "$schema": "{SCHEMA_URL}",
-  "custom-fixes": [],
-  "custom-lints": [],
+  "global-fixes": [],
+  "global-lints": [],
   "ignore": [],
   "applications": {{
     "keep-sorted": {{
@@ -196,8 +196,9 @@ mod tests {
         fn parses_as_default_settings() {
             let have = Config::parse(&default_json(), "tricorder.json").unwrap();
             let want = Config {
-                custom_fixes: Some(vec![]),
-                custom_lints: Some(vec![]),
+                schema: Some(SCHEMA_URL.to_string()),
+                global_fixes: Some(vec![]),
+                global_lints: Some(vec![]),
                 ignore: Some(vec![]),
                 applications: Some(Applications {
                     keep_sorted: Some(KeepSorted {

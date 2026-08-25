@@ -12,8 +12,8 @@ Feature: "tricorder init:config" writes the default config file
       """
       {
         "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
-        "custom-fixes": [],
-        "custom-lints": [],
+        "global-fixes": [],
+        "global-lints": [],
         "ignore": [],
         "applications": {
           "keep-sorted": {
@@ -58,8 +58,8 @@ Feature: "tricorder init:config" writes the default config file
       """
       {
         "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
-        "custom-fixes": [],
-        "custom-lints": [],
+        "global-fixes": [],
+        "global-lints": [],
         "ignore": [],
         "applications": {
           "keep-sorted": {
