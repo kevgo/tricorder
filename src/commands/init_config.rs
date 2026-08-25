@@ -14,11 +14,11 @@ pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
         });
     }
     let filename = existing.first().unwrap_or(&config::FILENAME);
-    write_default_config(Path::new(filename), args.force)?;
+    write_config(Path::new(filename), args.force)?;
     Ok(ExitCode::SUCCESS)
 }
 
-fn write_default_config(path: &Path, force: bool) -> Result<()> {
+fn write_config(path: &Path, force: bool) -> Result<()> {
     if path.exists() && !force {
         return Err(UserError::ConfigAlreadyExists {
             filename: config::FILENAME.to_string(),
@@ -33,7 +33,7 @@ fn write_default_config(path: &Path, force: bool) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::write_default_config;
+    use super::write_config;
     use crate::config::{self, default_json};
     use crate::domain::UserError;
     use std::fs;
@@ -43,7 +43,7 @@ mod tests {
     fn creates_config_file() {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
-        write_default_config(&path, false).unwrap();
+        write_config(&path, false).unwrap();
         pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
     }
 
@@ -52,7 +52,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         fs::write(&path, "existing").unwrap();
-        let have = write_default_config(&path, false).unwrap_err();
+        let have = write_config(&path, false).unwrap_err();
         pretty::assert_eq!(
             have,
             UserError::ConfigAlreadyExists {
@@ -67,7 +67,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         fs::write(&path, "existing").unwrap();
-        write_default_config(&path, true).unwrap();
+        write_config(&path, true).unwrap();
         pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
     }
 }
