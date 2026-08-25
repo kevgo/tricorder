@@ -59,10 +59,12 @@ mod tests {
 
     #[test]
     fn force_overwrites_existing_file() {
-        let dir = TempDir::new().unwrap();
-        let path = dir.path().join(config::FILENAME);
-        fs::write(&path, "existing").unwrap();
-        create_config(&path.to_string_lossy(), true).unwrap();
-        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+        for filename in config::CONFIG_FILENAMES {
+            let dir = TempDir::new().unwrap();
+            let path = dir.path().join(filename);
+            fs::write(&path, "existing").unwrap();
+            create_config(&path.to_string_lossy(), true).unwrap();
+            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+        }
     }
 }
