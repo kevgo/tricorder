@@ -10,7 +10,7 @@ It aggressively optimizes for getting results as quickly as possible.
 ## Demo
 
 Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
-500 ms and prints output like this:
+500 ms and prints:
 
 ```sh
 98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
@@ -24,10 +24,10 @@ lint Cucumber (gherkin-lint)
 ```
 
 Tricorder first discovers the files in the codebase and classifies them by type.
-Then it determines which linters apply and runs them all at the same time.
-That's why it is so fast.
+Then it determines suitable linters and runs them all concurrently,
+printing results as individual linters finish.
 
-In this example, Tricorder runs:
+In this example, Tricorder runs five linters:
 
 - [Taplo](https://github.com/tamasfe/taplo) for TOML files
 - [rumdl](https://github.com/rvben/rumdl) for Markdown files
@@ -38,7 +38,9 @@ In this example, Tricorder runs:
 - `git diff --check` to detect unresolved merge conflict markers
 
 Tricorder downloads and runs third-party tools automatically.
-The first time you run `tricorder lint`, you might see:
+The first time you run `tricorder lint`,
+you might see it talking to API of hosting platforms
+and downloading binaries from them:
 
 ```sh
 Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
@@ -46,23 +48,7 @@ added rumdl@0.2.55 to run-that-app
 downloading rumdl 0.2.55 ... extracting ... ok
 ```
 
-To install `rumdl`, Tricorder looks up its latest release and records
-that version in the `run-that-app` file.
-From then on, this repository consistently uses that version.
-Tricorder then downloads the release matching your operating system
-and CPU architecture, extracts the executable, and caches it locally.
-If a tool doesn't provide a compatible binary release,
-Tricorder can compile it from source.
-
-With Tricorder, you no longer have to:
-
-- figure out which file types exist in each codebase
-- research appropriate linters and formatters for every file type
-- bikeshed tooling choices across developers and teams
-- remember to add linters and formatters when new file types appear
-- learn how to install, configure, and invoke dozens of separate tools
-- keep those tools up to date across all your codebases
-- waste time waiting until primitive dev scripts have run all tools in sequence
+Tricorder can also compile tools from source.
 
 In addition to general-purpose commands for linting
 and formatting interactively,
@@ -72,6 +58,16 @@ and formatting deeply into your development workflow:
 - inside AI coding agents
 - inside your CI pipeline
 - inside a Git pre-commit hook
+
+With Tricorder, you no longer have to:
+
+- keep track which file types exist in each codebase
+- research appropriate linters and formatters for every file type
+- bikeshed tooling choices across developers and teams
+- remember to add linters and formatters when adding new file types
+- learn how to install, configure, and invoke dozens of separate tools
+- keep those tools up to date across all your codebases
+- waste time waiting until primitive dev scripts have run many tools in sequence
 
 ## Q & A
 
