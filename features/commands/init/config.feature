@@ -1,4 +1,3 @@
-@this
 Feature: "tricorder init:config" writes the default config file
 
   Scenario: write tricorder.json into an empty project
