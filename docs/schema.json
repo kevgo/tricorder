@@ -3,16 +3,16 @@
   "title": "Tricorder configuration",
   "type": "object",
   "properties": {
-    "custom-fixes": {
+    "global-fixes": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/CustomFix"
+        "$ref": "#/$defs/GlobalFix"
       }
     },
-    "custom-lints": {
+    "global-lints": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/CustomLint"
+        "$ref": "#/$defs/GlobalLint"
       }
     },
     "ignore": {
@@ -81,7 +81,7 @@
     }
   },
   "$defs": {
-    "CustomFix": {
+    "GlobalFix": {
       "type": "object",
       "properties": {
         "name": {
@@ -93,7 +93,7 @@
       },
       "required": ["command"]
     },
-    "CustomLint": {
+    "GlobalLint": {
       "type": "object",
       "properties": {
         "name": {

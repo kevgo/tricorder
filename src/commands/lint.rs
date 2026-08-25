@@ -1,7 +1,7 @@
 use crate::apps::git_diff_check;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomLint};
+use crate::config::{Config, GlobalLint};
 use crate::domain::{DetectedStacks, IsGitRepo, Result};
 use crate::{git, stacks};
 use std::path::Path;
@@ -75,8 +75,8 @@ pub fn determine_lints(
     }
 
     // determine the runnables for the custom lints
-    if let Some(custom_lints) = &config.custom_lints {
-        for CustomLint { name, command } in custom_lints {
+    if let Some(custom_lints) = &config.global_lints {
+        for GlobalLint { name, command } in custom_lints {
             result.push(conc::Runnable::Single(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),

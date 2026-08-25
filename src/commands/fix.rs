@@ -1,7 +1,7 @@
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, CustomFix};
+use crate::config::{Config, GlobalFix};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -82,7 +82,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     }
 
     // custom fixes
-    if let Some(custom_fixes) = &config.custom_fixes {
+    if let Some(custom_fixes) = &config.global_fixes {
         add_custom_fixes(custom_fixes, &mut global);
     }
 
@@ -136,7 +136,7 @@ impl Runnables {
 }
 
 /// adds the custom fixes defined in the config file to the global fix collection
-pub(crate) fn add_custom_fixes(custom_fixes: &[CustomFix], global: &mut Vec<conc::Executable>) {
+pub(crate) fn add_custom_fixes(custom_fixes: &[GlobalFix], global: &mut Vec<conc::Executable>) {
     for fix in custom_fixes {
         global.push(conc::Executable {
             name: fix.name.clone().unwrap_or_else(|| fix.command.clone()),
@@ -148,7 +148,7 @@ pub(crate) fn add_custom_fixes(custom_fixes: &[CustomFix], global: &mut Vec<conc
 #[cfg(test)]
 mod tests {
     use super::add_custom_fixes;
-    use crate::config::CustomFix;
+    use crate::config::GlobalFix;
     use big_s::S;
 
     fn executable_names(executables: &[conc::Executable]) -> Vec<&str> {
@@ -163,11 +163,11 @@ mod tests {
         let mut global = Vec::new();
         add_custom_fixes(
             &[
-                CustomFix {
+                GlobalFix {
                     name: Some(S("global fix")),
                     command: S("echo global"),
                 },
-                CustomFix {
+                GlobalFix {
                     name: None,
                     command: S("echo unnamed"),
                 },
