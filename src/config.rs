@@ -388,10 +388,10 @@ mod tests {
         fn name_allows_underscore() {
             let give = r#"
 {
-  "custom_lints": [
+  "global_lints": [
     { "name": "custom lint 1", "command": "lints/one.sh" }
   ],
-  "custom_fixes": [
+  "global_fixes": [
     { "name": "custom fix 1", "command": "fixes/one.sh" }
   ]
 }
