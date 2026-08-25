@@ -9,8 +9,14 @@ use std::path::Path;
 const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", "tricorder.jsonc"];
 
 #[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 #[schemars(title = "Tricorder configuration")]
 pub struct Config {
+    /// JSON Schema URL for editor support
+    #[serde(rename = "$schema")]
+    #[schemars(rename = "$schema")]
+    pub schema: Option<String>,
+
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
     pub global_fixes: Option<Vec<GlobalFix>>,
@@ -75,18 +81,21 @@ impl Config {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct GlobalFix {
     pub name: Option<String>,
     pub command: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct GlobalLint {
     pub name: Option<String>,
     pub command: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct StackConfig {
     #[serde(alias = "replace-lints")]
     #[schemars(rename = "replace-lints")]
@@ -103,6 +112,7 @@ pub struct StackConfig {
 }
 
 #[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct StackCommand {
     pub name: String,
     pub command: String,
@@ -118,6 +128,7 @@ impl From<&StackCommand> for conc::Executable {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct Applications {
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
@@ -125,6 +136,7 @@ pub struct Applications {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct KeepSorted {
     pub enabled: bool,
     pub ignore: Option<Vec<String>>,
@@ -142,7 +154,7 @@ mod tests {
 
     mod parse {
         use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
-        use crate::domain::StackType;
+        use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
 
@@ -171,6 +183,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_fixes: Some(vec![
                     GlobalFix {
                         name: None,
@@ -203,6 +216,7 @@ mod tests {
             let give = r#"{ "global-lints": [], "global-fixes": [] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: Some(vec![]),
                 global_fixes: Some(vec![]),
                 ignore: None,
@@ -216,6 +230,7 @@ mod tests {
         fn none() {
             let have = Config::parse("", "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: None,
                 global_fixes: None,
                 ignore: None,
@@ -230,6 +245,7 @@ mod tests {
             let give = r#"{ "ignore": ["a.css", "b/"] }"#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: None,
                 global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
@@ -249,6 +265,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: None,
                 global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
@@ -267,6 +284,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: None,
                 global_fixes: None,
                 ignore: Some(vec![S("a.css"), S("b/")]),
@@ -298,6 +316,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_fixes: None,
                 global_lints: None,
                 ignore: None,
@@ -331,6 +350,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_fixes: None,
                 global_lints: None,
                 ignore: None,
@@ -364,6 +384,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_fixes: None,
                 global_lints: None,
                 ignore: None,
@@ -398,6 +419,7 @@ mod tests {
 "#;
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
+                schema: None,
                 global_lints: Some(vec![GlobalLint {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
@@ -411,6 +433,35 @@ mod tests {
                 stacks: None,
             };
             pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn schema_key_is_allowed() {
+            let give = r#"{ "$schema": "./docs/schema.json", "ignore": ["a.css"] }"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            let want = Config {
+                schema: Some(S("./docs/schema.json")),
+                global_lints: None,
+                global_fixes: None,
+                ignore: Some(vec![S("a.css")]),
+                applications: None,
+                stacks: None,
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unknown_key() {
+            let give = r#"{ "unknown-key": true }"#;
+            let have = Config::parse(give, "test.json").unwrap_err();
+            let UserError::ConfigCannotParse { filename, err } = have else {
+                panic!("expected ConfigCannotParse, got {have:?}");
+            };
+            assert_eq!(filename, "test.json");
+            assert!(
+                err.contains("unknown field `unknown-key`"),
+                "error should mention the unknown field, got: {err}"
+            );
         }
     }
 
