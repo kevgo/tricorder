@@ -1,3 +1,4 @@
+@this
 Feature: "tricorder init:config" writes the default config file
 
   Scenario: write tricorder.json into an empty project
@@ -23,48 +24,38 @@ Feature: "tricorder init:config" writes the default config file
       }
       """
 
-  Scenario: existing tricorder.json is left unchanged
-    Given a file "tricorder.json" with content
+  Scenario Outline: existing config file
+    Given a file "<FILENAME>" with content
       """
       existing
       """
     When executing "tricorder init:config"
     Then it prints
       """
-      config file tricorder.json already exists
+      config file <FILENAME> already exists
       """
     And it prints nothing to STDERR
     And the exit code is 1
-    And file "tricorder.json" is unchanged
+    And file "<FILENAME>" is unchanged
 
-  Scenario: existing tricorder.jsonc is left unchanged
-    Given a file "tricorder.jsonc" with content
-      """
-      existing
-      """
-    When executing "tricorder init:config"
-    Then it prints
-      """
-      config file tricorder.jsonc already exists
-      """
-    And it prints nothing to STDERR
-    And the exit code is 1
-    And file "tricorder.jsonc" is unchanged
-    And file "tricorder.json" does not exist
+    Examples:
+      | FILENAME        |
+      | tricorder.json  |
+      | tricorder.jsonc |
 
   Scenario Outline: force overwrites an existing config file
-    Given a file "tricorder.json" with content
+    Given a file "<FILENAME>" with content
       """
       existing
       """
     When executing "tricorder init:config <FLAG>"
     Then it prints
       """
-      created tricorder.json
+      created <FILENAME>
       """
     And it prints nothing to STDERR
     And the exit code is 0
-    And file "tricorder.json" now has content
+    And file "<FILENAME>" now has content
       """
       {
         "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
@@ -80,6 +71,8 @@ Feature: "tricorder init:config" writes the default config file
       """
 
     Examples:
-      | FLAG    |
-      | --force |
-      | -f      |
+      | FILENAME        | FLAG    |
+      | tricorder.json  | --force |
+      | tricorder.json  | -f      |
+      | tricorder.jsonc | --force |
+      | tricorder.jsonc | -f      |
