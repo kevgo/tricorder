@@ -5,7 +5,7 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
     When executing "tricorder init:githook"
     Then it prints
       """
-      installed .git/hooks/pre-commit
+      created .git/hooks/pre-commit
 
       From now on, Tricorder automatically formats all code that gets committed.
       """
@@ -72,7 +72,7 @@ Feature: "tricorder init:githook" installs the Git pre-commit hook
     When executing "tricorder init:githook --force"
     Then it prints
       """
-      installed .git/hooks/pre-commit
+      created .git/hooks/pre-commit
 
       From now on, Tricorder automatically formats all code that gets committed.
       """

@@ -27,9 +27,7 @@ fn write_default_config(path: &Path, force: bool) -> Result<()> {
         &path.display().to_string(),
         &default_json(),
         FileMode::NotExecutable,
-    )?;
-    println!("created {}", path.display());
-    Ok(())
+    )
 }
 
 #[cfg(test)]
