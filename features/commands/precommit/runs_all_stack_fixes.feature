@@ -11,7 +11,7 @@ Feature: "tricorder precommit" runs all fixes for the changed files
     And a file "tikibase.json" with content
       """
       {
-        "ignore-files": [
+        "ignore": [
           "run-that-app"
         ],
         "bidiLinks": false

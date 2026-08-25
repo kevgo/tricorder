@@ -10,7 +10,7 @@ Feature: lint a Tikibase
     And a file "tikibase.json" with content
       """
       {
-        "ignore-files": [
+        "ignore": [
           "run-that-app"
         ],
         "bidiLinks": true
