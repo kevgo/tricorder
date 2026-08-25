@@ -6,8 +6,9 @@ as quickly as possible.
 
 Tricorder integrates throughout your development workflow.
 In addition to general-purpose commands for linting and formatting,
-it provides specialized commands for interactive development, AI coding agents,
-CI, and Git pre-commit hooks.
+it provides specialized commands for running inside AI coding agents, on CI,
+and inside Git pre-commit hooks.
+It also provides first-grade support for interactive development.
 
 ## Demo
 
