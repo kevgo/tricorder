@@ -3,11 +3,13 @@
 ## 0.1.0
 
 - The new "postedit" command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
-- A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
 - The configuration file is now in JSON/JSONC and has an improved structure.
+- A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
 - new `rust` stack, but you need to define the commands for linting and fixing yourself
-- custom fixes for a stack are now listed under that stack
-- Renamed init commands to `init:claude` and `init:githook`
+- breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
+- breaking: the `keep-sorted` config key now lives under `applications`
+- breaking: unknown keys in the config file are now an error
+- breaking: renamed init commands to `init:claude` and `init:githook`
 - app: actionlint
 
 ## 0.0.17 (2026-08-15)
