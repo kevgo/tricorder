@@ -234,7 +234,8 @@ with no per-developer setup.
 
 ### `tricorder init:config`
 
-This command scaffolds a Tricorder config file with default settings.
+This command creates a scaffold of the Tricorder config file with default
+settings.
 
 ### `tricorder init:githook`
 
