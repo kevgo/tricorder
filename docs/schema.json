@@ -19,7 +19,7 @@
         "$ref": "#/$defs/GlobalLint"
       }
     },
-    "ignore": {
+    "ignore-files": {
       "type": ["array", "null"],
       "items": {
         "type": "string"
@@ -134,7 +134,7 @@
         "enabled": {
           "type": "boolean"
         },
-        "ignore": {
+        "ignore-files": {
           "type": ["array", "null"],
           "items": {
             "type": "string"

@@ -70,7 +70,7 @@ Feature: keep-sorted support
     Given a file "tricorder.json" with content
       """
       {
-        "ignore": ["unsorted_1.toml"],
+        "ignore-files": ["unsorted_1.toml"],
         "applications": {
           "keep-sorted": {
             "enabled": true
@@ -99,7 +99,7 @@ Feature: keep-sorted support
         "applications": {
           "keep-sorted": {
             "enabled": true,
-            "ignore": ["unsorted_1.toml"]
+            "ignore-files": ["unsorted_1.toml"]
           }
         }
       }
