@@ -10,6 +10,7 @@
 - breaking: the `keep-sorted` config key now lives under `applications`
 - breaking: unknown keys in the config file are now an error
 - breaking: renamed init commands to `init:claude` and `init:githook`
+- `tricorder init:config` writes a `tricorder.json` with default settings
 - app: actionlint
 
 ## 0.0.17 (2026-08-15)

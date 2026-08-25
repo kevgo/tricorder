@@ -4,8 +4,8 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude"
     Then it prints
       """
-      installed .claude/settings.json
-      installed .claude/tricorder-hooks/post_write.sh
+      created .claude/settings.json
+      created .claude/tricorder-hooks/post_write.sh
 
       Your Claude-compatible coding agent now runs all linters after every Write/Edit.
       """
@@ -93,8 +93,8 @@ Feature: "tricorder init:claude" installs Claude-compatible agent hooks
     When executing "tricorder init:claude --force"
     Then it prints
       """
-      installed .claude/settings.json
-      installed .claude/tricorder-hooks/post_write.sh
+      created .claude/settings.json
+      created .claude/tricorder-hooks/post_write.sh
 
       Your Claude-compatible coding agent now runs all linters after every Write/Edit.
       """

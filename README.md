@@ -190,6 +190,7 @@ These entries run only when that stack has files in scope.
 ```sh
 tricorder ci            # Check all lints and fixes on CI
 tricorder init:claude   # Embed into claude-compatible coding agents
+tricorder init:config   # Create the config file
 tricorder init:githook  # Install the Git pre-commit hook
 tricorder fix           # Apply safe code quality fixes
 tricorder fix-unsafe    # Apply advanced fixes that might change behavior
@@ -230,6 +231,10 @@ If the Tricorder executable exists in the same location for all developers,
 you can commit the generated configuration files
 and every teammate gets the same agent behavior automatically,
 with no per-developer setup.
+
+### `tricorder init:config`
+
+Creates a scaffold of the Tricorder config file with default settings.
 
 ### `tricorder init:githook`
 
