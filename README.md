@@ -73,26 +73,28 @@ With Tricorder, you no longer have to:
 
 > Does Tricorder lock me into its tooling choices?
 
-No. You can enable or disable individual tools in the Tricorder configuration
-file.
+No. You can override which tools run in the Tricorder config file.
 
-> I want to use a linter or formatter that isn't supported by Tricorder.
+> I want to add a linter or formatter to Tricorder.
 
-Open an issue or send a pull request!
+Send a pull request or open an issue!
 
-> How is it so fast
+> How is it so fast?
 
-Many optimizations make Tricorder incredibly fast:
+Tricorder is aggressively optimized for speed:
 
-- It is written in Rust, which makes discovering your source files quick.
-- It favors modern, fast linters and formatters.
+- Being written in Rust makes discovering your source files quick.
+- It favors modern linters and formatters that execute quickly.
 - It passes each tool the exact files it needs to process,
-  so tools don't scan the codebase again.
-- It processes independent file types concurrently.
+  so tools don't need to scan the codebase again to discover files to process.
+- It runs all linters and formatters concurrently.
+  Tricorder can do that because each tool is given the exact files to process,
+  so they don't step on each other's feet.
 
 ## Installation
 
-The installer places the Tricorder executable in the current directory.
+The installer script downloads the Tricorder executable into the current
+directory.
 To install Tricorder into a particular directory,
 run the installer from that directory.
 
@@ -182,13 +184,6 @@ If both exist, **tricorder.json** takes precedence.
 }
 ```
 
-The `stack.<name>` object configures a specific stack.
-Its `lint` and `fix` attributes replace that stack's built-in tools.
-Configure an empty array (`"lint": []`) to disable them.
-`additional-lints` and `additional-fixes` add the given tools without replacing
-the built-ins.
-These entries run only when that stack has files in scope.
-
 ## Usage
 
 ```sh
@@ -207,38 +202,30 @@ tricorder help          # Print this message or the help of the given subcommand
 
 ### `tricorder ci`
 
-This command makes formatting and linting problems visible in CI pipelines.
+This command makes code smells visible in CI pipelines.
 It runs all formatters and linters and fails if either:
 
 - a linter reports an unresolved issue, or
-- a formatter modifies a file
+- a formatter would modifies a file, i.e. some code was unformatted
 
 ### `tricorder init:claude`
 
-This command wires Tricorder into coding agents
-that use Claude-compatible configuration, such as Claude Code, Codex,
-Code Puppy, or Wibey.
+This command integrates Tricorder into coding agents harnesses
+that follow Claude Code configuration, such as Claude Code, Codex, Code Puppy,
+or Wibey.
 
-Once configured, the agent runs `tricorder lint` after every `Write`, `Edit`,
-or `MultiEdit`.
-When Tricorder finds an issue,
-it prints instructions that help the agent correct the problem itself.
+Once configured, the agent runs `tricorder postedit` after it makes changes.
+This command lints only the uncommitted files,
+i.e. changes that the agent just made.
 
-This keeps AI-generated code clean
-while the agent is still working instead of discovering quality problems only
-after generation is complete.
+This helps the AI-generated generate cleaner code and fix possible bugs faster.
 
 It works particularly well with custom AI-generated linters
 that enforce invariants specific to your domain.
 
-If the Tricorder executable exists in the same location for all developers,
-you can commit the generated configuration files
-and every teammate gets the same agent behavior automatically,
-with no per-developer setup.
-
 ### `tricorder init:config`
 
-Creates a scaffold of the Tricorder config file with default settings.
+Creates a scaffold of the Tricorder config file containing the default settings.
 
 ### `tricorder init:githook`
 
@@ -248,19 +235,14 @@ that runs `tricorder precommit` before every commit.
 
 ### `tricorder fix`
 
-This command applies all safe automatic fixes to the codebase.
-It runs formatters as well as linters
-that can automatically repair code-quality issues.
-Fix tools belonging to the same stack run sequentially to avoid interfering with
-each other.
-Different stacks are processed concurrently.
+This command applies all safe automated fixes to the codebase.
+Fixes for different file types are processed concurrently,
+fixes for the same file type run sequentially.
 
 ### `tricorder fix-unsafe`
 
 This command applies more aggressive automatic fixes
-that might change program behavior.
-Review the resulting changes
-before committing them and/or verify them by running your automated tests.
+that might change program behavior and should be verified.
 
 ### `tricorder lint`
 
