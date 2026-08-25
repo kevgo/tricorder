@@ -11,7 +11,7 @@ Feature: config file format
       """
       {
         // a comment
-        "custom-lints": [
+        "global-lints": [
           {
             "name": "hello",
             "command": "echo hello",
@@ -31,7 +31,7 @@ Feature: config file format
     Given a file "tricorder.jsonc" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from jsonc", "command": "echo from jsonc" }
         ]
       }
@@ -48,7 +48,7 @@ Feature: config file format
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from json", "command": "echo from json" }
         ]
       }
@@ -56,7 +56,7 @@ Feature: config file format
     And a file "tricorder.jsonc" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from jsonc", "command": "echo from jsonc" }
         ]
       }
