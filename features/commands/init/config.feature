@@ -4,9 +4,7 @@ Feature: "tricorder init:config" writes the default config file
     When executing "tricorder init:config"
     Then it prints
       """
-      installed tricorder.json
-
-      Edit tricorder.json to customize linters, formatters, and ignored files.
+      created tricorder.json
       """
     And it prints nothing to STDERR
     And the exit code is 0
@@ -47,9 +45,7 @@ Feature: "tricorder init:config" writes the default config file
     When executing "tricorder init:config <FLAG>"
     Then it prints
       """
-      installed tricorder.json
-
-      Edit tricorder.json to customize linters, formatters, and ignored files.
+      created tricorder.json
       """
     And it prints nothing to STDERR
     And the exit code is 0

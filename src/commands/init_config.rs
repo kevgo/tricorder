@@ -8,8 +8,6 @@ use std::process::ExitCode;
 /// writes `tricorder.json` with the default configuration
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
     write_default_config(Path::new(config::FILENAME), args.force)?;
-    println!();
-    println!("Edit tricorder.json to customize linters, formatters, and ignored files.");
     Ok(ExitCode::SUCCESS)
 }
 
@@ -23,7 +21,9 @@ fn write_default_config(path: &Path, force: bool) -> Result<()> {
         &path.display().to_string(),
         &default_json(),
         FileMode::NotExecutable,
-    )
+    )?;
+    println!("created {}", path.display());
+    Ok(())
 }
 
 #[cfg(test)]

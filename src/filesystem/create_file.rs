@@ -16,6 +16,5 @@ pub fn create_file(path: &str, content: &str, executable: FileMode) -> Result<()
     if executable.is_executable() {
         set_executable(file_path)?;
     }
-    println!("installed {path}");
     Ok(())
 }
