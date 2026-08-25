@@ -248,24 +248,25 @@ that might change program behavior and should be verified.
 
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
-Inside a Git repository,
-Tricorder also runs `git diff HEAD --check` to detect unresolved conflict
-markers in your changes.
 
 ### `tricorder pitstop`
 
-This command is optimized for efficient support during interactive development.
-It first applies all safe automatic fixes and then reports any remaining issues
-that require manual attention.
+This command provides efficient support for interactive development.
+It first applies all safe automatic fixes
+and then reports any remaining code quality issues that require manual
+or AI attention.
 
 ### `tricorder postedit`
 
-This command is meant to run to check changes that were just made
-for code smells, for example inside an agentic loop.
+This command is the equivalent of `tricorder pitstop` for AI agents.
+It checks changes that were just made for code smells,
+for example inside an agentic loop.
 It runs the same linters as `tricorder lint`,
 but only against files that are currently uncommitted: staged, unstaged,
 and untracked.
 Outside a Git repository it lints all files.
+It does not format files because coding agents cache file contents
+and can get tripped up by unexpected file changes.
 
 ### `tricorder precommit`
 
