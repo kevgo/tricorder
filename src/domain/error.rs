@@ -47,6 +47,9 @@ pub enum UserError {
     Cli {
         msg: String,
     },
+    ConfigAlreadyExists {
+        filename: String,
+    },
     ConfigCannotParse {
         filename: String,
         err: String,
@@ -102,6 +105,9 @@ impl UserError {
             }
             // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } => println!("{msg}"),
+            UserError::ConfigAlreadyExists { filename } => {
+                println!("config file {filename} already exists");
+            }
             UserError::ConfigCannotParse { filename, err } => {
                 println!("config file {filename} seems to contain invalid JSON: {err}");
             }
