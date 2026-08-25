@@ -11,7 +11,7 @@ Feature: config file format
       """
       {
         // a comment
-        "custom-lints": [
+        "global-lints": [
           {
             "name": "hello",
             "command": "echo hello",
@@ -31,7 +31,7 @@ Feature: config file format
     Given a file "tricorder.jsonc" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from jsonc", "command": "echo from jsonc" }
         ]
       }
@@ -48,7 +48,7 @@ Feature: config file format
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from json", "command": "echo from json" }
         ]
       }
@@ -56,7 +56,7 @@ Feature: config file format
     And a file "tricorder.jsonc" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "name": "from jsonc", "command": "echo from jsonc" }
         ]
       }
@@ -72,3 +72,17 @@ Feature: config file format
       from jsonc
       """
     And the exit code is 0
+
+  Scenario: unknown keys are rejected
+    Given a file "tricorder.json" with content
+      """
+      {
+        "unknown-key": true
+      }
+      """
+    When executing "tricorder lint"
+    Then it prints the block
+      """
+      config file tricorder.json seems to contain invalid JSON: unknown field `unknown-key`
+      """
+    And the exit code is 1

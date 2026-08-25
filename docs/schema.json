@@ -3,16 +3,20 @@
   "title": "Tricorder configuration",
   "type": "object",
   "properties": {
-    "custom-fixes": {
+    "$schema": {
+      "description": "JSON Schema URL for editor support",
+      "type": ["string", "null"]
+    },
+    "global-fixes": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/CustomFix"
+        "$ref": "#/$defs/GlobalFix"
       }
     },
-    "custom-lints": {
+    "global-lints": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/CustomLint"
+        "$ref": "#/$defs/GlobalLint"
       }
     },
     "ignore": {
@@ -80,8 +84,9 @@
       "additionalProperties": false
     }
   },
+  "additionalProperties": false,
   "$defs": {
-    "CustomFix": {
+    "GlobalFix": {
       "type": "object",
       "properties": {
         "name": {
@@ -91,9 +96,10 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["command"]
     },
-    "CustomLint": {
+    "GlobalLint": {
       "type": "object",
       "properties": {
         "name": {
@@ -103,6 +109,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["command"]
     },
     "Applications": {
@@ -118,7 +125,8 @@
             }
           ]
         }
-      }
+      },
+      "additionalProperties": false
     },
     "KeepSorted": {
       "type": "object",
@@ -133,6 +141,7 @@
           }
         }
       },
+      "additionalProperties": false,
       "required": ["enabled"]
     },
     "StackConfig": {
@@ -162,7 +171,8 @@
             "$ref": "#/$defs/StackCommand"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "StackCommand": {
       "type": "object",
@@ -174,6 +184,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": ["name", "command"]
     }
   }

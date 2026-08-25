@@ -13,7 +13,7 @@ Feature: custom fixes
     Given a file "tricorder.json" with content
       """
       {
-        "custom-fixes": [
+        "global-fixes": [
           {
             "name": "my global fix 1",
             "command": "echo global fix 1 running"
@@ -41,7 +41,7 @@ Feature: custom fixes
     Given a file "tricorder.json" with content
       """
       {
-        "custom-lints": [
+        "global-lints": [
           { "command": "lints/fail.sh" }
         ]
       }
