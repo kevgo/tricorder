@@ -9,7 +9,8 @@ use std::path::Path;
 /// name of the config file written by `tricorder init:config`
 pub const FILENAME: &str = "tricorder.json";
 
-const CONFIG_FILENAMES: [&str; 2] = [FILENAME, "tricorder.jsonc"];
+/// config filenames recognized by Tricorder, in load order
+pub const CONFIG_FILENAMES: [&str; 2] = [FILENAME, "tricorder.jsonc"];
 
 /// VS Code / JSON language-server schema URL for `tricorder.json`
 pub const SCHEMA_URL: &str =

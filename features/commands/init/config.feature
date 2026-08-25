@@ -1,3 +1,4 @@
+@this
 Feature: "tricorder init:config" writes the default config file
 
   Scenario: write tricorder.json into an empty project
@@ -23,7 +24,7 @@ Feature: "tricorder init:config" writes the default config file
       }
       """
 
-  Scenario: existing config file is left unchanged
+  Scenario: existing tricorder.json is left unchanged
     Given a file "tricorder.json" with content
       """
       existing
@@ -36,6 +37,21 @@ Feature: "tricorder init:config" writes the default config file
     And it prints nothing to STDERR
     And the exit code is 1
     And file "tricorder.json" is unchanged
+
+  Scenario: existing tricorder.jsonc is left unchanged
+    Given a file "tricorder.jsonc" with content
+      """
+      existing
+      """
+    When executing "tricorder init:config"
+    Then it prints
+      """
+      config file tricorder.jsonc already exists
+      """
+    And it prints nothing to STDERR
+    And the exit code is 1
+    And file "tricorder.jsonc" is unchanged
+    And file "tricorder.json" does not exist
 
   Scenario Outline: force overwrites an existing config file
     Given a file "tricorder.json" with content

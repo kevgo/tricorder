@@ -1,12 +1,18 @@
 use crate::cli::input::InitArgs;
 use crate::config::{self, default_json};
 use crate::domain::{Result, UserError};
-use crate::filesystem::{FileMode, create_file};
+use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::path::Path;
 use std::process::ExitCode;
 
 /// writes `tricorder.json` with the default configuration
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
+    let existing = any_file_exists(&config::CONFIG_FILENAMES);
+    if !existing.is_empty() && !args.force {
+        return Err(UserError::ConfigAlreadyExists {
+            filename: existing[0].to_string(),
+        });
+    }
     write_default_config(Path::new(config::FILENAME), args.force)?;
     Ok(ExitCode::SUCCESS)
 }
