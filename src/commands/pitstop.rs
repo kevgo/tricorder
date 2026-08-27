@@ -11,9 +11,13 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let is_git_repo = git::is_repo("./");
-    let stacks = match git::branch_changed(None) {
-        Some(files) => stacks::from_files(&files, &ignores),
-        None => stacks::discover_all(&ignores),
+    let stacks = if *is_git_repo {
+        match git::branch_changed(None) {
+            Some(files) => stacks::from_files(&files, &ignores),
+            None => stacks::discover_all(&ignores),
+        }
+    } else {
+        stacks::discover_all(&ignores)
     };
     run_fix_then_lint(args, &config, &stacks, is_git_repo)
 }
