@@ -5,13 +5,12 @@ use crate::commands::{fix, lint};
 use crate::config::Config;
 use crate::domain::{DetectedStacks, IsGitRepo, Result};
 use crate::{git, stacks};
-use std::path::Path;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let is_git_repo = git::is_repo(Path::new("./"));
+    let is_git_repo = git::is_repo("./");
     let stacks = match git::branch_changed(None) {
         Some(files) => stacks::from_files(&files, &ignores),
         None => stacks::discover_all(&ignores),

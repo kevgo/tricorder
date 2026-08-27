@@ -3,7 +3,6 @@ use crate::cli::input::RunArgs;
 use crate::config::Config;
 use crate::domain::{Result, UserError};
 use crate::{git, stacks};
-use std::path::Path;
 use std::process::{Command, ExitCode};
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
@@ -11,7 +10,7 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let is_git_repo = git::is_repo(Path::new("./"));
+    let is_git_repo = git::is_repo("./");
     let stacks = stacks::discover_all(&ignores);
     let exit_code = run_fix_then_lint(
         &args.with_default_show(conc::Show::Names),
