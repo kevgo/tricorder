@@ -33,6 +33,7 @@ pub(crate) fn run_fix_then_lint(
         print_metadata(stacks);
     }
 
+    // step 1: discover the runnables
     let fix_runnables = fix::determine_fixes(config, stacks)?;
     let lints = lint::determine_lints(config, stacks, is_git_repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
@@ -44,6 +45,7 @@ pub(crate) fn run_fix_then_lint(
         stack_specific: stack_specific_fixes,
     } = fix_runnables;
 
+    // step 2: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global_fixes],
         error_on_output,
@@ -54,6 +56,7 @@ pub(crate) fn run_fix_then_lint(
         return Ok(exit_code);
     }
 
+    // step 3: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
@@ -64,6 +67,7 @@ pub(crate) fn run_fix_then_lint(
         return Ok(exit_code);
     }
 
+    // step 4: run the lints
     let exit_code = conc::run(conc::RunArgs {
         runnables: lints,
         error_on_output,
