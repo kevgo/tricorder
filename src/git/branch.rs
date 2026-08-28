@@ -25,7 +25,7 @@ pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
 /// The default branch to compare against, in this order:
 /// `origin/HEAD`, local `main`, local `master`, `origin/main`, `origin/master`
 fn default_branch(dir: Option<&Path>) -> Option<String> {
-    if let Some(origin_head) = git_stdout(
+    if let Some(origin_head) = git_stdout_trimmed(
         dir,
         &["symbolic-ref", "--quiet", "refs/remotes/origin/HEAD"],
     ) && !origin_head.is_empty()
@@ -46,17 +46,17 @@ fn default_branch(dir: Option<&Path>) -> Option<String> {
 }
 
 fn merge_base(dir: Option<&Path>, default_branch: &str) -> Option<String> {
-    let sha = git_stdout(dir, &["merge-base", "HEAD", default_branch])?;
+    let sha = git_stdout_trimmed(dir, &["merge-base", "HEAD", default_branch])?;
     if sha.is_empty() { None } else { Some(sha) }
 }
 
 fn committed_on_branch(dir: Option<&Path>, merge_base: &str) -> Option<Vec<File>> {
     let range = format!("{merge_base}...HEAD");
-    let output = git_stdout_raw(
+    let output = git_stdout_zero(
         dir,
         &["diff", "-z", "--name-only", "--diff-filter=ACMRT", &range],
     )?;
-    Some(parse_name_only_z(&output.into()))
+    Some(parse_name_only_z(&output))
 }
 
 /// parses the output of `git diff -z --name-only`
@@ -80,9 +80,14 @@ fn git_succeeds(dir: Option<&Path>, args: &[&str]) -> bool {
     git_output(dir, args).is_some_and(|output| output.status.success())
 }
 
-fn git_stdout(dir: Option<&Path>, args: &[&str]) -> Option<String> {
+fn git_stdout_trimmed(dir: Option<&Path>, args: &[&str]) -> Option<String> {
     let stdout = git_stdout_raw(dir, args)?;
     Some(stdout.trim().to_owned())
+}
+
+fn git_stdout_zero(dir: Option<&Path>, args: &[&str]) -> Option<ZeroString> {
+    let stdout = git_stdout_raw(dir, args)?;
+    Some(ZeroString::from(stdout))
 }
 
 fn git_stdout_raw(dir: Option<&Path>, args: &[&str]) -> Option<String> {
@@ -90,7 +95,7 @@ fn git_stdout_raw(dir: Option<&Path>, args: &[&str]) -> Option<String> {
     if !output.status.success() {
         return None;
     }
-    str::from_utf8(&output.stdout).ok().map(ToOwned::to_owned)
+    String::from_utf8(output.stdout).ok()
 }
 
 fn git_output(dir: Option<&Path>, args: &[&str]) -> Option<std::process::Output> {
