@@ -1,4 +1,4 @@
-mod is_repo;
+mod repo;
 mod stage;
 mod staged;
 mod status;
@@ -7,7 +7,7 @@ pub(crate) mod testing;
 mod uncommitted;
 mod zerostring;
 
-pub use is_repo::is_repo;
+pub(crate) use repo::Repo;
 pub use stage::stage;
 pub use staged::{StagedFiles, staged};
 pub use uncommitted::uncommitted;
