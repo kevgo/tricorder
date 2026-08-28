@@ -18,7 +18,7 @@ pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
     files.extend(uncommitted);
     files.sort();
     files.dedup();
-    files.retain(|file| exists_as_file(dir, file));
+    files.retain(|file| file_exists(dir, file));
     Some(files)
 }
 
@@ -64,7 +64,7 @@ fn parse_name_only_z(output: &ZeroString) -> Vec<File> {
     output.lines().map(File::from).collect()
 }
 
-fn exists_as_file(dir: Option<&Path>, file: &File) -> bool {
+fn file_exists(dir: Option<&Path>, file: &File) -> bool {
     let path = Path::new(file.as_str());
     match dir {
         Some(dir) => dir.join(path).is_file(),
