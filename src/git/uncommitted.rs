@@ -2,30 +2,14 @@ use crate::domain::File;
 use crate::domain::Result;
 use crate::git::Repo;
 use crate::git::status;
-use crate::git::status::GitStatusOutput;
-use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
 #[must_use]
 pub fn uncommitted(repo: &Repo) -> Result<Vec<File>> {
     let output = status::status_output(repo, &["--untracked-files=all"])?;
-    let uncommitted = output.records().filter(|record| record.is_uncommitted());
-    let files = uncommitted.map(|record| record.into()).collect();
-    Ok(files)
-}
-
-/// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
-fn parse_output(output: &GitStatusOutput) -> Vec<File> {
-    output.records().filter_map(parse_line).collect()
-}
-
-/// parses a record from the output of "git status --porcelain=v1 -z"
-fn parse_line(line: &str) -> Option<File> {
-    let record = GitStatusOutput::parse_record(line)?;
-    if !is_uncommitted(record.index, record.worktree) {
-        return None;
-    }
-    Some(record.path.into())
+    let uncommitted_records = output.records().filter(|record| record.is_uncommitted());
+    let uncommitted_files = uncommitted_records.map(|record| record.path.into());
+    Ok(uncommitted_files.collect())
 }
 
 #[cfg(test)]
