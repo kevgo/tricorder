@@ -1,38 +1,16 @@
 //! helper functions that run "git status"
 
+use crate::domain::Result;
+use crate::git::Repo;
 use crate::git::ZeroString;
-use itertools::Itertools;
-use std::path::Path;
-use std::process::Command;
 
 /// runs `git status` and returns its stdout
-pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
-    let mut command = Command::new("git");
+pub(crate) fn status_output(repo: &Repo, extra_args: &[&str]) -> Result<GitStatusOutput> {
+    let mut command = repo.git_command();
     command.args(["status", "--porcelain=v1", "-z"]);
     command.args(extra_args);
-    if let Some(dir) = dir {
-        command.current_dir(dir);
-    }
-    let Ok(output) = command.output() else {
-        // Git not installed
-        return None;
-    };
-    if !output.status.success() {
-        // probably not a Git repo
-        return None;
-    }
-    let Ok(output) = str::from_utf8(&output.stdout) else {
-        // we don't support non-UTF-8 filenames for now
-        eprintln!(
-            "ERROR: \"git {}\" returned non-UTF-8 output",
-            command
-                .get_args()
-                .map(|arg| arg.to_string_lossy())
-                .join(" ")
-        );
-        return None;
-    };
-    Some(output.into())
+    let output = command.run_stdout_zero()?;
+    Ok(GitStatusOutput::from(output))
 }
 
 /// output of `git status --porcelain=v1 -z`
@@ -110,6 +88,12 @@ impl From<&str> for GitStatusOutput {
 impl From<String> for GitStatusOutput {
     fn from(value: String) -> Self {
         Self(value.into())
+    }
+}
+
+impl From<ZeroString> for GitStatusOutput {
+    fn from(value: ZeroString) -> Self {
+        Self(value)
     }
 }
 
@@ -215,17 +199,6 @@ mod tests {
                     want
                 );
             }
-        }
-    }
-
-    mod status_output {
-        use super::super::status_output;
-        use tempfile::TempDir;
-
-        #[test]
-        fn none_outside_git_repo() {
-            let dir = TempDir::new().unwrap();
-            assert_eq!(status_output(Some(dir.path()), &[]), None);
         }
     }
 }

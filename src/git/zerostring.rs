@@ -14,6 +14,13 @@ impl From<&str> for ZeroString {
     }
 }
 
+impl From<&Vec<u8>> for ZeroString {
+    fn from(value: &Vec<u8>) -> Self {
+        let text = String::from_utf8_lossy(value);
+        Self::from(text.to_string())
+    }
+}
+
 impl ZeroString {
     /// emits all non-empty lines
     pub(crate) fn lines(&self) -> impl Iterator<Item = &str> {

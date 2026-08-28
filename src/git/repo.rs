@@ -1,4 +1,4 @@
-use crate::domain::{File, Result};
+use crate::domain::Result;
 use crate::git::Command;
 use std::path::{Path, PathBuf};
 
@@ -8,6 +8,24 @@ pub(crate) struct Repo {
 }
 
 impl Repo {
+    /// initializes a new Git repo in the given directory
+    pub fn init(path: &Path) -> Result<Repo> {
+        let repo = Repo {
+            path: Some(path.to_path_buf()),
+        };
+        repo.git_command().args(&["init", "--quiet"]).run()?;
+        repo.git_command()
+            .args(&["config", "user.name", "Test"])
+            .run()?;
+        repo.git_command()
+            .args(&["config", "user.email", "test@example.com"])
+            .run()?;
+        repo.git_command()
+            .args(&["commit", "--quiet", "--message=init", "--allow-empty"])
+            .run()?;
+        Ok(repo)
+    }
+
     /// indicates whether the given directory contains a Git repository
     pub fn load(dir: Option<impl AsRef<Path>>) -> Option<Repo> {
         if let Some(dir) = dir {
@@ -32,19 +50,8 @@ impl Repo {
     }
 
     /// provides a `Command` instance that you just need to fill with args and then run
-    fn git_command(&self) -> Command {
+    pub fn git_command(&self) -> Command {
         Command::new(self.path.as_deref())
-    }
-
-    /// stages the given files
-    pub fn stage(&self, files: &[&File]) -> Result<()> {
-        if files.is_empty() {
-            return Ok(());
-        }
-        let mut command = self.git_command();
-        command.arg("add").arg("--");
-        command.args(files.iter().map(|file| file.as_str()));
-        command.run()
     }
 }
 

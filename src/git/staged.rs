@@ -1,14 +1,14 @@
 //! provides the staged files in the current directory
 
-use crate::domain::File;
+use crate::domain::{File, Result};
+use crate::git::Repo;
 use crate::git::status::{GitStatusOutput, status_output};
-use std::path::Path;
 
 /// provides the staged files
 #[must_use]
-pub fn staged(dir: Option<&Path>) -> Option<StagedFiles> {
-    let output = status_output(dir, &[])?;
-    Some(StagedFiles::from(&output))
+pub fn staged(repo: &Repo) -> Result<StagedFiles> {
+    let output = status_output(repo, &[])?;
+    Ok(StagedFiles::from(&output))
 }
 
 /// the files that are staged in the current directory
@@ -68,96 +68,89 @@ mod tests {
     mod staged {
         use super::super::StagedFiles;
         use crate::domain::File;
-        use crate::git::testing::{git, git_repo};
+        use crate::domain::Result;
+        use crate::git::Repo;
         use std::fs;
+        use tempfile::TempDir;
 
         #[test]
-        fn includes_fully_staged_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_fully_staged_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
-            git(&dir, &["add", "my file.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(&["add", "my file.txt"]).run()?;
+            let have = super::super::staged(&repo)?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("my file.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_fully_staged_file_with_quotes() {
-            let dir = git_repo();
+        fn includes_fully_staged_file_with_quotes() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
-            git(&dir, &["add", "file\"quote.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(&["add", "file\"quote.txt"]).run()?;
+            let have = super::super::staged(&repo)?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("file\"quote.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_renamed_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_renamed_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("old file.txt"), "content").unwrap();
-            git(&dir, &["add", "old file.txt"]);
-            git(
-                &dir,
-                &[
-                    "-c",
-                    "user.name=Test",
-                    "-c",
-                    "user.email=test@example.com",
-                    "commit",
-                    "-qm",
-                    "init",
-                ],
-            );
-            git(&dir, &["mv", "old file.txt", "new file.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(&["add", "old file.txt"]).run()?;
+            repo.git_command()
+                .args(&["mv", "old file.txt", "new file.txt"])
+                .run()?;
+            let have = super::super::staged(&repo)?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("new file.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_partially_staged_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_partially_staged_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "v1").unwrap();
-            git(&dir, &["add", "my file.txt"]);
-            git(
-                &dir,
-                &[
-                    "-c",
-                    "user.name=Test",
-                    "-c",
-                    "user.email=test@example.com",
-                    "commit",
-                    "-qm",
-                    "init",
-                ],
-            );
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(&["add", "my file.txt"]).run()?;
+            repo.git_command()
+                .args(&["commit", "--quiet", "--message=init"])
+                .run()?;
             fs::write(dir.path().join("my file.txt"), "v2").unwrap();
-            git(&dir, &["add", "my file.txt"]);
+            repo.git_command().args(&["add", "my file.txt"]).run()?;
             fs::write(dir.path().join("my file.txt"), "v3").unwrap();
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let have = super::super::staged(&repo)?;
             let want = StagedFiles {
                 partial: vec![File::from("my file.txt")],
                 full: vec![],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn ignores_untracked_file_with_spaces() {
-            let dir = git_repo();
+        fn ignores_untracked_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            let have = super::super::staged(&repo)?;
             let want = StagedFiles::default();
             pretty::assert_eq!(have, want);
+            Ok(())
         }
     }
 

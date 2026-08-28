@@ -1,4 +1,5 @@
 use crate::domain::{Result, UserError};
+use crate::git::ZeroString;
 use std::ffi::OsStr;
 use std::path::Path;
 use std::process::{self, Output};
@@ -28,13 +29,6 @@ impl Command {
         self
     }
 
-    pub fn output(&mut self) -> Result<Output> {
-        Ok(self.0.output().map_err(|err| UserError::CannotRunGit {
-            command: commmand_text(&self.0),
-            err: err.to_string(),
-        })?)
-    }
-
     pub fn run(&mut self) -> Result<()> {
         let status = self.0.status().map_err(|err| UserError::CannotRunGit {
             command: commmand_text(&self.0),
@@ -47,6 +41,18 @@ impl Command {
             });
         }
         Ok(())
+    }
+
+    pub fn run_output(&mut self) -> Result<Output> {
+        Ok(self.0.output().map_err(|err| UserError::CannotRunGit {
+            command: commmand_text(&self.0),
+            err: err.to_string(),
+        })?)
+    }
+
+    pub fn run_stdout_zero(&mut self) -> Result<ZeroString> {
+        let output = self.run_output()?;
+        Ok(ZeroString::from(&output.stdout))
     }
 }
 
