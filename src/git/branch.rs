@@ -1,7 +1,7 @@
 //! files changed on the current branch compared to the default branch
 
 use crate::domain::File;
-use crate::git::uncommitted;
+use crate::git::{ZeroString, uncommitted};
 use std::path::Path;
 use std::process::Command;
 
@@ -56,16 +56,12 @@ fn committed_on_branch(dir: Option<&Path>, merge_base: &str) -> Option<Vec<File>
         dir,
         &["diff", "-z", "--name-only", "--diff-filter=ACMRT", &range],
     )?;
-    Some(parse_name_only_z(&output))
+    Some(parse_name_only_z(&output.into()))
 }
 
 /// parses the output of `git diff -z --name-only`
-fn parse_name_only_z(output: &str) -> Vec<File> {
-    output
-        .split('\0')
-        .filter(|path| !path.is_empty())
-        .map(File::from)
-        .collect()
+fn parse_name_only_z(output: &ZeroString) -> Vec<File> {
+    output.lines().map(File::from).collect()
 }
 
 fn exists_as_file(dir: Option<&Path>, file: &File) -> bool {
@@ -254,12 +250,12 @@ mod tests {
     #[test]
     fn parse_name_only_z_splits_on_nul() {
         pretty::assert_eq!(
-            parse_name_only_z("a.txt\0b.txt\0"),
+            parse_name_only_z(&"a.txt\0b.txt\0".into()),
             vec![File::from("a.txt"), File::from("b.txt")]
         );
-        pretty::assert_eq!(parse_name_only_z(""), Vec::<File>::new());
+        pretty::assert_eq!(parse_name_only_z(&"".into()), Vec::<File>::new());
         pretty::assert_eq!(
-            parse_name_only_z("my file.txt\0file\"quote.txt"),
+            parse_name_only_z(&"my file.txt\0file\"quote.txt".into()),
             vec![File::from("my file.txt"), File::from("file\"quote.txt")]
         );
     }
