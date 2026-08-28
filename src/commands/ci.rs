@@ -27,7 +27,7 @@ fn git_diff() -> Result<Vec<u8>> {
         .arg("--color")
         .output()
         .map_err(|err| UserError::CannotRunGit {
-            msg: err.to_string(),
+            err: err.to_string(),
         })?;
     Ok(output.stdout)
 }

@@ -32,7 +32,8 @@ pub enum UserError {
     },
     ArgvIsEmpty,
     CannotRunGit {
-        msg: String,
+        command: String,
+        err: String,
     },
     CannotRunRipgrep {
         msg: String,
@@ -97,7 +98,7 @@ impl UserError {
                 println!("cannot write file: {path}: {err}");
             }
             UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
-            UserError::CannotRunGit { msg } => println!("cannot run Git: {msg}"),
+            UserError::CannotRunGit { err: msg } => println!("cannot run Git: {msg}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");

@@ -1,3 +1,5 @@
+use crate::domain::{File, Result};
+use crate::git::Command;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, PartialEq)]
@@ -27,6 +29,22 @@ impl Repo {
                 None
             }
         }
+    }
+
+    /// provides a `Command` instance that you just need to fill with args and then run
+    fn git_command(&self) -> Command {
+        Command::new(self.path.as_deref())
+    }
+
+    /// stages the given files
+    pub fn stage(&self, files: &[&File]) -> Result<()> {
+        if files.is_empty() {
+            return Ok(());
+        }
+        let mut command = self.git_command();
+        command.arg("add").arg("--");
+        command.args(files.iter().map(|file| file.as_str()));
+        command.run()
     }
 }
 
