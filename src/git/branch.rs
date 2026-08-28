@@ -1,14 +1,13 @@
 //! files changed on the current branch compared to the default branch
 
 use crate::domain::File;
-use crate::git::uncommitted;
+use crate::git::{ZeroString, uncommitted};
 use std::path::Path;
 use std::process::Command;
 
 /// files unique to the current branch (committed since the default branch) plus uncommitted files
 ///
-/// Returns `None` if this is not a Git repository or the default branch / merge-base cannot be
-/// determined. Callers should fall back to the full tree in that case.
+/// `None` = not a Git repository or the default branch / merge-base cannot be determined.
 #[must_use]
 pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
     let uncommitted = uncommitted(dir)?;
@@ -19,14 +18,14 @@ pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
     files.extend(uncommitted);
     files.sort();
     files.dedup();
-    files.retain(|file| exists_as_file(dir, file));
+    files.retain(|file| file_exists(dir, file));
     Some(files)
 }
 
-/// the default branch to compare against, in this order:
+/// The default branch to compare against, in this order:
 /// `origin/HEAD`, local `main`, local `master`, `origin/main`, `origin/master`
 fn default_branch(dir: Option<&Path>) -> Option<String> {
-    if let Some(origin_head) = git_stdout(
+    if let Some(origin_head) = git_stdout_trimmed(
         dir,
         &["symbolic-ref", "--quiet", "refs/remotes/origin/HEAD"],
     ) && !origin_head.is_empty()
@@ -47,13 +46,13 @@ fn default_branch(dir: Option<&Path>) -> Option<String> {
 }
 
 fn merge_base(dir: Option<&Path>, default_branch: &str) -> Option<String> {
-    let sha = git_stdout(dir, &["merge-base", "HEAD", default_branch])?;
+    let sha = git_stdout_trimmed(dir, &["merge-base", "HEAD", default_branch])?;
     if sha.is_empty() { None } else { Some(sha) }
 }
 
 fn committed_on_branch(dir: Option<&Path>, merge_base: &str) -> Option<Vec<File>> {
     let range = format!("{merge_base}...HEAD");
-    let output = git_stdout_raw(
+    let output = git_stdout_zero(
         dir,
         &["diff", "-z", "--name-only", "--diff-filter=ACMRT", &range],
     )?;
@@ -61,15 +60,11 @@ fn committed_on_branch(dir: Option<&Path>, merge_base: &str) -> Option<Vec<File>
 }
 
 /// parses the output of `git diff -z --name-only`
-fn parse_name_only_z(output: &str) -> Vec<File> {
-    output
-        .split('\0')
-        .filter(|path| !path.is_empty())
-        .map(File::from)
-        .collect()
+fn parse_name_only_z(output: &ZeroString) -> Vec<File> {
+    output.lines().map(File::from).collect()
 }
 
-fn exists_as_file(dir: Option<&Path>, file: &File) -> bool {
+fn file_exists(dir: Option<&Path>, file: &File) -> bool {
     let path = Path::new(file.as_str());
     match dir {
         Some(dir) => dir.join(path).is_file(),
@@ -85,9 +80,14 @@ fn git_succeeds(dir: Option<&Path>, args: &[&str]) -> bool {
     git_output(dir, args).is_some_and(|output| output.status.success())
 }
 
-fn git_stdout(dir: Option<&Path>, args: &[&str]) -> Option<String> {
+fn git_stdout_trimmed(dir: Option<&Path>, args: &[&str]) -> Option<String> {
     let stdout = git_stdout_raw(dir, args)?;
     Some(stdout.trim().to_owned())
+}
+
+fn git_stdout_zero(dir: Option<&Path>, args: &[&str]) -> Option<ZeroString> {
+    let stdout = git_stdout_raw(dir, args)?;
+    Some(ZeroString::from(stdout))
 }
 
 fn git_stdout_raw(dir: Option<&Path>, args: &[&str]) -> Option<String> {
@@ -95,7 +95,7 @@ fn git_stdout_raw(dir: Option<&Path>, args: &[&str]) -> Option<String> {
     if !output.status.success() {
         return None;
     }
-    str::from_utf8(&output.stdout).ok().map(ToOwned::to_owned)
+    String::from_utf8(output.stdout).ok()
 }
 
 fn git_output(dir: Option<&Path>, args: &[&str]) -> Option<std::process::Output> {
@@ -255,12 +255,12 @@ mod tests {
     #[test]
     fn parse_name_only_z_splits_on_nul() {
         pretty::assert_eq!(
-            parse_name_only_z("a.txt\0b.txt\0"),
+            parse_name_only_z(&"a.txt\0b.txt\0".into()),
             vec![File::from("a.txt"), File::from("b.txt")]
         );
-        pretty::assert_eq!(parse_name_only_z(""), Vec::<File>::new());
+        pretty::assert_eq!(parse_name_only_z(&"".into()), Vec::<File>::new());
         pretty::assert_eq!(
-            parse_name_only_z("my file.txt\0file\"quote.txt"),
+            parse_name_only_z(&"my file.txt\0file\"quote.txt".into()),
             vec![File::from("my file.txt"), File::from("file\"quote.txt")]
         );
     }
