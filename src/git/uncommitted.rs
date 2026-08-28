@@ -15,20 +15,22 @@ pub fn uncommitted(repo: &Repo) -> Result<Vec<File>> {
 #[cfg(test)]
 mod tests {
     use crate::domain::File;
-    use crate::git::status::GitStatusOutput;
+    use crate::domain::Result;
+    use crate::git::Repo;
     use crate::git::testing::{git, git_repo};
-    use maplit::hashmap;
     use std::fs;
     use std::process::Command;
+    use tempfile::TempDir;
 
     #[test]
-    fn expands_untracked_folder_to_files() {
-        let dir = git_repo();
+    fn expands_untracked_folder_to_files() -> Result<()> {
+        let dir = TempDir::new().unwrap();
         let sub = dir.path().join("sub");
         fs::create_dir(&sub).unwrap();
         fs::write(sub.join("one.txt"), "one").unwrap();
         fs::write(sub.join("two.txt"), "two").unwrap();
-        // Git collapses untracked files in a new folder to just the folder name.
+        let repo = Repo::init(dir.path())?;
+        // verify that Git reports only the folder name and not the files inside it
         let status = Command::new("git")
             .arg("-c")
             .arg("status.showUntrackedFiles=normal")
@@ -38,32 +40,35 @@ mod tests {
             .current_dir(dir.path())
             .output()
             .unwrap();
-        assert_eq!(
-            str::from_utf8(&status.stdout).unwrap().trim(),
-            "?? sub/",
-            "precondition: git should report only the folder"
-        );
+        assert_eq!(str::from_utf8(&status.stdout).unwrap().trim(), "?? sub/");
         // verify that the uncommitted files are correctly reported
-        let mut have = super::uncommitted(Some(dir.path())).unwrap();
+        let mut have = super::uncommitted(&repo)?;
         have.sort();
         let want = vec![File::from("sub/one.txt"), File::from("sub/two.txt")];
         pretty::assert_eq!(have, want);
+        Ok(())
     }
 
     #[test]
-    fn includes_untracked_file_with_spaces() {
-        let dir = git_repo();
-        fs::write(dir.path().join("my file.txt"), "hello").unwrap();
-        let have = super::uncommitted(Some(dir.path())).unwrap();
-        pretty::assert_eq!(have, vec![File::from("my file.txt")]);
+    fn includes_untracked_file_with_spaces() -> Result<()> {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("my file.txt"), "content").unwrap();
+        let repo = Repo::init(dir.path())?;
+        let have = super::uncommitted(&repo)?;
+        let want = vec![File::from("my file.txt")];
+        pretty::assert_eq!(have, want);
+        Ok(())
     }
 
     #[test]
-    fn includes_untracked_file_with_quotes() {
+    fn includes_untracked_file_with_quotes() -> Result<()> {
         let dir = git_repo();
         fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
-        let have = super::uncommitted(Some(dir.path())).unwrap();
-        pretty::assert_eq!(have, vec![File::from("file\"quote.txt")]);
+        let repo = Repo::init(dir.path())?;
+        let have = super::uncommitted(&repo)?;
+        let want = vec![File::from("file\"quote.txt")];
+        pretty::assert_eq!(have, want);
+        Ok(())
     }
 
     #[test]
@@ -84,68 +89,7 @@ mod tests {
             ],
         );
         git(&dir, &["mv", "old file.txt", "new file.txt"]);
-        let have = super::uncommitted(Some(dir.path())).unwrap();
+        let have = super::uncommitted(&dir).unwrap();
         pretty::assert_eq!(have, vec![File::from("new file.txt")]);
-    }
-
-    #[test]
-    fn parse_line() {
-        let tests = hashmap! {
-            "MM file.rs" => Some(File::from("file.rs")),
-            "M  file.rs" => Some(File::from("file.rs")),
-            " M file.rs" => Some(File::from("file.rs")),
-            "?? file.rs" => Some(File::from("file.rs")),
-            "?? my file.txt" => Some(File::from("my file.txt")),
-            "?? file\"quote.txt" => Some(File::from("file\"quote.txt")),
-            "!! file.rs" => None,
-            "UU file.rs" => None, // unmerged conflict in file
-            "D  file.rs" => None,
-            " D file.rs" => None,
-            "A  file.rs" => Some(File::from("file.rs")),
-            " A file.rs" => Some(File::from("file.rs")),
-            "R  dir/new.rs" => Some(File::from("dir/new.rs")), // renamed file (dest path)
-            "C  dir/new.rs" => Some(File::from("dir/new.rs")), // copied file (dest path)
-            "R  new file.txt" => Some(File::from("new file.txt")),
-        };
-        for (give, want) in tests {
-            let have = super::parse_line(give);
-            assert_eq!(have, want, "{give}");
-        }
-    }
-
-    #[test]
-    fn test_parse_output() {
-        let give = [
-            "MM partial.txt",
-            "M  staged.txt",
-            " M unstaged.txt",
-            " A intent.txt",
-            "?? untracked.txt",
-            "!! ignored.txt",
-            "D  deleted.txt",
-            " D unstaged-deleted.txt",
-            "R  dir/new.rs",
-            "dir/old.rs",
-            "C  copy.rs",
-            "original.rs",
-            "?? my file.txt",
-            "R  new file.txt",
-            "old file.txt",
-        ]
-        .join("\0");
-        let give = GitStatusOutput::from(give);
-        let want = vec![
-            File::from("partial.txt"),
-            File::from("staged.txt"),
-            File::from("unstaged.txt"),
-            File::from("intent.txt"),
-            File::from("untracked.txt"),
-            File::from("dir/new.rs"),
-            File::from("copy.rs"),
-            File::from("my file.txt"),
-            File::from("new file.txt"),
-        ];
-        let have = super::parse_output(&give);
-        pretty::assert_eq!(have, want);
     }
 }

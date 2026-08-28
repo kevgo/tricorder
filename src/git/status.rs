@@ -179,6 +179,31 @@ mod tests {
         use maplit::hashmap;
 
         #[test]
+        fn parse() {
+            let tests = hashmap! {
+                "MM file.rs" => Some(Record { index: 'M', worktree: 'M', path: "file.rs" }),
+                "M  file.rs" => Some(Record { index: 'M', worktree: ' ', path: "file.rs" }),
+                " M file.rs" => Some(Record { index: ' ', worktree: 'M', path: "file.rs" }),
+                "?? file.rs" => Some(Record { index: '?', worktree: '?', path: "file.rs" }),
+                "?? my file.txt" => Some(Record { index: '?', worktree: '?', path: "my file.txt" }),
+                "?? file\"quote.txt" => Some(Record { index: '?', worktree: '?', path: "file\"quote.txt" }),
+                "!! file.rs" => None,
+                "UU file.rs" => None, // unmerged conflict in file
+                "D  file.rs" => None,
+                " D file.rs" => None,
+                "A  file.rs" => Some(Record { index: 'A', worktree: ' ', path: "file.rs" }),
+                " A file.rs" => Some(Record { index: ' ', worktree: 'A', path: "file.rs" }),
+                "R  dir/new.rs" => Some(Record { index: 'R', worktree: ' ', path: "dir/new.rs" }), // renamed file (dest path)
+                "C  dir/new.rs" => Some(Record { index: 'C', worktree: ' ', path: "dir/new.rs" }), // copied file (dest path)
+                "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
+            };
+            for (give, want) in tests {
+                let have = Record::parse(give);
+                pretty::assert_eq!(have, want, "{give}");
+            }
+        }
+
+        #[test]
         fn skips_rename_and_copy_orig_paths() {
             let give = [
                 "R  new file.txt\0old file.txt",
