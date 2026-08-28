@@ -1,23 +1,17 @@
 use crate::domain::File;
+use crate::domain::Result;
+use crate::git::Repo;
 use crate::git::status;
 use crate::git::status::GitStatusOutput;
 use std::path::Path;
 
 /// provides the uncommitted files (staged, unstaged, and untracked)
 #[must_use]
-pub fn uncommitted(dir: Option<&Path>) -> Option<Vec<File>> {
-    let output = status::status_output(dir, &["--untracked-files=all"])?;
-    let files = parse_output(&output)
-        .into_iter()
-        .filter(|file| {
-            let path = Path::new(file.as_str());
-            match dir {
-                Some(dir) => dir.join(path).is_file(),
-                None => path.is_file(),
-            }
-        })
-        .collect();
-    Some(files)
+pub fn uncommitted(repo: &Repo) -> Result<Vec<File>> {
+    let output = status::status_output(repo, &["--untracked-files=all"])?;
+    let uncommitted = output.records().filter(|record| record.is_uncommitted());
+    let files = uncommitted.map(|record| record.into()).collect();
+    Ok(files)
 }
 
 /// parses the output of "git status --porcelain=v1 -z --untracked-files=all"
@@ -32,17 +26,6 @@ fn parse_line(line: &str) -> Option<File> {
         return None;
     }
     Some(record.path.into())
-}
-
-fn is_uncommitted(index_status: char, worktree_status: char) -> bool {
-    if index_status == '!' || worktree_status == '!' {
-        return false;
-    }
-    is_present_change(index_status) || is_present_change(worktree_status)
-}
-
-fn is_present_change(status: char) -> bool {
-    matches!(status, 'A' | 'M' | 'R' | 'C' | 'T' | '?')
 }
 
 #[cfg(test)]
