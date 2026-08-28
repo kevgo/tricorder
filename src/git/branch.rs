@@ -7,8 +7,7 @@ use std::process::Command;
 
 /// files unique to the current branch (committed since the default branch) plus uncommitted files
 ///
-/// Returns `None` if this is not a Git repository or the default branch / merge-base cannot be
-/// determined. Callers should fall back to the full tree in that case.
+/// `None` = not a Git repository or the default branch / merge-base cannot be determined.
 #[must_use]
 pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
     let uncommitted = uncommitted(dir)?;
@@ -23,7 +22,7 @@ pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
     Some(files)
 }
 
-/// the default branch to compare against, in this order:
+/// The default branch to compare against, in this order:
 /// `origin/HEAD`, local `main`, local `master`, `origin/main`, `origin/master`
 fn default_branch(dir: Option<&Path>) -> Option<String> {
     if let Some(origin_head) = git_stdout(

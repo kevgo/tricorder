@@ -1,9 +1,9 @@
 //! helper functions that run "git status"
 
+use crate::git::ZeroString;
+use itertools::Itertools;
 use std::path::Path;
 use std::process::Command;
-
-use itertools::Itertools;
 
 /// runs `git status` and returns its stdout
 pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
@@ -37,17 +37,12 @@ pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<G
 
 /// output of `git status --porcelain=v1 -z`
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct GitStatusOutput(String);
+pub(crate) struct GitStatusOutput(ZeroString);
 
 impl GitStatusOutput {
-    /// emits all non-empty lines
-    fn lines(&self) -> impl Iterator<Item = &str> {
-        self.0.split('\0').filter(|line| !line.is_empty())
-    }
-
     /// destination records, skipping rename/copy original paths
     pub(crate) fn records(&self) -> impl Iterator<Item = &str> {
-        let mut lines = self.lines();
+        let mut lines = self.0.lines();
         std::iter::from_fn(move || {
             let line = lines.next()?;
             // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
@@ -108,13 +103,13 @@ impl GitStatusOutput {
 
 impl From<&str> for GitStatusOutput {
     fn from(value: &str) -> Self {
-        Self(value.to_owned())
+        Self(value.into())
     }
 }
 
 impl From<String> for GitStatusOutput {
     fn from(value: String) -> Self {
-        Self(value)
+        Self(value.into())
     }
 }
 
@@ -139,31 +134,6 @@ mod tests {
     mod git_status_output {
         use super::super::{GitStatusOutput, Record};
         use maplit::hashmap;
-
-        #[test]
-        fn lines_splits_on_nul() {
-            let give = GitStatusOutput::from("a\0b\0c");
-            let have: Vec<&str> = give.lines().collect();
-            pretty::assert_eq!(have, vec!["a", "b", "c"]);
-        }
-
-        #[test]
-        fn lines_skips_empty_entries() {
-            pretty::assert_eq!(
-                GitStatusOutput::from("").lines().collect::<Vec<_>>(),
-                Vec::<&str>::new()
-            );
-            pretty::assert_eq!(
-                GitStatusOutput::from("\0").lines().collect::<Vec<_>>(),
-                Vec::<&str>::new()
-            );
-            pretty::assert_eq!(
-                GitStatusOutput::from("a\0\0b\0")
-                    .lines()
-                    .collect::<Vec<_>>(),
-                vec!["a", "b"]
-            );
-        }
 
         #[test]
         fn has_orig_path_detects_rename_and_copy() {
