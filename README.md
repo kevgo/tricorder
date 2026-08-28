@@ -1,10 +1,10 @@
 # Tricorder
 
-Tricorder maximizes the utility of automated code smell checks
+Tricorder maximizes the utility of code quality tooling
 for software development.
 It downloads and runs all applicable linters and formatters.
 It provides specific support
-for all phases of the software development lifecycle.
+for typical phases of the software development lifecycle.
 It aggressively optimizes for getting results as quickly as possible.
 
 ## Demo
