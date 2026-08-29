@@ -28,7 +28,7 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = lint::determine_lints(&config, &stacks, &git_repo)?;
+    let runnables = lint::determine_lints(&config, &stacks, git_repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
