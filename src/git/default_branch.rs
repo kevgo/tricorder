@@ -19,9 +19,5 @@ impl Repo {
 }
 
 fn trim_origin_prefix(branch: &str) -> &str {
-    if branch.starts_with("origin/") {
-        &branch[7..]
-    } else {
-        branch
-    }
+    branch.strip_prefix("origin/").unwrap_or(branch)
 }
