@@ -8,7 +8,7 @@ impl Repo {
             return Ok(());
         }
         self.git_command()
-            .args(&["add", "--"])
+            .args(["add", "--"])
             .args(files.iter().map(|file| file.as_str()))
             .run()
     }
