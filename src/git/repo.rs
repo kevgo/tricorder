@@ -33,14 +33,10 @@ impl Repo {
         Ok(repo)
     }
 
-    /// indicates whether the given directory contains a Git repository
+    /// provides a Repo instance if the current directory is a Git repository
     pub fn load() -> Option<Repo> {
         let git_folder = Path::new(".git");
-        if git_folder.exists() {
-            Some(Repo { path: None })
-        } else {
-            None
-        }
+        git_folder.exists().then_some(Repo { path: None })
     }
 
     /// provides a Git `Command` that you just need to fill with args and then run
