@@ -98,7 +98,7 @@ impl UserError {
                 println!("cannot write file: {path}: {err}");
             }
             UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
-            UserError::CannotRunGit { command, err } => println!("cannot run {command}: {err}"),
+            UserError::CannotRunGit { command, err } => println!("cannot run \"{command}\": {err}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");
