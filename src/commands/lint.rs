@@ -2,8 +2,10 @@ use crate::apps::git_diff_check;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, GlobalLint};
-use crate::domain::{DetectedStacks, IsGitRepo, Result};
-use crate::{git, stacks};
+use crate::domain::{DetectedStacks, Result};
+use crate::git;
+use crate::stacks;
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
@@ -13,7 +15,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let is_git_repo = git::is_repo("./");
+    let repo = git::Repo::load(None::<&Path>);
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
@@ -22,7 +24,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_lints(&config, &all_stacks, is_git_repo)?;
+    let runnables = determine_lints(&config, &all_stacks, repo)?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
@@ -43,7 +45,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_lints(
     config: &Config,
     detected_stacks: &DetectedStacks,
-    is_git_repo: IsGitRepo,
+    git_repo: Option<git::Repo>,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
@@ -84,7 +86,9 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if let Some(executable) = git_diff_check::lint_command(is_git_repo) {
+    if let Some(repo) = &git_repo
+        && let Some(executable) = git_diff_check::lint_command(repo)
+    {
         result.push(conc::Runnable::Single(executable));
     }
 

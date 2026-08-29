@@ -3,24 +3,28 @@ use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::{Runnables, add_custom_fixes};
 use crate::config::Config;
+use crate::domain::UserError;
 use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
 use ahash::AHashMap;
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
+    let git_repo = git::Repo::load(None::<&Path>).ok_or(UserError::NoGitRepository)?;
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the staged files and their stacks
-    let Some(staged) = git::staged(None) else {
+    let staged = git::staged(&git_repo)?;
+    if staged.is_empty() {
         return Ok(ExitCode::SUCCESS);
-    };
+    }
     let staged_stacks = stacks::from_staged(&staged, &ignores);
     if show.display_metadata() {
         print_metadata(&staged_stacks);
@@ -59,7 +63,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 7: stage the files whose fixes actually changed their content
     let after = fingerprint::scan_files(&staged_files);
     let changed = fingerprint::changed(&before, &after);
-    git::stage(&changed)?;
+    git::stage(&git_repo, &changed)?;
     Ok(ExitCode::SUCCESS)
 }
 

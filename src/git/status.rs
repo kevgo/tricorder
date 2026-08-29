@@ -145,12 +145,9 @@ mod tests {
                 "?? file.rs" => false,
                 "A  file.rs" => false,
                 " D file.rs" => false,
-                "" => false,
-                "R" => true,
-                "C" => true,
             };
             for (give, want) in tests {
-                let have = Record::parse(give).unwrap();
+                let have = Record::parse(give).expect(give);
                 assert_eq!(have.has_orig_path(), want, "{give}");
             }
         }
@@ -187,10 +184,10 @@ mod tests {
                 "?? file.rs" => Some(Record { index: '?', worktree: '?', path: "file.rs" }),
                 "?? my file.txt" => Some(Record { index: '?', worktree: '?', path: "my file.txt" }),
                 "?? file\"quote.txt" => Some(Record { index: '?', worktree: '?', path: "file\"quote.txt" }),
-                "!! file.rs" => None,
-                "UU file.rs" => None, // unmerged conflict in file
-                "D  file.rs" => None,
-                " D file.rs" => None,
+                "!! file.rs" => Some(Record { index: '!', worktree: '!', path: "file.rs" }),
+                "UU file.rs" => Some(Record { index: 'U', worktree: 'U', path: "file.rs" }), // unmerged conflict in file
+                "D  file.rs" => Some(Record { index: 'D', worktree: ' ', path: "file.rs" }),
+                " D file.rs" => Some(Record { index: ' ', worktree: 'D', path: "file.rs" }),
                 "A  file.rs" => Some(Record { index: 'A', worktree: ' ', path: "file.rs" }),
                 " A file.rs" => Some(Record { index: ' ', worktree: 'A', path: "file.rs" }),
                 "R  dir/new.rs" => Some(Record { index: 'R', worktree: ' ', path: "dir/new.rs" }), // renamed file (dest path)

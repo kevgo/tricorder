@@ -2,11 +2,11 @@
 
 use crate::domain::{File, Result};
 use crate::git::Repo;
-use crate::git::status::{GitStatusOutput, status_output};
+use crate::git::status::{GitStatusOutput, Record, status_output};
 
 /// provides the staged files
 #[must_use]
-pub fn staged(repo: &Repo) -> Result<StagedFiles> {
+pub(crate) fn staged(repo: &Repo) -> Result<StagedFiles> {
     let output = status_output(repo, &[])?;
     Ok(StagedFiles::from(&output))
 }
@@ -25,8 +25,8 @@ impl From<&GitStatusOutput> for StagedFiles {
     /// parses the output of "git status --porcelain=v1 -z"
     fn from(output: &GitStatusOutput) -> StagedFiles {
         let mut result = StagedFiles::default();
-        for line in output.records() {
-            result.add_line(line);
+        for record in output.records() {
+            result.add_record(record);
         }
         result
     }
@@ -34,10 +34,7 @@ impl From<&GitStatusOutput> for StagedFiles {
 
 impl StagedFiles {
     /// parses a line from the output of "git status --porcelain=v1 -z" and adds it to this instance
-    fn add_line(&mut self, line: &str) {
-        let Some(record) = GitStatusOutput::parse_record(line) else {
-            return;
-        };
+    fn add_record(&mut self, record: Record<'_>) {
         let is_staged = is_index_change(record.index);
         let is_working = is_index_change(record.worktree);
         if is_staged && is_working {
@@ -55,6 +52,12 @@ impl StagedFiles {
         result.extend(self.full.iter());
         result.sort();
         result
+    }
+
+    /// provides whether there are any staged files
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.partial.is_empty() && self.full.is_empty()
     }
 }
 
@@ -157,7 +160,7 @@ mod tests {
     mod staged_files {
         use super::super::StagedFiles;
         use crate::domain::File;
-        use crate::git::status::GitStatusOutput;
+        use crate::git::status::{GitStatusOutput, Record};
         use maplit::hashmap;
 
         #[test]
@@ -208,7 +211,7 @@ mod tests {
         }
 
         #[test]
-        fn parse_line() {
+        fn parse() {
             let tests = hashmap! {
                 "MM file.rs" => StagedFiles {
                     partial: vec!["file.rs".into()],
@@ -269,7 +272,8 @@ mod tests {
             };
             for (give, want) in tests {
                 let mut have = StagedFiles::default();
-                have.add_line(give);
+                let record = Record::parse(give).unwrap();
+                have.add_record(record);
                 assert_eq!(have, want, "{give}");
             }
         }

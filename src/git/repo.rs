@@ -1,3 +1,4 @@
+#[cfg(test)]
 use crate::domain::Result;
 use crate::git::Command;
 use std::path::{Path, PathBuf};
@@ -9,25 +10,26 @@ pub(crate) struct Repo {
 
 impl Repo {
     /// initializes a new Git repo in the given directory
+    #[cfg(test)]
     pub fn init(path: &Path) -> Result<Repo> {
         let repo = Repo {
             path: Some(path.to_path_buf()),
         };
-        repo.git_command().args(&["init", "--quiet"]).run()?;
+        repo.git_command().args(["init", "--quiet"]).run()?;
         repo.git_command()
-            .args(&["config", "user.name", "Test"])
+            .args(["config", "user.name", "Test"])
             .run()?;
         repo.git_command()
-            .args(&["config", "user.email", "test@example.com"])
+            .args(["config", "user.email", "test@example.com"])
             .run()?;
         repo.git_command()
-            .args(&["commit", "--quiet", "--message=init", "--allow-empty"])
+            .args(["commit", "--quiet", "--message=init", "--allow-empty"])
             .run()?;
         Ok(repo)
     }
 
     /// indicates whether the given directory contains a Git repository
-    pub fn load(dir: Option<impl AsRef<Path>>) -> Option<Repo> {
+    pub fn load<AP: AsRef<Path>>(dir: Option<AP>) -> Option<Repo> {
         if let Some(dir) = dir {
             let dir = dir.as_ref();
             let git_folder = dir.join(".git");

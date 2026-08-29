@@ -6,6 +6,12 @@ use std::process::{self, Output};
 
 pub(crate) struct Command(process::Command);
 
+impl From<Command> for process::Command {
+    fn from(command: Command) -> Self {
+        command.0
+    }
+}
+
 impl Command {
     pub fn new(path: Option<&Path>) -> Self {
         let mut command = process::Command::new("git");
@@ -37,17 +43,17 @@ impl Command {
         if !status.success() {
             return Err(UserError::CannotRunGit {
                 command: commmand_text(&self.0),
-                err: format!("exit status {}", status.to_string()),
+                err: format!("exit status {status}"),
             });
         }
         Ok(())
     }
 
     pub fn run_output(&mut self) -> Result<Output> {
-        Ok(self.0.output().map_err(|err| UserError::CannotRunGit {
+        self.0.output().map_err(|err| UserError::CannotRunGit {
             command: commmand_text(&self.0),
             err: err.to_string(),
-        })?)
+        })
     }
 
     pub fn run_stdout_zero(&mut self) -> Result<ZeroString> {
@@ -60,7 +66,7 @@ fn commmand_text(command: &process::Command) -> String {
     let mut text = String::new();
     text.push_str(&command.get_program().to_string_lossy());
     for arg in command.get_args() {
-        text.push_str(" ");
+        text.push(' ');
         text.push_str(&arg.to_string_lossy());
     }
     text
