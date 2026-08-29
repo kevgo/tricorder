@@ -6,6 +6,12 @@ use std::process::{self, Output};
 
 pub(crate) struct Command(process::Command);
 
+impl From<Command> for process::Command {
+    fn from(command: Command) -> Self {
+        command.0
+    }
+}
+
 impl Command {
     pub fn new(path: Option<&Path>) -> Self {
         let mut command = process::Command::new("git");
