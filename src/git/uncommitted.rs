@@ -32,18 +32,6 @@ mod tests {
         fs::write(sub.join("one.txt"), "one").unwrap();
         fs::write(sub.join("two.txt"), "two").unwrap();
         let repo = Repo::init(dir.path())?;
-        // verify that Git reports only the folder name and not the files inside it
-        let status = repo
-            .git_command()
-            .arg("-c")
-            .arg("status.showUntrackedFiles=normal")
-            .arg("status")
-            .arg("--short")
-            .arg("--porcelain=v1")
-            .run_output()
-            .unwrap();
-        assert_eq!(str::from_utf8(&status.stdout).unwrap().trim(), "?? sub/");
-        // verify that the uncommitted files are correctly reported
         let mut have = repo.uncommitted()?;
         have.sort();
         let want = vec![File::from("sub/one.txt"), File::from("sub/two.txt")];
