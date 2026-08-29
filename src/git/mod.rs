@@ -12,5 +12,4 @@ pub(crate) use diff::diff;
 pub(crate) use repo::Repo;
 pub(crate) use stage::stage;
 pub(crate) use staged::{StagedFiles, staged};
-pub(crate) use uncommitted::uncommitted;
 pub(crate) use zerostring::ZeroString;

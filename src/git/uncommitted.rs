@@ -3,15 +3,17 @@ use crate::domain::Result;
 use crate::git::Repo;
 use crate::git::status;
 
-/// provides the uncommitted files (staged, unstaged, and untracked)
-#[must_use]
-pub fn uncommitted(repo: &Repo) -> Result<Vec<File>> {
-    let output = status::status_output(repo, &["--untracked-files=all"])?;
-    let uncommitted_records = output
-        .records()
-        .filter(super::status::Record::is_uncommitted);
-    let uncommitted_files = uncommitted_records.map(|record| record.path.into());
-    Ok(uncommitted_files.collect())
+impl Repo {
+    /// provides the uncommitted files (staged, unstaged, and untracked)
+    #[must_use]
+    pub fn uncommitted(&self) -> Result<Vec<File>> {
+        let output = status::status_output(self, &["--untracked-files=all"])?;
+        let uncommitted_records = output
+            .records()
+            .filter(super::status::Record::is_uncommitted);
+        let uncommitted_files = uncommitted_records.map(|record| record.path.into());
+        Ok(uncommitted_files.collect())
+    }
 }
 
 #[cfg(test)]
@@ -43,7 +45,7 @@ mod tests {
             .unwrap();
         assert_eq!(str::from_utf8(&status.stdout).unwrap().trim(), "?? sub/");
         // verify that the uncommitted files are correctly reported
-        let mut have = super::uncommitted(&repo)?;
+        let mut have = repo.uncommitted()?;
         have.sort();
         let want = vec![File::from("sub/one.txt"), File::from("sub/two.txt")];
         pretty::assert_eq!(have, want);
@@ -55,7 +57,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("my file.txt"), "content").unwrap();
         let repo = Repo::init(dir.path())?;
-        let have = super::uncommitted(&repo)?;
+        let have = repo.uncommitted()?;
         let want = vec![File::from("my file.txt")];
         pretty::assert_eq!(have, want);
         Ok(())
@@ -66,7 +68,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
         let repo = Repo::init(dir.path())?;
-        let have = super::uncommitted(&repo)?;
+        let have = repo.uncommitted()?;
         let want = vec![File::from("file\"quote.txt")];
         pretty::assert_eq!(have, want);
         Ok(())
@@ -88,7 +90,7 @@ mod tests {
             .arg("old file.txt")
             .arg("new file.txt")
             .run()?;
-        let have = super::uncommitted(&repo)?;
+        let have = repo.uncommitted()?;
         pretty::assert_eq!(have, vec![File::from("new file.txt")]);
         Ok(())
     }
