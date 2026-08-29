@@ -86,9 +86,8 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if let Some(repo) = &git_repo
-        && let Some(executable) = git_diff_check::lint_command(repo)
-    {
+    if let Some(repo) = &git_repo {
+        let executable = git_diff_check::lint_command(repo);
         result.push(conc::Runnable::Single(executable));
     }
 
