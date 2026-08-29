@@ -8,35 +8,18 @@ use crate::git::ZeroString;
 impl Repo {
     /// runs `git status` and returns its stdout
     pub(crate) fn status(&self, extra_args: &[&str]) -> Result<GitStatusOutput> {
-        let stdout_zero = self
+        Ok(self
             .git_command()
             .args(["status", "--porcelain=v1", "-z"])
             .args(extra_args)
-            .run_stdout_zero()?;
-        Ok(GitStatusOutput::from(stdout_zero))
+            .run_stdout_zero()?
+            .into())
     }
 }
 
 /// output of `git status --porcelain=v1 -z`
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct GitStatusOutput(ZeroString);
-
-impl GitStatusOutput {
-    /// destination records, skipping rename/copy original paths
-    pub(crate) fn records(&self) -> impl Iterator<Item = Record<'_>> {
-        let mut lines = self.0.lines();
-        std::iter::from_fn(move || {
-            let line = lines.next()?;
-            let record = Record::parse(line)?;
-            if record.has_orig_path() {
-                // Rename/copy entries are `XY dest\0orig\0`.
-                // We don't care about the orig filename, so we skip the next zero-delimited line.
-                lines.next();
-            }
-            Some(record)
-        })
-    }
-}
 
 impl From<&str> for GitStatusOutput {
     fn from(value: &str) -> Self {
@@ -53,6 +36,23 @@ impl From<String> for GitStatusOutput {
 impl From<ZeroString> for GitStatusOutput {
     fn from(value: ZeroString) -> Self {
         Self(value)
+    }
+}
+
+impl GitStatusOutput {
+    /// destination records, skipping rename/copy original paths
+    pub(crate) fn records(&self) -> impl Iterator<Item = Record<'_>> {
+        let mut lines = self.0.lines();
+        std::iter::from_fn(move || {
+            let line = lines.next()?;
+            let record = Record::parse(line)?;
+            if record.has_orig_path() {
+                // Rename/copy entries are `XY dest\0orig\0`.
+                // We don't care about the orig filename, so we skip the next zero-delimited line.
+                lines.next();
+            }
+            Some(record)
+        })
     }
 }
 
