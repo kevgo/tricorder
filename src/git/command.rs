@@ -1,5 +1,7 @@
 use crate::domain::{Result, UserError};
 use crate::git::ZeroString;
+use itertools::Itertools;
+use std::ffi::OsStr;
 use std::process::{Command, Output};
 
 /// app-specific helper methods for running Git commands via `process::Command`
@@ -55,11 +57,13 @@ fn git_error(command: &Command, err: String) -> UserError {
 }
 
 fn command_text(command: &Command) -> String {
-    let args = command.get_args();
-    let mut parts = Vec::with_capacity(args.len() + 1);
-    parts.push(command.get_program().to_string_lossy().to_string());
-    parts.extend(args.map(|arg| arg.to_string_lossy().to_string()));
-    shlex::try_join(parts.iter().map(AsRef::as_ref)).unwrap_or_else(|_| parts.join(" "))
+    shlex::try_join(command_parts(command)).unwrap_or_else(|_| command_parts(command).join(" "))
+}
+
+fn command_parts(command: &Command) -> impl Iterator<Item = &str> {
+    std::iter::once(command.get_program())
+        .chain(command.get_args())
+        .filter_map(OsStr::to_str)
 }
 
 #[cfg(test)]
