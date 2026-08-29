@@ -10,7 +10,7 @@ pub(crate) trait GitCommandExt {
 }
 
 impl GitCommandExt for Command {
-    /// run the command and ensures it succeeded
+    /// runs the command and ensures it succeeded
     fn run(&mut self) -> Result<()> {
         let status = self
             .status()
@@ -24,7 +24,7 @@ impl GitCommandExt for Command {
         Ok(())
     }
 
-    /// run the command, ensures it succeeded, and returns the output it generated
+    /// runs the command, ensures it succeeded, and returns the output it generated
     fn run_output(&mut self) -> Result<Output> {
         let output = self
             .output()
@@ -38,7 +38,7 @@ impl GitCommandExt for Command {
         Ok(output)
     }
 
-    /// run the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
+    /// runs the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
         let output = self.run_output()?;
         Ok(ZeroString::from(&output.stdout))
