@@ -214,7 +214,7 @@ mod tests {
             .join("\0");
             let output = GitStatusOutput::from(give);
             let have = output.records().collect::<Vec<_>>();
-            assert_eq!(
+            pretty::assert_eq!(
                 have,
                 vec![
                     Record {
@@ -223,14 +223,14 @@ mod tests {
                         path: "new file.txt"
                     },
                     Record {
-                        index: '?',
-                        worktree: '?',
-                        path: "my file.txt"
-                    },
-                    Record {
                         index: 'C',
                         worktree: ' ',
                         path: "copy.rs"
+                    },
+                    Record {
+                        index: '?',
+                        worktree: '?',
+                        path: "some file.txt"
                     },
                     Record {
                         index: 'M',
