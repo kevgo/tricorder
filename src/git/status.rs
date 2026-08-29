@@ -201,6 +201,7 @@ mod tests {
                 "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
                 "foo" => None,
                 "foo bar" => None,
+                "MM" => None,
                 "" => None,
             };
             for (give, want) in tests {
