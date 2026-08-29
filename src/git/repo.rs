@@ -2,9 +2,7 @@
 use crate::domain::Result;
 #[cfg(test)]
 use crate::git::GitCommandExt;
-#[cfg(test)]
-use std::path::Path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 #[derive(Debug, PartialEq)]
@@ -37,7 +35,7 @@ impl Repo {
 
     /// provides a Repo instance if the current directory is a Git repository
     pub fn load() -> Option<Repo> {
-        if is_git_repo() {
+        if is_git_repo(None) {
             Some(Repo { path: None })
         } else {
             None
@@ -55,9 +53,12 @@ impl Repo {
 }
 
 /// checks if the current directory is a Git repository
-fn is_git_repo() -> bool {
+fn is_git_repo(dir: Option<&Path>) -> bool {
     let mut command = Command::new("git");
     command.args(["rev-parse", "--is-inside-work-tree"]);
+    if let Some(dir) = dir {
+        command.current_dir(dir);
+    }
     let Ok(output) = command.output() else {
         return false;
     };
