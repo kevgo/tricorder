@@ -55,10 +55,10 @@ fn git_error(command: &Command, err: String) -> UserError {
 }
 
 fn command_text(command: &Command) -> String {
-    let parts: Vec<_> = std::iter::once(command.get_program())
-        .chain(command.get_args())
-        .map(|part| part.to_string_lossy())
-        .collect();
+    let args = command.get_args();
+    let mut parts = Vec::with_capacity(args.len() + 1);
+    parts.push(command.get_program().to_string_lossy().to_string());
+    parts.extend(args.map(|arg| arg.to_string_lossy().to_string()));
     shlex::try_join(parts.iter().map(AsRef::as_ref)).unwrap_or_else(|_| parts.join(" "))
 }
 
