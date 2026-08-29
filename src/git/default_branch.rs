@@ -56,3 +56,102 @@ fn parse_git_town_config(config: &str) -> Option<String> {
     }
     Some(result.to_string())
 }
+
+#[cfg(test)]
+mod tests {
+    mod parse_git_town_config {
+        use super::super::parse_git_town_config;
+
+        #[test]
+        fn extracts_main_branch() {
+            let give = r#"
+[branches]
+main = "main"
+perennials = []
+"#;
+            let have = parse_git_town_config(give);
+            pretty::assert_eq!(have, Some("main".to_string()));
+        }
+
+        #[test]
+        fn extracts_non_default_main_branch() {
+            let give = r#"
+[branches]
+main = "develop"
+"#;
+            let have = parse_git_town_config(give);
+            pretty::assert_eq!(have, Some("develop".to_string()));
+        }
+
+        #[test]
+        fn extracts_dotted_key() {
+            let give = r#"branches.main = "trunk""#;
+            let have = parse_git_town_config(give);
+            pretty::assert_eq!(have, Some("trunk".to_string()));
+        }
+
+        #[test]
+        fn ignores_unrelated_sections() {
+            let give = r#"
+[hosting]
+forge-type = "github"
+
+[branches]
+main = "master"
+
+[sync]
+feature-strategy = "merge"
+"#;
+            let have = parse_git_town_config(give);
+            pretty::assert_eq!(have, Some("master".to_string()));
+        }
+
+        #[test]
+        fn returns_none_for_invalid_toml() {
+            pretty::assert_eq!(parse_git_town_config("not = [toml"), None);
+        }
+
+        #[test]
+        fn returns_none_for_empty_input() {
+            pretty::assert_eq!(parse_git_town_config(""), None);
+        }
+
+        #[test]
+        fn returns_none_when_branches_missing() {
+            let give = r#"
+[hosting]
+forge-type = "github"
+"#;
+            pretty::assert_eq!(parse_git_town_config(give), None);
+        }
+
+        #[test]
+        fn returns_none_when_branches_is_not_a_table() {
+            pretty::assert_eq!(parse_git_town_config(r#"branches = "main""#), None);
+        }
+
+        #[test]
+        fn returns_none_when_main_missing() {
+            let give = r#"
+[branches]
+perennials = ["gh-pages"]
+"#;
+            pretty::assert_eq!(parse_git_town_config(give), None);
+        }
+
+        #[test]
+        fn returns_none_when_main_is_not_a_string() {
+            pretty::assert_eq!(parse_git_town_config("[branches]\nmain = 1\n"), None);
+            pretty::assert_eq!(parse_git_town_config("[branches]\nmain = []\n"), None);
+            pretty::assert_eq!(
+                parse_git_town_config("[branches]\nmain = { name = \"main\" }\n"),
+                None
+            );
+        }
+
+        #[test]
+        fn returns_none_when_main_is_empty() {
+            pretty::assert_eq!(parse_git_town_config("[branches]\nmain = \"\"\n"), None);
+        }
+    }
+}
