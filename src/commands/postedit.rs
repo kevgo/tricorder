@@ -10,12 +10,13 @@ pub fn postedit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
+    let git_repo = git::Repo::load(None);
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the files and their stacks
-    let (stacks, is_git_repo) = match git::uncommitted(None) {
+    let (stacks, is_git_repo) = match git::uncommitted(&git_repo) {
         Some(files) => (stacks::from_files(&files, &ignores), true.into()),
         None => (stacks::discover_all(&ignores), false.into()),
     };

@@ -1,14 +1,14 @@
 mod command;
+mod diff;
 mod repo;
 mod stage;
 mod staged;
 mod status;
-#[cfg(test)]
-pub(crate) mod testing;
 mod uncommitted;
 mod zerostring;
 
 pub(crate) use command::Command;
+pub(crate) use diff::diff;
 pub(crate) use repo::Repo;
 pub(crate) use stage::stage;
 pub use staged::{StagedFiles, staged};
