@@ -12,6 +12,9 @@ pub(crate) trait GitCommandExt {
     /// runs the command, ensures it succeeded, and returns the output it generated
     fn run_output(&mut self) -> Result<Output>;
 
+    /// runs the command, ensures it succeeded, and returns the output it generated as a trimmed string
+    fn run_stdout_trimmed(&mut self) -> Result<String>;
+
     /// runs the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
     fn run_stdout_zero(&mut self) -> Result<ZeroString>;
 }
@@ -41,6 +44,17 @@ impl GitCommandExt for Command {
             });
         }
         Ok(output)
+    }
+
+    fn run_stdout_trimmed(&mut self) -> Result<String> {
+        let output = self.run_output()?;
+        Ok(String::from_utf8(output.stdout)
+            .map_err(|err| UserError::GitOutputNotUtf8 {
+                command: command_text(self),
+                err: err.to_string(),
+            })?
+            .trim()
+            .to_owned())
     }
 
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {

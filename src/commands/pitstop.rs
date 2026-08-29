@@ -3,14 +3,14 @@ use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, IsGitRepo, Result};
+use crate::domain::{DetectedStacks, Result};
 use crate::{git, stacks};
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let is_git_repo = git::is_repo("./");
+    let repo = git::Repo::load();
     let stacks = if *is_git_repo {
         match git::branch_changed(None) {
             Some(files) => stacks::from_files(&files, &ignores),
