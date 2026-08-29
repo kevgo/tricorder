@@ -6,9 +6,7 @@ impl Repo {
     pub fn diff(&self) -> Result<Vec<u8>> {
         let output = self
             .git_command()
-            .arg("diff")
-            .arg("HEAD")
-            .arg("--color")
+            .args(["diff", "HEAD", "--color"])
             .run_output()?;
         Ok(output.stdout)
     }

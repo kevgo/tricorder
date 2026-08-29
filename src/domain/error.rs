@@ -136,7 +136,7 @@ impl UserError {
                 println!("executable not found: {}", path.display());
             }
             UserError::GitNotFound { command, err } => {
-                println!("cannot seem to find Git as part of running \"{command}\": {err}")
+                println!("cannot seem to find Git as part of running \"{command}\": {err}");
             }
             UserError::GitOutputNotUtf8 { command, err } => {
                 println!("cannot convert the output of \"{command}\" to UTF-8: {err}");
