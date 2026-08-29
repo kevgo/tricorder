@@ -7,6 +7,9 @@ use std::process::Command;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Repo {
+    /// the path to the Git repository
+    ///
+    /// If None, uses the current directory
     path: Option<PathBuf>,
 }
 
