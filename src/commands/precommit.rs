@@ -21,7 +21,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the staged files and their stacks
-    let staged = git::staged(&git_repo)?;
+    let staged = git_repo.staged()?;
     if staged.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }

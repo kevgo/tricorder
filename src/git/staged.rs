@@ -4,11 +4,13 @@ use crate::domain::{File, Result};
 use crate::git::Repo;
 use crate::git::status::{GitStatusOutput, Record, status_output};
 
-/// provides the staged files
-#[must_use]
-pub(crate) fn staged(repo: &Repo) -> Result<StagedFiles> {
-    let output = status_output(repo, &[])?;
-    Ok(StagedFiles::from(&output))
+impl Repo {
+    /// provides the staged files
+    #[must_use]
+    pub(crate) fn staged(&self) -> Result<StagedFiles> {
+        let output = status_output(self, &[])?;
+        Ok(StagedFiles::from(&output))
+    }
 }
 
 /// the files that are staged in the current directory
@@ -82,7 +84,7 @@ mod tests {
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
             repo.git_command().args(&["add", "my file.txt"]).run()?;
-            let have = super::super::staged(&repo)?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("my file.txt")],
@@ -97,7 +99,7 @@ mod tests {
             fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
             repo.git_command().args(&["add", "file\"quote.txt"]).run()?;
-            let have = super::super::staged(&repo)?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("file\"quote.txt")],
@@ -115,7 +117,7 @@ mod tests {
             repo.git_command()
                 .args(&["mv", "old file.txt", "new file.txt"])
                 .run()?;
-            let have = super::super::staged(&repo)?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("new file.txt")],
@@ -136,7 +138,7 @@ mod tests {
             fs::write(dir.path().join("my file.txt"), "v2").unwrap();
             repo.git_command().args(&["add", "my file.txt"]).run()?;
             fs::write(dir.path().join("my file.txt"), "v3").unwrap();
-            let have = super::super::staged(&repo)?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![File::from("my file.txt")],
                 full: vec![],
@@ -150,7 +152,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
-            let have = super::super::staged(&repo)?;
+            let have = repo.staged()?;
             let want = StagedFiles::default();
             pretty::assert_eq!(have, want);
             Ok(())
