@@ -2,7 +2,7 @@ use crate::domain::{Result, UserError};
 use crate::git::ZeroString;
 use std::process::{Command, Output};
 
-/// higher-level run methods for Git `process::Command`s
+/// app-specific helper methods for running Git commands via `process::Command`
 pub(crate) trait GitCommandExt {
     fn run(&mut self) -> Result<()>;
     fn run_output(&mut self) -> Result<Output>;
@@ -10,6 +10,7 @@ pub(crate) trait GitCommandExt {
 }
 
 impl GitCommandExt for Command {
+    /// run the command and ensures it succeeded
     fn run(&mut self) -> Result<()> {
         let status = self
             .status()
@@ -23,6 +24,7 @@ impl GitCommandExt for Command {
         Ok(())
     }
 
+    /// run the command, ensures it succeeded, and returns the output it generated
     fn run_output(&mut self) -> Result<Output> {
         let output = self
             .output()
@@ -36,6 +38,7 @@ impl GitCommandExt for Command {
         Ok(output)
     }
 
+    /// run the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
         let output = self.run_output()?;
         Ok(ZeroString::from(&output.stdout))
