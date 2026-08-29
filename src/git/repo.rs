@@ -35,8 +35,7 @@ impl Repo {
 
     /// provides a Repo instance if the current directory is a Git repository
     pub fn load() -> Option<Repo> {
-        let git_folder = Path::new(".git");
-        git_folder.exists().then_some(Repo { path: None })
+        Path::new(".git").exists().then_some(Repo { path: None })
     }
 
     /// provides a Git `Command` that you just need to fill with args and then run
