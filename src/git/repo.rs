@@ -1,3 +1,4 @@
+use crate::domain::File;
 #[cfg(test)]
 use crate::domain::Result;
 #[cfg(test)]
@@ -42,7 +43,12 @@ impl Repo {
         }
     }
 
-    /// provides `Command` instance that runs Git
+    pub(crate) fn file_exists(&self, file: &File) -> bool {
+        match &self.path {
+            Some(dir) => dir.join(file).is_file(),
+            None => file.as_ref().is_file(),
+        }
+    }
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
         if let Some(path) = &self.path {

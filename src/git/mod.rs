@@ -3,7 +3,6 @@ mod branch_committed_files;
 mod command;
 mod default_branch;
 mod diff;
-mod file_exists;
 mod merge_base;
 mod repo;
 mod stage;
