@@ -4,13 +4,17 @@ use std::process::{Command, Output};
 
 /// app-specific helper methods for running Git commands via `process::Command`
 pub(crate) trait GitCommandExt {
+    /// runs the command and ensures it succeeded
     fn run(&mut self) -> Result<()>;
+
+    /// runs the command, ensures it succeeded, and returns the output it generated
     fn run_output(&mut self) -> Result<Output>;
+
+    /// runs the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
     fn run_stdout_zero(&mut self) -> Result<ZeroString>;
 }
 
 impl GitCommandExt for Command {
-    /// runs the command and ensures it succeeded
     fn run(&mut self) -> Result<()> {
         let status = self
             .status()
@@ -24,7 +28,6 @@ impl GitCommandExt for Command {
         Ok(())
     }
 
-    /// runs the command, ensures it succeeded, and returns the output it generated
     fn run_output(&mut self) -> Result<Output> {
         let output = self
             .output()
@@ -38,7 +41,6 @@ impl GitCommandExt for Command {
         Ok(output)
     }
 
-    /// runs the command, ensures it succeeded, and returns its STDOUT as a `ZeroString`
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
         let output = self.run_output()?;
         Ok(ZeroString::from(&output.stdout))
