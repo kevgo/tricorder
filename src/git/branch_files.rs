@@ -3,17 +3,29 @@
 use crate::domain::File;
 use crate::git::Repo;
 use crate::git::ZeroString;
+use crate::gittown;
 use std::path::Path;
 use std::process::Command;
 
 impl Repo {
-    /// files unique to the current branch (committed since the default branch) plus uncommitted files
+    /// files changed on the current branch plus uncommitted files
     ///
     /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
     #[must_use]
-    pub(crate) fn branch_changed(&self) -> Result<Vec<File>> {
+    pub(crate) fn branch_files(&self) -> Result<Vec<File>> {
         let uncommitted = self.uncommitted()?;
-        let default_branch = default_branch(dir)?;
+
+        // try to use Git Town
+        if let Some(gittown_files) = gittown::files_changed_on_current_branch(self) {
+            gittown_files.extend(uncommitted);
+            gittown_files.sort();
+            gittown_files.dedup();
+            gittown_files.retain(|file| file_exists(self.path(), file));
+            return Ok(gittown_files);
+        }
+
+        // here there is no Git Town --> use Git
+        let default_branch = self.default_branch()?;
         let merge_base = merge_base(dir, &default_branch)?;
         let committed = committed_on_branch(dir, &merge_base)?;
         let mut files = committed;
