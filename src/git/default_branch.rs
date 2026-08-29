@@ -8,6 +8,11 @@ impl Repo {
     /// The default branch to compare against, in this order:
     /// `origin/HEAD`, local `main`, local `master`, `origin/main`, `origin/master`
     pub(crate) fn default_branch(&self) -> Result<Option<String>> {
+        // try Git Town config
+        if let Some(git_town_result) = self.default_branch_git_town() {
+            return Ok(Some(git_town_result));
+        }
+        // try origin HEAD
         if let Ok(origin_head) = self
             .git_command()
             .args(["symbolic-ref", "--short", "refs/remotes/origin/HEAD"])
@@ -36,25 +41,6 @@ fn default_branch_git_town_config() -> Option<String> {
 
 fn default_branch_gittown_env() -> Option<String> {
     std::env::var("GIT_TOWN_MAIN_BRANCH").ok()
-}
-
-fn parse_git_town_config(config: &str) -> Option<String> {
-    let Ok(config) = config.parse::<Table>() else {
-        return None;
-    };
-    let Some(branches) = config.get("branches") else {
-        return None;
-    };
-    let Some(main) = branches.get("main") else {
-        return None;
-    };
-    let Some(result) = main.as_str() else {
-        return None;
-    };
-    if result.is_empty() {
-        return None;
-    }
-    Some(result.to_string())
 }
 
 #[cfg(test)]
