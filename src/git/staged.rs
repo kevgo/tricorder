@@ -1,14 +1,15 @@
 //! provides the staged files in the current directory
 
-use crate::domain::File;
-use crate::git::status::{GitStatusOutput, status_output};
-use std::path::Path;
+use crate::domain::{File, Result};
+use crate::git::Repo;
+use crate::git::status::{GitStatusOutput, Record};
 
-/// provides the staged files
-#[must_use]
-pub fn staged(dir: Option<&Path>) -> Option<StagedFiles> {
-    let output = status_output(dir, &[])?;
-    Some(StagedFiles::from(&output))
+impl Repo {
+    /// provides the staged files
+    pub(crate) fn staged(&self) -> Result<StagedFiles> {
+        let status_output = self.status(&[])?;
+        Ok(StagedFiles::from(&status_output))
+    }
 }
 
 /// the files that are staged in the current directory
@@ -25,8 +26,8 @@ impl From<&GitStatusOutput> for StagedFiles {
     /// parses the output of "git status --porcelain=v1 -z"
     fn from(output: &GitStatusOutput) -> StagedFiles {
         let mut result = StagedFiles::default();
-        for line in output.records() {
-            result.add_line(line);
+        for record in output.records() {
+            result.add_record(&record);
         }
         result
     }
@@ -34,10 +35,7 @@ impl From<&GitStatusOutput> for StagedFiles {
 
 impl StagedFiles {
     /// parses a line from the output of "git status --porcelain=v1 -z" and adds it to this instance
-    fn add_line(&mut self, line: &str) {
-        let Some(record) = GitStatusOutput::parse_record(line) else {
-            return;
-        };
+    fn add_record(&mut self, record: &Record<'_>) {
         let is_staged = is_index_change(record.index);
         let is_working = is_index_change(record.worktree);
         if is_staged && is_working {
@@ -56,6 +54,12 @@ impl StagedFiles {
         result.sort();
         result
     }
+
+    /// provides whether there are any staged files
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.partial.is_empty() && self.full.is_empty()
+    }
 }
 
 fn is_index_change(status: char) -> bool {
@@ -68,103 +72,97 @@ mod tests {
     mod staged {
         use super::super::StagedFiles;
         use crate::domain::File;
-        use crate::git::testing::{git, git_repo};
+        use crate::domain::Result;
+        use crate::git::GitCommandExt;
+        use crate::git::Repo;
         use std::fs;
+        use tempfile::TempDir;
 
         #[test]
-        fn includes_fully_staged_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_fully_staged_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
-            git(&dir, &["add", "my file.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(["add", "my file.txt"]).run()?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("my file.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_fully_staged_file_with_quotes() {
-            let dir = git_repo();
+        fn includes_fully_staged_file_with_quotes() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
-            git(&dir, &["add", "file\"quote.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(["add", "file\"quote.txt"]).run()?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("file\"quote.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_renamed_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_renamed_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("old file.txt"), "content").unwrap();
-            git(&dir, &["add", "old file.txt"]);
-            git(
-                &dir,
-                &[
-                    "-c",
-                    "user.name=Test",
-                    "-c",
-                    "user.email=test@example.com",
-                    "commit",
-                    "-qm",
-                    "init",
-                ],
-            );
-            git(&dir, &["mv", "old file.txt", "new file.txt"]);
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(["add", "old file.txt"]).run()?;
+            repo.git_command()
+                .args(["mv", "old file.txt", "new file.txt"])
+                .run()?;
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
                 full: vec![File::from("new file.txt")],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn includes_partially_staged_file_with_spaces() {
-            let dir = git_repo();
+        fn includes_partially_staged_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "v1").unwrap();
-            git(&dir, &["add", "my file.txt"]);
-            git(
-                &dir,
-                &[
-                    "-c",
-                    "user.name=Test",
-                    "-c",
-                    "user.email=test@example.com",
-                    "commit",
-                    "-qm",
-                    "init",
-                ],
-            );
+            let repo = Repo::init(dir.path())?;
+            repo.git_command().args(["add", "my file.txt"]).run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=init"])
+                .run()?;
             fs::write(dir.path().join("my file.txt"), "v2").unwrap();
-            git(&dir, &["add", "my file.txt"]);
+            repo.git_command().args(["add", "my file.txt"]).run()?;
             fs::write(dir.path().join("my file.txt"), "v3").unwrap();
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![File::from("my file.txt")],
                 full: vec![],
             };
             pretty::assert_eq!(have, want);
+            Ok(())
         }
 
         #[test]
-        fn ignores_untracked_file_with_spaces() {
-            let dir = git_repo();
+        fn ignores_untracked_file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
-            let have = super::super::staged(Some(dir.path())).unwrap();
+            let repo = Repo::init(dir.path())?;
+            let have = repo.staged()?;
             let want = StagedFiles::default();
             pretty::assert_eq!(have, want);
+            Ok(())
         }
     }
 
     mod staged_files {
         use super::super::StagedFiles;
         use crate::domain::File;
-        use crate::git::status::GitStatusOutput;
+        use crate::git::status::{GitStatusOutput, Record};
         use maplit::hashmap;
 
         #[test]
@@ -215,7 +213,7 @@ mod tests {
         }
 
         #[test]
-        fn parse_line() {
+        fn parse() {
             let tests = hashmap! {
                 "MM file.rs" => StagedFiles {
                     partial: vec!["file.rs".into()],
@@ -276,7 +274,8 @@ mod tests {
             };
             for (give, want) in tests {
                 let mut have = StagedFiles::default();
-                have.add_line(give);
+                let record = Record::parse(give).unwrap();
+                have.add_record(&record);
                 assert_eq!(have, want, "{give}");
             }
         }

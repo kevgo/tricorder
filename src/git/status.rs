@@ -1,61 +1,75 @@
 //! helper functions that run "git status"
 
+use crate::domain::Result;
+use crate::git::GitCommandExt;
+use crate::git::Repo;
 use crate::git::ZeroString;
-use itertools::Itertools;
-use std::path::Path;
-use std::process::Command;
 
-/// runs `git status` and returns its stdout
-pub(crate) fn status_output(dir: Option<&Path>, extra_args: &[&str]) -> Option<GitStatusOutput> {
-    let mut command = Command::new("git");
-    command.args(["status", "--porcelain=v1", "-z"]);
-    command.args(extra_args);
-    if let Some(dir) = dir {
-        command.current_dir(dir);
+impl Repo {
+    /// runs `git status` and returns its stdout
+    pub(crate) fn status(&self, extra_args: &[&str]) -> Result<GitStatusOutput> {
+        Ok(self
+            .git_command()
+            .args(["status", "--porcelain=v1", "-z"])
+            .args(extra_args)
+            .run_stdout_zero()?
+            .into())
     }
-    let Ok(output) = command.output() else {
-        // Git not installed
-        return None;
-    };
-    if !output.status.success() {
-        // probably not a Git repo
-        return None;
-    }
-    let Ok(output) = str::from_utf8(&output.stdout) else {
-        // we don't support non-UTF-8 filenames for now
-        eprintln!(
-            "ERROR: \"git {}\" returned non-UTF-8 output",
-            command
-                .get_args()
-                .map(|arg| arg.to_string_lossy())
-                .join(" ")
-        );
-        return None;
-    };
-    Some(output.into())
 }
 
 /// output of `git status --porcelain=v1 -z`
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct GitStatusOutput(ZeroString);
 
+impl From<&str> for GitStatusOutput {
+    fn from(value: &str) -> Self {
+        Self(value.into())
+    }
+}
+
+impl From<String> for GitStatusOutput {
+    fn from(value: String) -> Self {
+        Self(value.into())
+    }
+}
+
+impl From<ZeroString> for GitStatusOutput {
+    fn from(value: ZeroString) -> Self {
+        Self(value)
+    }
+}
+
 impl GitStatusOutput {
     /// destination records, skipping rename/copy original paths
-    pub(crate) fn records(&self) -> impl Iterator<Item = &str> {
+    pub(crate) fn records(&self) -> impl Iterator<Item = Record<'_>> {
         let mut lines = self.0.lines();
         std::iter::from_fn(move || {
             let line = lines.next()?;
-            // Rename/copy entries are `XY dest\0orig\0`. The dest path can contain spaces,
-            // so we must not treat the orig path as part of this record.
-            if Self::has_orig_path(line) {
+            let record = Record::parse(line)?;
+            if record.has_orig_path() {
+                // Rename/copy entries are `XY dest\0orig\0`.
+                // We don't care about the orig filename, so we skip the next zero-delimited line.
                 lines.next();
             }
-            Some(line)
+            Some(record)
         })
     }
+}
 
-    /// parses the XY status prefix and path from a porcelain record
-    pub(crate) fn parse_record(line: &str) -> Option<Record<'_>> {
+/// a record from `git status --porcelain=v1 -z`
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) struct Record<'a> {
+    /// X status: how the index (staging area) differs from HEAD
+    pub index: char,
+    /// Y status: how the working tree differs from the index
+    pub worktree: char,
+    /// file path, for rename/copy this is the destination path
+    pub path: &'a str,
+}
+
+impl Record<'_> {
+    /// parses the XY status prefix and path from a porcelain line
+    pub(crate) fn parse(line: &str) -> Option<Record<'_>> {
         if line.len() < 3 {
             return None;
         }
@@ -87,10 +101,10 @@ impl GitStatusOutput {
         })
     }
 
-    /// indicates whether the record contains the original path of a rename or copy operation
-    fn has_orig_path(record: &str) -> bool {
-        let mut chars = record.chars();
-        matches!(chars.next(), Some('R' | 'C')) || matches!(chars.next(), Some('R' | 'C'))
+    /// provides whether this record has an original file path
+    fn has_orig_path(&self) -> bool {
+        // only rename/copy entries have an original file path
+        matches!(self.index, 'R' | 'C') || matches!(self.worktree, 'R' | 'C')
     }
 
     fn is_known_status(status: char) -> bool {
@@ -99,29 +113,17 @@ impl GitStatusOutput {
             'A' | 'M' | 'R' | 'C' | 'T' | ' ' | 'D' | 'U' | '?' | '!'
         )
     }
-}
 
-impl From<&str> for GitStatusOutput {
-    fn from(value: &str) -> Self {
-        Self(value.into())
+    pub fn is_uncommitted(&self) -> bool {
+        if self.index == '!' || self.worktree == '!' {
+            return false;
+        }
+        is_present_change(self.index) || is_present_change(self.worktree)
     }
 }
 
-impl From<String> for GitStatusOutput {
-    fn from(value: String) -> Self {
-        Self(value.into())
-    }
-}
-
-/// a record from `git status --porcelain=v1 -z`
-#[derive(Debug, Eq, PartialEq)]
-pub(crate) struct Record<'a> {
-    /// X status: how the index (staging area) differs from HEAD
-    pub index: char,
-    /// Y status: how the working tree differs from the index
-    pub worktree: char,
-    /// file path, for rename/copy this is the destination path
-    pub path: &'a str,
+fn is_present_change(status: char) -> bool {
+    matches!(status, 'A' | 'M' | 'R' | 'C' | 'T' | '?')
 }
 
 fn log_unexpected_line(line: &str) {
@@ -131,12 +133,12 @@ fn log_unexpected_line(line: &str) {
 #[cfg(test)]
 mod tests {
 
-    mod git_status_output {
-        use super::super::{GitStatusOutput, Record};
+    mod record {
+        use super::super::Record;
         use maplit::hashmap;
 
         #[test]
-        fn has_orig_path_detects_rename_and_copy() {
+        fn has_orig_path() {
             let tests = hashmap! {
                 "R  new.rs" => true,
                 "C  copy.rs" => true,
@@ -149,17 +151,15 @@ mod tests {
                 "?? file.rs" => false,
                 "A  file.rs" => false,
                 " D file.rs" => false,
-                "" => false,
-                "R" => true,
-                "C" => true,
             };
             for (give, want) in tests {
-                assert_eq!(GitStatusOutput::has_orig_path(give), want, "{give}");
+                let have = Record::parse(give).expect(give);
+                assert_eq!(have.has_orig_path(), want, "{give}");
             }
         }
 
         #[test]
-        fn parse_record_reads_status_and_path() {
+        fn parse() {
             let tests = hashmap! {
                 "MM file.rs" => Some(Record { index: 'M', worktree: 'M', path: "file.rs" }),
                 "M  my file.txt" => Some(Record { index: 'M', worktree: ' ', path: "my file.txt" }),
@@ -170,62 +170,96 @@ mod tests {
                 "" => None,
             };
             for (give, want) in tests {
-                pretty::assert_eq!(GitStatusOutput::parse_record(give), want, "{give}");
+                let have = Record::parse(give);
+                assert_eq!(have, want, "{give}");
             }
         }
     }
 
     mod records {
         use super::super::GitStatusOutput;
+        use super::super::Record;
         use maplit::hashmap;
 
         #[test]
-        fn records_skips_rename_and_copy_orig_paths() {
+        fn parse() {
+            let tests = hashmap! {
+                "MM file.rs" => Some(Record { index: 'M', worktree: 'M', path: "file.rs" }),
+                "M  file.rs" => Some(Record { index: 'M', worktree: ' ', path: "file.rs" }),
+                " M file.rs" => Some(Record { index: ' ', worktree: 'M', path: "file.rs" }),
+                "?? file.rs" => Some(Record { index: '?', worktree: '?', path: "file.rs" }),
+                "?? my file.txt" => Some(Record { index: '?', worktree: '?', path: "my file.txt" }),
+                "?? file\"quote.txt" => Some(Record { index: '?', worktree: '?', path: "file\"quote.txt" }),
+                "!! file.rs" => Some(Record { index: '!', worktree: '!', path: "file.rs" }),
+                "UU file.rs" => Some(Record { index: 'U', worktree: 'U', path: "file.rs" }), // unmerged conflict in file
+                "D  file.rs" => Some(Record { index: 'D', worktree: ' ', path: "file.rs" }),
+                " D file.rs" => Some(Record { index: ' ', worktree: 'D', path: "file.rs" }),
+                "A  file.rs" => Some(Record { index: 'A', worktree: ' ', path: "file.rs" }),
+                " A file.rs" => Some(Record { index: ' ', worktree: 'A', path: "file.rs" }),
+                "R  dir/new.rs" => Some(Record { index: 'R', worktree: ' ', path: "dir/new.rs" }), // renamed file (dest path)
+                "C  dir/new.rs" => Some(Record { index: 'C', worktree: ' ', path: "dir/new.rs" }), // copied file (dest path)
+                "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
+                "foo" => None,
+                "foo bar" => None,
+                "MM" => None,
+                "" => None,
+            };
+            for (give, want) in tests {
+                let have = Record::parse(give);
+                pretty::assert_eq!(have, want, "{give}");
+            }
+        }
+
+        #[test]
+        fn skips_rename_and_copy_orig_paths() {
             let give = [
-                "R  new file.txt",
-                "old file.txt",
-                "?? my file.txt",
-                "C  copy.rs",
-                "original.rs",
+                "R  new file.txt\0old file.txt",
+                "C  copy.rs\0original.rs",
+                "?? some file.txt",
                 "M  file.rs",
             ]
             .join("\0");
-            let give = GitStatusOutput::from(give);
+            let output = GitStatusOutput::from(give);
+            let have = output.records().collect::<Vec<_>>();
             pretty::assert_eq!(
-                give.records().collect::<Vec<_>>(),
+                have,
                 vec![
-                    "R  new file.txt",
-                    "?? my file.txt",
-                    "C  copy.rs",
-                    "M  file.rs",
+                    Record {
+                        index: 'R',
+                        worktree: ' ',
+                        path: "new file.txt"
+                    },
+                    Record {
+                        index: 'C',
+                        worktree: ' ',
+                        path: "copy.rs"
+                    },
+                    Record {
+                        index: '?',
+                        worktree: '?',
+                        path: "some file.txt"
+                    },
+                    Record {
+                        index: 'M',
+                        worktree: ' ',
+                        path: "file.rs"
+                    },
                 ]
             );
         }
 
         #[test]
-        fn records_skips_empty_entries() {
+        fn skips_empty_entries() {
             let tests = hashmap! {
                 "" => vec![],
                 "\0" => vec![],
-                "M  file.rs\0" => vec!["M  file.rs"],
+                "M  file.rs\0" => vec![Record { index: 'M', worktree: ' ', path: "file.rs" }],
             };
             for (give, want) in tests {
-                pretty::assert_eq!(
-                    GitStatusOutput::from(give).records().collect::<Vec<_>>(),
-                    want
-                );
+                let output = GitStatusOutput::from(give);
+                let have = output.records().collect::<Vec<_>>();
+                assert_eq!(have, want, "{give}");
             }
-        }
-    }
-
-    mod status_output {
-        use super::super::status_output;
-        use tempfile::TempDir;
-
-        #[test]
-        fn none_outside_git_repo() {
-            let dir = TempDir::new().unwrap();
-            assert_eq!(status_output(Some(dir.path()), &[]), None);
         }
     }
 }
