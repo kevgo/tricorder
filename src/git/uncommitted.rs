@@ -66,16 +66,12 @@ mod tests {
         let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("old file.txt"), "hello").unwrap();
         let repo = Repo::init(dir.path())?;
-        repo.git_command().arg("add").arg("old file.txt").run()?;
+        repo.git_command().args(["add", "old file.txt"]).run()?;
         repo.git_command()
-            .arg("commit")
-            .arg("--quiet")
-            .arg("--message=Initial")
+            .args(["commit", "--quiet", "--message=Initial"])
             .run()?;
         repo.git_command()
-            .arg("mv")
-            .arg("old file.txt")
-            .arg("new file.txt")
+            .args(["mv", "old file.txt", "new file.txt"])
             .run()?;
         let have = repo.uncommitted()?;
         pretty::assert_eq!(have, vec![File::from("new file.txt")]);
