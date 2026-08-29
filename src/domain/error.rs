@@ -133,7 +133,7 @@ impl UserError {
             }
             UserError::GitNotFound { command, err } => println!("cannot run \"{command}\": {err}"),
             UserError::GitRunFailed { command, status } => {
-                println!("command \"{command}\" failed with exit status {status}")
+                println!("command \"{command}\" failed with exit status {status}");
             }
             UserError::NoGitRepository => println!("not a git repository (no .git directory)"),
             UserError::NotMainGitWorktree => {
