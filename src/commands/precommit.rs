@@ -14,13 +14,13 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let git_repo = git::Repo::load().ok_or(UserError::NoGitRepository)?;
+    let repo = git::Repo::load().ok_or(UserError::NoGitRepository)?;
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the staged files and their stacks
-    let staged = git_repo.staged()?;
+    let staged = repo.staged()?;
     if staged.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
@@ -62,7 +62,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 7: stage the files whose fixes actually changed their content
     let after = fingerprint::scan_files(&staged_files);
     let changed = fingerprint::changed(&before, &after);
-    git_repo.stage(&changed)?;
+    repo.stage(&changed)?;
     Ok(ExitCode::SUCCESS)
 }
 
