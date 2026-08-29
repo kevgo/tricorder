@@ -55,13 +55,11 @@ fn git_error(command: &Command, err: String) -> UserError {
 }
 
 fn command_text(command: &Command) -> String {
-    let mut text = String::new();
-    text.push_str(&command.get_program().to_string_lossy());
-    for arg in command.get_args() {
-        text.push(' ');
-        text.push_str(&arg.to_string_lossy());
-    }
-    text
+    let parts: Vec<_> = std::iter::once(command.get_program())
+        .chain(command.get_args())
+        .map(|part| part.to_string_lossy())
+        .collect();
+    shlex::try_join(parts.iter().map(AsRef::as_ref)).unwrap_or_else(|_| parts.join(" "))
 }
 
 #[cfg(test)]
@@ -91,7 +89,7 @@ mod tests {
             let mut give = Command::new("git");
             give.args(["commit", "-m", "hello world"]);
             let have = command_text(&give);
-            pretty::assert_eq!(have, "git commit -m hello world");
+            pretty::assert_eq!(have, "git commit -m 'hello world'");
         }
     }
 }
