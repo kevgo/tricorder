@@ -45,7 +45,7 @@ impl GitCommandExt for Command {
 
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
         let output = self.run_output()?;
-        Ok(ZeroString::from(&output.stdout))
+        ZeroString::try_from(output.stdout)
     }
 }
 
