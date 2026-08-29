@@ -9,7 +9,6 @@ impl Repo {
     /// files changed on the current branch plus uncommitted files
     ///
     /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
-    #[must_use]
     pub(crate) fn branch_changed_files(&self) -> Result<Option<Vec<File>>> {
         let uncommitted = self.uncommitted()?;
 
