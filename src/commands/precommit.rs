@@ -8,14 +8,13 @@ use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
 use crate::git;
 use crate::stacks;
 use ahash::AHashMap;
-use std::path::Path;
 use std::process::ExitCode;
 
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let git_repo = git::Repo::load(None::<&Path>).ok_or(UserError::NoGitRepository)?;
+    let git_repo = git::Repo::load().ok_or(UserError::NoGitRepository)?;
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;

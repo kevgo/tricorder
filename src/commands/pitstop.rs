@@ -5,7 +5,6 @@ use crate::commands::{fix, lint};
 use crate::config::Config;
 use crate::domain::Result;
 use crate::{git, stacks};
-use std::path::Path;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -15,7 +14,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let git_repo = git::Repo::load(None::<&Path>);
+    let git_repo = git::Repo::load();
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);

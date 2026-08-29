@@ -2,11 +2,10 @@ use crate::cli::input::RunArgs;
 use crate::commands::pitstop;
 use crate::domain::{Result, UserError};
 use crate::git::Repo;
-use std::path::Path;
 use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let repo = Repo::load(None::<&Path>);
+    let repo = Repo::load();
     let before_diff = if let Some(repo) = &repo {
         Some(repo.diff()?)
     } else {
