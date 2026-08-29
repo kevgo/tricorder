@@ -1,3 +1,4 @@
+#[cfg(test)]
 use crate::domain::Result;
 use crate::git::Command;
 use std::path::{Path, PathBuf};
@@ -9,6 +10,7 @@ pub(crate) struct Repo {
 
 impl Repo {
     /// initializes a new Git repo in the given directory
+    #[cfg(test)]
     pub fn init(path: &Path) -> Result<Repo> {
         let repo = Repo {
             path: Some(path.to_path_buf()),

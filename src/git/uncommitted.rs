@@ -7,7 +7,9 @@ use crate::git::status;
 #[must_use]
 pub fn uncommitted(repo: &Repo) -> Result<Vec<File>> {
     let output = status::status_output(repo, &["--untracked-files=all"])?;
-    let uncommitted_records = output.records().filter(|record| record.is_uncommitted());
+    let uncommitted_records = output
+        .records()
+        .filter(super::status::Record::is_uncommitted);
     let uncommitted_files = uncommitted_records.map(|record| record.path.into());
     Ok(uncommitted_files.collect())
 }
