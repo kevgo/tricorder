@@ -7,7 +7,7 @@ mod status;
 mod uncommitted;
 mod zerostring;
 
-pub(crate) use command::Command;
+pub(crate) use command::GitCommandExt;
 pub(crate) use repo::Repo;
 pub(crate) use staged::StagedFiles;
 pub(crate) use zerostring::ZeroString;

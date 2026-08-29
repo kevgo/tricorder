@@ -18,6 +18,7 @@ impl Repo {
 mod tests {
     use crate::domain::File;
     use crate::domain::Result;
+    use crate::git::GitCommandExt;
     use crate::git::Repo;
     use std::fs;
     use std::process::Command;

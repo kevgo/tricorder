@@ -73,6 +73,7 @@ mod tests {
         use super::super::StagedFiles;
         use crate::domain::File;
         use crate::domain::Result;
+        use crate::git::GitCommandExt;
         use crate::git::Repo;
         use std::fs;
         use tempfile::TempDir;

@@ -1,65 +1,40 @@
 use crate::domain::{Result, UserError};
 use crate::git::ZeroString;
-use std::ffi::OsStr;
-use std::path::Path;
 use std::process::{self, Output};
 
-/// a Command refinement that offers higher-level methods for running and getting output
-pub(crate) struct Command(process::Command);
-
-impl From<Command> for process::Command {
-    fn from(command: Command) -> Self {
-        command.0
-    }
+/// higher-level run methods for Git `process::Command`s
+pub(crate) trait GitCommandExt {
+    fn run(&mut self) -> Result<()>;
+    fn run_output(&mut self) -> Result<Output>;
+    fn run_stdout_zero(&mut self) -> Result<ZeroString>;
 }
 
-impl Command {
-    pub fn new(path: Option<&Path>) -> Self {
-        let mut command = process::Command::new("git");
-        if let Some(path) = path {
-            command.current_dir(path);
-        }
-        Self(command)
-    }
-
-    pub fn arg<S: AsRef<OsStr>>(&mut self, arg: S) -> &mut Self {
-        self.0.arg(arg);
-        self
-    }
-
-    pub fn args<I, S>(&mut self, args: I) -> &mut Self
-    where
-        I: IntoIterator<Item = S>,
-        S: AsRef<OsStr>,
-    {
-        self.0.args(args);
-        self
-    }
-
-    pub fn run(&mut self) -> Result<()> {
-        let status = self.0.status().map_err(|err| UserError::CannotRunGit {
-            command: command_text(&self.0),
-            err: err.to_string(),
-        })?;
+impl GitCommandExt for process::Command {
+    fn run(&mut self) -> Result<()> {
+        let status = self
+            .status()
+            .map_err(|err| git_error(self, err.to_string()))?;
         if !status.success() {
-            return Err(UserError::CannotRunGit {
-                command: command_text(&self.0),
-                err: format!("exit status {status}"),
-            });
+            return Err(git_error(self, format!("exit status {status}")));
         }
         Ok(())
     }
 
-    pub fn run_output(&mut self) -> Result<Output> {
-        self.0.output().map_err(|err| UserError::CannotRunGit {
-            command: command_text(&self.0),
-            err: err.to_string(),
-        })
+    fn run_output(&mut self) -> Result<Output> {
+        self.output()
+            .map_err(|err| git_error(self, err.to_string()))
     }
 
-    pub fn run_stdout_zero(&mut self) -> Result<ZeroString> {
+    fn run_stdout_zero(&mut self) -> Result<ZeroString> {
         let output = self.run_output()?;
         Ok(ZeroString::from(&output.stdout))
+    }
+}
+
+fn git_error(command: &process::Command, err: String) -> UserError {
+    UserError::CannotRunGit {
+        command: command_text(command),
+        err,
     }
 }
 

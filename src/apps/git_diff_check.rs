@@ -9,6 +9,6 @@ pub(crate) fn lint_command(repo: &git::Repo) -> conc::Executable {
     command.args(["diff", "HEAD", "--check"]);
     conc::Executable {
         name: S("lint Git (git diff HEAD --check)"),
-        command: command.into(),
+        command,
     }
 }

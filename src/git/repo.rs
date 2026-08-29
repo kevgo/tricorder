@@ -1,7 +1,9 @@
 #[cfg(test)]
 use crate::domain::Result;
-use crate::git::Command;
+#[cfg(test)]
+use crate::git::GitCommandExt;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Repo {
@@ -39,8 +41,12 @@ impl Repo {
         }
     }
 
-    /// provides a `Command` instance that you just need to fill with args and then run
+    /// provides a Git `Command` that you just need to fill with args and then run
     pub fn git_command(&self) -> Command {
-        Command::new(self.path.as_deref())
+        let mut command = Command::new("git");
+        if let Some(path) = &self.path {
+            command.current_dir(path);
+        }
+        command
     }
 }

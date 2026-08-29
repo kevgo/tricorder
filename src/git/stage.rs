@@ -1,4 +1,5 @@
 use crate::domain::{File, Result};
+use crate::git::GitCommandExt;
 use crate::git::Repo;
 
 impl Repo {

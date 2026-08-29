@@ -1,6 +1,7 @@
 //! helper functions that run "git status"
 
 use crate::domain::Result;
+use crate::git::GitCommandExt;
 use crate::git::Repo;
 use crate::git::ZeroString;
 
