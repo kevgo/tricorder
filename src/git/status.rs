@@ -7,7 +7,7 @@ use crate::git::ZeroString;
 
 impl Repo {
     /// runs `git status` and returns its stdout
-    pub(crate) fn status_output(&self, extra_args: &[&str]) -> Result<GitStatusOutput> {
+    pub(crate) fn status(&self, extra_args: &[&str]) -> Result<GitStatusOutput> {
         let output = self
             .git_command()
             .args(["status", "--porcelain=v1", "-z"])

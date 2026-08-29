@@ -7,7 +7,7 @@ use crate::git::status::{GitStatusOutput, Record};
 impl Repo {
     /// provides the staged files
     pub(crate) fn staged(&self) -> Result<StagedFiles> {
-        let status_output = self.status_output(&[])?;
+        let status_output = self.status(&[])?;
         Ok(StagedFiles::from(&status_output))
     }
 }
