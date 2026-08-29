@@ -38,12 +38,12 @@ impl Command {
 
     pub fn run(&mut self) -> Result<()> {
         let status = self.0.status().map_err(|err| UserError::CannotRunGit {
-            command: commmand_text(&self.0),
+            command: command_text(&self.0),
             err: err.to_string(),
         })?;
         if !status.success() {
             return Err(UserError::CannotRunGit {
-                command: commmand_text(&self.0),
+                command: command_text(&self.0),
                 err: format!("exit status {status}"),
             });
         }
@@ -52,7 +52,7 @@ impl Command {
 
     pub fn run_output(&mut self) -> Result<Output> {
         self.0.output().map_err(|err| UserError::CannotRunGit {
-            command: commmand_text(&self.0),
+            command: command_text(&self.0),
             err: err.to_string(),
         })
     }
@@ -63,7 +63,7 @@ impl Command {
     }
 }
 
-fn commmand_text(command: &process::Command) -> String {
+fn command_text(command: &process::Command) -> String {
     let mut text = String::new();
     text.push_str(&command.get_program().to_string_lossy());
     for arg in command.get_args() {
