@@ -4,13 +4,14 @@ use crate::commands::lint;
 use crate::config::Config;
 use crate::domain::Result;
 use crate::{git, stacks};
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let git_repo = git::Repo::load(None);
+    let git_repo = git::Repo::load(None::<&Path>);
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;

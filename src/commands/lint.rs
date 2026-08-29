@@ -5,6 +5,7 @@ use crate::config::{Config, GlobalLint};
 use crate::domain::{DetectedStacks, Result};
 use crate::git;
 use crate::stacks;
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
@@ -14,7 +15,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let repo = git::Repo::load(None);
+    let repo = git::Repo::load(None::<&Path>);
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
@@ -85,10 +86,10 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if let Some(repo) = &git_repo {
-        if let Some(executable) = git_diff_check::lint_command(repo) {
-            result.push(conc::Runnable::Single(executable));
-        }
+    if let Some(repo) = &git_repo
+        && let Some(executable) = git_diff_check::lint_command(repo)
+    {
+        result.push(conc::Runnable::Single(executable));
     }
 
     Ok(result)

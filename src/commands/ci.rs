@@ -2,10 +2,11 @@ use crate::cli::input::RunArgs;
 use crate::commands::pitstop;
 use crate::domain::{Result, UserError};
 use crate::git::{self, Repo};
+use std::path::Path;
 use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let repo = Repo::load(None).ok_or(UserError::NoGitRepository)?;
+    let repo = Repo::load(None::<&Path>).ok_or(UserError::NoGitRepository)?;
     let before_diff = git::diff(&repo)?;
 
     let exit_code = pitstop(&args.with_default_show(conc::Show::Names))?;
