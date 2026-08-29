@@ -4,6 +4,7 @@ use std::ffi::OsStr;
 use std::path::Path;
 use std::process::{self, Output};
 
+/// a Command refinement that offers higher-level methods for running and getting output
 pub(crate) struct Command(process::Command);
 
 impl From<Command> for process::Command {
