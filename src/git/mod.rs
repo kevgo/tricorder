@@ -1,7 +1,10 @@
-mod branch;
+mod branch_changed_files;
+mod branch_committed_files;
 mod command;
 mod default_branch;
 mod diff;
+mod file_exists;
+mod merge_base;
 mod repo;
 mod stage;
 mod staged;
@@ -9,9 +12,12 @@ mod status;
 mod uncommitted;
 mod zerostring;
 
-pub(crate) use branch::branch_changed;
+pub(crate) use branch_changed_files::branch_files;
+pub(crate) use branch_committed_files::branch_committed_files;
 pub(crate) use command::GitCommandExt;
 pub(crate) use default_branch::default_branch;
+pub(crate) use file_exists::file_exists;
+pub(crate) use merge_base::merge_base;
 pub(crate) use repo::Repo;
 pub(crate) use staged::StagedFiles;
 pub(crate) use zerostring::ZeroString;
