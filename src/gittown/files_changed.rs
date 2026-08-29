@@ -1,3 +1,7 @@
+use crate::domain::File;
+use crate::git::GitCommandExt;
+use crate::git::Repo;
+
 /// provides the files that the current branch has changed compared to its parent branch
 ///
 /// does not include uncommitted files

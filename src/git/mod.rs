@@ -12,12 +12,7 @@ mod status;
 mod uncommitted;
 mod zerostring;
 
-pub(crate) use branch_changed_files::branch_files;
-pub(crate) use branch_committed_files::branch_committed_files;
 pub(crate) use command::GitCommandExt;
-pub(crate) use default_branch::default_branch;
-pub(crate) use file_exists::file_exists;
-pub(crate) use merge_base::merge_base;
 pub(crate) use repo::Repo;
 pub(crate) use staged::StagedFiles;
 pub(crate) use zerostring::ZeroString;
