@@ -24,7 +24,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_lints(&config, &all_stacks, repo)?;
+    let runnables = determine_lints(&config, &all_stacks, &repo)?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
@@ -45,7 +45,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_lints(
     config: &Config,
     detected_stacks: &DetectedStacks,
-    git_repo: Option<git::Repo>,
+    git_repo: &Option<git::Repo>,
 ) -> Result<Vec<conc::Runnable>> {
     let mut result = Vec::new();
 
@@ -86,7 +86,7 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if let Some(repo) = &git_repo {
+    if let Some(repo) = git_repo {
         let executable = git_diff_check::lint_command(repo);
         result.push(conc::Runnable::Single(executable));
     }
