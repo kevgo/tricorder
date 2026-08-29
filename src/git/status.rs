@@ -199,6 +199,9 @@ mod tests {
                 "R  dir/new.rs" => Some(Record { index: 'R', worktree: ' ', path: "dir/new.rs" }), // renamed file (dest path)
                 "C  dir/new.rs" => Some(Record { index: 'C', worktree: ' ', path: "dir/new.rs" }), // copied file (dest path)
                 "R  new file.txt" => Some(Record { index: 'R', worktree: ' ', path: "new file.txt" }),
+                "foo" => None,
+                "foo bar" => None,
+                "" => None,
             };
             for (give, want) in tests {
                 let have = Record::parse(give);
