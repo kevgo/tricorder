@@ -1,3 +1,5 @@
+use crate::domain::UserError;
+
 /// A string whose lines are separated by the NUL character.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct ZeroString(String);
@@ -11,6 +13,14 @@ impl From<String> for ZeroString {
 impl From<&str> for ZeroString {
     fn from(value: &str) -> Self {
         Self(value.to_string())
+    }
+}
+
+impl TryFrom<Vec<u8>> for ZeroString {
+    type Error = UserError;
+    fn try_from(value: Vec<u8>) -> Result<Self, UserError> {
+        let text = String::from_utf8(value).expect("Git output is not valid UTF-8");
+        Ok(text.into())
     }
 }
 

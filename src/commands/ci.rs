@@ -6,7 +6,12 @@ use crate::{git, stacks};
 use std::process::{Command, ExitCode};
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let before_diff = git_diff()?;
+    let repo = Repo::load();
+    let before_diff = if let Some(repo) = &repo {
+        Some(repo.diff()?)
+    } else {
+        None
+    };
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
@@ -22,23 +27,18 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    let after_diff = git_diff()?;
+    let after_diff = if let Some(repo) = &repo {
+        Some(repo.diff()?)
+    } else {
+        None
+    };
 
-    if before_diff != after_diff {
+    if let Some(before_diff) = before_diff
+        && let Some(after_diff) = after_diff
+        && before_diff != after_diff
+    {
         return Err(UserError::CiUnformatted { diff: after_diff });
     }
 
     Ok(exit_code)
-}
-
-fn git_diff() -> Result<Vec<u8>> {
-    let output = Command::new("git")
-        .arg("diff")
-        .arg("HEAD")
-        .arg("--color")
-        .output()
-        .map_err(|err| UserError::CannotRunGit {
-            msg: err.to_string(),
-        })?;
-    Ok(output.stdout)
 }

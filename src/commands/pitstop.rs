@@ -39,7 +39,7 @@ pub(crate) fn run_fix_then_lint(
 
     // step 1: discover the runnables
     let fix_runnables = fix::determine_fixes(config, stacks)?;
-    let lints = lint::determine_lints(config, stacks, is_git_repo)?;
+    let lints = lint::determine_lints(&config, &all_stacks, git_repo.as_ref())?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
