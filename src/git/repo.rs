@@ -38,7 +38,7 @@ impl Repo {
         Path::new(".git").exists().then_some(Repo { path: None })
     }
 
-    /// provides a Git `Command` that you just need to fill with args and then run
+    /// provides `Command` instance that runs Git
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
         if let Some(path) = &self.path {
