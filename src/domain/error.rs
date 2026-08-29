@@ -70,6 +70,10 @@ pub enum UserError {
         command: String,
         status: i32,
     },
+    GitOutputNotUtf8 {
+        command: String,
+        err: String,
+    },
     NoGitRepository,
     NotMainGitWorktree,
     Rta {
@@ -132,6 +136,9 @@ impl UserError {
                 println!("executable not found: {}", path.display());
             }
             UserError::GitNotFound { command, err } => println!("cannot run \"{command}\": {err}"),
+            UserError::GitOutputNotUtf8 { command, err } => {
+                println!("cannot convert the output of \"{command}\" to UTF-8: {err}");
+            }
             UserError::GitRunFailed { command, status } => {
                 println!("command \"{command}\" failed with exit status {status}");
             }

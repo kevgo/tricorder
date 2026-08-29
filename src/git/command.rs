@@ -15,14 +15,25 @@ impl GitCommandExt for Command {
             .status()
             .map_err(|err| git_error(self, err.to_string()))?;
         if !status.success() {
-            return Err(git_error(self, format!("git exit status {status}")));
+            return Err(UserError::GitRunFailed {
+                command: command_text(self),
+                status: status.code().unwrap_or(-1),
+            });
         }
         Ok(())
     }
 
     fn run_output(&mut self) -> Result<Output> {
-        self.output()
-            .map_err(|err| git_error(self, err.to_string()))
+        let output = self
+            .output()
+            .map_err(|err| git_error(self, err.to_string()))?;
+        if !output.status.success() {
+            return Err(UserError::GitRunFailed {
+                command: command_text(self),
+                status: output.status.code().unwrap_or(-1),
+            });
+        }
+        Ok(output)
     }
 
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
