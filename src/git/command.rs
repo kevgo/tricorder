@@ -15,7 +15,7 @@ impl GitCommandExt for Command {
             .status()
             .map_err(|err| git_error(self, err.to_string()))?;
         if !status.success() {
-            return Err(git_error(self, format!("exit status {status}")));
+            return Err(git_error(self, format!("git exit status {status}")));
         }
         Ok(())
     }
@@ -32,7 +32,7 @@ impl GitCommandExt for Command {
 }
 
 fn git_error(command: &Command, err: String) -> UserError {
-    UserError::CannotRunGit {
+    UserError::GitNotFound {
         command: command_text(command),
         err,
     }

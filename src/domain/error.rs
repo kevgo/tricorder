@@ -31,10 +31,6 @@ pub enum UserError {
         err: String,
     },
     ArgvIsEmpty,
-    CannotRunGit {
-        command: String,
-        err: String,
-    },
     CannotRunRipgrep {
         msg: String,
     },
@@ -65,6 +61,14 @@ pub enum UserError {
     },
     ExecutableNotFound {
         path: PathBuf,
+    },
+    GitNotFound {
+        command: String,
+        err: String,
+    },
+    GitRunFailed {
+        command: String,
+        status: i32,
     },
     NoGitRepository,
     NotMainGitWorktree,
@@ -98,7 +102,6 @@ impl UserError {
                 println!("cannot write file: {path}: {err}");
             }
             UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
-            UserError::CannotRunGit { command, err } => println!("cannot run \"{command}\": {err}"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");
@@ -127,6 +130,10 @@ impl UserError {
             }
             UserError::ExecutableNotFound { path } => {
                 println!("executable not found: {}", path.display());
+            }
+            UserError::GitNotFound { command, err } => println!("cannot run \"{command}\": {err}"),
+            UserError::GitRunFailed { command, status } => {
+                println!("command \"{command}\" failed with exit status {status}")
             }
             UserError::NoGitRepository => println!("not a git repository (no .git directory)"),
             UserError::NotMainGitWorktree => {
