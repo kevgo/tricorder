@@ -45,7 +45,9 @@ impl GitStatusOutput {
         let mut lines = self.0.lines();
         std::iter::from_fn(move || {
             let line = lines.next()?;
-            let record = Record::parse(line)?;
+            let Some(record) = Record::parse(line) else {
+                return None;
+            };
             if record.has_orig_path() {
                 // Rename/copy entries are `XY dest\0orig\0`.
                 // We don't care about the orig filename, so we skip the next zero-delimited line.
