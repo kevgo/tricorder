@@ -6,7 +6,7 @@ use crate::domain::Result;
 use crate::{git, stacks};
 use std::process::ExitCode;
 
-pub fn postedit(args: &RunArgs) -> Result<ExitCode> {
+pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
