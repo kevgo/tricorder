@@ -91,6 +91,23 @@ mod tests {
         }
 
         #[test]
+        fn linked_work_tree() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let main_dir = dir.path().join("main");
+            fs::create_dir(&main_dir).unwrap();
+            let main_repo = Repo::init(&main_dir)?;
+            let linked_dir = dir.path().join("linked");
+            main_repo
+                .git_command()
+                .args(["worktree", "add", "--quiet", "--detach"])
+                .arg(&linked_dir)
+                .run()?;
+            let have = is_git_repo(Some(&linked_dir));
+            assert!(have);
+            Ok(())
+        }
+
+        #[test]
         fn in_subdir_of_git_repo() -> Result<()> {
             let dir = TempDir::new().unwrap();
             Repo::init(dir.path())?;
@@ -121,7 +138,7 @@ mod tests {
         }
 
         #[test]
-        fn missing_directory() {
+        fn non_existing_directory() {
             let dir = TempDir::new().unwrap();
             let path = dir.path().join("does-not-exist");
             let have = is_git_repo(Some(&path));
