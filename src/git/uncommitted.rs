@@ -22,7 +22,6 @@ mod tests {
     use crate::git::GitCommandExt;
     use crate::git::Repo;
     use std::fs;
-    use std::process::Command;
     use tempfile::TempDir;
 
     #[test]
@@ -34,14 +33,14 @@ mod tests {
         fs::write(sub.join("two.txt"), "two").unwrap();
         let repo = Repo::init(dir.path())?;
         // verify that Git reports only the folder name and not the files inside it
-        let status = Command::new("git")
+        let status = repo
+            .git_command()
             .arg("-c")
             .arg("status.showUntrackedFiles=normal")
             .arg("status")
             .arg("--short")
             .arg("--porcelain=v1")
-            .current_dir(dir.path())
-            .output()
+            .run_output()
             .unwrap();
         assert_eq!(str::from_utf8(&status.stdout).unwrap().trim(), "?? sub/");
         // verify that the uncommitted files are correctly reported
