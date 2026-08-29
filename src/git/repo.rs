@@ -35,7 +35,6 @@ impl Repo {
 
     /// indicates whether the given directory contains a Git repository
     pub fn load() -> Option<Repo> {
-        // let cwd = std::env::current_dir().unwrap();
         let git_folder = Path::new(".git");
         if git_folder.exists() {
             Some(Repo { path: None })
