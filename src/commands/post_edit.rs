@@ -16,16 +16,18 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the files and their stacks
-    let (stacks, is_git_repo) = match git::uncommitted(&git_repo) {
-        Some(files) => (stacks::from_files(&files, &ignores), true.into()),
-        None => (stacks::discover_all(&ignores), false.into()),
+    let stacks = if let Some(repo) = &git_repo {
+        let files = git::uncommitted(repo)?;
+        stacks::from_files(&files, &ignores)
+    } else {
+        stacks::discover_all(&ignores)
     };
     if show.display_metadata() {
         print_metadata(&stacks);
     }
 
     // step 3: discover all runnables
-    let runnables = lint::determine_lints(&config, &stacks, is_git_repo)?;
+    let runnables = lint::determine_lints(&config, &stacks, git_repo)?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }

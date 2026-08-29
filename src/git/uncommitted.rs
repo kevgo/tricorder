@@ -17,7 +17,6 @@ mod tests {
     use crate::domain::File;
     use crate::domain::Result;
     use crate::git::Repo;
-    use crate::git::testing::{git, git_repo};
     use std::fs;
     use std::process::Command;
     use tempfile::TempDir;
@@ -62,7 +61,7 @@ mod tests {
 
     #[test]
     fn includes_untracked_file_with_quotes() -> Result<()> {
-        let dir = git_repo();
+        let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
         let repo = Repo::init(dir.path())?;
         let have = super::uncommitted(&repo)?;
@@ -72,24 +71,23 @@ mod tests {
     }
 
     #[test]
-    fn includes_renamed_file_with_spaces() {
-        let dir = git_repo();
+    fn includes_renamed_file_with_spaces() -> Result<()> {
+        let dir = TempDir::new().unwrap();
         fs::write(dir.path().join("old file.txt"), "hello").unwrap();
-        git(&dir, &["add", "old file.txt"]);
-        git(
-            &dir,
-            &[
-                "-c",
-                "user.name=Test",
-                "-c",
-                "user.email=test@example.com",
-                "commit",
-                "-qm",
-                "init",
-            ],
-        );
-        git(&dir, &["mv", "old file.txt", "new file.txt"]);
-        let have = super::uncommitted(&dir).unwrap();
+        let repo = Repo::init(dir.path())?;
+        repo.git_command().arg("add").arg("old file.txt").run()?;
+        repo.git_command()
+            .arg("commit")
+            .arg("--quiet")
+            .arg("--message=Initial")
+            .run()?;
+        repo.git_command()
+            .arg("mv")
+            .arg("old file.txt")
+            .arg("new file.txt")
+            .run()?;
+        let have = super::uncommitted(&repo)?;
         pretty::assert_eq!(have, vec![File::from("new file.txt")]);
+        Ok(())
     }
 }
