@@ -63,3 +63,35 @@ fn command_text(command: &Command) -> String {
     }
     text
 }
+
+#[cfg(test)]
+mod tests {
+
+    mod command_text {
+        use super::super::command_text;
+        use std::process::Command;
+
+        #[test]
+        fn program_only() {
+            let give = Command::new("git");
+            let have = command_text(&give);
+            pretty::assert_eq!(have, "git");
+        }
+
+        #[test]
+        fn program_and_args() {
+            let mut give = Command::new("git");
+            give.args(["status", "--porcelain", "-z"]);
+            let have = command_text(&give);
+            pretty::assert_eq!(have, "git status --porcelain -z");
+        }
+
+        #[test]
+        fn args_with_spaces() {
+            let mut give = Command::new("git");
+            give.args(["commit", "-m", "hello world"]);
+            let have = command_text(&give);
+            pretty::assert_eq!(have, "git commit -m hello world");
+        }
+    }
+}
