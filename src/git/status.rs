@@ -4,13 +4,16 @@ use crate::domain::Result;
 use crate::git::Repo;
 use crate::git::ZeroString;
 
-/// runs `git status` and returns its stdout
-pub(crate) fn status_output(repo: &Repo, extra_args: &[&str]) -> Result<GitStatusOutput> {
-    let mut command = repo.git_command();
-    command.args(["status", "--porcelain=v1", "-z"]);
-    command.args(extra_args);
-    let output = command.run_stdout_zero()?;
-    Ok(GitStatusOutput::from(output))
+impl Repo {
+    /// runs `git status` and returns its stdout
+    pub(crate) fn status_output(&self, extra_args: &[&str]) -> Result<GitStatusOutput> {
+        let output = self
+            .git_command()
+            .args(["status", "--porcelain=v1", "-z"])
+            .args(extra_args)
+            .run_stdout_zero()?;
+        Ok(GitStatusOutput::from(output))
+    }
 }
 
 /// output of `git status --porcelain=v1 -z`

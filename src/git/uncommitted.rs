@@ -1,13 +1,12 @@
 use crate::domain::File;
 use crate::domain::Result;
 use crate::git::Repo;
-use crate::git::status;
 
 impl Repo {
     /// provides the uncommitted files (staged, unstaged, and untracked)
     #[must_use]
     pub fn uncommitted(&self) -> Result<Vec<File>> {
-        let output = status::status_output(self, &["--untracked-files=all"])?;
+        let output = self.status_output(&["--untracked-files=all"])?;
         let uncommitted_records = output
             .records()
             .filter(super::status::Record::is_uncommitted);

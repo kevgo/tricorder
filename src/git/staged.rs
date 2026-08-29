@@ -2,13 +2,13 @@
 
 use crate::domain::{File, Result};
 use crate::git::Repo;
-use crate::git::status::{GitStatusOutput, Record, status_output};
+use crate::git::status::{GitStatusOutput, Record};
 
 impl Repo {
     /// provides the staged files
     #[must_use]
     pub(crate) fn staged(&self) -> Result<StagedFiles> {
-        let output = status_output(self, &[])?;
+        let output = self.status_output(&[])?;
         Ok(StagedFiles::from(&output))
     }
 }
