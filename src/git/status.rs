@@ -68,7 +68,7 @@ pub(crate) struct Record<'a> {
 }
 
 impl Record<'_> {
-    /// parses the XY status prefix and path from a porcelain record
+    /// parses the XY status prefix and path from a porcelain line
     pub(crate) fn parse(line: &str) -> Option<Record<'_>> {
         if line.len() < 3 {
             return None;
@@ -101,7 +101,9 @@ impl Record<'_> {
         })
     }
 
+    /// provides whether this record has an original file path
     fn has_orig_path(&self) -> bool {
+        // only rename/copy entries have an original file path
         matches!(self.index, 'R' | 'C') || matches!(self.worktree, 'R' | 'C')
     }
 
