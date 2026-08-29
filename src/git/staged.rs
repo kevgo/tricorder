@@ -28,7 +28,7 @@ impl From<&GitStatusOutput> for StagedFiles {
     fn from(output: &GitStatusOutput) -> StagedFiles {
         let mut result = StagedFiles::default();
         for record in output.records() {
-            result.add_record(record);
+            result.add_record(&record);
         }
         result
     }
@@ -36,7 +36,7 @@ impl From<&GitStatusOutput> for StagedFiles {
 
 impl StagedFiles {
     /// parses a line from the output of "git status --porcelain=v1 -z" and adds it to this instance
-    fn add_record(&mut self, record: Record<'_>) {
+    fn add_record(&mut self, record: &Record<'_>) {
         let is_staged = is_index_change(record.index);
         let is_working = is_index_change(record.worktree);
         if is_staged && is_working {
@@ -83,7 +83,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.git_command().args(&["add", "my file.txt"]).run()?;
+            repo.git_command().args(["add", "my file.txt"]).run()?;
             let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
@@ -98,7 +98,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.git_command().args(&["add", "file\"quote.txt"]).run()?;
+            repo.git_command().args(["add", "file\"quote.txt"]).run()?;
             let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![],
@@ -113,9 +113,9 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("old file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.git_command().args(&["add", "old file.txt"]).run()?;
+            repo.git_command().args(["add", "old file.txt"]).run()?;
             repo.git_command()
-                .args(&["mv", "old file.txt", "new file.txt"])
+                .args(["mv", "old file.txt", "new file.txt"])
                 .run()?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -131,12 +131,12 @@ mod tests {
             let dir = TempDir::new().unwrap();
             fs::write(dir.path().join("my file.txt"), "v1").unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.git_command().args(&["add", "my file.txt"]).run()?;
+            repo.git_command().args(["add", "my file.txt"]).run()?;
             repo.git_command()
-                .args(&["commit", "--quiet", "--message=init"])
+                .args(["commit", "--quiet", "--message=init"])
                 .run()?;
             fs::write(dir.path().join("my file.txt"), "v2").unwrap();
-            repo.git_command().args(&["add", "my file.txt"]).run()?;
+            repo.git_command().args(["add", "my file.txt"]).run()?;
             fs::write(dir.path().join("my file.txt"), "v3").unwrap();
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -275,7 +275,7 @@ mod tests {
             for (give, want) in tests {
                 let mut have = StagedFiles::default();
                 let record = Record::parse(give).unwrap();
-                have.add_record(record);
+                have.add_record(&record);
                 assert_eq!(have, want, "{give}");
             }
         }

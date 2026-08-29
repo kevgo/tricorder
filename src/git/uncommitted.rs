@@ -4,7 +4,6 @@ use crate::git::Repo;
 
 impl Repo {
     /// provides the uncommitted files (staged, unstaged, and untracked)
-    #[must_use]
     pub fn uncommitted(&self) -> Result<Vec<File>> {
         let output = self.status_output(&["--untracked-files=all"])?;
         let uncommitted_records = output
