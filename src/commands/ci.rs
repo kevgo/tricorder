@@ -6,7 +6,7 @@ use crate::{git, stacks};
 use std::process::{Command, ExitCode};
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let repo = Repo::load();
+    let repo = git::Repo::load();
     let before_diff = if let Some(repo) = &repo {
         Some(repo.diff()?)
     } else {
@@ -15,13 +15,13 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let is_git_repo = git::is_repo("./");
+    let repo = git::Repo::load();
     let stacks = stacks::discover_all(&ignores);
     let exit_code = run_fix_then_lint(
         &args.with_default_show(conc::Show::Names),
         &config,
         &stacks,
-        is_git_repo,
+        repo.as_ref(),
     )?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);

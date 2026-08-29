@@ -5,44 +5,23 @@ use crate::git::{ZeroString, uncommitted};
 use std::path::Path;
 use std::process::Command;
 
-/// files unique to the current branch (committed since the default branch) plus uncommitted files
-///
-/// `None` = not a Git repository or the default branch / merge-base cannot be determined.
-#[must_use]
-pub fn branch_changed(dir: Option<&Path>) -> Option<Vec<File>> {
-    let uncommitted = uncommitted(dir)?;
-    let default_branch = default_branch(dir)?;
-    let merge_base = merge_base(dir, &default_branch)?;
-    let committed = committed_on_branch(dir, &merge_base)?;
-    let mut files = committed;
-    files.extend(uncommitted);
-    files.sort();
-    files.dedup();
-    files.retain(|file| file_exists(dir, file));
-    Some(files)
-}
-
-/// The default branch to compare against, in this order:
-/// `origin/HEAD`, local `main`, local `master`, `origin/main`, `origin/master`
-fn default_branch(dir: Option<&Path>) -> Option<String> {
-    if let Some(origin_head) = git_stdout_trimmed(
-        dir,
-        &["symbolic-ref", "--quiet", "refs/remotes/origin/HEAD"],
-    ) && !origin_head.is_empty()
-    {
-        return Some(origin_head);
+impl Repo {
+    /// files unique to the current branch (committed since the default branch) plus uncommitted files
+    ///
+    /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
+    #[must_use]
+    pub(crate) fn branch_changed(&self) -> Option<Vec<File>> {
+        let uncommitted = self.uncommitted()?;
+        let default_branch = default_branch(dir)?;
+        let merge_base = merge_base(dir, &default_branch)?;
+        let committed = committed_on_branch(dir, &merge_base)?;
+        let mut files = committed;
+        files.extend(uncommitted);
+        files.sort();
+        files.dedup();
+        files.retain(|file| file_exists(dir, file));
+        Some(files)
     }
-    for candidate in [
-        "refs/heads/main",
-        "refs/heads/master",
-        "refs/remotes/origin/main",
-        "refs/remotes/origin/master",
-    ] {
-        if ref_exists(dir, candidate) {
-            return Some(candidate.to_owned());
-        }
-    }
-    None
 }
 
 fn merge_base(dir: Option<&Path>, default_branch: &str) -> Option<String> {
