@@ -3,7 +3,7 @@ use crate::cli::input::RunArgs;
 use crate::config::Config;
 use crate::domain::{Result, UserError};
 use crate::{git, stacks};
-use std::process::{Command, ExitCode};
+use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let repo = git::Repo::load();

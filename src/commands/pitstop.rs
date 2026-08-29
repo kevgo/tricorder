@@ -4,6 +4,7 @@ use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
 use crate::domain::{DetectedStacks, Result};
+use crate::git::Repo;
 use crate::{git, stacks};
 use std::process::ExitCode;
 
@@ -11,15 +12,14 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let repo = git::Repo::load();
-    let stacks = if *is_git_repo {
-        match git::branch_changed(None) {
+    let stacks = match &repo {
+        Some(repo) => match repo.branch_changed_files()? {
             Some(files) => stacks::from_files(&files, &ignores),
             None => stacks::discover_all(&ignores),
-        }
-    } else {
-        stacks::discover_all(&ignores)
+        },
+        None => stacks::discover_all(&ignores),
     };
-    run_fix_then_lint(args, &config, &stacks, is_git_repo)
+    run_fix_then_lint(args, &config, &stacks, repo.as_ref())
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
@@ -27,7 +27,7 @@ pub(crate) fn run_fix_then_lint(
     args: &RunArgs,
     config: &Config,
     stacks: &DetectedStacks,
-    is_git_repo: IsGitRepo,
+    repo: Option<&Repo>,
 ) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
@@ -39,7 +39,7 @@ pub(crate) fn run_fix_then_lint(
 
     // step 1: discover the runnables
     let fix_runnables = fix::determine_fixes(config, stacks)?;
-    let lints = lint::determine_lints(&config, &all_stacks, git_repo.as_ref())?;
+    let lints = lint::determine_lints(&config, &stacks, repo)?;
     let runnable_count = fix_runnables.len() + lints.len();
     if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
