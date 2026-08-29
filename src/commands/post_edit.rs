@@ -17,8 +17,8 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
 
     // step 2: discover the files and their stacks
     let stacks = if let Some(repo) = &git_repo {
-        let files = repo.uncommitted()?;
-        stacks::from_files(&files, &ignores)
+        let uncommitted_files = repo.uncommitted()?;
+        stacks::from_files(&uncommitted_files, &ignores)
     } else {
         stacks::discover_all(&ignores)
     };
