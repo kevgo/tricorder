@@ -23,6 +23,7 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_with = "3.21.0"
 shlex = "2.0.1"
 strum = { version = "0.28.0", features = ["derive"] }
+toml = "1.1.4"
 which = "8.0.5"
 
 [dev-dependencies]

@@ -1,7 +1,8 @@
 //! files changed on the current branch compared to the default branch
 
 use crate::domain::File;
-use crate::git::{ZeroString, uncommitted};
+use crate::git::Repo;
+use crate::git::ZeroString;
 use std::path::Path;
 use std::process::Command;
 
@@ -10,7 +11,7 @@ impl Repo {
     ///
     /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
     #[must_use]
-    pub(crate) fn branch_changed(&self) -> Option<Vec<File>> {
+    pub(crate) fn branch_changed(&self) -> Result<Vec<File>> {
         let uncommitted = self.uncommitted()?;
         let default_branch = default_branch(dir)?;
         let merge_base = merge_base(dir, &default_branch)?;
@@ -49,10 +50,6 @@ fn file_exists(dir: Option<&Path>, file: &File) -> bool {
         Some(dir) => dir.join(path).is_file(),
         None => path.is_file(),
     }
-}
-
-fn ref_exists(dir: Option<&Path>, git_ref: &str) -> bool {
-    git_succeeds(dir, &["rev-parse", "--verify", "--quiet", git_ref])
 }
 
 fn git_succeeds(dir: Option<&Path>, args: &[&str]) -> bool {
