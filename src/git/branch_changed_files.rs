@@ -14,12 +14,7 @@ impl Repo {
 
         // try to use Git Town
         if let Some(gittown_files) = gittown::files_changed_on_current_branch(self) {
-            let mut result = gittown_files;
-            result.extend(uncommitted);
-            result.sort();
-            result.dedup();
-            result.retain(|file| self.file_exists(file));
-            return Ok(Some(result));
+            return Ok(Some(unique_existing(self, gittown_files, uncommitted)));
         }
 
         // here there is no Git Town --> use Git
@@ -30,11 +25,102 @@ impl Repo {
             return Ok(None);
         };
         let committed = self.branch_committed_files(&merge_base)?;
-        let mut result = committed;
-        result.extend(uncommitted);
-        result.sort();
-        result.dedup();
-        result.retain(|file| self.file_exists(file));
-        Ok(Some(result))
+        Ok(Some(unique_existing(self, committed, uncommitted)))
+    }
+}
+
+/// merges two file lists, then sorts, removes duplicates, and drops missing files
+fn unique_existing(repo: &Repo, mut files: Vec<File>, extra: Vec<File>) -> Vec<File> {
+    files.extend(extra);
+    files.sort();
+    files.dedup();
+    files.retain(|file| repo.file_exists(file));
+    files
+}
+
+#[cfg(test)]
+mod tests {
+    mod unique_existing {
+        use super::super::unique_existing;
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::Repo;
+        use std::fs;
+        use tempfile::TempDir;
+
+        fn repo_with(names: &[&str]) -> Result<(TempDir, Repo)> {
+            let dir = TempDir::new().unwrap();
+            for name in names {
+                fs::write(dir.path().join(name), "").unwrap();
+            }
+            let repo = Repo::init(dir.path())?;
+            Ok((dir, repo))
+        }
+
+        #[test]
+        fn empty() -> Result<()> {
+            let (_dir, repo) = repo_with(&[])?;
+            pretty::assert_eq!(unique_existing(&repo, vec![], vec![]), Vec::<File>::new());
+            Ok(())
+        }
+
+        #[test]
+        fn already_unique_and_sorted() -> Result<()> {
+            let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
+            let files = vec![File::from("a.rs"), File::from("b.rs")];
+            let extra = vec![File::from("c.rs")];
+            pretty::assert_eq!(
+                unique_existing(&repo, files, extra),
+                vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")]
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn sorts() -> Result<()> {
+            let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
+            let files = vec![File::from("c.rs"), File::from("a.rs")];
+            let extra = vec![File::from("b.rs")];
+            pretty::assert_eq!(
+                unique_existing(&repo, files, extra),
+                vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")]
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn dedups_across_both_lists() -> Result<()> {
+            let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
+            let files = vec![File::from("b.rs"), File::from("a.rs")];
+            let extra = vec![File::from("b.rs"), File::from("a.rs")];
+            pretty::assert_eq!(
+                unique_existing(&repo, files, extra),
+                vec![File::from("a.rs"), File::from("b.rs")]
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn dedups_within_one_list() -> Result<()> {
+            let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
+            let files = vec![File::from("b.rs"), File::from("a.rs"), File::from("b.rs")];
+            pretty::assert_eq!(
+                unique_existing(&repo, files, vec![]),
+                vec![File::from("a.rs"), File::from("b.rs")]
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn drops_missing_files() -> Result<()> {
+            let (_dir, repo) = repo_with(&["a.rs"])?;
+            let files = vec![File::from("gone.rs"), File::from("a.rs")];
+            let extra = vec![File::from("also-gone.rs")];
+            pretty::assert_eq!(
+                unique_existing(&repo, files, extra),
+                vec![File::from("a.rs")]
+            );
+            Ok(())
+        }
     }
 }

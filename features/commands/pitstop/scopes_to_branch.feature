@@ -8,6 +8,7 @@ Feature: "tricorder pitstop" processes only files changed on the current branch
       delete-empty-folders 0.0.2
       """
 
+  @this
   Scenario: committed file on the default branch is ignored on a feature branch
     Given a committed file "on-main.md" with content
       """
@@ -34,6 +35,7 @@ Feature: "tricorder pitstop" processes only files changed on the current branch
       # Hello
       """
     And the exit code is 0
+  #@this
 
   Scenario: committed and untracked files on the feature branch
     Given a committed file "on-main.md" with content
