@@ -32,6 +32,25 @@ fn trim_origin_prefix(branch: &str) -> &str {
 
 #[cfg(test)]
 mod tests {
+    use maplit::hashmap;
+
+    #[test]
+    fn trim_origin_prefix() {
+        let tests = hashmap! {
+            "origin/main" => "main",
+            "origin/master" => "master",
+            "origin/feature/foo" => "feature/foo",
+            "origin/origin/main" => "origin/main",
+            "main" => "main",
+            "origin" => "origin",
+            "original/main" => "original/main",
+            "origin/" => "",
+        };
+        for (give, want) in tests {
+            pretty::assert_eq!(super::trim_origin_prefix(give), want);
+        }
+    }
+
     mod default_branch {
         use crate::domain::Result;
         use crate::git::GitCommandExt;
