@@ -4,7 +4,7 @@ use crate::domain::Result;
 #[cfg(test)]
 use crate::git::GitCommandExt;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Repo {
@@ -51,6 +51,7 @@ impl Repo {
     }
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
+        command.stdin(Stdio::null());
         if let Some(path) = &self.path {
             command.current_dir(path);
         }
