@@ -19,7 +19,6 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
     }
 
     let after_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
-
     if let Some(before_diff) = before_diff
         && let Some(after_diff) = after_diff
         && before_diff != after_diff
