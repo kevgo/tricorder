@@ -73,19 +73,19 @@ mod tests {
             let base = head_sha(&repo)?;
             let default_branch = current_branch(&repo)?;
             repo.git_command()
-                .args(["checkout", "-q", "-b", "feature"])
+                .args(["checkout", "--quiet", "-b", "feature"])
                 .run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
                 .run()?;
             repo.git_command()
-                .args(["checkout", "-q", &default_branch])
+                .args(["checkout", "--quiet", &default_branch])
                 .run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=more", "--allow-empty"])
                 .run()?;
             repo.git_command()
-                .args(["checkout", "-q", "feature"])
+                .args(["checkout", "--quiet", "feature"])
                 .run()?;
             pretty::assert_eq!(repo.merge_base(&default_branch), Some(base));
             Ok(())
