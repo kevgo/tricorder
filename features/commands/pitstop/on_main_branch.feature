@@ -8,7 +8,7 @@ Feature: pitstop on the main branch
       delete-empty-folders 0.0.2
       """
 
-  Scenario: has broken commits
+  Scenario: processes only uncommitted changes
     Given a committed file "committed.md" with content
       """
       missing header
@@ -51,4 +51,22 @@ Feature: pitstop on the main branch
       """
       # World
       """
+    And the exit code is 0
+
+  Scenario: no uncommitted changes
+    Given a committed file "committed.md" with content
+      """
+      missing header
+      """
+    When executing "tricorder pitstop --show=all"
+    Then it prints
+      """
+      delete empty folders
+      lint Git (git diff HEAD --check)
+      """
+    And it does not print
+      """
+      committed.md
+      """
+    And file "committed.md" is unchanged
     And the exit code is 0
