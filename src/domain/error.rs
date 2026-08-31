@@ -72,7 +72,6 @@ pub enum UserError {
     },
     GitOutputNotUtf8 {
         command: String,
-        err: String,
     },
     NoGitRepository,
     NotMainGitWorktree,
@@ -138,8 +137,8 @@ impl UserError {
             UserError::GitNotFound { command, err } => {
                 println!("cannot seem to find Git as part of running \"{command}\": {err}");
             }
-            UserError::GitOutputNotUtf8 { command, err } => {
-                println!("cannot convert the output of \"{command}\" to UTF-8: {err}");
+            UserError::GitOutputNotUtf8 { command } => {
+                println!("cannot convert the output of \"{command}\" to UTF-8");
             }
             UserError::GitRunFailed { command, status } => {
                 println!("command \"{command}\" failed with exit status {status}");
