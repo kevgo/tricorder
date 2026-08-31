@@ -48,13 +48,13 @@ impl GitCommandExt for Command {
 
     fn run_stdout_trimmed(&mut self) -> Result<String> {
         let output = self.run_output()?;
-        Ok(String::from_utf8(output.stdout)
-            .map_err(|err| UserError::GitOutputNotUtf8 {
+        let Ok(stdout) = String::from_utf8(output.stdout) else {
+            return Err(UserError::GitOutputNotUtf8 {
                 command: command_text(self),
-                err: err.to_string(),
-            })?
-            .trim()
-            .to_owned())
+                err: "output is not UTF-8".to_string(),
+            });
+        };
+        Ok(stdout.trim().to_owned())
     }
 
     fn run_stdout_zero(&mut self) -> Result<ZeroString> {
