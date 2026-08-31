@@ -54,11 +54,11 @@ Feature: "tricorder pitstop" processes only files changed on the current branch
       """
       fix Markdown (rumdl)
       """
-    And it prints the lines
+    And it prints the block
       """
       on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And it prints the lines
+    And it prints the block
       """
       untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
@@ -99,11 +99,11 @@ Feature: "tricorder pitstop" processes only files changed on the current branch
       """
       fix Markdown (rumdl)
       """
-    And it prints the lines
+    And it prints the block
       """
       modified.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And it prints the lines
+    And it prints the block
       """
       untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
