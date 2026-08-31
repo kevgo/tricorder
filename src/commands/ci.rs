@@ -15,7 +15,6 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let repo = git::Repo::load();
     let stacks = stacks::discover_all(&ignores);
     let exit_code = run_fix_then_lint(
         &args.with_default_show(conc::Show::Names),
