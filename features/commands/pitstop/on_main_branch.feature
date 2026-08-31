@@ -19,11 +19,11 @@ Feature: pitstop on the main branch
       """
     And I change file "modified.md" to
       """
-      #     Hello
+      #     Foo
       """
     And a file "untracked.md" with content
       """
-      #     World
+      #     Bar
       """
     When executing "tricorder pitstop --show=all"
     Then it prints the lines
@@ -45,11 +45,11 @@ Feature: pitstop on the main branch
     And file "committed.md" is unchanged
     And file "modified.md" now has content
       """
-      # Hello
+      # Foo
       """
     And file "untracked.md" now has content
       """
-      # World
+      # Bar
       """
     And the exit code is 0
 
