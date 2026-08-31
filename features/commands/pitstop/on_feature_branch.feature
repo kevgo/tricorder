@@ -8,7 +8,7 @@ Feature: pitstop on a feature branch
       delete-empty-folders 0.0.2
       """
 
-  Scenario: processes only committed and uncommitted changes on the branch
+  Scenario: processes only changes committed to the branch and uncommitted changes
     Given a committed file "on-main.md" with content
       """
       missing header
