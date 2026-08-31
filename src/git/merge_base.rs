@@ -16,3 +16,116 @@ impl Repo {
         Some(sha)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    mod merge_base {
+        use crate::domain::Result;
+        use crate::git::GitCommandExt;
+        use crate::git::Repo;
+        use tempfile::TempDir;
+
+        fn head_sha(repo: &Repo) -> Result<String> {
+            repo.git_command()
+                .args(["rev-parse", "HEAD"])
+                .run_stdout_trimmed()
+        }
+
+        fn current_branch(repo: &Repo) -> Result<String> {
+            repo.git_command()
+                .args(["branch", "--show-current"])
+                .run_stdout_trimmed()
+        }
+
+        #[test]
+        fn on_default_branch() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let branch = current_branch(&repo)?;
+            pretty::assert_eq!(repo.merge_base(&branch), Some(head_sha(&repo)?));
+            Ok(())
+        }
+
+        #[test]
+        fn ancestor_of_feature_branch() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let base = head_sha(&repo)?;
+            let default_branch = current_branch(&repo)?;
+            repo.git_command()
+                .args(["checkout", "-q", "-b", "feature"])
+                .run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
+                .run()?;
+            pretty::assert_eq!(repo.merge_base(&default_branch), Some(base));
+            Ok(())
+        }
+
+        #[test]
+        fn common_ancestor_when_diverged() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let base = head_sha(&repo)?;
+            let default_branch = current_branch(&repo)?;
+            repo.git_command()
+                .args(["checkout", "-q", "-b", "feature"])
+                .run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
+                .run()?;
+            repo.git_command()
+                .args(["checkout", "-q", &default_branch])
+                .run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=more", "--allow-empty"])
+                .run()?;
+            repo.git_command()
+                .args(["checkout", "-q", "feature"])
+                .run()?;
+            pretty::assert_eq!(repo.merge_base(&default_branch), Some(base));
+            Ok(())
+        }
+
+        #[test]
+        fn remote_tracking_branch() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let base = head_sha(&repo)?;
+            repo.git_command()
+                .args(["update-ref", "refs/remotes/origin/main", "HEAD"])
+                .run()?;
+            repo.git_command()
+                .args(["checkout", "-q", "-b", "feature"])
+                .run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
+                .run()?;
+            pretty::assert_eq!(repo.merge_base("origin/main"), Some(base));
+            Ok(())
+        }
+
+        #[test]
+        fn missing_branch() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            pretty::assert_eq!(repo.merge_base("does-not-exist"), None);
+            Ok(())
+        }
+
+        #[test]
+        fn unrelated_histories() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let default_branch = current_branch(&repo)?;
+            repo.git_command()
+                .args(["checkout", "-q", "--orphan", "other"])
+                .run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=unrelated", "--allow-empty"])
+                .run()?;
+            pretty::assert_eq!(repo.merge_base(&default_branch), None);
+            Ok(())
+        }
+    }
+}
