@@ -7,11 +7,7 @@ use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let repo = git::Repo::load();
-    let before_diff = if let Some(repo) = &repo {
-        Some(repo.diff()?)
-    } else {
-        None
-    };
+    let before_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
@@ -22,11 +18,7 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
         return Ok(exit_code);
     }
 
-    let after_diff = if let Some(repo) = &repo {
-        Some(repo.diff()?)
-    } else {
-        None
-    };
+    let after_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 
     if let Some(before_diff) = before_diff
         && let Some(after_diff) = after_diff
