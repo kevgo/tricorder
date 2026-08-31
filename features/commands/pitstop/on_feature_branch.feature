@@ -57,7 +57,12 @@ Feature: pitstop on a feature branch
       """
     And I ran "git checkout -b feature"
     When executing "tricorder pitstop --show=all"
-    Then it does not print
+    Then it prints
+      """
+      delete empty folders
+      lint Git (git diff HEAD --check)
+      """
+    And it does not print
       """
       on-main.md
       """
