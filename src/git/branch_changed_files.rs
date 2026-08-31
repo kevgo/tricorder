@@ -17,7 +17,7 @@ impl Repo {
             return Ok(Some(unique_existing(self, gittown_files, uncommitted)));
         }
 
-        // here there is no Git Town --> use Git
+        // here Git Town didn't work --> use Git
         let Some(default_branch) = self.default_branch() else {
             // cannot determine the default branch --> process only the uncommitted files
             return Ok(Some(uncommitted));
