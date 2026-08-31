@@ -40,13 +40,13 @@ pub struct DetectedStacks(Vec<DetectedStack>);
 
 impl DetectedStacks {
     #[must_use]
-    pub fn new(stacks: Vec<DetectedStack>) -> DetectedStacks {
+    pub fn new(stacks: Vec<DetectedStack>) -> Self {
         DetectedStacks(stacks)
     }
 
     #[must_use]
-    pub fn empty() -> DetectedStacks {
-        Self(vec![])
+    pub fn empty() -> Self {
+        DetectedStacks(vec![])
     }
 
     #[must_use]
