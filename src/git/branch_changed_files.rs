@@ -69,59 +69,65 @@ mod tests {
         #[test]
         fn already_unique_and_sorted() -> Result<()> {
             let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
-            let files = vec![File::from("a.rs"), File::from("b.rs")];
-            let extra = vec![File::from("c.rs")];
-            pretty::assert_eq!(
-                unique_existing(&repo, files, extra),
-                vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")]
+            let have = unique_existing(
+                &repo,
+                vec![File::from("a.rs"), File::from("b.rs")],
+                vec![File::from("c.rs")],
             );
+            let want = vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")];
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn sorts() -> Result<()> {
             let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
-            let files = vec![File::from("c.rs"), File::from("a.rs")];
-            let extra = vec![File::from("b.rs")];
-            pretty::assert_eq!(
-                unique_existing(&repo, files, extra),
-                vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")]
+            let have = unique_existing(
+                &repo,
+                vec![File::from("c.rs"), File::from("a.rs")],
+                vec![File::from("b.rs")],
             );
+            let want = vec![File::from("a.rs"), File::from("b.rs"), File::from("c.rs")];
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn dedups_across_both_lists() -> Result<()> {
             let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
-            let files = vec![File::from("b.rs"), File::from("a.rs")];
-            let extra = vec![File::from("b.rs"), File::from("a.rs")];
-            pretty::assert_eq!(
-                unique_existing(&repo, files, extra),
-                vec![File::from("a.rs"), File::from("b.rs")]
+            let have = unique_existing(
+                &repo,
+                vec![File::from("b.rs"), File::from("a.rs")],
+                vec![File::from("b.rs"), File::from("a.rs")],
             );
+            let want = vec![File::from("a.rs"), File::from("b.rs")];
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn dedups_within_one_list() -> Result<()> {
             let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
-            let files = vec![File::from("b.rs"), File::from("a.rs"), File::from("b.rs")];
-            pretty::assert_eq!(
-                unique_existing(&repo, files, vec![]),
-                vec![File::from("a.rs"), File::from("b.rs")]
+            let have = unique_existing(
+                &repo,
+                vec![File::from("b.rs"), File::from("a.rs"), File::from("b.rs")],
+                vec![],
             );
+            let want = vec![File::from("a.rs"), File::from("b.rs")];
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn drops_missing_files() -> Result<()> {
             let (_dir, repo) = repo_with(&["a.rs"])?;
-            let files = vec![File::from("gone.rs"), File::from("a.rs")];
-            let extra = vec![File::from("also-gone.rs")];
-            pretty::assert_eq!(
-                unique_existing(&repo, files, extra),
-                vec![File::from("a.rs")]
+            let have = unique_existing(
+                &repo,
+                vec![File::from("gone.rs"), File::from("a.rs")],
+                vec![File::from("also-gone.rs")],
             );
+            let want = vec![File::from("a.rs")];
+            pretty::assert_eq!(have, want);
             Ok(())
         }
     }
