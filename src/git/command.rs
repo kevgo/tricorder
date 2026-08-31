@@ -51,7 +51,6 @@ impl GitCommandExt for Command {
         let Ok(stdout) = String::from_utf8(output.stdout) else {
             return Err(UserError::GitOutputNotUtf8 {
                 command: command_text(self),
-                err: "output is not UTF-8".to_string(),
             });
         };
         Ok(stdout.trim().to_owned())
