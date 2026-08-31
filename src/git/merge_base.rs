@@ -87,7 +87,9 @@ mod tests {
             repo.git_command()
                 .args(["checkout", "--quiet", "feature"])
                 .run()?;
-            pretty::assert_eq!(repo.merge_base(&default_branch), Some(base));
+            let have = repo.merge_base(&default_branch);
+            let want = Some(base);
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
@@ -100,12 +102,14 @@ mod tests {
                 .args(["update-ref", "refs/remotes/origin/main", "HEAD"])
                 .run()?;
             repo.git_command()
-                .args(["checkout", "-q", "-b", "feature"])
+                .args(["checkout", "--quiet", "-b", "feature"])
                 .run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
                 .run()?;
-            pretty::assert_eq!(repo.merge_base("origin/main"), Some(base));
+            let have = repo.merge_base("origin/main");
+            let want = Some(base);
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
@@ -123,12 +127,14 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             let default_branch = current_branch(&repo)?;
             repo.git_command()
-                .args(["checkout", "-q", "--orphan", "other"])
+                .args(["checkout", "--quiet", "--orphan", "other"])
                 .run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=unrelated", "--allow-empty"])
                 .run()?;
-            pretty::assert_eq!(repo.merge_base(&default_branch), None);
+            let have = repo.merge_base(&default_branch);
+            let want = None;
+            pretty::assert_eq!(have, want);
             Ok(())
         }
     }
