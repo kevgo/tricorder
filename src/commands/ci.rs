@@ -2,11 +2,12 @@ use super::pitstop::run_fix_then_lint;
 use crate::cli::input::RunArgs;
 use crate::config::Config;
 use crate::domain::{Result, UserError};
-use crate::{git, stacks};
+use crate::git::Repo;
+use crate::stacks;
 use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let repo = git::Repo::load();
+    let repo = Repo::load();
     let before_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 
     let config = Config::load()?;
