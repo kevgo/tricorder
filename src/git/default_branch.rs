@@ -24,13 +24,6 @@ impl Repo {
         }
         None
     }
-
-    fn has_ref(&self, git_ref: &str) -> bool {
-        self.git_command()
-            .args(["rev-parse", "--verify", "--quiet", git_ref])
-            .run_stdout_trimmed()
-            .is_ok_and(|sha| !sha.is_empty())
-    }
 }
 
 fn trim_origin_prefix(branch: &str) -> &str {
