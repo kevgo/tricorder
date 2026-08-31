@@ -60,7 +60,9 @@ mod tests {
             repo.git_command()
                 .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
                 .run()?;
-            pretty::assert_eq!(repo.merge_base(&default_branch), Some(base));
+            let have = repo.merge_base(&default_branch);
+            let want = Some(base);
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
