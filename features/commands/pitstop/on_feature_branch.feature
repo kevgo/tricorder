@@ -16,11 +16,11 @@ Feature: pitstop on a feature branch
     And I ran "git checkout -b feature"
     And a committed file "on-branch.md" with content
       """
-      #     Hello
+      #     Foo
       """
     And a file "untracked.md" with content
       """
-      #     World
+      #     Bar
       """
     When executing "tricorder pitstop --show=all"
     Then it prints the lines
@@ -42,11 +42,11 @@ Feature: pitstop on a feature branch
     And file "on-main.md" is unchanged
     And file "on-branch.md" now has content
       """
-      # Hello
+      # Foo
       """
     And file "untracked.md" now has content
       """
-      # World
+      # Bar
       """
     And the exit code is 0
 
