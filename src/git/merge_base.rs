@@ -41,8 +41,8 @@ mod tests {
         fn on_default_branch() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            let branch = current_branch(&repo)?;
-            let have = repo.merge_base(&branch);
+            let default_branch = current_branch(&repo)?;
+            let have = repo.merge_base(&default_branch);
             let want = Some(head_sha(&repo)?);
             pretty::assert_eq!(have, want);
             Ok(())
@@ -55,7 +55,7 @@ mod tests {
             let base = head_sha(&repo)?;
             let default_branch = current_branch(&repo)?;
             repo.git_command()
-                .args(["checkout", "-q", "-b", "feature"])
+                .args(["checkout", "--quiet", "-b", "feature"])
                 .run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
