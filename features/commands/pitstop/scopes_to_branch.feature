@@ -34,7 +34,6 @@ Feature: "tricorder pitstop" processes only files changed on the current branch
       # Hello
       """
     And the exit code is 0
-  #@this
 
   Scenario: processes committed and untracked changes on a feature branch
     Given a committed file "on-main.md" with content
