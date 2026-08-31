@@ -19,10 +19,12 @@ impl Repo {
 
         // here there is no Git Town --> use Git
         let Some(default_branch) = self.default_branch() else {
-            return Ok(None);
+            // cannot determine the default branch --> process only the uncommitted files
+            return Ok(Some(uncommitted));
         };
         let Some(merge_base) = self.merge_base(&default_branch) else {
-            return Ok(None);
+            // cannot determine the merge base --> process only the uncommitted files
+            return Ok(Some(uncommitted));
         };
         let committed = self.branch_committed_files(&merge_base)?;
         Ok(Some(unique_existing(self, committed, uncommitted)))
