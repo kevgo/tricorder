@@ -64,6 +64,10 @@ Feature: pitstop on a feature branch
       """
     And it does not print
       """
+      Markdown
+      """
+    And it does not print
+      """
       on-main.md
       """
     And file "on-main.md" is unchanged
