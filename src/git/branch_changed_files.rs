@@ -31,7 +31,7 @@ impl Repo {
     }
 }
 
-/// merges two file lists, then sorts, removes duplicates, and drops missing files
+/// provides the unique files that exist in both given lists
 fn unique_existing(repo: &Repo, mut files: Vec<File>, extra: Vec<File>) -> Vec<File> {
     files.extend(extra);
     files.sort();
