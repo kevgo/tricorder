@@ -66,6 +66,10 @@ Feature: pitstop on the main branch
       """
     And it does not print
       """
+      Markdown
+      """
+    And it does not print
+      """
       committed.md
       """
     And file "committed.md" is unchanged
