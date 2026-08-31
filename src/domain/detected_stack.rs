@@ -3,6 +3,7 @@ use std::path::Path;
 
 /// A stack that was detected in the workspace,
 /// and the workspace files belonging to it.
+#[must_use]
 pub struct DetectedStack {
     pub stack: Box<dyn Stack>,
     pub files: Files,
@@ -39,8 +40,13 @@ pub struct DetectedStacks(Vec<DetectedStack>);
 
 impl DetectedStacks {
     #[must_use]
-    pub fn new(stacks: Vec<DetectedStack>) -> Self {
-        Self(stacks)
+    pub fn new(stacks: Vec<DetectedStack>) -> DetectedStacks {
+        DetectedStacks(stacks)
+    }
+
+    #[must_use]
+    pub fn empty() -> DetectedStacks {
+        Self(vec![])
     }
 
     #[must_use]

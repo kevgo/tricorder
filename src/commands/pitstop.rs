@@ -15,7 +15,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let stacks = match &repo {
         Some(repo) => match repo.branch_changed_files()? {
             Some(files) => stacks::from_files(&files, &ignores),
-            None => DetectedStacks::new(vec![]),
+            None => DetectedStacks::empty(),
         },
         None => stacks::discover_all(&ignores),
     };
