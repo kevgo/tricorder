@@ -13,11 +13,223 @@ pub(crate) fn files_changed_on_current_branch(repo: &Repo) -> Option<Vec<File>> 
     else {
         return None;
     };
-    Some(
-        output
-            .lines()
-            .filter(|line| !line.is_empty())
-            .map(File::from)
-            .collect(),
-    )
+    Some(parse_name_only_output(&output))
+}
+
+fn parse_name_only_output(output: &str) -> Vec<File> {
+    output
+        .lines()
+        .filter(|line| !line.is_empty() && !is_git_town_command_echo(line))
+        .map(File::from)
+        .collect()
+}
+
+/// Git Town prints `[branch] git diff ...` (sometimes ANSI-styled) before the file list.
+fn is_git_town_command_echo(line: &str) -> bool {
+    line.contains("] git ")
+}
+
+#[cfg(test)]
+mod tests {
+    mod parse_name_only_output {
+        use super::super::parse_name_only_output;
+        use crate::domain::File;
+
+        #[test]
+        fn empty() {
+            pretty::assert_eq!(parse_name_only_output(""), Vec::<File>::new());
+        }
+
+        #[test]
+        fn skips_blank_lines() {
+            let give = "\na.txt\n\nb.txt\n";
+            let have = parse_name_only_output(give);
+            let want = vec![File::from("a.txt"), File::from("b.txt")];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn skips_git_town_command_echo() {
+            let give = "[feature] git diff --name-only --merge-base main feature\ncommitted.txt";
+            let have = parse_name_only_output(give);
+            let want = vec![File::from("committed.txt")];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn skips_ansi_styled_command_echo() {
+            let give = "\u{1b}[1m[feature] git diff --name-only --merge-base main feature\u{1b}[0m\ncommitted.txt";
+            let have = parse_name_only_output(give);
+            let want = vec![File::from("committed.txt")];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn keeps_file_with_spaces() {
+            let give = "my file.txt";
+            let have = parse_name_only_output(give);
+            let want = vec![File::from("my file.txt")];
+            pretty::assert_eq!(have, want);
+        }
+    }
+
+    mod files_changed_on_current_branch {
+        use super::super::files_changed_on_current_branch;
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::GitCommandExt;
+        use crate::git::Repo;
+        use std::fs;
+        use tempfile::TempDir;
+
+        fn current_branch(repo: &Repo) -> Result<String> {
+            repo.git_command()
+                .args(["branch", "--show-current"])
+                .run_stdout_trimmed()
+        }
+
+        fn configured_repo() -> Result<(TempDir, Repo, String)> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let main = current_branch(&repo)?;
+            repo.git_command()
+                .args(["config", "git-town.main-branch", &main])
+                .run()?;
+            Ok((dir, repo, main))
+        }
+
+        fn set_parent(repo: &Repo, branch: &str, parent: &str) -> Result<()> {
+            repo.git_command()
+                .args([
+                    "config",
+                    &format!("git-town-branch.{branch}.parent"),
+                    parent,
+                ])
+                .run()
+        }
+
+        fn checkout_feature(repo: &Repo, name: &str, parent: &str) -> Result<()> {
+            repo.git_command()
+                .args(["checkout", "--quiet", "-b", name])
+                .run()?;
+            set_parent(repo, name, parent)
+        }
+
+        fn commit_file(dir: &TempDir, repo: &Repo, name: &str) -> Result<()> {
+            let path = dir.path().join(name);
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent).unwrap();
+            }
+            fs::write(path, "content").unwrap();
+            repo.git_command().args(["add", name]).run()?;
+            repo.git_command()
+                .args(["commit", "--quiet", "--message=change"])
+                .run()
+        }
+
+        fn git_town_installed() -> bool {
+            which::which("git-town").is_ok()
+        }
+
+        #[test]
+        fn none_when_unconfigured() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let have = files_changed_on_current_branch(&repo);
+            pretty::assert_eq!(have, None);
+            Ok(())
+        }
+
+        #[test]
+        fn none_on_main_branch() -> Result<()> {
+            let (_dir, repo, _main) = configured_repo()?;
+            let have = files_changed_on_current_branch(&repo);
+            pretty::assert_eq!(have, None);
+            Ok(())
+        }
+
+        #[test]
+        fn none_when_feature_has_no_parent() -> Result<()> {
+            let (_dir, repo, _main) = configured_repo()?;
+            repo.git_command()
+                .args(["checkout", "--quiet", "-b", "feature"])
+                .run()?;
+            let have = files_changed_on_current_branch(&repo);
+            pretty::assert_eq!(have, None);
+            Ok(())
+        }
+
+        #[test]
+        fn committed_files_vs_parent() -> Result<()> {
+            if !git_town_installed() {
+                return Ok(());
+            }
+            let (dir, repo, main) = configured_repo()?;
+            checkout_feature(&repo, "feature", &main)?;
+            commit_file(&dir, &repo, "a.txt")?;
+            commit_file(&dir, &repo, "sub/b.txt")?;
+            let have = files_changed_on_current_branch(&repo);
+            let want = Some(vec![File::from("a.txt"), File::from("sub/b.txt")]);
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+
+        #[test]
+        fn excludes_uncommitted_files() -> Result<()> {
+            if !git_town_installed() {
+                return Ok(());
+            }
+            let (dir, repo, main) = configured_repo()?;
+            checkout_feature(&repo, "feature", &main)?;
+            commit_file(&dir, &repo, "committed.txt")?;
+            fs::write(dir.path().join("uncommitted.txt"), "extra").unwrap();
+            let have = files_changed_on_current_branch(&repo);
+            let want = Some(vec![File::from("committed.txt")]);
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+
+        #[test]
+        fn empty_when_branch_has_no_changes() -> Result<()> {
+            if !git_town_installed() {
+                return Ok(());
+            }
+            let (_dir, repo, main) = configured_repo()?;
+            checkout_feature(&repo, "feature", &main)?;
+            let have = files_changed_on_current_branch(&repo);
+            let want = Some(Vec::<File>::new());
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+
+        #[test]
+        fn only_own_files_on_stacked_branch() -> Result<()> {
+            if !git_town_installed() {
+                return Ok(());
+            }
+            let (dir, repo, main) = configured_repo()?;
+            checkout_feature(&repo, "parent", &main)?;
+            commit_file(&dir, &repo, "parent.txt")?;
+            checkout_feature(&repo, "child", "parent")?;
+            commit_file(&dir, &repo, "child.txt")?;
+            let have = files_changed_on_current_branch(&repo);
+            let want = Some(vec![File::from("child.txt")]);
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+
+        #[test]
+        fn includes_file_with_spaces() -> Result<()> {
+            if !git_town_installed() {
+                return Ok(());
+            }
+            let (dir, repo, main) = configured_repo()?;
+            checkout_feature(&repo, "feature", &main)?;
+            commit_file(&dir, &repo, "my file.txt")?;
+            let have = files_changed_on_current_branch(&repo);
+            let want = Some(vec![File::from("my file.txt")]);
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+    }
 }
