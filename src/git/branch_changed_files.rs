@@ -6,7 +6,7 @@ use crate::git::Repo;
 use crate::gittown;
 
 impl Repo {
-    /// files changed on the current branch plus uncommitted files
+    /// provides the names of all files changed on the current branch, including uncommitted changes
     ///
     /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
     pub(crate) fn branch_changed_files(&self) -> Result<Option<Vec<File>>> {
