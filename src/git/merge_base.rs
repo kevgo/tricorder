@@ -126,7 +126,9 @@ mod tests {
         fn missing_branch() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            pretty::assert_eq!(repo.merge_base("does-not-exist"), None);
+            let have = repo.merge_base("does-not-exist");
+            let want = None;
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
