@@ -8,7 +8,7 @@ use std::fs;
 
 impl Repo {
     #[cfg(test)]
-    pub(crate) fn commit_file(&self, name: &str) -> Result<()> {
+    pub(crate) fn create_and_commit_file(&self, name: &str) -> Result<()> {
         let path = self.file_path(name);
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent).unwrap();
@@ -34,7 +34,7 @@ mod tests {
         fn writes_and_commits_file() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
+            repo.create_and_commit_file("a.txt")?;
             pretty::assert_eq!(
                 fs::read_to_string(dir.path().join("a.txt")).unwrap(),
                 "content"
@@ -49,7 +49,7 @@ mod tests {
         fn creates_parent_directories() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("sub/nested/b.txt")?;
+            repo.create_and_commit_file("sub/nested/b.txt")?;
             pretty::assert_eq!(
                 fs::read_to_string(dir.path().join("sub/nested/b.txt")).unwrap(),
                 "content"
@@ -64,7 +64,7 @@ mod tests {
         fn commits_file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("my file.txt")?;
+            repo.create_and_commit_file("my file.txt")?;
             pretty::assert_eq!(
                 fs::read_to_string(dir.path().join("my file.txt")).unwrap(),
                 "content"
@@ -79,8 +79,8 @@ mod tests {
         fn successive_commits_accumulate_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
-            repo.commit_file("b.txt")?;
+            repo.create_and_commit_file("a.txt")?;
+            repo.create_and_commit_file("b.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt"), S("b.txt")]);
             pretty::assert_eq!(repo.last_commit_message()?, "add file b.txt");
             assert!(repo.status(&[])?.is_empty());

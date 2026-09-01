@@ -148,8 +148,8 @@ mod tests {
             }
             let (_dir, repo, main) = configured_repo()?;
             checkout_feature(&repo, "feature", &main)?;
-            repo.commit_file("a.txt")?;
-            repo.commit_file("sub/b.txt")?;
+            repo.create_and_commit_file("a.txt")?;
+            repo.create_and_commit_file("sub/b.txt")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("a.txt"), File::from("sub/b.txt")]);
             pretty::assert_eq!(have, want);
@@ -163,7 +163,7 @@ mod tests {
             }
             let (dir, repo, main) = configured_repo()?;
             checkout_feature(&repo, "feature", &main)?;
-            repo.commit_file("committed.txt")?;
+            repo.create_and_commit_file("committed.txt")?;
             fs::write(dir.path().join("uncommitted.txt"), "extra").unwrap();
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("committed.txt")]);
@@ -191,9 +191,9 @@ mod tests {
             }
             let (_dir, repo, main) = configured_repo()?;
             checkout_feature(&repo, "parent", &main)?;
-            repo.commit_file("parent.txt")?;
+            repo.create_and_commit_file("parent.txt")?;
             checkout_feature(&repo, "child", "parent")?;
-            repo.commit_file("child.txt")?;
+            repo.create_and_commit_file("child.txt")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("child.txt")]);
             pretty::assert_eq!(have, want);
@@ -207,7 +207,7 @@ mod tests {
             }
             let (_dir, repo, main) = configured_repo()?;
             checkout_feature(&repo, "feature", &main)?;
-            repo.commit_file("my file.txt")?;
+            repo.create_and_commit_file("my file.txt")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("my file.txt")]);
             pretty::assert_eq!(have, want);

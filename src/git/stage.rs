@@ -95,7 +95,7 @@ mod tests {
         fn stages_modified_file() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
+            repo.create_and_commit_file("a.txt")?;
             fs::write(dir.path().join("a.txt"), "changed").unwrap();
             repo.stage_file("a.txt")?;
             let have = repo.staged()?;

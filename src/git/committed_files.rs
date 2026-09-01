@@ -39,8 +39,8 @@ mod tests {
         fn has_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
-            repo.commit_file("sub/b.txt")?;
+            repo.create_and_commit_file("a.txt")?;
+            repo.create_and_commit_file("sub/b.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt"), S("sub/b.txt")]);
             Ok(())
         }
@@ -49,7 +49,7 @@ mod tests {
         fn file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("my file.txt")?;
+            repo.create_and_commit_file("my file.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("my file.txt")]);
             Ok(())
         }
@@ -58,7 +58,7 @@ mod tests {
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("file\"quote.txt")?;
+            repo.create_and_commit_file("file\"quote.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("file\"quote.txt")]);
             Ok(())
         }
@@ -67,7 +67,7 @@ mod tests {
         fn file_with_newline() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a\nb.txt")?;
+            repo.create_and_commit_file("a\nb.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("a\nb.txt")]);
             Ok(())
         }
@@ -76,7 +76,7 @@ mod tests {
         fn excludes_uncommitted_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("committed.txt")?;
+            repo.create_and_commit_file("committed.txt")?;
             fs::write(dir.path().join("uncommitted.txt"), "extra").unwrap();
             pretty::assert_eq!(repo.committed_files()?, vec![S("committed.txt")]);
             Ok(())
@@ -86,7 +86,7 @@ mod tests {
         fn excludes_staged_uncommitted_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("committed.txt")?;
+            repo.create_and_commit_file("committed.txt")?;
             fs::write(dir.path().join("staged.txt"), "extra").unwrap();
             repo.stage_file("staged.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("committed.txt")]);
@@ -97,7 +97,7 @@ mod tests {
         fn includes_files_deleted_from_worktree() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
+            repo.create_and_commit_file("a.txt")?;
             fs::remove_file(dir.path().join("a.txt")).unwrap();
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
             Ok(())

@@ -70,7 +70,7 @@ mod tests {
         fn does_not_change_existing_committed_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            repo.commit_file("a.txt")?;
+            repo.create_and_commit_file("a.txt")?;
             repo.commit_empty("empty")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
             assert_eq!(repo.last_commit_message()?, "empty");
