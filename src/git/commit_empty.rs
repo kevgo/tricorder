@@ -12,3 +12,70 @@ impl Repo {
             .run()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    mod commit_empty {
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::Repo;
+        use big_s::S;
+        use std::fs;
+        use tempfile::TempDir;
+
+        #[test]
+        fn creates_commit_with_message() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.commit_empty("empty commit")?;
+            pretty::assert_eq!(repo.last_commit_message()?, "empty commit");
+            pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
+            assert!(repo.status(&[])?.is_empty());
+            Ok(())
+        }
+
+        #[test]
+        fn successive_commits() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.commit_empty("first")?;
+            repo.commit_empty("second")?;
+            pretty::assert_eq!(repo.last_commit_message()?, "second");
+            pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
+            Ok(())
+        }
+
+        #[test]
+        fn message_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.commit_empty("hello world")?;
+            pretty::assert_eq!(repo.last_commit_message()?, "hello world");
+            Ok(())
+        }
+
+        #[test]
+        fn leaves_untracked_files_uncommitted() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            fs::write(dir.path().join("untracked.txt"), "content").unwrap();
+            repo.commit_empty("empty")?;
+            pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
+            pretty::assert_eq!(repo.uncommitted()?, vec![File::from("untracked.txt")]);
+            pretty::assert_eq!(repo.last_commit_message()?, "empty");
+            Ok(())
+        }
+
+        #[test]
+        fn does_not_change_existing_committed_files() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.commit_file("a.txt")?;
+            repo.commit_empty("empty")?;
+            pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
+            pretty::assert_eq!(repo.last_commit_message()?, "empty");
+            assert!(repo.status(&[])?.is_empty());
+            Ok(())
+        }
+    }
+}
