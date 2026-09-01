@@ -7,27 +7,25 @@ use crate::gittown;
 
 impl Repo {
     /// provides the names of all files changed on the current branch, including uncommitted changes
-    ///
-    /// `None` = not a Git repository or the default branch / merge-base cannot be determined.
-    pub(crate) fn branch_changed_files(&self) -> Result<Option<Vec<File>>> {
+    pub(crate) fn branch_changed_files(&self) -> Result<Vec<File>> {
         let uncommitted = self.uncommitted()?;
 
         // try to use Git Town
         if let Some(gittown_files) = gittown::files_changed_on_current_branch(self) {
-            return Ok(Some(unique_existing(self, gittown_files, uncommitted)));
+            return Ok(unique_existing(self, gittown_files, uncommitted));
         }
 
         // here Git Town didn't work --> use vanilla Git
         let Some(default_branch) = self.default_branch() else {
             // cannot determine the default branch --> process only the uncommitted files
-            return Ok(Some(uncommitted));
+            return Ok(uncommitted);
         };
         let Some(merge_base) = self.merge_base(&default_branch) else {
             // cannot determine the merge base --> process only the uncommitted files
-            return Ok(Some(uncommitted));
+            return Ok(uncommitted);
         };
         let committed = self.branch_committed_files(&merge_base)?;
-        Ok(Some(unique_existing(self, committed, uncommitted)))
+        Ok(unique_existing(self, committed, uncommitted))
     }
 }
 

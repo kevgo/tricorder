@@ -13,10 +13,10 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let repo = Repo::load();
     let stacks = match &repo {
-        Some(repo) => match repo.branch_changed_files()? {
-            Some(files) => stacks::from_files(&files, &ignores),
-            None => DetectedStacks::empty(),
-        },
+        Some(repo) => {
+            let changed_files = repo.branch_changed_files()?;
+            stacks::from_files(&changed_files, &ignores)
+        }
         None => stacks::discover_all(&ignores),
     };
     run_fix_then_lint(args, &config, &stacks, repo.as_ref())
