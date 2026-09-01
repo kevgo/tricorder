@@ -79,25 +79,37 @@ mod tests {
         fn common_ancestor_when_diverged() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            let base = head_sha(&repo)?;
-            let default_branch = current_branch(&repo)?;
             repo.git_command()
-                .args(["checkout", "--quiet", "-b", "feature"])
+                .args(["checkout", "--quiet", "-b", "parent"])
+                .run()?;
+            let parent_base = head_sha(&repo)?;
+            repo.git_command()
+                .args(["checkout", "--quiet", "-b", "child"])
                 .run()?;
             repo.git_command()
-                .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
+                .args([
+                    "commit",
+                    "--quiet",
+                    "--message=child-commit",
+                    "--allow-empty",
+                ])
                 .run()?;
             repo.git_command()
-                .args(["checkout", "--quiet", &default_branch])
+                .args(["checkout", "--quiet", "parent"])
                 .run()?;
             repo.git_command()
-                .args(["commit", "--quiet", "--message=more", "--allow-empty"])
+                .args([
+                    "commit",
+                    "--quiet",
+                    "--message=parent-commit",
+                    "--allow-empty",
+                ])
                 .run()?;
             repo.git_command()
-                .args(["checkout", "--quiet", "feature"])
+                .args(["checkout", "--quiet", "child"])
                 .run()?;
-            let have = repo.merge_base(&default_branch);
-            let want = Some(base);
+            let have = repo.merge_base("parent");
+            let want = Some(parent_base);
             pretty::assert_eq!(have, want);
             Ok(())
         }
