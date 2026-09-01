@@ -1,6 +1,8 @@
 mod branch_changed_files;
 mod branch_committed_files;
 mod command;
+mod commit_file;
+mod current_branch;
 mod default_branch;
 mod diff;
 mod has_ref;

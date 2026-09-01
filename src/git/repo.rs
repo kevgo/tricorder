@@ -44,11 +44,16 @@ impl Repo {
     }
 
     pub(crate) fn file_exists(&self, file: &File) -> bool {
+        self.file_path(file).is_file()
+    }
+
+    pub(crate) fn file_path(&self, file: &str) -> PathBuf {
         match &self.path {
-            Some(dir) => dir.join(file).is_file(),
-            None => file.as_ref().is_file(),
+            Some(dir) => dir.join(file),
+            None => PathBuf::from(file),
         }
     }
+
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
         command.stdin(Stdio::null());
