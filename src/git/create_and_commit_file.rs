@@ -16,7 +16,12 @@ impl Repo {
         fs::write(path, "content").unwrap();
         self.stage_file(name)?;
         self.git_command()
-            .args(["commit", "--quiet", &format!("--message=add file {}", name)])
+            .args([
+                "commit",
+                "--quiet",
+                "--message",
+                &format!("add file {}", name),
+            ])
             .run()
     }
 }
