@@ -5,6 +5,7 @@ mod commit_empty;
 mod committed_files;
 mod create_and_commit_file;
 mod create_and_switch_to_branch;
+mod create_unstaged_file;
 mod current_branch;
 mod default_branch;
 mod diff;
