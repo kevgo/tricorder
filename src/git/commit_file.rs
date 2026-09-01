@@ -40,7 +40,7 @@ mod tests {
                 "content"
             );
             pretty::assert_eq!(repo.last_commit_message()?, "add file a.txt");
-            pretty::assert_eq!(repo.committed_names()?, vec![S("a.txt")]);
+            pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
             assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
@@ -54,7 +54,7 @@ mod tests {
                 fs::read_to_string(dir.path().join("sub/nested/b.txt")).unwrap(),
                 "content"
             );
-            pretty::assert_eq!(repo.committed_names()?, vec![S("sub/nested/b.txt")]);
+            pretty::assert_eq!(repo.committed_files()?, vec![S("sub/nested/b.txt")]);
             pretty::assert_eq!(repo.last_commit_message()?, "add file sub/nested/b.txt");
             assert!(repo.status(&[])?.is_empty());
             Ok(())
@@ -69,7 +69,7 @@ mod tests {
                 fs::read_to_string(dir.path().join("my file.txt")).unwrap(),
                 "content"
             );
-            pretty::assert_eq!(repo.committed_names()?, vec![S("my file.txt")]);
+            pretty::assert_eq!(repo.committed_files()?, vec![S("my file.txt")]);
             pretty::assert_eq!(repo.last_commit_message()?, "add file my file.txt");
             assert!(repo.status(&[])?.is_empty());
             Ok(())
@@ -81,7 +81,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.commit_file("a.txt")?;
             repo.commit_file("b.txt")?;
-            pretty::assert_eq!(repo.committed_names()?, vec![S("a.txt"), S("b.txt")]);
+            pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt"), S("b.txt")]);
             pretty::assert_eq!(repo.last_commit_message()?, "add file b.txt");
             assert!(repo.status(&[])?.is_empty());
             Ok(())

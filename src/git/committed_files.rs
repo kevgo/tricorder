@@ -6,7 +6,7 @@ use crate::git::Repo;
 
 impl Repo {
     #[cfg(test)]
-    pub(crate) fn committed_names(&self) -> Result<Vec<String>> {
+    pub(crate) fn committed_files(&self) -> Result<Vec<String>> {
         Ok(self
             .git_command()
             .args(["ls-tree", "-r", "-z", "--name-only", "HEAD"])
