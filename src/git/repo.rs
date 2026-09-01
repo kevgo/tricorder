@@ -21,7 +21,9 @@ impl Repo {
         let repo = Repo {
             path: Some(path.to_path_buf()),
         };
-        repo.git_command().args(["init", "--quiet"]).run()?;
+        repo.git_command()
+            .args(["init", "--initial-branch=main", "--quiet"])
+            .run()?;
         repo.git_command()
             .args(["config", "user.name", "Test"])
             .run()?;
