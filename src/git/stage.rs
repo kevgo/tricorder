@@ -171,69 +171,65 @@ mod tests {
         #[test]
         fn file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let file = File::from("my file.txt");
             repo.stage_files(&[&file])?;
-            pretty::assert_eq!(
-                repo.staged()?,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("my file.txt")],
-                }
-            );
+            let have = repo.staged()?;
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![file],
+            };
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             let file = File::from("file\"quote.txt");
             repo.stage_files(&[&file])?;
-            pretty::assert_eq!(
-                repo.staged()?,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("file\"quote.txt")],
-                }
-            );
+            let have = repo.staged()?;
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![file],
+            };
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn file_starting_with_dash() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("-foo.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(dir.path().join("-foo.txt"), "content").unwrap();
             let file = File::from("-foo.txt");
             repo.stage_files(&[&file])?;
-            pretty::assert_eq!(
-                repo.staged()?,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("-foo.txt")],
-                }
-            );
+            let have = repo.staged()?;
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![file],
+            };
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
         #[test]
         fn only_given_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
             fs::write(dir.path().join("a.txt"), "a").unwrap();
             fs::write(dir.path().join("b.txt"), "b").unwrap();
-            let repo = Repo::init(dir.path())?;
             let a = File::from("a.txt");
             repo.stage_files(&[&a])?;
-            pretty::assert_eq!(
-                repo.staged()?,
-                StagedFiles {
-                    partial: vec![],
-                    full: vec![File::from("a.txt")],
-                }
-            );
+            let have = repo.staged()?;
+            let want = StagedFiles {
+                partial: vec![],
+                full: vec![a],
+            };
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
