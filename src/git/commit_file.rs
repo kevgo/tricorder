@@ -14,7 +14,7 @@ impl Repo {
             fs::create_dir_all(parent).unwrap();
         }
         fs::write(path, "content").unwrap();
-        self.git_command().args(["add", name]).run()?;
+        self.stage_file(name)?;
         self.git_command()
             .args(["commit", "--quiet", &format!("--message=add file {}", name)])
             .run()
