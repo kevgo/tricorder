@@ -30,15 +30,7 @@ impl Repo {
         repo.git_command()
             .args(["config", "user.email", "test@example.com"])
             .run()?;
-        repo.git_command()
-            .args([
-                "commit",
-                "--quiet",
-                "--message",
-                "Initial commit",
-                "--allow-empty",
-            ])
-            .run()?;
+        repo.commit_empty("Initial commit")?;
         Ok(repo)
     }
 
