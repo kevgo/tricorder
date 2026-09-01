@@ -125,8 +125,8 @@ mod tests {
         #[test]
         fn in_subdir_of_git_repo() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            Repo::init(dir.path())?;
-            let sub = dir.path().join("sub");
+            let repo = Repo::init(dir.path())?;
+            let sub = repo.file_path("sub");
             fs::create_dir(&sub).unwrap();
             let have = is_git_repo(Some(&sub));
             assert!(have);

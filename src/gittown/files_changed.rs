@@ -161,10 +161,10 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = configured_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             repo.create_and_commit_file("committed.txt")?;
-            fs::write(dir.path().join("uncommitted.txt"), "extra").unwrap();
+            fs::write(repo.file_path("uncommitted.txt"), "extra").unwrap();
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("committed.txt")]);
             pretty::assert_eq!(have, want);

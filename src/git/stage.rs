@@ -34,7 +34,7 @@ mod tests {
         fn stages_untracked_file() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("a.txt"), "content").unwrap();
+            fs::write(repo.file_path("a.txt"), "content").unwrap();
             repo.stage_file("a.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -49,7 +49,7 @@ mod tests {
         fn file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("my file.txt"), "content").unwrap();
+            fs::write(repo.file_path("my file.txt"), "content").unwrap();
             repo.stage_file("my file.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -64,7 +64,7 @@ mod tests {
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
+            fs::write(repo.file_path("file\"quote.txt"), "content").unwrap();
             repo.stage_file("file\"quote.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -79,8 +79,8 @@ mod tests {
         fn nested_file() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::create_dir_all(dir.path().join("sub")).unwrap();
-            fs::write(dir.path().join("sub/nested.txt"), "content").unwrap();
+            fs::create_dir_all(repo.file_path("sub")).unwrap();
+            fs::write(repo.file_path("sub/nested.txt"), "content").unwrap();
             repo.stage_file("sub/nested.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -96,7 +96,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("a.txt")?;
-            fs::write(dir.path().join("a.txt"), "changed").unwrap();
+            fs::write(repo.file_path("a.txt"), "changed").unwrap();
             repo.stage_file("a.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -111,8 +111,8 @@ mod tests {
         fn leaves_other_files_unstaged() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("a.txt"), "a").unwrap();
-            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            fs::write(repo.file_path("a.txt"), "a").unwrap();
+            fs::write(repo.file_path("b.txt"), "b").unwrap();
             repo.stage_file("a.txt")?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -144,7 +144,7 @@ mod tests {
         fn empty_list_is_noop() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("a.txt"), "content").unwrap();
+            fs::write(repo.file_path("a.txt"), "content").unwrap();
             repo.stage_files(&[])?;
             pretty::assert_eq!(repo.staged()?, StagedFiles::default());
             Ok(())
@@ -154,8 +154,8 @@ mod tests {
         fn stages_multiple_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("a.txt"), "a").unwrap();
-            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            fs::write(repo.file_path("a.txt"), "a").unwrap();
+            fs::write(repo.file_path("b.txt"), "b").unwrap();
             let a = File::from("a.txt");
             let b = File::from("b.txt");
             repo.stage_files(&[&a, &b])?;
@@ -172,7 +172,7 @@ mod tests {
         fn file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("my file.txt"), "content").unwrap();
+            fs::write(repo.file_path("my file.txt"), "content").unwrap();
             let file = File::from("my file.txt");
             repo.stage_files(&[&file])?;
             let have = repo.staged()?;
@@ -188,7 +188,7 @@ mod tests {
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
+            fs::write(repo.file_path("file\"quote.txt"), "content").unwrap();
             let file = File::from("file\"quote.txt");
             repo.stage_files(&[&file])?;
             let have = repo.staged()?;
@@ -204,7 +204,7 @@ mod tests {
         fn file_starting_with_dash() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("-foo.txt"), "content").unwrap();
+            fs::write(repo.file_path("-foo.txt"), "content").unwrap();
             let file = File::from("-foo.txt");
             repo.stage_files(&[&file])?;
             let have = repo.staged()?;
@@ -220,8 +220,8 @@ mod tests {
         fn only_given_files() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("a.txt"), "a").unwrap();
-            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            fs::write(repo.file_path("a.txt"), "a").unwrap();
+            fs::write(repo.file_path("b.txt"), "b").unwrap();
             let a = File::from("a.txt");
             repo.stage_files(&[&a])?;
             let have = repo.staged()?;

@@ -41,7 +41,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("a.txt")?;
             pretty::assert_eq!(
-                fs::read_to_string(dir.path().join("a.txt")).unwrap(),
+                fs::read_to_string(repo.file_path("a.txt")).unwrap(),
                 "content"
             );
             pretty::assert_eq!(repo.last_commit_message()?, "add file a.txt");
@@ -56,7 +56,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("sub/nested/b.txt")?;
             pretty::assert_eq!(
-                fs::read_to_string(dir.path().join("sub/nested/b.txt")).unwrap(),
+                fs::read_to_string(repo.file_path("sub/nested/b.txt")).unwrap(),
                 "content"
             );
             pretty::assert_eq!(repo.committed_files()?, vec![S("sub/nested/b.txt")]);
@@ -71,7 +71,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("my file.txt")?;
             pretty::assert_eq!(
-                fs::read_to_string(dir.path().join("my file.txt")).unwrap(),
+                fs::read_to_string(repo.file_path("my file.txt")).unwrap(),
                 "content"
             );
             pretty::assert_eq!(repo.committed_files()?, vec![S("my file.txt")]);

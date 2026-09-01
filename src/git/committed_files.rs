@@ -78,7 +78,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("committed.txt")?;
-            fs::write(dir.path().join("uncommitted.txt"), "extra").unwrap();
+            fs::write(repo.file_path("uncommitted.txt"), "extra").unwrap();
             pretty::assert_eq!(repo.committed_files()?, vec![S("committed.txt")]);
             Ok(())
         }
@@ -88,7 +88,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("committed.txt")?;
-            fs::write(dir.path().join("staged.txt"), "extra").unwrap();
+            fs::write(repo.file_path("staged.txt"), "extra").unwrap();
             repo.stage_file("staged.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("committed.txt")]);
             Ok(())
@@ -99,7 +99,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("a.txt")?;
-            fs::remove_file(dir.path().join("a.txt")).unwrap();
+            fs::remove_file(repo.file_path("a.txt")).unwrap();
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
             Ok(())
         }

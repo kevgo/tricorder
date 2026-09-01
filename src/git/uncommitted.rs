@@ -27,11 +27,11 @@ mod tests {
     #[test]
     fn expands_untracked_folder_to_files() -> Result<()> {
         let dir = TempDir::new().unwrap();
-        let sub = dir.path().join("sub");
+        let repo = Repo::init(dir.path())?;
+        let sub = repo.file_path("sub");
         fs::create_dir(&sub).unwrap();
         fs::write(sub.join("one.txt"), "one").unwrap();
         fs::write(sub.join("two.txt"), "two").unwrap();
-        let repo = Repo::init(dir.path())?;
         let mut have = repo.uncommitted()?;
         have.sort();
         let want = vec![File::from("sub/one.txt"), File::from("sub/two.txt")];
@@ -42,8 +42,8 @@ mod tests {
     #[test]
     fn includes_untracked_file_with_spaces() -> Result<()> {
         let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("my file.txt"), "content").unwrap();
         let repo = Repo::init(dir.path())?;
+        fs::write(repo.file_path("my file.txt"), "content").unwrap();
         let have = repo.uncommitted()?;
         let want = vec![File::from("my file.txt")];
         pretty::assert_eq!(have, want);
@@ -53,8 +53,8 @@ mod tests {
     #[test]
     fn includes_untracked_file_with_quotes() -> Result<()> {
         let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("file\"quote.txt"), "hello").unwrap();
         let repo = Repo::init(dir.path())?;
+        fs::write(repo.file_path("file\"quote.txt"), "hello").unwrap();
         let have = repo.uncommitted()?;
         let want = vec![File::from("file\"quote.txt")];
         pretty::assert_eq!(have, want);
@@ -64,8 +64,8 @@ mod tests {
     #[test]
     fn includes_renamed_file_with_spaces() -> Result<()> {
         let dir = TempDir::new().unwrap();
-        fs::write(dir.path().join("old file.txt"), "hello").unwrap();
         let repo = Repo::init(dir.path())?;
+        fs::write(repo.file_path("old file.txt"), "hello").unwrap();
         repo.git_command().args(["add", "old file.txt"]).run()?;
         repo.git_command()
             .args(["commit", "--quiet", "--message=Initial"])

@@ -59,7 +59,7 @@ mod tests {
         fn leaves_untracked_files_uncommitted() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            fs::write(dir.path().join("untracked.txt"), "content").unwrap();
+            fs::write(repo.file_path("untracked.txt"), "content").unwrap();
             repo.commit_empty("empty")?;
             pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
             pretty::assert_eq!(repo.uncommitted()?, vec![File::from("untracked.txt")]);

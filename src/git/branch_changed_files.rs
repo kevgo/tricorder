@@ -52,10 +52,10 @@ mod tests {
 
         fn repo_with(names: &[&str]) -> Result<(TempDir, Repo)> {
             let dir = TempDir::new().unwrap();
-            for name in names {
-                fs::write(dir.path().join(name), "").unwrap();
-            }
             let repo = Repo::init(dir.path())?;
+            for name in names {
+                fs::write(repo.file_path(name), "").unwrap();
+            }
             Ok((dir, repo))
         }
 
