@@ -82,7 +82,7 @@ mod tests {
         use std::fs;
         use tempfile::TempDir;
 
-        fn configured_repo() -> Result<(TempDir, Repo, String)> {
+        fn gittown_repo() -> Result<(TempDir, Repo, String)> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             let main = repo.current_branch()?;
@@ -124,7 +124,7 @@ mod tests {
 
         #[test]
         fn none_on_main_branch() -> Result<()> {
-            let (_dir, repo, _main) = configured_repo()?;
+            let (_dir, repo, _main) = gittown_repo()?;
             let have = files_changed_on_current_branch(&repo);
             pretty::assert_eq!(have, None);
             Ok(())
@@ -132,7 +132,7 @@ mod tests {
 
         #[test]
         fn none_when_feature_has_no_parent() -> Result<()> {
-            let (_dir, repo, _main) = configured_repo()?;
+            let (_dir, repo, _main) = gittown_repo()?;
             repo.git_command()
                 .args(["checkout", "--quiet", "-b", "feature"])
                 .run()?;
@@ -146,7 +146,7 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (_dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             repo.create_and_commit_file("a.txt")?;
             repo.create_and_commit_file("sub/b.txt")?;
@@ -161,7 +161,7 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (_dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             repo.create_and_commit_file("committed.txt")?;
             fs::write(repo.file_path("uncommitted.txt"), "extra").unwrap();
@@ -176,7 +176,7 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (_dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(Vec::<File>::new());
@@ -189,7 +189,7 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (_dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "parent", &main)?;
             repo.create_and_commit_file("parent.txt")?;
             checkout_feature(&repo, "child", "parent")?;
@@ -205,7 +205,7 @@ mod tests {
             if !git_town_installed() {
                 return Ok(());
             }
-            let (_dir, repo, main) = configured_repo()?;
+            let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             repo.create_and_commit_file("my file.txt")?;
             let have = files_changed_on_current_branch(&repo);
