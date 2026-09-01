@@ -28,7 +28,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.commit_empty("empty commit")?;
-            pretty::assert_eq!(repo.last_commit_message()?, "empty commit");
+            assert_eq!(repo.last_commit_message()?, "empty commit");
             pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
             assert!(repo.status(&[])?.is_empty());
             Ok(())
@@ -40,7 +40,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.commit_empty("first")?;
             repo.commit_empty("second")?;
-            pretty::assert_eq!(repo.last_commit_message()?, "second");
+            assert_eq!(repo.last_commit_message()?, "second");
             pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
             Ok(())
         }
@@ -50,7 +50,7 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.commit_empty("hello world")?;
-            pretty::assert_eq!(repo.last_commit_message()?, "hello world");
+            assert_eq!(repo.last_commit_message()?, "hello world");
             Ok(())
         }
 
@@ -62,7 +62,7 @@ mod tests {
             repo.commit_empty("empty")?;
             pretty::assert_eq!(repo.committed_files()?, Vec::<String>::new());
             pretty::assert_eq!(repo.uncommitted()?, vec![File::from("untracked.txt")]);
-            pretty::assert_eq!(repo.last_commit_message()?, "empty");
+            assert_eq!(repo.last_commit_message()?, "empty");
             Ok(())
         }
 
@@ -73,7 +73,7 @@ mod tests {
             repo.commit_file("a.txt")?;
             repo.commit_empty("empty")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("a.txt")]);
-            pretty::assert_eq!(repo.last_commit_message()?, "empty");
+            assert_eq!(repo.last_commit_message()?, "empty");
             assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
