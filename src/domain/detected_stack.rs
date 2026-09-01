@@ -45,11 +45,6 @@ impl DetectedStacks {
     }
 
     #[must_use]
-    pub fn empty() -> Self {
-        DetectedStacks(vec![])
-    }
-
-    #[must_use]
     pub fn contains_file(&self, stack_type: StackType, file: &str) -> bool {
         let Some(stack) = self.get_stack(stack_type) else {
             return false;
