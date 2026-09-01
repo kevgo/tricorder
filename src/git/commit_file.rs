@@ -16,7 +16,7 @@ impl Repo {
         fs::write(path, "content").unwrap();
         self.git_command().args(["add", name]).run()?;
         self.git_command()
-            .args(["commit", "--quiet", "--message=change"])
+            .args(["commit", "--quiet", &format!("--message=add file {}", name)])
             .run()
     }
 }
@@ -25,32 +25,10 @@ impl Repo {
 mod tests {
     mod commit_file {
         use crate::domain::Result;
-        use crate::git::GitCommandExt;
         use crate::git::Repo;
+        use big_s::S;
         use std::fs;
         use tempfile::TempDir;
-
-        fn committed_names(repo: &Repo) -> Result<Vec<String>> {
-            Ok(repo
-                .git_command()
-                .args(["ls-tree", "-r", "-z", "--name-only", "HEAD"])
-                .run_stdout_zero()?
-                .lines()
-                .map(ToOwned::to_owned)
-                .collect())
-        }
-
-        fn last_commit_message(repo: &Repo) -> Result<String> {
-            repo.git_command()
-                .args(["log", "-1", "--pretty=%s"])
-                .run_stdout_trimmed()
-        }
-
-        fn porcelain_status(repo: &Repo) -> Result<String> {
-            repo.git_command()
-                .args(["status", "--porcelain"])
-                .run_stdout_trimmed()
-        }
 
         #[test]
         fn writes_and_commits_file() -> Result<()> {
@@ -61,9 +39,9 @@ mod tests {
                 fs::read_to_string(dir.path().join("a.txt")).unwrap(),
                 "content"
             );
-            pretty::assert_eq!(last_commit_message(&repo)?, "change");
-            pretty::assert_eq!(committed_names(&repo)?, vec!["a.txt".to_owned()]);
-            pretty::assert_eq!(porcelain_status(&repo)?, "");
+            pretty::assert_eq!(repo.last_commit_message()?, "add file a.txt");
+            pretty::assert_eq!(repo.committed_names()?, vec![S("a.txt")]);
+            assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
 
@@ -76,11 +54,9 @@ mod tests {
                 fs::read_to_string(dir.path().join("sub/nested/b.txt")).unwrap(),
                 "content"
             );
-            pretty::assert_eq!(
-                committed_names(&repo)?,
-                vec!["sub/nested/b.txt".to_owned()]
-            );
-            pretty::assert_eq!(porcelain_status(&repo)?, "");
+            pretty::assert_eq!(repo.committed_names()?, vec![S("sub/nested/b.txt")]);
+            pretty::assert_eq!(repo.last_commit_message()?, "add file sub/nested/b.txt");
+            assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
 
@@ -93,8 +69,9 @@ mod tests {
                 fs::read_to_string(dir.path().join("my file.txt")).unwrap(),
                 "content"
             );
-            pretty::assert_eq!(committed_names(&repo)?, vec!["my file.txt".to_owned()]);
-            pretty::assert_eq!(porcelain_status(&repo)?, "");
+            pretty::assert_eq!(repo.committed_names()?, vec![S("my file.txt")]);
+            pretty::assert_eq!(repo.last_commit_message()?, "add file my file.txt");
+            assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
 
@@ -104,12 +81,9 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.commit_file("a.txt")?;
             repo.commit_file("b.txt")?;
-            pretty::assert_eq!(
-                committed_names(&repo)?,
-                vec!["a.txt".to_owned(), "b.txt".to_owned()]
-            );
-            pretty::assert_eq!(last_commit_message(&repo)?, "change");
-            pretty::assert_eq!(porcelain_status(&repo)?, "");
+            pretty::assert_eq!(repo.committed_names()?, vec![S("a.txt"), S("b.txt")]);
+            pretty::assert_eq!(repo.last_commit_message()?, "add file b.txt");
+            assert!(repo.status(&[])?.is_empty());
             Ok(())
         }
     }
