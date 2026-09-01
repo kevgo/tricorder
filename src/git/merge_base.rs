@@ -52,16 +52,31 @@ mod tests {
         fn ancestor_of_feature_branch() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            let base = head_sha(&repo)?;
-            let default_branch = current_branch(&repo)?;
             repo.git_command()
-                .args(["checkout", "--quiet", "-b", "feature"])
+                .args(["checkout", "--quiet", "-b", "feature-1"])
                 .run()?;
             repo.git_command()
-                .args(["commit", "--quiet", "--message=feature", "--allow-empty"])
+                .args([
+                    "commit",
+                    "--quiet",
+                    "--message=feature-1-commit",
+                    "--allow-empty",
+                ])
                 .run()?;
-            let have = repo.merge_base(&default_branch);
-            let want = Some(base);
+            let feature_1_sha = head_sha(&repo)?;
+            repo.git_command()
+                .args(["checkout", "--quiet", "-b", "feature-2"])
+                .run()?;
+            repo.git_command()
+                .args([
+                    "commit",
+                    "--quiet",
+                    "--message=feature-2-commit",
+                    "--allow-empty",
+                ])
+                .run()?;
+            let have = repo.merge_base(&feature_1_sha);
+            let want = Some(feature_1_sha);
             pretty::assert_eq!(have, want);
             Ok(())
         }
