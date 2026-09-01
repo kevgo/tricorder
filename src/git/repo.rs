@@ -43,10 +43,12 @@ impl Repo {
         }
     }
 
+    /// indicates whether the given file exists in the repository
     pub(crate) fn file_exists(&self, file: &File) -> bool {
         self.file_path(file).is_file()
     }
 
+    /// provides the absolute path for the given file in the repository
     pub(crate) fn file_path(&self, file: &str) -> PathBuf {
         match &self.path {
             Some(dir) => dir.join(file),
@@ -54,6 +56,7 @@ impl Repo {
         }
     }
 
+    /// provides a preconfigured Command instance for executing a Git command inside this repo
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
         command.stdin(Stdio::null());
