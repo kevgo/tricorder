@@ -62,7 +62,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 7: stage the files whose fixes actually changed their content
     let after = fingerprint::scan_files(&staged_files);
     let changed = fingerprint::changed(&before, &after);
-    repo.stage(&changed)?;
+    repo.stage_files(&changed)?;
     Ok(ExitCode::SUCCESS)
 }
 

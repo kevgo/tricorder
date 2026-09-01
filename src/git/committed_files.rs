@@ -88,7 +88,7 @@ mod tests {
             let repo = Repo::init(dir.path())?;
             repo.commit_file("committed.txt")?;
             fs::write(dir.path().join("staged.txt"), "extra").unwrap();
-            repo.git_command().args(["add", "staged.txt"]).run()?;
+            repo.stage_file("staged.txt")?;
             pretty::assert_eq!(repo.committed_files()?, vec![S("committed.txt")]);
             Ok(())
         }
