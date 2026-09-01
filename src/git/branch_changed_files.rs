@@ -50,25 +50,25 @@ mod tests {
         use std::fs;
         use tempfile::TempDir;
 
-        fn repo_with(names: &[&str]) -> Result<(TempDir, Repo)> {
-            let dir = TempDir::new().unwrap();
-            let repo = Repo::init(dir.path())?;
+        fn create_files(repo: &Repo, names: &[&str]) {
             for name in names {
                 fs::write(repo.file_path(name), "").unwrap();
             }
-            Ok((dir, repo))
         }
 
         #[test]
         fn empty() -> Result<()> {
-            let (_dir, repo) = repo_with(&[])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
             pretty::assert_eq!(unique_existing(&repo, vec![], vec![]), Vec::<File>::new());
             Ok(())
         }
 
         #[test]
         fn already_unique_and_sorted() -> Result<()> {
-            let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            create_files(&repo, &["a.rs", "b.rs", "c.rs"]);
             let have = unique_existing(
                 &repo,
                 vec![File::from("a.rs"), File::from("b.rs")],
@@ -81,7 +81,9 @@ mod tests {
 
         #[test]
         fn sorts() -> Result<()> {
-            let (_dir, repo) = repo_with(&["a.rs", "b.rs", "c.rs"])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            create_files(&repo, &["a.rs", "b.rs", "c.rs"]);
             let have = unique_existing(
                 &repo,
                 vec![File::from("c.rs"), File::from("a.rs")],
@@ -94,7 +96,9 @@ mod tests {
 
         #[test]
         fn dedups_across_both_lists() -> Result<()> {
-            let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            create_files(&repo, &["a.rs", "b.rs"]);
             let have = unique_existing(
                 &repo,
                 vec![File::from("b.rs"), File::from("a.rs")],
@@ -107,7 +111,9 @@ mod tests {
 
         #[test]
         fn dedups_within_one_list() -> Result<()> {
-            let (_dir, repo) = repo_with(&["a.rs", "b.rs"])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            create_files(&repo, &["a.rs", "b.rs"]);
             let have = unique_existing(
                 &repo,
                 vec![File::from("b.rs"), File::from("a.rs"), File::from("b.rs")],
@@ -120,7 +126,9 @@ mod tests {
 
         #[test]
         fn drops_missing_files() -> Result<()> {
-            let (_dir, repo) = repo_with(&["a.rs"])?;
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            create_files(&repo, &["a.rs"]);
             let have = unique_existing(
                 &repo,
                 vec![File::from("gone.rs"), File::from("a.rs")],
