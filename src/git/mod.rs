@@ -1,6 +1,7 @@
 mod branch_changed_files;
 mod branch_committed_files;
 mod command;
+mod commit_empty;
 mod commit_file;
 mod committed_files;
 mod current_branch;

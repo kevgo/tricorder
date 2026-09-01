@@ -29,7 +29,13 @@ impl Repo {
             .args(["config", "user.email", "test@example.com"])
             .run()?;
         repo.git_command()
-            .args(["commit", "--quiet", "--message=init", "--allow-empty"])
+            .args([
+                "commit",
+                "--quiet",
+                "--message",
+                "Initial commit",
+                "--allow-empty",
+            ])
             .run()?;
         Ok(repo)
     }
