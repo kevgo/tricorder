@@ -3,15 +3,11 @@ use crate::git::Repo;
 
 impl Repo {
     pub(crate) fn merge_base(&self, default_branch: &str) -> Option<String> {
-        let sha = self
-            .git_command()
+        self.git_command()
             .args(["merge-base", "HEAD", default_branch])
             .run_stdout_trimmed()
-            .ok()?;
-        if sha.is_empty() {
-            return None;
-        }
-        Some(sha)
+            .ok()
+            .filter(|sha| !sha.is_empty())
     }
 }
 
