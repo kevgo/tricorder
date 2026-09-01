@@ -5,7 +5,7 @@ use crate::git::Repo;
 impl Repo {
     #[cfg(test)]
     pub(crate) fn stage_file(&self, file: impl AsRef<str>) -> Result<()> {
-        self.git_command().args(["add", file.as_ref()]).run()
+        self.git_command().args(["add", "--", file.as_ref()]).run()
     }
 
     /// stages the given files
@@ -17,5 +17,240 @@ impl Repo {
             .args(["add", "--"])
             .args(files.iter().map(|file| file.as_str()))
             .run()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod stage_file {
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::Repo;
+        use crate::git::StagedFiles;
+        use std::fs;
+        use tempfile::TempDir;
+
+        #[test]
+        fn stages_untracked_file() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("a.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_file("a.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("a.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("my file.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_file("my file.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("my file.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn file_with_quotes() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_file("file\"quote.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("file\"quote.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn nested_file() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::create_dir_all(dir.path().join("sub")).unwrap();
+            fs::write(dir.path().join("sub/nested.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_file("sub/nested.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("sub/nested.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn stages_modified_file() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.commit_file("a.txt")?;
+            fs::write(dir.path().join("a.txt"), "changed").unwrap();
+            repo.stage_file("a.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("a.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn leaves_other_files_unstaged() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("a.txt"), "a").unwrap();
+            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_file("a.txt")?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("a.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn missing_file_fails() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            assert!(repo.stage_file("missing.txt").is_err());
+            Ok(())
+        }
+    }
+
+    mod stage_files {
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::Repo;
+        use crate::git::StagedFiles;
+        use std::fs;
+        use tempfile::TempDir;
+
+        #[test]
+        fn empty_list_is_noop() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("a.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.stage_files(&[])?;
+            pretty::assert_eq!(repo.staged()?, StagedFiles::default());
+            Ok(())
+        }
+
+        #[test]
+        fn stages_multiple_files() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("a.txt"), "a").unwrap();
+            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            let repo = Repo::init(dir.path())?;
+            let a = File::from("a.txt");
+            let b = File::from("b.txt");
+            repo.stage_files(&[&a, &b])?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("a.txt"), File::from("b.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn file_with_spaces() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("my file.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            let file = File::from("my file.txt");
+            repo.stage_files(&[&file])?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("my file.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn file_with_quotes() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            let file = File::from("file\"quote.txt");
+            repo.stage_files(&[&file])?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("file\"quote.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn file_starting_with_dash() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("-foo.txt"), "content").unwrap();
+            let repo = Repo::init(dir.path())?;
+            let file = File::from("-foo.txt");
+            repo.stage_files(&[&file])?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("-foo.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn only_given_files() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            fs::write(dir.path().join("a.txt"), "a").unwrap();
+            fs::write(dir.path().join("b.txt"), "b").unwrap();
+            let repo = Repo::init(dir.path())?;
+            let a = File::from("a.txt");
+            repo.stage_files(&[&a])?;
+            pretty::assert_eq!(
+                repo.staged()?,
+                StagedFiles {
+                    partial: vec![],
+                    full: vec![File::from("a.txt")],
+                }
+            );
+            Ok(())
+        }
+
+        #[test]
+        fn missing_file_fails() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            let file = File::from("missing.txt");
+            assert!(repo.stage_files(&[&file]).is_err());
+            Ok(())
+        }
     }
 }
