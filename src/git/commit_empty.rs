@@ -5,6 +5,7 @@ use crate::git::GitCommandExt;
 use crate::git::Repo;
 
 impl Repo {
+    /// creates an empty commit with the given message
     #[cfg(test)]
     pub(crate) fn commit_empty(&self, message: &str) -> Result<()> {
         self.git_command()
