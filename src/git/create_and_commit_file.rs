@@ -66,7 +66,7 @@ mod tests {
         }
 
         #[test]
-        fn commits_file_with_spaces() -> Result<()> {
+        fn file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             repo.create_and_commit_file("my file.txt")?;
