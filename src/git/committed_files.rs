@@ -5,6 +5,7 @@ use crate::git::GitCommandExt;
 use crate::git::Repo;
 
 impl Repo {
+    /// provides the names of all committed files in the current branch
     #[cfg(test)]
     pub(crate) fn committed_files(&self) -> Result<Vec<String>> {
         Ok(self
