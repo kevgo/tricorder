@@ -2,17 +2,21 @@
 
 ## 0.1.0
 
+#### BREAKING CHANGES
+
+- breaking: the config file is in JSONC format now because there is too much nesting for TOML
 - breaking: `tricorder pitstop` now processes only files changed on the current branch
-- pitstop/precommit: `keep-sorted` no longer rewrites unchanged files of the same type
-- The new "postedit" command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
-- The configuration file is now in JSON/JSONC and has an improved structure.
-- A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
-- new `rust` stack, but you need to define the commands for linting and fixing yourself
 - breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 - breaking: the `keep-sorted` config key now lives under `applications`
 - breaking: unknown keys in the config file are now an error
-- breaking: renamed init commands to `init:claude` and `init:githook`
+- breaking: split init command to `init:claude` and `init:githook`
 - breaking: the `ignore` config key is renamed to `ignore-files`
+
+#### New Features
+
+- The new `postedit` command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
+- JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
+- New `rust` stack, but you need to define the commands for linting and fixing yourself because there are no widely adopted standards.
 - `tricorder init:config` writes a `tricorder.json` with default settings
 - app: actionlint
 
