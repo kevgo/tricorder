@@ -21,11 +21,9 @@ GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
 ```
 
-Tricorder first discovers the files in the codebase and classifies them by type.
-Then it determines suitable linters, runs them all concurrently,
-and prints results as individual linters finish.
-
-In this example, Tricorder runs five linters:
+Tricorder has classified 203 files
+and executed 5 tools concurrently to lint them.
+In this example:
 
 - [Taplo](https://github.com/tamasfe/taplo) for the 3 TOML files
 - [rumdl](https://github.com/rvben/rumdl) for the 4 Markdown files
@@ -35,34 +33,12 @@ In this example, Tricorder runs five linters:
   for the GitHub Action configuration
 - `git diff --check` to detect unresolved merge conflict markers
 
-These third-party linters weren't installed on my machine.
-Tricorder downloads and runs them automatically.
-The first time you run `tricorder lint`,
-you might see it talking to API of hosting platforms
-and downloading binaries from them:
-
-```sh
-Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok
-added rumdl@0.2.55 to run-that-app
-downloading rumdl 0.2.55 ... extracting ... ok
-```
-
-Tricorder can also compile tools from source.
-
-With Tricorder, you no longer have to:
-
-- keep track which file types exist in each codebase
-- research appropriate linters and formatters for every file type
-- bikeshed tooling choices across developers and teams
-- remember to add linters and formatters when adding new file types
-- learn how to install, configure, and invoke dozens of separate tools
-- keep those tools up to date across all your codebases
-- waste time waiting until primitive dev scripts have run all type
-  checkers, linters, and formatters in sequence
+These third-party linters don't need to be installed on the machine,
+Tricorder downloads them if needed.
 
 Tricorder is aggressively optimized for speed:
 
-- Being written in Rust makes scanning large directory trees quick.
+- Being written in Rust scans large directory trees efficiently.
 - It favors modern linters and formatters that execute quickly.
 - It passes each tool the exact files it needs to process,
   so tools don't need to scan the codebase again to discover files to process.
@@ -72,18 +48,8 @@ Tricorder is aggressively optimized for speed:
 
 ## Usage
 
-```sh
-tricorder ci            # Check all lints and fixes on CI
-tricorder init:claude   # Embed into claude-compatible coding agents
-tricorder init:config   # Create the config file
-tricorder init:githook  # Install the Git pre-commit hook
-tricorder fix           # Apply safe code quality fixes
-tricorder fix-unsafe    # Apply advanced fixes that might change behavior
-tricorder lint          # Find code quality issues (alias: postgenerate)
-tricorder pitstop       # Fix and lint files changed on the current branch
-tricorder postedit      # Lint new changes
-tricorder precommit     # Fix staged files before committing, never fails
-```
+Tricorder provides special commands
+for specific phases of the software development workflow:
 
 ### `tricorder ci`
 
