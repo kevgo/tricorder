@@ -22,8 +22,8 @@ lint Cucumber (gherkin-lint)
 ```
 
 Tricorder first discovers the files in the codebase and classifies them by type.
-Then it determines suitable linters and runs them all concurrently,
-printing results as individual linters finish.
+Then it determines suitable linters, runs them all concurrently,
+and prints results as individual linters finish.
 
 In this example, Tricorder runs five linters:
 
@@ -35,7 +35,8 @@ In this example, Tricorder runs five linters:
   for the GitHub Action configuration
 - `git diff --check` to detect unresolved merge conflict markers
 
-Tricorder downloads and runs third-party tools automatically.
+These third-party linters weren't installed on my machine.
+Tricorder downloads and runs them automatically.
 The first time you run `tricorder lint`,
 you might see it talking to API of hosting platforms
 and downloading binaries from them:
@@ -49,13 +50,21 @@ downloading rumdl 0.2.55 ... extracting ... ok
 Tricorder can also compile tools from source.
 
 In addition to general-purpose commands for linting
-and formatting interactively,
-Tricorder provides special commands that integrate linting
-and formatting deeply into your development workflow:
+(`tricorder lint`)
+and formatting (`tricorder fix`),
+Tricorder provides special commands that run the appropriate code quality checks
+for the current situation:
 
-- inside AI coding agents
-- inside your CI pipeline
-- inside a Git pre-commit hook
+- `tricorder postedit` runs after an AI agent has generated code.
+  It lints only the uncommitted files.
+  This helps the AI agent generate code free of smells.
+- `tricorder ci` runs on CI.
+  It lints all code and verifies that everything is correctly formatted
+- `tricorder precommit` runs inside a Git pre-commit hook.
+  It formats only the staged files.
+- `tricorder pitstop` runs during manual coding.
+  It fixes all auto-fixable issues and prints a list of the remaining issues
+  that require manual or AI attention.
 
 With Tricorder, you no longer have to:
 
@@ -65,7 +74,8 @@ With Tricorder, you no longer have to:
 - remember to add linters and formatters when adding new file types
 - learn how to install, configure, and invoke dozens of separate tools
 - keep those tools up to date across all your codebases
-- waste time waiting until primitive dev scripts have run many tools in sequence
+- waste time waiting until primitive dev scripts have run all type
+  checkers, linters, and formatters in sequence
 
 ## Q & A
 
