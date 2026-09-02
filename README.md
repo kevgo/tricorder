@@ -50,11 +50,11 @@ for specific phases of the software development workflow:
 
 ### `tricorder ci`
 
-This command makes code smells visible in CI pipelines.
-It runs all formatters and linters and fails if either:
+This command is meant for your CI pipeline.
+It fails if either:
 
 - a linter reports an unresolved issue, or
-- a formatter would modifies a file, i.e. some code was unformatted
+- some code is unformatted, i.e. a formatter would modify a file
 
 ### `tricorder init:claude`
 
