@@ -13,10 +13,10 @@ pub(crate) fn files_changed_on_current_branch(repo: &Repo) -> Option<Vec<File>> 
     else {
         return None;
     };
-    Some(parse_name_only_output(&output))
+    Some(parse_output(&output))
 }
 
-fn parse_name_only_output(output: &str) -> Vec<File> {
+fn parse_output(output: &str) -> Vec<File> {
     output
         .lines()
         .filter(|line| !line.is_empty() && !is_git_town_command_echo(line))
@@ -31,19 +31,19 @@ fn is_git_town_command_echo(line: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    mod parse_name_only_output {
-        use super::super::parse_name_only_output;
+    mod parse_output {
+        use super::super::parse_output;
         use crate::domain::File;
 
         #[test]
         fn empty() {
-            pretty::assert_eq!(parse_name_only_output(""), Vec::<File>::new());
+            pretty::assert_eq!(parse_output(""), Vec::<File>::new());
         }
 
         #[test]
         fn skips_blank_lines() {
             let give = "\na.txt\n\nb.txt\n";
-            let have = parse_name_only_output(give);
+            let have = parse_output(give);
             let want = vec![File::from("a.txt"), File::from("b.txt")];
             pretty::assert_eq!(have, want);
         }
@@ -51,7 +51,7 @@ mod tests {
         #[test]
         fn skips_git_town_command_echo() {
             let give = "[feature] git diff --name-only --merge-base main feature\ncommitted.txt";
-            let have = parse_name_only_output(give);
+            let have = parse_output(give);
             let want = vec![File::from("committed.txt")];
             pretty::assert_eq!(have, want);
         }
@@ -59,7 +59,7 @@ mod tests {
         #[test]
         fn skips_ansi_styled_command_echo() {
             let give = "\u{1b}[1m[feature] git diff --name-only --merge-base main feature\u{1b}[0m\ncommitted.txt";
-            let have = parse_name_only_output(give);
+            let have = parse_output(give);
             let want = vec![File::from("committed.txt")];
             pretty::assert_eq!(have, want);
         }
@@ -67,7 +67,7 @@ mod tests {
         #[test]
         fn keeps_file_with_spaces() {
             let give = "my file.txt";
-            let have = parse_name_only_output(give);
+            let have = parse_output(give);
             let want = vec![File::from("my file.txt")];
             pretty::assert_eq!(have, want);
         }
@@ -79,7 +79,6 @@ mod tests {
         use crate::domain::Result;
         use crate::git::GitCommandExt;
         use crate::git::Repo;
-        use std::fs;
         use tempfile::TempDir;
 
         fn gittown_repo() -> Result<(TempDir, Repo, String)> {
@@ -118,7 +117,8 @@ mod tests {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
             let have = files_changed_on_current_branch(&repo);
-            pretty::assert_eq!(have, None);
+            let want = None;
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
@@ -126,7 +126,8 @@ mod tests {
         fn none_on_main_branch() -> Result<()> {
             let (_dir, repo, _main) = gittown_repo()?;
             let have = files_changed_on_current_branch(&repo);
-            pretty::assert_eq!(have, None);
+            let want = None;
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
@@ -137,7 +138,8 @@ mod tests {
                 .args(["checkout", "--quiet", "-b", "feature"])
                 .run()?;
             let have = files_changed_on_current_branch(&repo);
-            pretty::assert_eq!(have, None);
+            let want = None;
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
@@ -164,7 +166,7 @@ mod tests {
             let (_dir, repo, main) = gittown_repo()?;
             checkout_feature(&repo, "feature", &main)?;
             repo.create_and_commit_file("committed.txt")?;
-            fs::write(repo.file_path("uncommitted.txt"), "extra").unwrap();
+            repo.create_unstaged_file("uncommitted.txt");
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("committed.txt")]);
             pretty::assert_eq!(have, want);
