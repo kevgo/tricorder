@@ -51,7 +51,9 @@ mod tests {
         fn empty() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
-            pretty::assert_eq!(unique_existing(&repo, vec![], vec![]), Vec::<File>::new());
+            let have = unique_existing(&repo, vec![], vec![]);
+            let want = Vec::<File>::new();
+            pretty::assert_eq!(have, want);
             Ok(())
         }
 
