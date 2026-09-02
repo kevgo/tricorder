@@ -40,6 +40,38 @@ fn unique_existing(repo: &Repo, mut files: Vec<File>, extra: Vec<File>) -> Vec<F
 
 #[cfg(test)]
 mod tests {
+    mod branch_changed_files {
+        use crate::domain::File;
+        use crate::domain::Result;
+        use crate::git::GitCommandExt;
+        use crate::git::Repo;
+        use tempfile::TempDir;
+
+        #[test]
+        fn includes_committed_files_when_only_origin_main_exists() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.git_command()
+                .args(["update-ref", "refs/remotes/origin/main", "HEAD"])
+                .run()?;
+            repo.git_command()
+                .args([
+                    "symbolic-ref",
+                    "refs/remotes/origin/HEAD",
+                    "refs/remotes/origin/main",
+                ])
+                .run()?;
+            repo.create_and_switch_to_branch("feature")?;
+            repo.git_command().args(["branch", "-D", "main"]).run()?;
+            repo.create_and_commit_file("on-branch.rs")?;
+            repo.create_unstaged_file("uncommitted.rs");
+            let have = repo.branch_changed_files()?;
+            let want = vec![File::from("on-branch.rs"), File::from("uncommitted.rs")];
+            pretty::assert_eq!(have, want);
+            Ok(())
+        }
+    }
+
     mod unique_existing {
         use super::super::unique_existing;
         use crate::domain::File;

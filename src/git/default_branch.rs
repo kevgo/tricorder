@@ -10,7 +10,13 @@ impl Repo {
             .run_stdout_trimmed()
             && !origin_head.is_empty()
         {
-            return Some(trim_origin_prefix(&origin_head).to_string());
+            let local = trim_origin_prefix(&origin_head);
+            if !local.is_empty() && self.has_ref(&format!("refs/heads/{local}")) {
+                return Some(local.to_string());
+            }
+            if self.has_ref(&format!("refs/remotes/{origin_head}")) {
+                return Some(origin_head);
+            }
         }
         for name in ["main", "master"] {
             if self.has_ref(&format!("refs/heads/{name}")) {
@@ -55,6 +61,7 @@ mod tests {
         use crate::domain::Result;
         use crate::git::GitCommandExt;
         use crate::git::Repo;
+        use big_s::S;
         use tempfile::TempDir;
 
         #[test]
@@ -76,6 +83,44 @@ mod tests {
             repo.git_command().args(["branch", "-m", "custom"]).run()?;
             pretty::assert_eq!(repo.default_branch(), None);
             Ok(())
+        }
+
+        #[test]
+        fn origin_head_prefers_existing_local_branch() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            set_origin_head(&repo, "origin/main")?;
+            repo.create_and_switch_to_branch("feature")?;
+            pretty::assert_eq!(repo.default_branch(), Some(S("main")));
+            Ok(())
+        }
+
+        #[test]
+        fn origin_head_falls_back_to_remote_when_local_missing() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            set_origin_head(&repo, "origin/main")?;
+            repo.create_and_switch_to_branch("feature")?;
+            repo.git_command().args(["branch", "-D", "main"]).run()?;
+            pretty::assert_eq!(repo.default_branch(), Some(S("origin/main")));
+            Ok(())
+        }
+
+        fn set_origin_head(repo: &Repo, remote_branch: &str) -> Result<()> {
+            repo.git_command()
+                .args([
+                    "update-ref",
+                    &format!("refs/remotes/{remote_branch}"),
+                    "HEAD",
+                ])
+                .run()?;
+            repo.git_command()
+                .args([
+                    "symbolic-ref",
+                    "refs/remotes/origin/HEAD",
+                    &format!("refs/remotes/{remote_branch}"),
+                ])
+                .run()
         }
     }
 }
