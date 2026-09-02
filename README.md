@@ -1,8 +1,9 @@
 # Tricorder
 
 Tricorder is an essential tool for AI and manual engineering.
-It downloads and runs all applicable type checkers, linters, and formatters,
-optimized for getting results as quickly as possible.
+It runs all automated code quality gates
+(type checkers, linters, formatters),
+concurrently for the fastest possible results.
 
 ## Demo
 
@@ -26,12 +27,12 @@ printing results as individual linters finish.
 
 In this example, Tricorder runs five linters:
 
-- [Taplo](https://github.com/tamasfe/taplo) for TOML files
-- [rumdl](https://github.com/rvben/rumdl) for Markdown files
+- [Taplo](https://github.com/tamasfe/taplo) for the 3 TOML files
+- [rumdl](https://github.com/rvben/rumdl) for the 4 Markdown files
 - [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
-  for Cucumber files
+  for the 98 Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
-  for GitHub Action configuration
+  for the GitHub Action configuration
 - `git diff --check` to detect unresolved merge conflict markers
 
 Tricorder downloads and runs third-party tools automatically.
