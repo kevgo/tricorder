@@ -21,6 +21,7 @@ rta = { package = "run-that-app", version = "0.42.2" }
 schemars = { version = "1.2.2", features = ["preserve_order"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_with = "3.21.0"
+shlex = "2.0.1"
 strum = { version = "0.28.0", features = ["derive"] }
 which = "8.0.5"
 

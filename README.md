@@ -194,7 +194,7 @@ tricorder init:githook  # Install the Git pre-commit hook
 tricorder fix           # Apply safe code quality fixes
 tricorder fix-unsafe    # Apply advanced fixes that might change behavior
 tricorder lint          # Find code quality issues (alias: postgenerate)
-tricorder pitstop       # Apply fixes, then report remaining issues
+tricorder pitstop       # Fix and lint files changed on the current branch
 tricorder postedit      # Lint new changes
 tricorder precommit     # Fix staged files before committing, never fails
 tricorder help          # Print this message or the help of the given subcommands
@@ -255,6 +255,9 @@ This command provides efficient support for interactive development.
 It first applies all safe automatic fixes
 and then reports any remaining code quality issues that require manual
 or AI attention.
+
+Inside a Git repository it processes only files changed on the current branch.
+Outside a Git repository it processes all files.
 
 ### `tricorder postedit`
 

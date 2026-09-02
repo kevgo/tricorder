@@ -22,6 +22,11 @@ impl Files {
     }
 
     #[must_use]
+    pub fn contains_file(&self, file: &File) -> bool {
+        self.0.contains(file)
+    }
+
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }

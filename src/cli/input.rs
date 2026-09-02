@@ -40,7 +40,7 @@ pub enum Command {
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
 
-    /// Apply fixes, then report remaining issues
+    /// Fix and lint files changed on the current branch
     Pitstop(RunArgs),
 
     /// Lint uncommitted changes

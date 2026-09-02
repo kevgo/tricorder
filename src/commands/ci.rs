@@ -1,33 +1,31 @@
+use super::pitstop::run_fix_then_lint;
 use crate::cli::input::RunArgs;
-use crate::commands::pitstop;
+use crate::config::Config;
 use crate::domain::{Result, UserError};
-use std::process::{Command, ExitCode};
+use crate::git::Repo;
+use crate::stacks;
+use std::process::ExitCode;
 
 pub fn ci(args: RunArgs) -> Result<ExitCode> {
-    let before_diff = git_diff()?;
+    let repo = Repo::load();
+    let before_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 
-    let exit_code = pitstop(&args.with_default_show(conc::Show::Names))?;
+    let config = Config::load()?;
+    let ignores = config.ignores()?;
+    let stacks = stacks::discover_all(&ignores);
+    let args_show = args.with_default_show(conc::Show::Names);
+    let exit_code = run_fix_then_lint(&args_show, &config, &stacks, repo.as_ref())?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
 
-    let after_diff = git_diff()?;
-
-    if before_diff != after_diff {
+    let after_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
+    if let Some(before_diff) = before_diff
+        && let Some(after_diff) = after_diff
+        && before_diff != after_diff
+    {
         return Err(UserError::CiUnformatted { diff: after_diff });
     }
 
     Ok(exit_code)
-}
-
-fn git_diff() -> Result<Vec<u8>> {
-    let output = Command::new("git")
-        .arg("diff")
-        .arg("HEAD")
-        .arg("--color")
-        .output()
-        .map_err(|err| UserError::CannotRunGit {
-            msg: err.to_string(),
-        })?;
-    Ok(output.stdout)
 }

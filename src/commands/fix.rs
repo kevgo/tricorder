@@ -70,7 +70,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in detected_stack.stack.fixes() {
-                if detected_stacks.stack_enabled(&default_fix.enabled_when()) {
+                if default_fix.enabled_when().enabled_on_disk() {
                     stack_executables.extend(default_fix.fix_commands(detected_stack)?);
                 }
             }

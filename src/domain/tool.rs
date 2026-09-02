@@ -30,7 +30,7 @@ impl EnabledWhen {
     /// whether the tool is enabled based on files present on disk
     ///
     /// This is useful when the detected stacks contains only a subset of workspace files
-    /// (uncommitted or staged).
+    /// (uncommitted, staged, or changed on the current branch).
     #[must_use]
     pub fn enabled_on_disk(&self) -> bool {
         match self {

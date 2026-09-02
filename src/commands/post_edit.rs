@@ -6,25 +6,28 @@ use crate::domain::Result;
 use crate::{git, stacks};
 use std::process::ExitCode;
 
-pub fn postedit(args: &RunArgs) -> Result<ExitCode> {
+pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
+    let git_repo = git::Repo::load();
     let show = args.show.unwrap_or(conc::Show::Failed);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the files and their stacks
-    let (stacks, is_git_repo) = match git::uncommitted(None) {
-        Some(files) => (stacks::from_files(&files, &ignores), true.into()),
-        None => (stacks::discover_all(&ignores), false.into()),
+    let stacks = if let Some(repo) = &git_repo {
+        let uncommitted_files = repo.uncommitted()?;
+        stacks::from_files(&uncommitted_files, &ignores)
+    } else {
+        stacks::discover_all(&ignores)
     };
     if show.display_metadata() {
         print_metadata(&stacks);
     }
 
     // step 3: discover all runnables
-    let runnables = lint::determine_lints(&config, &stacks, is_git_repo)?;
+    let runnables = lint::determine_lints(&config, &stacks, git_repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
