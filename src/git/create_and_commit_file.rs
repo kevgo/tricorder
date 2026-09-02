@@ -20,7 +20,7 @@ impl Repo {
                 "commit",
                 "--quiet",
                 "--message",
-                &format!("add file {}", name),
+                &format!("add file {name}"),
             ])
             .run()
     }
