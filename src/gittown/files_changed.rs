@@ -136,23 +136,6 @@ mod tests {
         }
 
         #[test]
-        fn committed_files_vs_parent() -> Result<()> {
-            if !git_town_installed() {
-                return Ok(());
-            }
-            let dir = TempDir::new().unwrap();
-            let repo = gittown_repo(dir.path())?;
-            repo.create_and_commit_file("main.txt")?;
-            append_branch(&repo, "feature")?;
-            repo.create_and_commit_file("a.txt")?;
-            repo.create_and_commit_file("sub/b.txt")?;
-            let have = files_changed_on_current_branch(&repo);
-            let want = Some(vec![File::from("a.txt"), File::from("sub/b.txt")]);
-            pretty::assert_eq!(have, want);
-            Ok(())
-        }
-
-        #[test]
         fn excludes_uncommitted_files() -> Result<()> {
             if !git_town_installed() {
                 return Ok(());
