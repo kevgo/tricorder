@@ -49,23 +49,6 @@ downloading rumdl 0.2.55 ... extracting ... ok
 
 Tricorder can also compile tools from source.
 
-In addition to general-purpose commands for linting
-(`tricorder lint`)
-and formatting (`tricorder fix`),
-Tricorder provides special commands that run the appropriate code quality checks
-for the current situation:
-
-- `tricorder postedit` runs after an AI agent has generated code.
-  It lints only the uncommitted files.
-  This helps the AI agent generate code free of smells.
-- `tricorder ci` runs on CI.
-  It lints all code and verifies that everything is correctly formatted
-- `tricorder precommit` runs inside a Git pre-commit hook.
-  It formats only the staged files.
-- `tricorder pitstop` runs during manual coding.
-  It fixes all auto-fixable issues and prints a list of the remaining issues
-  that require manual or AI attention.
-
 With Tricorder, you no longer have to:
 
 - keep track which file types exist in each codebase
@@ -77,18 +60,6 @@ With Tricorder, you no longer have to:
 - waste time waiting until primitive dev scripts have run all type
   checkers, linters, and formatters in sequence
 
-## Q & A
-
-> Does Tricorder lock me into its tooling choices?
-
-No. You can override which tools run in the Tricorder config file.
-
-> I want to add a linter or formatter to Tricorder.
-
-Send a pull request or open an issue!
-
-> How is it so fast?
-
 Tricorder is aggressively optimized for speed:
 
 - Being written in Rust makes discovering your source files quick.
@@ -97,100 +68,7 @@ Tricorder is aggressively optimized for speed:
   so tools don't need to scan the codebase again to discover files to process.
 - It runs all linters and formatters concurrently.
   Tricorder can do that because each tool is given the exact files to process,
-  so they don't step on each other's feet.
-
-## Installation
-
-The installer script downloads the Tricorder executable into the current
-directory.
-To install Tricorder into a particular directory,
-run the installer from that directory.
-
-### Linux and macOS
-
-```sh
-curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
-```
-
-To download a specific version and/or save under a specific filename:
-
-```sh
-curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
-```
-
-### Windows PowerShell
-
-```powershell
-Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
-```
-
-### Compile from source
-
-```sh
-cargo install --git https://github.com/kevgo/tricorder
-```
-
-## Configuration
-
-You can configure Tricorder and define custom linters
-and formatters in **tricorder.json** or **tricorder.jsonc**.
-Comments and trailing commas are allowed in either file.
-If both exist, **tricorder.json** takes precedence.
-
-```jsonc
-{
-  // make these files invisible to Tricorder
-  // using gitignore syntax
-  "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
-
-  // define a custom lint (always runs)
-  // TODO: rename this to "global-lints" ?
-  "custom-lints": [
-    {
-      "name": "custom lint 1",
-      "command": "lints/one.sh"
-    },
-  ],
-
-  "stacks": {
-    // add stack-specific lint to the default lints for that stack
-    "python": {
-      // these lints run in addition to the default lints
-      "additional-lints": [
-        { "name": "mypy", "command": "mypy ." }
-      ],
-      // these fixes run in addition to the default fixes
-      "additional-fixes": [
-        { "name": "isort", "command": "isort ." }
-      ]
-    },
-    // override stack-specific lints and fixes
-    "rust": {
-      // these lints run instead of the default lints
-      "replace-lints": [
-        {
-          "name": "clippy",
-          "command": "cargo clippy --all-targets"
-        }
-      ],
-      // these fixes run instead of the default fixes
-      "replace-fixes": [
-        { "name": "rustfmt", "command": "cargo +nightly fmt" }
-      ]
-    }
-  },
-
-  // github.com/google/keep-sorted is disabled by default
-  // because it scans the file content of all workspace files for markers
-  // to determine which files to sort
-  "applications": {
-    "keep-sorted": {
-      "enabled": true,
-      "ignore-files": ["README.md"] // ignored only by keep-sorted
-    }
-  }
-}
-```
+  so the files they change don't overlap.
 
 ## Usage
 
@@ -205,7 +83,6 @@ tricorder lint          # Find code quality issues (alias: postgenerate)
 tricorder pitstop       # Fix and lint files changed on the current branch
 tricorder postedit      # Lint new changes
 tricorder precommit     # Fix staged files before committing, never fails
-tricorder help          # Print this message or the help of the given subcommands
 ```
 
 ### `tricorder ci`
@@ -307,3 +184,106 @@ and won't need to re-stage the file.
 | Go         | golangci-lint                                                      |
 | Java       | checkstyle                                                         |
 | SQL        | sqlfmt                                                             |
+
+## Q & A
+
+> Does Tricorder lock me into its tooling choices?
+
+No. You can override which tools run in the Tricorder config file.
+
+> I want to add a linter or formatter to Tricorder.
+
+Send a pull request or open an issue!
+
+## Installation
+
+The installer script downloads the Tricorder executable into the current
+directory.
+To install Tricorder into a particular directory,
+run the installer from that directory.
+
+### Linux and macOS
+
+```sh
+curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
+```
+
+To download a specific version and/or save under a specific filename:
+
+```sh
+curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
+```
+
+### Windows PowerShell
+
+```powershell
+Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
+```
+
+### Compile from source
+
+```sh
+cargo install --git https://github.com/kevgo/tricorder
+```
+
+## Configuration
+
+You can configure Tricorder and define custom linters
+and formatters in **tricorder.json** or **tricorder.jsonc**.
+Comments and trailing commas are allowed in either file.
+If both exist, **tricorder.json** takes precedence.
+
+```jsonc
+{
+  // make these files invisible to Tricorder
+  // using gitignore syntax
+  "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
+
+  // define a custom lint (always runs)
+  // TODO: rename this to "global-lints" ?
+  "custom-lints": [
+    {
+      "name": "custom lint 1",
+      "command": "lints/one.sh"
+    },
+  ],
+
+  "stacks": {
+    // add stack-specific lint to the default lints for that stack
+    "python": {
+      // these lints run in addition to the default lints
+      "additional-lints": [
+        { "name": "mypy", "command": "mypy ." }
+      ],
+      // these fixes run in addition to the default fixes
+      "additional-fixes": [
+        { "name": "isort", "command": "isort ." }
+      ]
+    },
+    // override stack-specific lints and fixes
+    "rust": {
+      // these lints run instead of the default lints
+      "replace-lints": [
+        {
+          "name": "clippy",
+          "command": "cargo clippy --all-targets"
+        }
+      ],
+      // these fixes run instead of the default fixes
+      "replace-fixes": [
+        { "name": "rustfmt", "command": "cargo +nightly fmt" }
+      ]
+    }
+  },
+
+  // github.com/google/keep-sorted is disabled by default
+  // because it scans the file content of all workspace files for markers
+  // to determine which files to sort
+  "applications": {
+    "keep-sorted": {
+      "enabled": true,
+      "ignore-files": ["README.md"] // ignored only by keep-sorted
+    }
+  }
+}
+```
