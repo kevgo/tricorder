@@ -1,11 +1,8 @@
 # Tricorder
 
-Tricorder maximizes the utility of code quality tooling
-for software development.
-It downloads and runs all applicable linters and formatters.
-It provides specific support
-for typical phases of the software development lifecycle.
-It aggressively optimizes for getting results as quickly as possible.
+Tricorder is an essential tool for AI and manual engineering.
+It downloads and runs all applicable type checkers, linters, and formatters,
+optimized for getting results as quickly as possible.
 
 ## Demo
 
