@@ -134,16 +134,12 @@ mod tests {
         use crate::stacks::Toml;
         use std::path::PathBuf;
 
-        fn toml_stacks(files: &[&str]) -> DetectedStacks {
-            DetectedStacks::new(vec![DetectedStack {
-                stack: Box::new(Toml {}),
-                files: Files::from(files.iter().map(PathBuf::from).collect::<Vec<_>>()),
-            }])
-        }
-
         #[test]
         fn returns_type_for_file_in_the_detected_list() {
-            let stacks = toml_stacks(&["changed.toml"]);
+            let stacks = DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Toml {}),
+                files: Files::from(vec![PathBuf::from("changed.toml")]),
+            }]);
             pretty::assert_eq!(
                 stacks.stack_type_for_file(&File::from("changed.toml")),
                 Some(StackType::Toml)
@@ -152,7 +148,10 @@ mod tests {
 
         #[test]
         fn ignores_same_type_file_not_in_the_detected_list() {
-            let stacks = toml_stacks(&["changed.toml"]);
+            let stacks = DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Toml {}),
+                files: Files::from(vec![PathBuf::from("changed.toml")]),
+            }]);
             pretty::assert_eq!(
                 stacks.stack_type_for_file(&File::from("untouched.toml")),
                 None
