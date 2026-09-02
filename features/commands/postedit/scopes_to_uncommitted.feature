@@ -20,7 +20,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
     And it prints the lines
       """
-      lint Git (git diff HEAD --check)
+      lint Git diff markers (git diff HEAD --check)
       """
     And it does not print
       """

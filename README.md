@@ -20,7 +20,7 @@ running 5 tools
 
 lint Markdown (rumdl)
 lint TOML (Taplo)
-lint Git (git diff HEAD --check)
+lint Git diff markers (git diff HEAD --check)
 GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
 ```

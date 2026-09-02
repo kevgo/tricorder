@@ -8,7 +8,7 @@ pub(crate) fn lint_command(repo: &git::Repo) -> conc::Executable {
     let mut command = repo.git_command();
     command.args(["diff", "HEAD", "--check"]);
     conc::Executable {
-        name: S("lint Git (git diff HEAD --check)"),
+        name: S("lint Git diff markers (git diff HEAD --check)"),
         command,
     }
 }

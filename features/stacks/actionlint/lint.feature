@@ -24,7 +24,7 @@ Feature: lint GitHub Actions workflow files
     When executing "tricorder lint --show=all"
     Then it prints only these lines in any order
       """
-      lint Git (git diff HEAD --check)
+      lint Git diff markers (git diff HEAD --check)
       GitHub Actions (actionlint)
       """
     And it prints the lines to STDERR
@@ -43,7 +43,7 @@ Feature: lint GitHub Actions workflow files
     When executing "tricorder lint --show=all"
     Then it prints only these lines in any order
       """
-      lint Git (git diff HEAD --check)
+      lint Git diff markers (git diff HEAD --check)
       GitHub Actions (actionlint)
       .github/workflows/main.yml:2:5: could not parse as YAML: found unexpected end of stream [syntax-check]
       """

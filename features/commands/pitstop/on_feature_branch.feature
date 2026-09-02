@@ -60,7 +60,7 @@ Feature: pitstop on a feature branch
     Then it prints
       """
       delete empty folders
-      lint Git (git diff HEAD --check)
+      lint Git diff markers (git diff HEAD --check)
       """
     And it does not print
       """
