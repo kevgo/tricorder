@@ -62,7 +62,7 @@ With Tricorder, you no longer have to:
 
 Tricorder is aggressively optimized for speed:
 
-- Being written in Rust makes discovering your source files quick.
+- Being written in Rust makes scanning large directory trees quick.
 - It favors modern linters and formatters that execute quickly.
 - It passes each tool the exact files it needs to process,
   so tools don't need to scan the codebase again to discover files to process.
