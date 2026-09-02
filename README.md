@@ -37,15 +37,11 @@ In this example:
 These third-party linters don't need to be installed on the machine,
 Tricorder downloads them if needed.
 
-Tricorder is aggressively optimized for speed:
-
-- Being written in Rust scans large directory trees efficiently.
-- It favors modern linters and formatters that execute quickly.
-- It passes each tool the exact files it needs to process,
-  so tools don't need to scan the codebase again to discover files to process.
-- It runs all linters and formatters concurrently.
-  Tricorder can do that because each tool is given the exact files to process,
-  so the files they change don't overlap.
+Tricorder is optimized for speed.
+It favors modern linters and formatters that execute quickly,
+runs them concurrently, and passes each tool the exact files to process,
+so that the tools don't need to scan the codebase again to discover files to
+process.
 
 ## Usage
 
