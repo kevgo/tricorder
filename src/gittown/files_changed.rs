@@ -142,6 +142,7 @@ mod tests {
             }
             let dir = TempDir::new().unwrap();
             let repo = gittown_repo(dir.path())?;
+            repo.create_and_commit_file("main.txt")?;
             append_branch(&repo, "feature")?;
             repo.create_and_commit_file("a.txt")?;
             repo.create_and_commit_file("sub/b.txt")?;
