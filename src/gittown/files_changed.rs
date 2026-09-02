@@ -24,7 +24,6 @@ fn parse_output(output: &str) -> Vec<File> {
         .collect()
 }
 
-/// Git Town prints `[branch] git diff ...` (sometimes ANSI-styled) before the file list.
 fn is_git_town_command_echo(line: &str) -> bool {
     line.contains("] git ")
 }
