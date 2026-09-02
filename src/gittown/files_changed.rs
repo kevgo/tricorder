@@ -79,6 +79,7 @@ mod tests {
         use crate::domain::Result;
         use crate::git::GitCommandExt;
         use crate::git::Repo;
+        use std::process::Stdio;
         use tempfile::TempDir;
 
         fn gittown_repo() -> Result<(TempDir, Repo)> {
@@ -90,21 +91,12 @@ mod tests {
             Ok((dir, repo))
         }
 
-        fn set_parent(repo: &Repo, branch: &str, parent: &str) -> Result<()> {
+        fn create_child_branch(repo: &Repo, name: &str) -> Result<()> {
             repo.git_command()
-                .args([
-                    "config",
-                    &format!("git-town-branch.{branch}.parent"),
-                    parent,
-                ])
+                .args(["town", "append", name])
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
                 .run()
-        }
-
-        fn checkout_feature(repo: &Repo, name: &str, parent: &str) -> Result<()> {
-            repo.git_command()
-                .args(["checkout", "--quiet", "-b", name])
-                .run()?;
-            set_parent(repo, name, parent)
         }
 
         fn git_town_installed() -> bool {
@@ -148,7 +140,7 @@ mod tests {
                 return Ok(());
             }
             let (_dir, repo) = gittown_repo()?;
-            checkout_feature(&repo, "feature", "main")?;
+            create_child_branch(&repo, "feature")?;
             repo.create_and_commit_file("a.txt")?;
             repo.create_and_commit_file("sub/b.txt")?;
             let have = files_changed_on_current_branch(&repo);
@@ -163,7 +155,7 @@ mod tests {
                 return Ok(());
             }
             let (_dir, repo) = gittown_repo()?;
-            checkout_feature(&repo, "feature", "main")?;
+            create_child_branch(&repo, "feature")?;
             repo.create_and_commit_file("committed.txt")?;
             repo.create_unstaged_file("uncommitted.txt");
             let have = files_changed_on_current_branch(&repo);
@@ -178,7 +170,7 @@ mod tests {
                 return Ok(());
             }
             let (_dir, repo) = gittown_repo()?;
-            checkout_feature(&repo, "feature", "main")?;
+            create_child_branch(&repo, "feature")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(Vec::<File>::new());
             pretty::assert_eq!(have, want);
@@ -191,9 +183,9 @@ mod tests {
                 return Ok(());
             }
             let (_dir, repo) = gittown_repo()?;
-            checkout_feature(&repo, "parent", "main")?;
+            create_child_branch(&repo, "parent")?;
             repo.create_and_commit_file("parent.txt")?;
-            checkout_feature(&repo, "child", "parent")?;
+            create_child_branch(&repo, "child")?;
             repo.create_and_commit_file("child.txt")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("child.txt")]);
@@ -207,7 +199,7 @@ mod tests {
                 return Ok(());
             }
             let (_dir, repo) = gittown_repo()?;
-            checkout_feature(&repo, "feature", "main")?;
+            create_child_branch(&repo, "feature")?;
             repo.create_and_commit_file("my file.txt")?;
             let have = files_changed_on_current_branch(&repo);
             let want = Some(vec![File::from("my file.txt")]);
