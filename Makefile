@@ -50,7 +50,7 @@ lint: build ${RTA} ${TRICORDER}  # runs all linters
 	$(TRICORDER) lint --show=names
 
 setup: setup-ci  # install development dependencies on this computer
-	cargo install cargo-machete --locked
+	cargo install cargo-machete cargo-nextest --locked
 
 setup-ci:  # installs the necessary tools for the CI pipeline
 	rustup component add clippy
@@ -62,8 +62,7 @@ ps: test fix  ## pitstop, run during active development
 test: unit lint cuke  ## runs all tests
 
 unit:  # runs the unit tests
-	cargo test --locked
-	cargo test -p test_helpers
+	cargo nextest run --locked --workspace
 
 update: ${RTA}  # updates all dependencies
 	cargo install cargo-edit cargo-machete

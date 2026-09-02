@@ -58,8 +58,7 @@ impl Repo {
 
     /// provides a preconfigured Command instance for executing a Git command inside this repo
     pub fn git_command(&self) -> Command {
-        let mut command = Command::new("git");
-        command.stdin(Stdio::null());
+        let mut command = new_git_command();
         if let Some(path) = &self.path {
             command.current_dir(path);
         }
@@ -67,9 +66,32 @@ impl Repo {
     }
 }
 
+/// a Git command with stdin closed
+fn new_git_command() -> Command {
+    let mut command = Command::new("git");
+    command.stdin(Stdio::null());
+    #[cfg(test)]
+    {
+        // Concurrent tests must not share ~/.gitconfig (Git locks it).
+        command
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env("GIT_CONFIG_GLOBAL", git_null_device())
+            .env("GIT_AUTHOR_NAME", "Test")
+            .env("GIT_AUTHOR_EMAIL", "test@example.com")
+            .env("GIT_COMMITTER_NAME", "Test")
+            .env("GIT_COMMITTER_EMAIL", "test@example.com");
+    }
+    command
+}
+
+#[cfg(test)]
+fn git_null_device() -> &'static str {
+    if cfg!(windows) { "NUL" } else { "/dev/null" }
+}
+
 /// checks if the current directory is a Git repository
 fn is_git_repo(dir: Option<&Path>) -> bool {
-    let mut command = Command::new("git");
+    let mut command = new_git_command();
     command.args(["rev-parse", "--is-inside-work-tree"]);
     if let Some(dir) = dir {
         command.current_dir(dir);
@@ -93,7 +115,6 @@ mod tests {
         use crate::git::GitCommandExt;
         use crate::git::Repo;
         use std::fs;
-        use std::process::Command;
         use tempfile::TempDir;
 
         #[test]
@@ -143,7 +164,7 @@ mod tests {
         #[test]
         fn bare_repo() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            Command::new("git")
+            super::super::new_git_command()
                 .args(["init", "--bare", "--quiet"])
                 .current_dir(dir.path())
                 .run()?;
