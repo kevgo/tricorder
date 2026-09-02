@@ -62,7 +62,7 @@ ps: test fix  ## pitstop, run during active development
 test: unit lint cuke  ## runs all tests
 
 unit:  # runs the unit tests
-	cargo nextest run --locked --workspace
+	cargo nextest run --locked --workspace --status-level fail
 
 update: ${RTA}  # updates all dependencies
 	cargo install cargo-edit cargo-machete
