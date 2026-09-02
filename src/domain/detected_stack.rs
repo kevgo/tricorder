@@ -1,5 +1,4 @@
-use crate::domain::{EnabledWhen, Files, Stack, StackType};
-use std::path::Path;
+use crate::domain::{EnabledWhen, File, Files, Stack, StackType};
 
 /// A stack that was detected in the workspace,
 /// and the workspace files belonging to it.
@@ -98,10 +97,11 @@ impl DetectedStacks {
         }
     }
 
+    /// the stack type whose detected files include this path
     #[must_use]
-    pub fn stack_type_for_file(&self, path: &Path) -> Option<StackType> {
+    pub fn stack_type_for_file(&self, file: &File) -> Option<StackType> {
         for detected_stack in &self.0 {
-            if detected_stack.stack.owns(path) {
+            if detected_stack.files.contains_file(file) {
                 return Some(detected_stack.stack.stack_type());
             }
         }
@@ -124,5 +124,45 @@ impl<'a> IntoIterator for &'a DetectedStacks {
 
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod stack_type_for_file {
+        use crate::domain::{DetectedStack, DetectedStacks, File, Files, StackType};
+        use crate::stacks::Toml;
+        use std::path::PathBuf;
+
+        fn toml_stacks(files: &[&str]) -> DetectedStacks {
+            DetectedStacks::new(vec![DetectedStack {
+                stack: Box::new(Toml {}),
+                files: Files::from(files.iter().map(PathBuf::from).collect::<Vec<_>>()),
+            }])
+        }
+
+        #[test]
+        fn returns_type_for_file_in_the_detected_list() {
+            let stacks = toml_stacks(&["changed.toml"]);
+            pretty::assert_eq!(
+                stacks.stack_type_for_file(&File::from("changed.toml")),
+                Some(StackType::Toml)
+            );
+        }
+
+        #[test]
+        fn ignores_same_type_file_not_in_the_detected_list() {
+            let stacks = toml_stacks(&["changed.toml"]);
+            pretty::assert_eq!(
+                stacks.stack_type_for_file(&File::from("untouched.toml")),
+                None
+            );
+        }
+
+        #[test]
+        fn none_when_no_stacks() {
+            let stacks = DetectedStacks::new(vec![]);
+            pretty::assert_eq!(stacks.stack_type_for_file(&File::from("file.toml")), None);
+        }
     }
 }
