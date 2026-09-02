@@ -43,7 +43,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
       """
       fix Markdown (tikibase)
       """
-    Then it prints the block
+    And it prints the block
       """
       fix Markdown (rumdl)
       """
@@ -67,7 +67,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
       """
       fix Markdown (tikibase)
       """
-    Then it prints the block
+    And it prints the block
       """
       fix Markdown (rumdl)
       """
