@@ -1,9 +1,10 @@
+use crate::domain::File;
 #[cfg(test)]
 use crate::domain::Result;
 #[cfg(test)]
 use crate::git::GitCommandExt;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Repo {
@@ -20,16 +21,16 @@ impl Repo {
         let repo = Repo {
             path: Some(path.to_path_buf()),
         };
-        repo.git_command().args(["init", "--quiet"]).run()?;
+        repo.git_command()
+            .args(["init", "--initial-branch=main", "--quiet"])
+            .run()?;
         repo.git_command()
             .args(["config", "user.name", "Test"])
             .run()?;
         repo.git_command()
             .args(["config", "user.email", "test@example.com"])
             .run()?;
-        repo.git_command()
-            .args(["commit", "--quiet", "--message=init", "--allow-empty"])
-            .run()?;
+        repo.commit_empty("Initial commit")?;
         Ok(repo)
     }
 
@@ -42,9 +43,23 @@ impl Repo {
         }
     }
 
-    /// provides `Command` instance that runs Git
+    /// indicates whether the given file exists in the repository
+    pub(crate) fn file_exists(&self, file: &File) -> bool {
+        self.file_path(file).is_file()
+    }
+
+    /// provides the absolute path for the given file in the repository
+    pub(crate) fn file_path(&self, file: &str) -> PathBuf {
+        match &self.path {
+            Some(dir) => dir.join(file),
+            None => PathBuf::from(file),
+        }
+    }
+
+    /// provides a preconfigured Command instance for executing a Git command inside this repo
     pub fn git_command(&self) -> Command {
         let mut command = Command::new("git");
+        command.stdin(Stdio::null());
         if let Some(path) = &self.path {
             command.current_dir(path);
         }
@@ -110,8 +125,8 @@ mod tests {
         #[test]
         fn in_subdir_of_git_repo() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            Repo::init(dir.path())?;
-            let sub = dir.path().join("sub");
+            let repo = Repo::init(dir.path())?;
+            let sub = repo.file_path("sub");
             fs::create_dir(&sub).unwrap();
             let have = is_git_repo(Some(&sub));
             assert!(have);

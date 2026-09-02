@@ -6,5 +6,6 @@ pub mod domain;
 pub mod embed;
 pub mod filesystem;
 pub mod git;
+pub mod gittown;
 pub mod shellscripts;
 pub mod stacks;

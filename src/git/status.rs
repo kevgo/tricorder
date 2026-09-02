@@ -40,6 +40,11 @@ impl From<ZeroString> for GitStatusOutput {
 }
 
 impl GitStatusOutput {
+    #[cfg(test)]
+    pub(crate) fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
     /// destination records, skipping rename/copy original paths
     pub(crate) fn records(&self) -> impl Iterator<Item = Record<'_>> {
         let mut lines = self.0.lines();

@@ -25,6 +25,11 @@ impl TryFrom<Vec<u8>> for ZeroString {
 }
 
 impl ZeroString {
+    #[cfg(test)]
+    pub(crate) fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
     /// emits all non-empty lines
     pub(crate) fn lines(&self) -> impl Iterator<Item = &str> {
         self.0.split('\0').filter(|line| !line.is_empty())

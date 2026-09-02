@@ -29,7 +29,7 @@ Feature: Displaying help
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Apply fixes, then report remaining issues
+        pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
@@ -56,7 +56,7 @@ Feature: Displaying help
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Apply fixes, then report remaining issues
+        pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)
@@ -83,7 +83,7 @@ Feature: Displaying help
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Apply fixes, then report remaining issues
+        pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         help          Print this message or the help of the given subcommand(s)

@@ -7,7 +7,7 @@ use ahash::AHashMap;
 const MARKER: &str = "keep-sorted end";
 
 /// provides one `Executable` per `StackType`
-/// that fixes all files of that stack
+/// that sorts detected files of that stack
 /// that contain a "keep-sorted end" marker.
 pub fn fix_commands(
     FixCommandsArgs {
@@ -29,10 +29,10 @@ pub fn fix_commands(
         return Ok(vec![]);
     }
 
-    // step 3: group the files to sort by stack type
+    // step 3: keep only marker-bearing files that are in the detected stacks
     let mut grouped: AHashMap<StackType, Vec<File>> = AHashMap::new();
     for found in matches {
-        if let Some(stack_type) = detected_stacks.stack_type_for_file(found.as_ref()) {
+        if let Some(stack_type) = detected_stacks.stack_type_for_file(&found) {
             grouped.entry(stack_type).or_default().push(found);
         }
     }

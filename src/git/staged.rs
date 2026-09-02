@@ -81,8 +81,8 @@ mod tests {
         #[test]
         fn includes_fully_staged_file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(repo.file_path("my file.txt"), "content").unwrap();
             repo.git_command().args(["add", "my file.txt"]).run()?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -96,8 +96,8 @@ mod tests {
         #[test]
         fn includes_fully_staged_file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("file\"quote.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(repo.file_path("file\"quote.txt"), "content").unwrap();
             repo.git_command().args(["add", "file\"quote.txt"]).run()?;
             let have = repo.staged()?;
             let want = StagedFiles {
@@ -111,8 +111,8 @@ mod tests {
         #[test]
         fn includes_renamed_file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("old file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(repo.file_path("old file.txt"), "content").unwrap();
             repo.git_command().args(["add", "old file.txt"]).run()?;
             repo.git_command()
                 .args(["mv", "old file.txt", "new file.txt"])
@@ -129,15 +129,15 @@ mod tests {
         #[test]
         fn includes_partially_staged_file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("my file.txt"), "v1").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(repo.file_path("my file.txt"), "v1").unwrap();
             repo.git_command().args(["add", "my file.txt"]).run()?;
             repo.git_command()
                 .args(["commit", "--quiet", "--message=init"])
                 .run()?;
-            fs::write(dir.path().join("my file.txt"), "v2").unwrap();
+            fs::write(repo.file_path("my file.txt"), "v2").unwrap();
             repo.git_command().args(["add", "my file.txt"]).run()?;
-            fs::write(dir.path().join("my file.txt"), "v3").unwrap();
+            fs::write(repo.file_path("my file.txt"), "v3").unwrap();
             let have = repo.staged()?;
             let want = StagedFiles {
                 partial: vec![File::from("my file.txt")],
@@ -150,8 +150,8 @@ mod tests {
         #[test]
         fn ignores_untracked_file_with_spaces() -> Result<()> {
             let dir = TempDir::new().unwrap();
-            fs::write(dir.path().join("my file.txt"), "content").unwrap();
             let repo = Repo::init(dir.path())?;
+            fs::write(repo.file_path("my file.txt"), "content").unwrap();
             let have = repo.staged()?;
             let want = StagedFiles::default();
             pretty::assert_eq!(have, want);

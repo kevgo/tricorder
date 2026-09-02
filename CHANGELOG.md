@@ -2,6 +2,8 @@
 
 ## 0.1.0
 
+- breaking: `tricorder pitstop` now processes only files changed on the current branch
+- pitstop/precommit: `keep-sorted` no longer rewrites unchanged files of the same type
 - The new "postedit" command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
 - The configuration file is now in JSON/JSONC and has an improved structure.
 - A JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.

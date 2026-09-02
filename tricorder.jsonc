@@ -5,7 +5,11 @@
   "applications": {
     "keep-sorted": {
       "enabled": true,
-      "ignore-files": ["README.md", "src/apps/keep_sorted.rs"],
+      "ignore-files": [
+        "README.md",
+        "src/apps/keep_sorted.rs",
+        "features/commands/pitstop/keep_sorted.feature",
+      ],
     },
   },
   "stacks": {
