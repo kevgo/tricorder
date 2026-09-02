@@ -31,7 +31,8 @@ In this example:
   for the 98 Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
   for the GitHub Action configuration
-- `git diff --check` to detect unresolved merge conflict markers
+- [git diff --check](https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---check)
+  to detect unresolved merge conflict markers
 
 These third-party linters don't need to be installed on the machine,
 Tricorder downloads them if needed.
