@@ -82,10 +82,10 @@ and won't need to re-stage the file.
 
 ### `tricorder ci`
 
-This command is meant for your CI pipeline.
-It fails if either:
+This command runs inside your CI pipeline.
+It ensures all code passes all checks, i.e. it fails if either:
 
-- a linter reports an unresolved issue, or
+- a linter reports an unresolved issue
 - some code is unformatted, i.e. a formatter would modify a file
 
 ### `tricorder init:claude`
@@ -117,7 +117,7 @@ that runs `tricorder precommit` before every commit.
 
 This command applies all safe automated fixes to the codebase.
 Fixes for different file types are processed concurrently,
-fixes for the same file type run sequentially.
+multiple fixes for the same file type run sequentially.
 
 ### `tricorder fix-unsafe`
 
