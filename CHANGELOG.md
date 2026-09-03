@@ -4,7 +4,6 @@
 
 - The new `tricorder update:tools` command updates third-party tools in file `run-that-app` to the latest available version.
 
-
 ## 0.1.0
 
 #### BREAKING CHANGES
