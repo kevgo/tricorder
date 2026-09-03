@@ -15,9 +15,11 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "additional-fixes": [
-              { "name": "my fix", "command": "echo MY FIX RAN" }
-            ]
+            "fix": {
+              "add": [
+                { "name": "my fix", "command": "echo MY FIX RAN" }
+              ]
+            }
           }
         }
       }
@@ -44,9 +46,11 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "replace-fixes": [
-              { "name": "my fix", "command": "echo MY FIX RAN" }
-            ]
+            "fix": {
+              "replace": [
+                { "name": "my fix", "command": "echo MY FIX RAN" }
+              ]
+            }
           }
         }
       }
@@ -73,7 +77,9 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "replace-fixes": []
+            "fix": {
+              "replace": []
+            }
           }
         }
       }
@@ -95,9 +101,11 @@ Feature: stack-specific fixes
       {
         "stacks": {
           "python": {
-            "additional-fixes": [
-              { "name": "my fix", "command": "echo MY FIX RAN" }
-            ]
+            "fix": {
+              "add": [
+                { "name": "my fix", "command": "echo MY FIX RAN" }
+              ]
+            }
           }
         }
       }

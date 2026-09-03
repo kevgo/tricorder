@@ -13,9 +13,11 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "additional-lints": [
-              { "name": "my lint", "command": "echo MY LINT RAN" }
-            ]
+            "lint": {
+              "add": [
+                { "name": "my lint", "command": "echo MY LINT RAN" }
+              ]
+            }
           }
         }
       }
@@ -42,9 +44,11 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "replace-lints": [
-              { "name": "my lint", "command": "echo MY LINT RAN" }
-            ]
+            "lint": {
+              "replace": [
+                { "name": "my lint", "command": "echo MY LINT RAN" }
+              ]
+            }
           }
         }
       }
@@ -71,7 +75,9 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "replace-lints": []
+            "lint": {
+              "replace": []
+            }
           }
         }
       }
@@ -93,9 +99,11 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "additional-lints": [
-              { "name": "my lint", "command": "echo MY LINT RAN" }
-            ]
+            "lint": {
+              "add": [
+                { "name": "my lint", "command": "echo MY LINT RAN" }
+              ]
+            }
           }
         }
       }

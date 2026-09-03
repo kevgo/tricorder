@@ -129,18 +129,15 @@ pub struct GlobalLint {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackConfig {
-    #[serde(alias = "replace-lints")]
-    #[schemars(rename = "replace-lints")]
-    pub replace_lints: Option<Vec<StackCommand>>,
-    #[serde(alias = "additional-lints")]
-    #[schemars(rename = "additional-lints")]
-    pub additional_lints: Option<Vec<StackCommand>>,
-    #[serde(alias = "replace-fixes")]
-    #[schemars(rename = "replace-fixes")]
-    pub replace_fixes: Option<Vec<StackCommand>>,
-    #[serde(alias = "additional-fixes")]
-    #[schemars(rename = "additional-fixes")]
-    pub additional_fixes: Option<Vec<StackCommand>>,
+    pub lint: Option<StackTools>,
+    pub fix: Option<StackTools>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct StackTools {
+    pub add: Option<Vec<StackCommand>>,
+    pub replace: Option<Vec<StackCommand>>,
 }
 
 #[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
@@ -231,6 +228,7 @@ mod tests {
     }
 
     mod parse {
+        use crate::config::StackTools;
         use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
@@ -387,7 +385,9 @@ mod tests {
 {
   "stacks": {
     "PyThOn": {
-      "additional-lints": [{ "name": "mypy", "command": "mypy ." }]
+      "lint": {
+        "add": [{ "name": "mypy", "command": "mypy ." }]
+      }
     }
   }
 }
@@ -402,13 +402,14 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
-                        replace_lints: None,
-                        additional_lints: Some(vec![StackCommand {
-                            name: S("mypy"),
-                            command: S("mypy ."),
-                        }]),
-                        replace_fixes: None,
-                        additional_fixes: None,
+                        lint: Some(StackTools {
+                            add: Some(vec![StackCommand {
+                                name: S("mypy"),
+                                command: S("mypy ."),
+                            }]),
+                            replace: None,
+                        }),
+                        fix: None,
                     },
                 )),
             };
@@ -421,7 +422,9 @@ mod tests {
 {
   "stacks": {
     "rust": {
-      "replace-lints": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
+      "lint": {
+        "replace": [{ "name": "Clippy", "command": "cargo clippy --all-targets" }]
+      }
     }
   }
 }
@@ -436,13 +439,14 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Rust,
                     StackConfig {
-                        replace_lints: Some(vec![StackCommand {
-                            name: S("Clippy"),
-                            command: S("cargo clippy --all-targets"),
-                        }]),
-                        additional_lints: None,
-                        replace_fixes: None,
-                        additional_fixes: None,
+                        lint: Some(StackTools {
+                            replace: Some(vec![StackCommand {
+                                name: S("Clippy"),
+                                command: S("cargo clippy --all-targets"),
+                            }]),
+                            add: None,
+                        }),
+                        fix: None,
                     },
                 )),
             };
@@ -455,7 +459,9 @@ mod tests {
 {
   "stacks": {
     "python": {
-      "additional-lints": [{ "name": "mypy", "command": "mypy ." }]
+      "lint": {
+        "add": [{ "name": "mypy", "command": "mypy ." }]
+      }
     }
   }
 }
@@ -470,13 +476,14 @@ mod tests {
                 stacks: Some(stack_map(
                     StackType::Python,
                     StackConfig {
-                        replace_lints: None,
-                        additional_lints: Some(vec![StackCommand {
-                            name: S("mypy"),
-                            command: S("mypy ."),
-                        }]),
-                        replace_fixes: None,
-                        additional_fixes: None,
+                        lint: Some(StackTools {
+                            add: Some(vec![StackCommand {
+                                name: S("mypy"),
+                                command: S("mypy ."),
+                            }]),
+                            replace: None,
+                        }),
+                        fix: None,
                     },
                 )),
             };

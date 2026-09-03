@@ -31,12 +31,14 @@ Feature: precommit Rust
       {
         "stacks": {
           "rust": {
-            "replace-fixes": [
-              {
-                "command": "echo 'custom fix running'",
-                "name": "my custom fix"
-              }
-            ]
+            "fix": {
+              "replace": [
+                {
+                  "command": "echo 'custom fix running'",
+                  "name": "my custom fix"
+                }
+              ]
+            }
           }
         }
       }
