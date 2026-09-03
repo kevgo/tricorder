@@ -5,8 +5,8 @@ AI hallucinates non-existing APIs, dead code, and mismatching formatting styles.
 Strict automated guardrails are the only things keeping your codebase from
 turning into an untamable, hallucinated mess.
 
-Tricorder runs all applicable type checkers, linters,
-and formatters concurrently for the fastest results.
+Tricorder runs all type checkers, linters,
+and formatters that apply to your codebase concurrently for the fastest results.
 
 ## Demo
 
