@@ -118,7 +118,17 @@
         "keep-sorted": {
           "anyOf": [
             {
-              "$ref": "#/$defs/KeepSorted"
+              "$ref": "#/$defs/Application"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "taplo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Application"
             },
             {
               "type": "null"
@@ -128,7 +138,7 @@
       },
       "additionalProperties": false
     },
-    "KeepSorted": {
+    "Application": {
       "type": "object",
       "properties": {
         "enabled": {
