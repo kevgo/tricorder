@@ -542,75 +542,130 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{Applications, Config, KeepSorted};
-        use big_s::S;
+        use crate::config::Config;
 
         #[test]
-        fn absent() {
+        fn empty() {
             let have = Config::parse("", "test.json").unwrap();
             assert_eq!(have.applications, None);
             assert_eq!(have.keep_sorted(), None);
         }
 
-        #[test]
-        fn enabled_true() {
-            let give = r#"{ "applications": { "keep-sorted": { "enabled": true } } }"#;
-            let have = Config::parse(give, "test.json").unwrap();
-            assert_eq!(
-                have.applications,
-                Some(Applications {
-                    keep_sorted: Some(KeepSorted {
-                        enabled: Some(true),
-                        ignore_files: None
+        mod enabled {
+            use crate::config::{Applications, Config, KeepSorted};
+            use big_s::S;
+
+            #[test]
+            fn enabled() {
+                let give = r#"{ "applications": { "keep-sorted": { "enabled": true } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: Some(true),
+                            ignore_files: None
+                        })
                     })
-                })
-            );
+                );
+            }
+
+            #[test]
+            fn disabled() {
+                let give = r#"{ "applications": { "keep-sorted": { "enabled": false } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: Some(false),
+                            ignore_files: None
+                        })
+                    })
+                );
+            }
+
+            #[test]
+            fn null() {
+                let give = r#"{ "applications": { "keep-sorted": { "enabled": null, "ignore-files": ["README.md"] } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: None,
+                            ignore_files: Some(vec![S("README.md")]),
+                        })
+                    })
+                );
+            }
+
+            #[test]
+            fn missing() {
+                let give =
+                    r#"{ "applications": { "keep-sorted": { "ignore-files": ["README.md"] } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: None,
+                            ignore_files: Some(vec![S("README.md")]),
+                        })
+                    })
+                );
+            }
         }
 
-        #[test]
-        fn enabled_false() {
-            let give = r#"{ "applications": { "keep-sorted": { "enabled": false } } }"#;
-            let have = Config::parse(give, "test.json").unwrap();
-            assert_eq!(
-                have.applications,
-                Some(Applications {
-                    keep_sorted: Some(KeepSorted {
-                        enabled: Some(false),
-                        ignore_files: None
-                    })
-                })
-            );
-        }
+        mod ignore_files {
+            use crate::config::{Applications, Config, KeepSorted};
+            use big_s::S;
 
-        #[test]
-        fn enabled_null() {
-            let give = r#"{ "applications": { "keep-sorted": { "enabled": null, "ignore-files": ["README.md"] } } }"#;
-            let have = Config::parse(give, "test.json").unwrap();
-            assert_eq!(
-                have.applications,
-                Some(Applications {
-                    keep_sorted: Some(KeepSorted {
-                        enabled: None,
-                        ignore_files: Some(vec![S("README.md")]),
+            #[test]
+            fn empty() {
+                let give = r#"{ "applications": { "keep-sorted": { "ignore-files": [] } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                pretty::assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: None,
+                            ignore_files: Some(vec![])
+                        })
                     })
-                })
-            );
-        }
+                );
+            }
 
-        #[test]
-        fn enabled_missing() {
-            let give =
-                r#"{ "applications": { "keep-sorted": { "ignore-files": ["README.md"] } } }"#;
-            let have = Config::parse(give, "test.json").unwrap();
-            assert_eq!(
-                have.applications,
-                Some(Applications {
-                    keep_sorted: Some(KeepSorted {
-                        enabled: None,
-                        ignore_files: Some(vec![S("README.md")]),
+            #[test]
+            fn present() {
+                let give =
+                    r#"{ "applications": { "keep-sorted": { "ignore-files": ["README.md"] } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                pretty::assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: None,
+                            ignore_files: Some(vec![S("README.md")])
+                        })
                     })
-                })
-            );
+                );
+            }
+
+            #[test]
+            fn missing() {
+                let give = r#"{ "applications": { "keep-sorted": { "enabled": true } } }"#;
+                let have = Config::parse(give, "test.json").unwrap();
+                pretty::assert_eq!(
+                    have.applications,
+                    Some(Applications {
+                        keep_sorted: Some(KeepSorted {
+                            enabled: Some(true),
+                            ignore_files: None
+                        })
+                    })
+                );
+            }
         }
     }
 
