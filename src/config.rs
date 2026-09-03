@@ -604,14 +604,14 @@ mod tests {
 
             #[test]
             fn null() {
-                let give = r#"{ "applications": { "keep-sorted": { "enabled": null, "ignore-files": ["README.md"] } } }"#;
+                let give = r#"{ "applications": { "keep-sorted": { "enabled": null } } }"#;
                 let have = Config::parse(give, "test.json").unwrap();
                 assert_eq!(
                     have.applications,
                     Some(Applications {
                         keep_sorted: Some(KeepSorted {
                             enabled: None,
-                            ignore_files: Some(vec![S("README.md")]),
+                            ignore_files: None,
                         })
                     })
                 );
@@ -654,7 +654,7 @@ mod tests {
             }
 
             #[test]
-            fn present() {
+            fn given() {
                 let give =
                     r#"{ "applications": { "keep-sorted": { "ignore-files": ["README.md"] } } }"#;
                 let have = Config::parse(give, "test.json").unwrap();
