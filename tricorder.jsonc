@@ -39,11 +39,6 @@
           { "name": "cargo fmt", "command": "cargo +nightly fmt" }
         ]
       }
-    },
-    "toml": {
-      "lint": {
-        "ignore-files": ["Cargo.toml"]
-      }
     }
   }
 }
