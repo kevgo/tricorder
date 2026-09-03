@@ -32,7 +32,7 @@ Feature: Displaying help
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
-        update:tools  Update versions of third-party tools
+        update:tools  Update third-party tools
         help          Print this message or the help of the given subcommand(s)
 
       Options:
@@ -60,7 +60,7 @@ Feature: Displaying help
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
-        update:tools  Update versions of third-party tools
+        update:tools  Update third-party tools
         help          Print this message or the help of the given subcommand(s)
 
       Options:
@@ -88,7 +88,7 @@ Feature: Displaying help
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
-        update:tools  Update versions of third-party tools
+        update:tools  Update third-party tools
         help          Print this message or the help of the given subcommand(s)
 
       Options:
