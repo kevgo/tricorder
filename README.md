@@ -1,9 +1,8 @@
 # Tricorder
 
-Tricorder is an essential tool for AI and manual engineering.
-It runs all automated code quality gates
-(type checkers, linters, formatters),
-concurrently for the fastest possible results.
+Type checking and linting are absolutely critical for vibe coding.
+Tricorder runs all applicable type checkers, linters,
+and formatters concurrently for the fastest results.
 
 ## Demo
 
