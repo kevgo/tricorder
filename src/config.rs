@@ -457,7 +457,9 @@ mod tests {
 {
   "stacks": {
     "python": {
-      "additional-lints": [{ "name": "mypy", "command": "mypy ." }]
+      "lint": {
+        "add": [{ "name": "mypy", "command": "mypy ." }]
+      }
     }
   }
 }
