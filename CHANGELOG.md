@@ -1,6 +1,8 @@
 # Tricorder changelog
 
 ## 0.1.1
+- `tricorder update:tools` updates third-party tool versions to the latest available
+- `tricorder precommit` now exits 0 even when setup fails (invalid config, missing Git repo, etc.)
 
 - The new `tricorder update:tools` command updates third-party tools listed in file `run-that-app` to the latest available version.
 
