@@ -171,7 +171,7 @@ pub struct Applications {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct Application {
-    pub enabled: bool,
+    pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
@@ -213,7 +213,7 @@ mod tests {
                 ignore_files: Some(vec![]),
                 applications: Some(Applications {
                     keep_sorted: Some(Application {
-                        enabled: false,
+                        enabled: Some(false),
                         ignore_files: None,
                     }),
                     taplo: None,
@@ -556,7 +556,7 @@ mod tests {
                 have.applications,
                 Some(Applications {
                     keep_sorted: Some(Application {
-                        enabled: true,
+                        enabled: Some(true),
                         ignore_files: None
                     }),
                     taplo: None,
@@ -572,7 +572,7 @@ mod tests {
                 have.applications,
                 Some(Applications {
                     keep_sorted: Some(Application {
-                        enabled: false,
+                        enabled: Some(false),
                         ignore_files: None
                     }),
                     taplo: None,
@@ -588,7 +588,7 @@ mod tests {
                 have.applications,
                 Some(Applications {
                     keep_sorted: Some(Application {
-                        enabled: true,
+                        enabled: None,
                         ignore_files: Some(vec![S("README.md")]),
                     }),
                     taplo: None,
