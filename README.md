@@ -1,6 +1,9 @@
 # Tricorder
 
 Type checking and linting are absolutely critical for vibe coding.
+Strict automated guardrails are the only things keeping your codebase from
+turning into an untamable, hallucinated mess
+
 Tricorder runs all applicable type checkers, linters,
 and formatters concurrently for the fastest results.
 
@@ -46,6 +49,36 @@ process.
 
 Tricorder provides special commands
 for specific phases of the software development workflow:
+
+### `tricorder pitstop`
+
+This command provides efficient support for interactive development.
+It first applies all safe automatic fixes to all files changed on the current
+branch, then reports any remaining code problems that require manual or AI
+attention.
+
+### `tricorder postedit`
+
+This command is the equivalent of `tricorder pitstop` for AI agents.
+Each time your agent generates code, it checks it for problems.
+This command does not format files because coding agents cache file contents
+and can get tripped up by unexpected file changes.
+The changes get formatted when being committed.
+
+### `tricorder precommit`
+
+This command runs inside the Git precommit hook and formats the staged changes
+while they are getting committed.
+It always exits with status code 0, so the commit always goes through,
+even if there are formatting problems.
+
+This command re-stages files that got formatted.
+Re-staging operates on the entire file.
+If you want to commit only part of a modified file,
+run `tricorder pitstop` or `tricorder fix` to format everything
+before partially staging your changes.
+That way, Tricorder precommit won't introduce additional formatting changes
+and won't need to re-stage the file.
 
 ### `tricorder ci`
 
@@ -95,43 +128,6 @@ that might change program behavior and should be verified.
 
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
-
-### `tricorder pitstop`
-
-This command provides efficient support for interactive development.
-It first applies all safe automatic fixes
-and then reports any remaining code quality issues that require manual
-or AI attention.
-
-Inside a Git repository it processes only files changed on the current branch.
-Outside a Git repository it processes all files.
-
-### `tricorder postedit`
-
-This command is the equivalent of `tricorder pitstop` for AI agents.
-It checks changes that were just made for code smells,
-for example inside an agentic loop.
-It runs the same linters as `tricorder lint`,
-but only against files that are currently uncommitted: staged, unstaged,
-and untracked.
-Outside a Git repository it lints all files.
-It does not format files because coding agents cache file contents
-and can get tripped up by unexpected file changes.
-
-### `tricorder precommit`
-
-This command ensures that staged code is formatted before it gets committed.
-It runs the equivalent of `tricorder fix`, but only on the staged files.
-It always exits with status code 0, so it never blocks the commit.
-
-If this command results in changes to a file that was already staged,
-it stages the updated file again so
-that the formatting changes are included in the commit.
-Re-staging operates on the entire file.
-If you want to commit only part of a modified file,
-run ```tricorder fix``` before partially staging your changes.
-That way, Tricorder precommit won't introduce additional formatting changes
-and won't need to re-stage the file.
 
 ## Supported stacks
 
