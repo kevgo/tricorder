@@ -57,7 +57,10 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
 
-ps: test fix  ## pitstop, run during active development
+ps: build unit $(TRICORDER)
+	$(TRICORDER) pitstop
+
+psa: ps cuke  ## pitstop, run during active development
 
 test: unit lint cuke  ## runs all tests
 
