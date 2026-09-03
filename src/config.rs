@@ -216,6 +216,7 @@ mod tests {
                         enabled: false,
                         ignore_files: None,
                     }),
+                    taplo: None,
                 }),
                 stacks: None,
             };
@@ -557,7 +558,8 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: true,
                         ignore_files: None
-                    })
+                    }),
+                    taplo: None,
                 })
             );
         }
@@ -572,7 +574,8 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: false,
                         ignore_files: None
-                    })
+                    }),
+                    taplo: None,
                 })
             );
         }
@@ -587,7 +590,8 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: true,
                         ignore_files: Some(vec![S("README.md")]),
-                    })
+                    }),
+                    taplo: None,
                 })
             );
         }
