@@ -32,18 +32,22 @@ Feature: pitstop Rust
       {
         "stacks": {
           "rust": {
-            "replace-fixes": [
-              {
-                "command": "echo 'custom fix running'",
-                "name": "my custom fix"
-              }
-            ],
-            "replace-lints": [
-              {
-                "command": "echo 'custom linter running'",
-                "name": "my custom linter"
-              }
-            ]
+            "fix": {
+              "replace": [
+                {
+                  "command": "echo 'custom fix running'",
+                  "name": "my custom fix"
+                }
+              ],
+            },
+            "lint": {
+              "replace": [
+                {
+                  "command": "echo 'custom linter running'",
+                  "name": "my custom linter"
+                }
+              ]
+            }
           }
         }
       }
