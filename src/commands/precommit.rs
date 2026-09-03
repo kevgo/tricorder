@@ -11,6 +11,13 @@ use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
+    if let Err(err) = run(args) {
+        err.print();
+    }
+    Ok(ExitCode::SUCCESS)
+}
+
+fn run(args: &RunArgs) -> Result<()> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
@@ -22,7 +29,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     // step 2: discover the staged files and their stacks
     let staged = repo.staged()?;
     if staged.is_empty() {
-        return Ok(ExitCode::SUCCESS);
+        return Ok(());
     }
     let staged_stacks = stacks::from_staged(&staged, &ignores);
     if show.display_metadata() {
@@ -63,7 +70,7 @@ pub fn precommit(args: &RunArgs) -> Result<ExitCode> {
     let after = fingerprint::scan_files(&staged_files);
     let changed = fingerprint::changed(&before, &after);
     repo.stage_files(&changed)?;
-    Ok(ExitCode::SUCCESS)
+    Ok(())
 }
 
 /// determines the fixes to run in the precommit command
