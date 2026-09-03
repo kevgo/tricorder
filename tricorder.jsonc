@@ -11,6 +11,9 @@
         "features/commands/pitstop/keep_sorted.feature",
       ],
     },
+    "taplo": {
+      "ignore-files": ["Cargo.toml"],
+    },
   },
   "stacks": {
     "rust": {
@@ -25,12 +28,18 @@
         },
       ],
       "replace-fixes": [
-        { "name": "cargo fix", "command": "cargo +nightly fix --allow-dirty" },
+        {
+          "name": "cargo fix",
+          "command": "cargo +nightly fix --allow-dirty",
+        },
         {
           "name": "cargo clippy --fix",
           "command": "cargo clippy --fix --allow-dirty",
         },
-        { "name": "cargo fmt", "command": "cargo +nightly fmt" },
+        {
+          "name": "cargo fmt",
+          "command": "cargo +nightly fmt",
+        },
       ],
     },
   },
