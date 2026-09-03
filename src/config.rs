@@ -678,7 +678,7 @@ mod tests {
                 enabled: None,
                 ignore_files: None,
             };
-            assert_eq!(give.enabled(), true);
+            assert!(give.enabled());
         }
 
         #[test]
@@ -687,7 +687,7 @@ mod tests {
                 enabled: Some(true),
                 ignore_files: None,
             };
-            assert_eq!(give.enabled(), true);
+            assert!(give.enabled());
         }
 
         #[test]
@@ -696,7 +696,7 @@ mod tests {
                 enabled: Some(false),
                 ignore_files: None,
             };
-            assert_eq!(give.enabled(), false);
+            assert!(!give.enabled());
         }
     }
 }
