@@ -114,7 +114,7 @@ pub fn determine_precommit_fixes(
 
     // keep-sorted
     if let Some(keep_sorted_config) = config.keep_sorted()
-        && keep_sorted_config.enabled
+        && keep_sorted_config.enabled()
     {
         let sort_result = keep_sorted::fix_commands(keep_sorted::FixCommandsArgs {
             detected_stacks: staged_stacks,
