@@ -10,7 +10,7 @@ Feature: "tricorder precommit" always exits 0
     When executing "tricorder precommit"
     Then it prints the block
       """
-      config file (tricorder.json) problem: unknown field `unknown-key`
+      config file (tricorder.json): unknown field `unknown-key`
       """
     And the exit code is 0
 

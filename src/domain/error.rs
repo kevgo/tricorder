@@ -116,7 +116,7 @@ impl UserError {
                 println!("config file {filename} already exists");
             }
             UserError::ConfigCannotParse { filename, err } => {
-                println!("config file ({filename}) problem: {err}");
+                println!("config file ({filename}): {err}");
             }
             UserError::ConfigCannotRead { filename, err } => {
                 println!("cannot read config file {filename}: {err}");
