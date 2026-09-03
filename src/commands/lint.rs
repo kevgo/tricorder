@@ -52,11 +52,9 @@ pub fn determine_lints(
     for detected_stack in detected_stacks {
         let stack_config = config.stack_config(detected_stack.stack.stack_type());
         // schedule either the override lints or the default lints
-        if let Some(override_lints) = stack_config
-            .and_then(|sc| sc.lint.as_ref())
-            .and_then(|lint| lint.replace.as_ref())
-        {
-            for override_lint in override_lints {
+        let stack_lints = stack_config.and_then(|sc| sc.lint.as_ref());
+        if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
+            for override_lint in overrides {
                 let executable = conc::Executable::from(override_lint);
                 result.push(conc::Runnable::Single(executable));
             }
@@ -69,12 +67,9 @@ pub fn determine_lints(
                 }
             }
         }
-        if let Some(additional_lints) = stack_config
-            .and_then(|stack_config| stack_config.lint.as_ref())
-            .and_then(|lint| lint.add.as_ref())
-        {
-            for additional_lint in additional_lints {
-                let executable = conc::Executable::from(additional_lint);
+        if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
+            for addition in additions {
+                let executable = conc::Executable::from(addition);
                 result.push(conc::Runnable::Single(executable));
             }
         }
