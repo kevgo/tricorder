@@ -551,9 +551,7 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::Config;
         use crate::config::{Application, Applications, Config};
-        use crate::config::{Applications, KeepSorted};
         use big_s::S;
 
         #[test]
@@ -573,13 +571,14 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
-                    })
+                    }),
+                    taplo: None,
                 })
             );
         }
 
         mod enabled {
-            use crate::config::{Applications, Config, KeepSorted};
+            use crate::config::{Application, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -589,10 +588,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -604,10 +604,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: Some(false),
                             ignore_files: None
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -619,10 +620,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: None,
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -635,17 +637,18 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
         }
 
         mod ignore_files {
-            use crate::config::{Applications, Config, KeepSorted};
+            use crate::config::{Application, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -655,10 +658,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![])
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -671,10 +675,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")])
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -686,10 +691,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        taplo: None,
                     })
                 );
             }
@@ -697,11 +703,11 @@ mod tests {
     }
 
     mod enabled {
-        use crate::config::KeepSorted;
+        use crate::config::Application;
 
         #[test]
         fn none() {
-            let give = KeepSorted {
+            let give = Application {
                 enabled: None,
                 ignore_files: None,
             };
@@ -710,7 +716,7 @@ mod tests {
 
         #[test]
         fn enabled() {
-            let give = KeepSorted {
+            let give = Application {
                 enabled: Some(true),
                 ignore_files: None,
             };
@@ -719,7 +725,7 @@ mod tests {
 
         #[test]
         fn disabled() {
-            let give = KeepSorted {
+            let give = Application {
                 enabled: Some(false),
                 ignore_files: None,
             };

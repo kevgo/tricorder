@@ -1,23 +1,19 @@
 {
   "$schema": "./docs/schema.json",
   // current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
-  "ignore-files": [
-    "Cargo.toml"
-  ],
+  "ignore-files": ["Cargo.toml"],
   "applications": {
     "keep-sorted": {
       "enabled": true,
       "ignore-files": [
         "README.md",
         "src/apps/keep_sorted.rs",
-        "features/commands/pitstop/keep_sorted.feature",
-      ],
+        "features/commands/pitstop/keep_sorted.feature"
+      ]
     },
     "taplo": {
-      "ignore-files": [
-        "Cargo.toml"
-      ],
-    },
+      "ignore-files": ["Cargo.toml"]
+    }
   },
   "stacks": {
     "rust": {
