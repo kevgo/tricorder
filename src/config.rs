@@ -133,6 +133,13 @@ pub struct StackConfig {
     pub fix: Option<StackTools>,
 }
 
+impl StackConfig {
+    // TODO: delete
+    pub fn fix(&self) -> Option<&StackTools> {
+        self.fix.as_ref()
+    }
+}
+
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackTools {

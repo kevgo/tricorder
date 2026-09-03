@@ -66,10 +66,14 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
         // schedule either the override fixes or the default fixes
-        if let Some(override_fixes) = stack_config
-            .and_then(|stack_config| stack_config.fix.as_ref())
-            .and_then(|fix| fix.replace.as_ref())
-        {
+        let Some(stack_config) = stack_config else {
+            // this stack has no config --> skip it
+            continue;
+        };
+        let Some(stack_fixes) = &stack_config.fix else {
+            continue;
+        };
+        if let Some(override_fixes) = &stack_fixes.replace {
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in detected_stack.stack.fixes() {
@@ -79,10 +83,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
             }
         }
         // schedule the additional fixes
-        if let Some(additional_fix) = stack_config
-            .and_then(|stack_config| stack_config.fix.as_ref())
-            .and_then(|fix| fix.add.as_ref())
-        {
+        if let Some(additional_fix) = &stack_fixes.add {
             stack_executables.extend(additional_fix.iter().map(conc::Executable::from));
         }
     }
