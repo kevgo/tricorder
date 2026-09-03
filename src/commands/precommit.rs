@@ -93,7 +93,10 @@ pub fn determine_precommit_fixes(
         let stack_type = staged_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
-        if let Some(override_fixes) = stack_config.and_then(|sc| sc.replace_fixes.as_ref()) {
+        if let Some(override_fixes) = stack_config
+            .and_then(|stack_config| stack_config.fix.as_ref())
+            .and_then(|fix| fix.replace.as_ref())
+        {
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in staged_stack.stack.fixes() {
@@ -102,7 +105,10 @@ pub fn determine_precommit_fixes(
                 }
             }
         }
-        if let Some(add) = stack_config.and_then(|sc| sc.additional_fixes.as_ref()) {
+        if let Some(add) = stack_config
+            .and_then(|stack_config| stack_config.fix.as_ref())
+            .and_then(|fix| fix.add.as_ref())
+        {
             stack_executables.extend(add.iter().map(conc::Executable::from));
         }
     }
