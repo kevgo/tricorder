@@ -71,7 +71,9 @@ Feature: stack-specific lints
       {
         "stacks": {
           "python": {
-            "replace-lints": []
+            "lint": {
+              "replace": []
+            }
           }
         }
       }

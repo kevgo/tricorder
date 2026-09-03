@@ -27,12 +27,14 @@ Feature: lint Rust
       {
         "stacks": {
           "rust": {
-            "replace-lints": [
-              {
-                "command": "echo 'custom linter running'",
-                "name": "my custom linter"
-              }
-            ]
+            "lint": {
+              "replace": [
+                {
+                  "command": "echo 'custom linter running'",
+                  "name": "my custom linter"
+                }
+              ]
+            }
           }
         }
       }
