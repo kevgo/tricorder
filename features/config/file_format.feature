@@ -83,6 +83,6 @@ Feature: config file format
     When executing "tricorder lint"
     Then it prints the block
       """
-      config file tricorder.json seems to contain invalid JSON: unknown field `unknown-key`
+      config file (tricorder.json) problem: unknown field `unknown-key`
       """
     And the exit code is 1
