@@ -583,7 +583,22 @@ mod tests {
         }
 
         #[test]
-        fn ignore() {
+        fn enabled_null() {
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": null, "ignore-files": ["README.md"] } } }"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            assert_eq!(
+                have.applications,
+                Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: None,
+                        ignore_files: Some(vec![S("README.md")]),
+                    })
+                })
+            );
+        }
+
+        #[test]
+        fn enabled_missing() {
             let give =
                 r#"{ "applications": { "keep-sorted": { "ignore-files": ["README.md"] } } }"#;
             let have = Config::parse(give, "test.json").unwrap();
