@@ -48,6 +48,10 @@ pub enum Command {
 
     /// Fix staged files before committing, never fails
     Precommit(RunArgs),
+
+    /// Update third-party tools
+    #[command(name = "update:tools")]
+    UpdateTools,
 }
 
 #[derive(clap::Args)]

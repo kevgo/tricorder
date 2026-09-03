@@ -1,5 +1,8 @@
 # Tricorder changelog
 
+- `tricorder update:tools` updates third-party tool versions to the latest available
+
+
 ## 0.1.0
 
 #### BREAKING CHANGES

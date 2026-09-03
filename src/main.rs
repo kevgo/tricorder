@@ -26,5 +26,6 @@ fn inner() -> tricorder::domain::Result<ExitCode> {
         Command::Pitstop(args) => tricorder::commands::pitstop(&args),
         Command::Postedit(args) => tricorder::commands::post_edit(&args),
         Command::Precommit(args) => tricorder::commands::precommit(&args),
+        Command::UpdateTools => tricorder::commands::update_tools(),
     }
 }
