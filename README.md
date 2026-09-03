@@ -114,6 +114,11 @@ This command installs a
 [Git pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
 that runs `tricorder precommit` before every commit.
 
+### `tricorder update:tools`
+
+This command updates the versions of third-party tools
+that Tricorder uses to the latest available versions.
+
 ### `tricorder fix`
 
 This command applies all safe automated fixes to the codebase.
