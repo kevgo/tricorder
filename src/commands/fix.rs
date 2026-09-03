@@ -65,7 +65,6 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
         let stack_executables = stacks_executables.entry(stack_type).or_default();
-        // schedule either the override fixes or the default fixes
         let Some(stack_config) = stack_config else {
             continue;
         };
