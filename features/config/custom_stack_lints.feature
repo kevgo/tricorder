@@ -15,8 +15,9 @@ Feature: stack-specific lints
           "python": {
             "lint": {
               "add": [
-              { "name": "my lint", "command": "echo MY LINT RAN" }
-            ]
+                { "name": "my lint", "command": "echo MY LINT RAN" }
+              ]
+            }
           }
         }
       }
