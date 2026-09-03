@@ -60,7 +60,7 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 ps: unit $(TRICORDER)
 	$(TRICORDER) pitstop
 
-psa: test fix  ## pitstop, run during active development
+psa: ps cuke  ## pitstop, run during active development
 
 test: unit lint cuke  ## runs all tests
 
