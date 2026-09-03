@@ -543,12 +543,29 @@ mod tests {
 
     mod keep_sorted {
         use crate::config::Config;
+        use crate::config::{Applications, KeepSorted};
+        use big_s::S;
 
         #[test]
         fn empty() {
             let have = Config::parse("", "test.json").unwrap();
             assert_eq!(have.applications, None);
             assert_eq!(have.keep_sorted(), None);
+        }
+
+        #[test]
+        fn both_given() {
+            let give = r#"{ "applications": { "keep-sorted": { "enabled": true, "ignore-files": ["README.md"] } } }"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            assert_eq!(
+                have.applications,
+                Some(Applications {
+                    keep_sorted: Some(KeepSorted {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![S("README.md")]),
+                    })
+                })
+            );
         }
 
         mod enabled {
