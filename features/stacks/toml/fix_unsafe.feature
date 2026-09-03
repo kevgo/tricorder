@@ -10,7 +10,7 @@ Feature: unsafe-fix TOML
       """
       [package
       name="demo"
-      version   = "0.1.0"
+      version   = "0.1.1"
       """
 
   Scenario: fix-unsafe
@@ -24,7 +24,7 @@ Feature: unsafe-fix TOML
       """
       [package
       name="demo"
-      version = "0.1.0"
+      version = "0.1.1"
       """
 
   Scenario: fix
