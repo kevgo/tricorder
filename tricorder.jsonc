@@ -34,7 +34,7 @@
       "replace-fixes": [
         {
           "name": "cargo fix",
-          "command": "cargo +nightly fix --allow-dirty",
+          "command": "cargo +nightly fix --allow-dirty"
         },
         {
           "name": "cargo clippy --fix",

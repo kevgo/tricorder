@@ -172,6 +172,7 @@ pub struct Applications {
 #[serde(deny_unknown_fields)]
 pub struct Application {
     pub enabled: Option<bool>,
+    #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
 }
@@ -221,6 +222,7 @@ mod tests {
                         enabled: Some(false),
                         ignore_files: None,
                     }),
+                    taplo: None,
                 }),
                 stacks: None,
             };
@@ -542,8 +544,8 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{Application, Applications, Config};
         use crate::config::Config;
+        use crate::config::{Application, Applications, Config};
         use crate::config::{Applications, KeepSorted};
         use big_s::S;
 
@@ -562,7 +564,7 @@ mod tests {
                 have.applications,
                 Some(Applications {
                     keep_sorted: Some(Application {
-                        enabled: Sometrue),
+                        enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
                     })
                 })
