@@ -25,13 +25,10 @@ impl Lint for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let empty = Vec::new();
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref(), &empty);
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("lint"));
-        for file in filtered_files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -44,22 +41,21 @@ impl Lint for Taplo {
 
 fn filter_files<'a>(
     files: &'a Files,
-    config: &'a Config,
+    config: &Config,
     filter: impl Fn(&Applications) -> Option<&Application>,
-    empty: &'a Vec<String>,
-) -> impl Iterator<Item = &'a File> {
+) -> Vec<&'a File> {
     let ignore_files_opt = config
         .applications
         .as_ref()
         .and_then(filter)
         .and_then(|app| app.ignore_files.as_ref());
-    let ignore_files = match ignore_files_opt {
-        Some(files) => files,
-        None => empty,
+    let Some(ignore_files) = ignore_files_opt else {
+        return files.into_iter().collect();
     };
     files
         .into_iter()
         .filter(|file| !ignore_files.contains(file.as_ref()))
+        .collect()
 }
 
 impl Fix for Taplo {
