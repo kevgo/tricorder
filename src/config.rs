@@ -161,8 +161,25 @@ impl From<&StackCommand> for conc::Executable {
 pub struct Applications {
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
+    pub actionlint: Option<Application>,
+    pub biome: Option<Application>,
+    pub checkstyle: Option<Application>,
+    pub delete_empty_folders: Option<Application>,
+    pub gherkin_lint: Option<Application>,
+    pub ghokin: Option<Application>,
+    pub git_diff_check: Option<Application>,
+    pub gofumpt: Option<Application>,
+    pub golangci_lint: Option<Application>,
     pub keep_sorted: Option<Application>,
+    pub prettier: Option<Application>,
+    pub pyright: Option<Application>,
+    pub ripgrep: Option<Application>,
+    pub ruff: Option<Application>,
+    pub rumdl: Option<Application>,
+    pub sqlfmt: Option<Application>,
     pub taplo: Option<Application>,
+    pub text_runner: Option<Application>,
+    pub tikibase: Option<Application>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
