@@ -59,12 +59,15 @@ fn filter_files<'a>(
 }
 
 impl Fix for Taplo {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
+        let mut args = Vec::with_capacity(filtered_files.len() + 1);
         args.push(S("format"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -77,13 +80,13 @@ impl Fix for Taplo {
     fn unsafe_fix_commands(
         &self,
         stack: &DetectedStack,
+        config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("format"));
         args.push(S("--force"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("force fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
