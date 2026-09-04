@@ -18,6 +18,7 @@ Feature: ignore files for an application
       key = "value"
       """
 
+  @this
   Scenario: lint does not pass ignored files to Taplo
     Given a file "tricorder.json" with content
       """
@@ -33,7 +34,7 @@ Feature: ignore files for an application
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
-      \S+/taplo lint config\.toml
+      \S+/taplo lint config\.toml\n
       """
     And it does not print
       """
