@@ -146,25 +146,39 @@
     "StackConfig": {
       "type": "object",
       "properties": {
-        "replace-lints": {
+        "lint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StackTools"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fix": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StackTools"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "StackTools": {
+      "type": "object",
+      "properties": {
+        "add": {
           "type": ["array", "null"],
           "items": {
             "$ref": "#/$defs/StackCommand"
           }
         },
-        "additional-lints": {
-          "type": ["array", "null"],
-          "items": {
-            "$ref": "#/$defs/StackCommand"
-          }
-        },
-        "replace-fixes": {
-          "type": ["array", "null"],
-          "items": {
-            "$ref": "#/$defs/StackCommand"
-          }
-        },
-        "additional-fixes": {
+        "replace": {
           "type": ["array", "null"],
           "items": {
             "$ref": "#/$defs/StackCommand"
