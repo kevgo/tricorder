@@ -18,7 +18,9 @@ pub mod taplo;
 pub mod text_runner;
 pub mod tikibase;
 
+use crate::config::{Application, Applications, Config};
 use crate::domain::UserError;
+use crate::domain::{File, Files};
 use rta::applications::AppDefinition;
 
 /// Provides the RTA command to run the given RTA App.
@@ -78,4 +80,23 @@ pub struct GetRTACmdArgs<'a> {
     app: &'a dyn AppDefinition,
     args: Vec<String>,
     version: Option<rta::Version>,
+}
+
+fn filter_files<'a>(
+    files: &'a Files,
+    config: &Config,
+    filter: impl Fn(&Applications) -> Option<&Application>,
+) -> Vec<&'a File> {
+    let ignore_files_opt = config
+        .applications
+        .as_ref()
+        .and_then(filter)
+        .and_then(|app| app.ignore_files.as_ref());
+    let Some(ignore_files) = ignore_files_opt else {
+        return files.into_iter().collect();
+    };
+    files
+        .into_iter()
+        .filter(|file| !ignore_files.contains(file.as_ref()))
+        .collect()
 }

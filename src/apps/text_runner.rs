@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -21,7 +22,12 @@ impl Display for TextRunner {
 }
 
 impl Lint for TextRunner {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", stack.stack),
