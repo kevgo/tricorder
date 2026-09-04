@@ -24,6 +24,12 @@ impl AsRef<Path> for File {
     }
 }
 
+impl AsRef<String> for File {
+    fn as_ref(&self) -> &String {
+        &self.0
+    }
+}
+
 impl Deref for File {
     type Target = str;
 
