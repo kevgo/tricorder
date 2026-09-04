@@ -99,7 +99,7 @@ pub fn determine_precommit_fixes(
         } else {
             for default_fix in staged_stack.stack.fixes() {
                 if default_fix.enabled_when().enabled_on_disk() {
-                    stack_executables.extend(default_fix.fix_commands(staged_stack)?);
+                    stack_executables.extend(default_fix.fix_commands(staged_stack, config)?);
                 }
             }
         }

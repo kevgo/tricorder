@@ -25,9 +25,8 @@ impl Lint for TextRunner {
     fn lint_commands(
         &self,
         stack: &DetectedStack,
-        config: &Config,
+        _config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", stack.stack),

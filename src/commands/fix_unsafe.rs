@@ -21,7 +21,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover the unsafe fixes
-    let unsafe_fixes = determine_unsafe_fixes(&all_stacks)?;
+    let unsafe_fixes = determine_unsafe_fixes(&all_stacks, &config)?;
     if show.display_metadata() {
         eprintln!("running {} tools", unsafe_fixes.len());
     }
@@ -36,7 +36,10 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub fn determine_unsafe_fixes(stacks: &DetectedStacks) -> Result<Vec<conc::Runnable>> {
+pub fn determine_unsafe_fixes(
+    stacks: &DetectedStacks,
+    config: &Config,
+) -> Result<Vec<conc::Runnable>> {
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in stacks {
         let stack_executables = stacks_executables
@@ -44,7 +47,7 @@ pub fn determine_unsafe_fixes(stacks: &DetectedStacks) -> Result<Vec<conc::Runna
             .or_default();
         for fix in stack.stack.fixes() {
             if stacks.stack_enabled(&fix.enabled_when()) {
-                stack_executables.extend(fix.unsafe_fix_commands(stack)?);
+                stack_executables.extend(fix.unsafe_fix_commands(stack, config)?);
             }
         }
     }
