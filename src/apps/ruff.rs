@@ -1,4 +1,5 @@
-use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -19,12 +20,15 @@ impl Display for Ruff {
 }
 
 impl Lint for Ruff {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.ruff.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("check"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
@@ -39,19 +43,22 @@ impl Lint for Ruff {
 }
 
 impl Fix for Ruff {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>, UserError> {
         let mut executables = Vec::with_capacity(2);
 
         // NOTE: Ruff has separate commands for formatting and linting
         // until https://github.com/astral-sh/ruff/issues/8232 ships.
 
         // run "ruff format --check"
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.ruff.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("check"));
         args.push(S("--fix"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
@@ -84,17 +91,17 @@ impl Fix for Ruff {
     fn unsafe_fix_commands(
         &self,
         stack: &DetectedStack,
+        config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let mut executables = Vec::with_capacity(2);
 
         // run "ruff format --check"
-        let mut args = Vec::with_capacity(stack.files.len() + 3);
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.ruff.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 3);
         args.push(S("check"));
         args.push(S("--fix"));
         args.push(S("--unsafe-fixes"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},

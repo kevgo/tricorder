@@ -30,7 +30,7 @@ impl Lint for Rumdl {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.rumdl.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("check"));
         args.extend(filtered_files.into_iter().map(|file| file.into()));
@@ -50,7 +50,7 @@ impl Fix for Rumdl {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.rumdl.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("fmt"));
         args.extend(filtered_files.into_iter().map(|file| file.into()));
