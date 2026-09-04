@@ -18,7 +18,6 @@ Feature: ignore files for an application
       key = "value"
       """
 
-  @this
   Scenario: lint does not pass ignored files to Taplo
     Given a file "tricorder.json" with content
       """
