@@ -21,10 +21,7 @@ impl Fix for Prettier {
     fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--write"));
-        for stack_file in &stack.files {
-            let file_str = stack_file.into();
-            args.push(file_str);
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Prettier {},
