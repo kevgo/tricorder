@@ -60,7 +60,7 @@ Feature: ignore files for an application
     Then it prints the block matching
       """
       fix TOML \(Taplo\)
-      \S+/taplo format config\.toml
+      \S+/taplo format config\.toml\n
       """
     And it does not print
       """
@@ -84,7 +84,7 @@ Feature: ignore files for an application
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
-      \S+/taplo lint config\.toml
+      \S+/taplo lint config\.toml\n
       """
     And it does not print
       """
