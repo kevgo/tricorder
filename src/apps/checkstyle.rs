@@ -1,3 +1,4 @@
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
 use std::fmt::Display;
 
@@ -19,7 +20,11 @@ impl Display for Checkstyle {
 }
 
 impl Lint for Checkstyle {
-    fn lint_commands(&self, _stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(
+        &self,
+        _stack: &DetectedStack,
+        _config: &Config,
+    ) -> Result<Option<conc::Runnable>, UserError> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",

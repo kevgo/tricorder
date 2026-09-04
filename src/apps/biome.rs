@@ -1,4 +1,5 @@
-use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -20,12 +21,15 @@ impl Display for Biome {
 }
 
 impl Lint for Biome {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.biome.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("lint"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -37,13 +41,16 @@ impl Lint for Biome {
 }
 
 impl Fix for Biome {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.biome.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("format"));
         args.push(S("--write"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -56,14 +63,14 @@ impl Fix for Biome {
     fn unsafe_fix_commands(
         &self,
         stack: &DetectedStack,
+        config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 3);
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.biome.as_ref());
+        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 3);
         args.push(S("lint"));
         args.push(S("--write"));
         args.push(S("--unsafe"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
