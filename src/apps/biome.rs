@@ -23,9 +23,7 @@ impl Lint for Biome {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -41,9 +39,7 @@ impl Fix for Biome {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--write"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -61,9 +57,7 @@ impl Fix for Biome {
         args.push(S("lint"));
         args.push(S("--write"));
         args.push(S("--unsafe"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
