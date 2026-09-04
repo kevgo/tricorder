@@ -114,21 +114,8 @@ mod tests {
         use crate::domain::{File, Files};
         use big_s::S;
 
-        fn config_for_taplo(ignore_files: Option<Vec<String>>) -> Config {
-            Config {
-                applications: Some(Applications {
-                    taplo: Some(Application {
-                        ignore_files,
-                        ..Default::default()
-                    }),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            }
-        }
-
         #[test]
-        fn returns_all_when_no_applications() {
+        fn no_app_config() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config::default();
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
@@ -139,7 +126,7 @@ mod tests {
         }
 
         #[test]
-        fn returns_all_when_app_not_configured() {
+        fn no_taplo_app_config() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config {
                 applications: Some(Applications::default()),
@@ -153,9 +140,18 @@ mod tests {
         }
 
         #[test]
-        fn returns_all_when_app_has_no_ignore_files() {
+        fn no_ignore_files() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
-            let config = config_for_taplo(None);
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        ignore_files: None,
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(
                 have,
@@ -164,9 +160,18 @@ mod tests {
         }
 
         #[test]
-        fn returns_all_when_ignore_files_is_empty() {
+        fn empty_ignore_files() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
-            let config = config_for_taplo(Some(vec![]));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        ignore_files: Some(vec![]),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(
                 have,
@@ -175,15 +180,24 @@ mod tests {
         }
 
         #[test]
-        fn excludes_ignored_files() {
+        fn single_ignore_file() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
-            let config = config_for_taplo(Some(vec![S("Cargo.toml")]));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        ignore_files: Some(vec![S("Cargo.toml")]),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(have, vec![&File::from("config.toml")]);
         }
 
         #[test]
-        fn excludes_only_the_selected_app_ignores() {
+        fn multiple_apps_ignore_files() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config {
                 applications: Some(Applications {
@@ -204,9 +218,18 @@ mod tests {
         }
 
         #[test]
-        fn excludes_all_ignored_files() {
+        fn multiple_ignore_files() {
             let files = Files::from(vec!["Cargo.toml", "config.toml"]);
-            let config = config_for_taplo(Some(vec![S("Cargo.toml"), S("config.toml")]));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        ignore_files: Some(vec![S("Cargo.toml"), S("config.toml")]),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             assert!(have.is_empty());
         }
@@ -214,7 +237,16 @@ mod tests {
         #[test]
         fn empty_files() {
             let files = Files::new();
-            let config = config_for_taplo(Some(vec![S("Cargo.toml")]));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        ignore_files: Some(vec![S("Cargo.toml")]),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             assert!(have.is_empty());
         }
