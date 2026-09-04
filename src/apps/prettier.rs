@@ -1,4 +1,5 @@
-use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -18,13 +19,15 @@ impl Display for Prettier {
 }
 
 impl Fix for Prettier {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>, UserError> {
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.prettier.as_ref());
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--write"));
-        for stack_file in &stack.files {
-            let file_str = stack_file.into();
-            args.push(file_str);
-        }
+        args.extend(filtered_files.into_iter().map(|file| file.into()));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Prettier {},
@@ -37,6 +40,7 @@ impl Fix for Prettier {
     fn unsafe_fix_commands(
         &self,
         _stack: &DetectedStack,
+        _config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         Ok(vec![])
     }
