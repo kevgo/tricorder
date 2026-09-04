@@ -159,8 +159,6 @@ impl From<&StackCommand> for conc::Executable {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct Applications {
-    #[serde(alias = "keep-sorted")]
-    #[schemars(rename = "keep-sorted")]
     pub actionlint: Option<Application>,
     pub biome: Option<Application>,
     pub checkstyle: Option<Application>,
@@ -170,6 +168,8 @@ pub struct Applications {
     pub git_diff_check: Option<Application>,
     pub gofumpt: Option<Application>,
     pub golangci_lint: Option<Application>,
+    #[serde(alias = "keep-sorted")]
+    #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<Application>,
     pub prettier: Option<Application>,
     pub pyright: Option<Application>,
@@ -236,7 +236,7 @@ mod tests {
                         enabled: Some(false),
                         ignore_files: None,
                     }),
-                    taplo: None,
+                    ..Default::default()
                 }),
                 stacks: None,
             };
@@ -589,7 +589,7 @@ mod tests {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
                     }),
-                    taplo: None,
+                    ..Default::default()
                 })
             );
         }
@@ -609,7 +609,7 @@ mod tests {
                             enabled: Some(true),
                             ignore_files: None
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -625,7 +625,7 @@ mod tests {
                             enabled: Some(false),
                             ignore_files: None
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -641,7 +641,7 @@ mod tests {
                             enabled: None,
                             ignore_files: None,
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -658,7 +658,7 @@ mod tests {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -679,7 +679,7 @@ mod tests {
                             enabled: None,
                             ignore_files: Some(vec![])
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -696,7 +696,7 @@ mod tests {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")])
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
@@ -712,7 +712,7 @@ mod tests {
                             enabled: Some(true),
                             ignore_files: None
                         }),
-                        taplo: None,
+                        ..Default::default()
                     })
                 );
             }
