@@ -1,3 +1,4 @@
+use crate::domain::Files;
 use crate::domain::{Ignores, Result, StackType, UserError};
 use ahash::AHashMap;
 use jsonc_parser::ParseOptions;
@@ -63,6 +64,23 @@ pub struct Config {
 }
 
 impl Config {
+    /// provides all files paths that should be excluded when running a tool for the given app
+    pub fn excluded_files_for_app(
+        &self,
+        filter: impl Fn(&Applications) -> Option<&Application>,
+    ) -> Files {
+        let ignore_files_opt = self
+            .applications
+            .as_ref()
+            .and_then(filter)
+            .and_then(|app| app.ignore_files.as_ref());
+        let Some(ignore_files) = ignore_files_opt else {
+            // no ignore files --> return all files
+            return Files::new();
+        };
+        Files::from(ignore_files)
+    }
+
     pub fn load() -> Result<Self> {
         for filename in CONFIG_FILENAMES {
             match fs::read_to_string(filename) {

@@ -26,6 +26,15 @@ impl Files {
         self.0.contains(file)
     }
 
+    pub fn filter(&self, excluded_files: &[&str]) -> Vec<&File> {
+        Self(
+            self.0
+                .iter()
+                .filter(|file| !excluded_files.contains(*file))
+                .collect(),
+        )
+    }
+
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
@@ -56,6 +65,13 @@ impl<'a> IntoIterator for &'a Files {
 
 impl From<Vec<PathBuf>> for Files {
     fn from(paths: Vec<PathBuf>) -> Self {
+        let normalized_paths = paths.into_iter().map(Into::into).collect();
+        Self(normalized_paths)
+    }
+}
+
+impl From<&Vec<String>> for Files {
+    fn from(paths: &Vec<String>) -> Self {
         let normalized_paths = paths.into_iter().map(Into::into).collect();
         Self(normalized_paths)
     }

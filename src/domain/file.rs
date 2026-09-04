@@ -53,6 +53,16 @@ impl From<PathBuf> for File {
     }
 }
 
+impl From<&String> for File {
+    fn from(path: &String) -> Self {
+        if let Some(stripped) = path.strip_prefix("./") {
+            Self(stripped.to_string())
+        } else {
+            Self(path.to_string())
+        }
+    }
+}
+
 impl From<&str> for File {
     fn from(path: &str) -> Self {
         let stripped = path.strip_prefix("./").unwrap_or(path);
