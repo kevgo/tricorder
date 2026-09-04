@@ -18,7 +18,7 @@ Feature: ignore files for an application
       key = "value"
       """
 
-  Scenario: lint does not pass ignored files to Taplo
+  Scenario: lint honors application-level ignored files
     Given a file "tricorder.json" with content
       """
       {
@@ -41,7 +41,7 @@ Feature: ignore files for an application
       """
     And the exit code is 0
 
-  Scenario: fix does not pass ignored files to Taplo
+  Scenario: fix honors application-level ignored files
     Given a file "tricorder.json" with content
       """
       {
@@ -73,7 +73,7 @@ Feature: ignore files for an application
     And file "Cargo.toml" is unchanged
     And the exit code is 0
 
-  Scenario: globally ignored files stay invisible to all tools
+  Scenario: lint honors globally ignored files
     Given a file "tricorder.json" with content
       """
       {
@@ -85,6 +85,25 @@ Feature: ignore files for an application
       """
       lint TOML \(Taplo\)
       \S+/taplo lint config\.toml\n
+      """
+    And it does not print
+      """
+      Cargo.toml
+      """
+    And the exit code is 0
+
+  Scenario: fix honors globally ignored files
+    Given a file "tricorder.json" with content
+      """
+      {
+        "ignore-files": ["Cargo.toml"]
+      }
+      """
+    When executing "tricorder fix --show=verbose"
+    Then it prints the block matching
+      """
+      fix TOML \(Taplo\)
+      \S+/taplo format config\.toml\n
       """
     And it does not print
       """
