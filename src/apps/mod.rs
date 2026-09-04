@@ -93,9 +93,11 @@ fn filter_files<'a>(
         .and_then(filter)
         .and_then(|app| app.ignore_files.as_ref());
     let Some(ignore_files) = ignore_files_opt else {
+        // no ignore files --> return all files
         return files.into_iter().collect();
     };
     if ignore_files.is_empty() {
+        // no ignore files --> return all files
         return files.into_iter().collect();
     }
     files
