@@ -1,6 +1,7 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
+use crate::domain::{File, Files};
 use big_s::S;
 use std::fmt::Display;
 
@@ -24,21 +25,12 @@ impl Lint for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let ignore_files_opt = config
-            .applications
-            .as_ref()
-            .and_then(|apps| apps.taplo.as_ref())
-            .and_then(|app| app.ignore_files.as_ref());
-        let ignore_files = match ignore_files_opt {
-            Some(files) => files,
-            None => &Vec::new(),
-        };
-        let mut args = Vec::with_capacity(stack.files.len() - ignore_files.len() + 1);
+        let empty = Vec::new();
+        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref(), &empty);
+        let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
-        for file in &stack.files {
-            if !ignore_files.contains(file.as_ref()) {
-                args.push(file.into());
-            }
+        for file in filtered_files {
+            args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -48,6 +40,26 @@ impl Lint for Taplo {
         })?;
         Ok(executable.map(conc::Runnable::Single))
     }
+}
+
+fn filter_files<'a>(
+    files: &'a Files,
+    config: &'a Config,
+    filter: impl Fn(&Applications) -> Option<&Application>,
+    empty: &'a Vec<String>,
+) -> impl Iterator<Item = &'a File> {
+    let ignore_files_opt = config
+        .applications
+        .as_ref()
+        .and_then(filter)
+        .and_then(|app| app.ignore_files.as_ref());
+    let ignore_files = match ignore_files_opt {
+        Some(files) => files,
+        None => empty,
+    };
+    files
+        .into_iter()
+        .filter(|file| !ignore_files.contains(file.as_ref()))
 }
 
 impl Fix for Taplo {
