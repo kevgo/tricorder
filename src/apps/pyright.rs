@@ -26,9 +26,7 @@ impl Lint for Pyright {
         args.push(S("run"));
         args.push(S("--"));
         args.push(S("pyright"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("type-check {} ({self})", stack.stack),
             app: &rta::applications::Uv {},

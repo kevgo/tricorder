@@ -21,9 +21,7 @@ impl Lint for Taplo {
     fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -38,9 +36,7 @@ impl Fix for Taplo {
     fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("format"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -57,9 +53,7 @@ impl Fix for Taplo {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("format"));
         args.push(S("--force"));
-        for file in &stack.files {
-            args.push(file.into());
-        }
+        args.extend(stack.files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("force fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
