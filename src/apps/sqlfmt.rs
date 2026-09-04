@@ -31,7 +31,7 @@ impl Fix for Sqlfmt {
         args.push(S("--from"));
         args.push(S("shandy-sqlfmt"));
         args.push(S("sqlfmt"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Uv {},

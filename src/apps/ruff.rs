@@ -28,7 +28,7 @@ impl Lint for Ruff {
         let filtered_files = filter_files(&stack.files, config, |apps| apps.ruff.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("check"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
@@ -58,7 +58,7 @@ impl Fix for Ruff {
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("check"));
         args.push(S("--fix"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
@@ -101,7 +101,7 @@ impl Fix for Ruff {
         args.push(S("check"));
         args.push(S("--fix"));
         args.push(S("--unsafe-fixes"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},

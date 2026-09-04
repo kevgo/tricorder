@@ -28,7 +28,7 @@ impl Fix for Gofumpt {
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("-l"));
         args.push(S("-w"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Gofumpt {},

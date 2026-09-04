@@ -33,7 +33,7 @@ impl Lint for Rumdl {
         let filtered_files = filter_files(&stack.files, config, |apps| apps.rumdl.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("check"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Rumdl {},
@@ -53,7 +53,7 @@ impl Fix for Rumdl {
         let filtered_files = filter_files(&stack.files, config, |apps| apps.rumdl.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("fmt"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Rumdl {},

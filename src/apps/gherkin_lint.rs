@@ -33,7 +33,7 @@ impl Lint for GherkinLint {
         args.push(S("exec"));
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Npm {},

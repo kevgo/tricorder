@@ -29,7 +29,7 @@ impl Lint for Biome {
         let filtered_files = filter_files(&stack.files, config, |apps| apps.biome.as_ref());
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
         args.push(S("lint"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -50,7 +50,7 @@ impl Fix for Biome {
         let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
         args.push(S("format"));
         args.push(S("--write"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -70,7 +70,7 @@ impl Fix for Biome {
         args.push(S("lint"));
         args.push(S("--write"));
         args.push(S("--unsafe"));
-        args.extend(filtered_files.into_iter().map(|file| file.into()));
+        args.extend(filtered_files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
