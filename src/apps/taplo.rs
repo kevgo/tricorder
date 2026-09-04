@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -18,10 +19,28 @@ impl Display for Taplo {
 }
 
 impl Lint for Taplo {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>, UserError> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("lint"));
-        for file in &stack.files {
+        let ignore_files = config
+            .applications
+            .as_ref()
+            .and_then(|apps| apps.taplo.as_ref())
+            .and_then(|app| app.ignore_files.as_ref());
+        let filtered_files = if let Some(ignore_files) = ignore_files {
+            stack
+                .files
+                .into_iter()
+                .filter(|file| !ignore_files.contains(file.as_ref()))
+                .collect::<Vec<_>>()
+        } else {
+            stack.files.into_iter().collect::<Vec<_>>()
+        };
+        for file in filtered_files {
             args.push(file.into());
         }
         let executable = get_rta_command(&GetRTACmdArgs {
