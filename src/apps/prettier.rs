@@ -27,7 +27,7 @@ impl Fix for Prettier {
         let filtered_files = filter_files(&stack.files, config, |apps| apps.prettier.as_ref());
         let mut args: Vec<String> = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("--write"));
-        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
+        args.extend(filtered_files.into_iter().map(Into::into));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Prettier {},
