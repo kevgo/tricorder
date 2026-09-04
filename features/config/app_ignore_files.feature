@@ -1,0 +1,93 @@
+Feature: ignore files for an application
+
+  Background:
+    Given a file "run-that-app" with content
+      """
+      taplo 0.10.0
+      delete-empty-folders 0.0.2
+      node 26.4.0
+      prettier 3.7.0
+      """
+    And a file "Cargo.toml" with content
+      """
+      [package]
+      name = "demo"
+      """
+    And a file "config.toml" with content
+      """
+      key = "value"
+      """
+
+  Scenario: lint does not pass ignored files to Taplo
+    Given a file "tricorder.json" with content
+      """
+      {
+        "applications": {
+          "taplo": {
+            "ignore-files": ["Cargo.toml"]
+          }
+        }
+      }
+      """
+    When executing "tricorder lint --show=verbose"
+    Then it prints the block matching
+      """
+      lint TOML \(Taplo\)
+      \S+/taplo lint config\.toml
+      """
+    And it does not print
+      """
+      Cargo.toml
+      """
+    And the exit code is 0
+
+  Scenario: fix does not pass ignored files to Taplo
+    Given a file "tricorder.json" with content
+      """
+      {
+        "applications": {
+          "taplo": {
+            "ignore-files": ["Cargo.toml"]
+          }
+        }
+      }
+      """
+    And a file "config.toml" with content
+      """
+      key =     "value"
+      """
+    When executing "tricorder fix --show=verbose"
+    Then it prints the block matching
+      """
+      fix TOML \(Taplo\)
+      \S+/taplo format config\.toml
+      """
+    And it does not print
+      """
+      Cargo.toml
+      """
+    And file "config.toml" now has content
+      """
+      key = "value"
+      """
+    And file "Cargo.toml" is unchanged
+    And the exit code is 0
+
+  Scenario: globally ignored files stay invisible to all tools
+    Given a file "tricorder.json" with content
+      """
+      {
+        "ignore-files": ["Cargo.toml"]
+      }
+      """
+    When executing "tricorder lint --show=verbose"
+    Then it prints the block matching
+      """
+      lint TOML \(Taplo\)
+      \S+/taplo lint config\.toml
+      """
+    And it does not print
+      """
+      Cargo.toml
+      """
+    And the exit code is 0
