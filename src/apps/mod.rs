@@ -114,14 +114,6 @@ mod tests {
         use crate::domain::{File, Files};
         use big_s::S;
 
-        fn files(paths: &[&str]) -> Files {
-            let mut result = Files::new();
-            for path in paths {
-                result.push((*path).into());
-            }
-            result
-        }
-
         fn config_for_taplo(ignore_files: Option<Vec<String>>) -> Config {
             Config {
                 applications: Some(Applications {
@@ -137,7 +129,7 @@ mod tests {
 
         #[test]
         fn returns_all_when_no_applications() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config::default();
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(
@@ -148,7 +140,7 @@ mod tests {
 
         #[test]
         fn returns_all_when_app_not_configured() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config {
                 applications: Some(Applications::default()),
                 ..Default::default()
@@ -162,7 +154,7 @@ mod tests {
 
         #[test]
         fn returns_all_when_app_has_no_ignore_files() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = config_for_taplo(None);
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(
@@ -173,7 +165,7 @@ mod tests {
 
         #[test]
         fn returns_all_when_ignore_files_is_empty() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = config_for_taplo(Some(vec![]));
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(
@@ -184,7 +176,7 @@ mod tests {
 
         #[test]
         fn excludes_ignored_files() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = config_for_taplo(Some(vec![S("Cargo.toml")]));
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             pretty::assert_eq!(have, vec![&File::from("config.toml")]);
@@ -192,7 +184,7 @@ mod tests {
 
         #[test]
         fn excludes_only_the_selected_app_ignores() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = Config {
                 applications: Some(Applications {
                     biome: Some(Application {
@@ -213,7 +205,7 @@ mod tests {
 
         #[test]
         fn excludes_all_ignored_files() {
-            let files = files(&["Cargo.toml", "config.toml"]);
+            let files = Files::from(vec!["Cargo.toml", "config.toml"]);
             let config = config_for_taplo(Some(vec![S("Cargo.toml"), S("config.toml")]));
             let have = filter_files(&files, &config, |apps| apps.taplo.as_ref());
             assert!(have.is_empty());
