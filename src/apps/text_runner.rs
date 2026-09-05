@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, StackType, Tool};
 use big_s::S;
 use std::fmt::Display;
 
@@ -21,7 +21,7 @@ impl Display for TextRunner {
 }
 
 impl Lint for TextRunner {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", stack.stack),

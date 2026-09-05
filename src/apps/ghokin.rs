@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 
@@ -18,7 +18,7 @@ impl Display for Ghokin {
 }
 
 impl Fix for Ghokin {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
         let mut args = Vec::with_capacity(stack.files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));
@@ -39,10 +39,7 @@ impl Fix for Ghokin {
         Ok(executable.into_iter().collect())
     }
 
-    fn unsafe_fix_commands(
-        &self,
-        _stack: &DetectedStack,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    fn unsafe_fix_commands(&self, _stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

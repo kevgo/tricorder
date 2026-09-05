@@ -1,4 +1,4 @@
-use crate::domain::UserError;
+use crate::domain::{Result, UserError};
 
 /// A string whose lines are separated by the NUL character.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -18,7 +18,7 @@ impl From<&str> for ZeroString {
 
 impl TryFrom<Vec<u8>> for ZeroString {
     type Error = UserError;
-    fn try_from(value: Vec<u8>) -> Result<Self, UserError> {
+    fn try_from(value: Vec<u8>) -> Result<Self> {
         let text = String::from_utf8(value).expect("Git output is not valid UTF-8");
         Ok(text.into())
     }
