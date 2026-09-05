@@ -29,7 +29,7 @@ impl Lint for Ruff {
         let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
-        args.extend(files.clone().into_strings());
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
