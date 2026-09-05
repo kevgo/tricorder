@@ -1,4 +1,5 @@
 use crate::domain::File;
+use crate::domain::Ignores;
 use std::convert::Into;
 use std::path::PathBuf;
 
@@ -43,11 +44,11 @@ impl Files {
 
     /// provides a Files collection containing the files in this collection without the given files
     #[must_use]
-    pub fn remove(&self, exclude: &Files) -> Files {
+    pub fn remove(&self, ignores: &Ignores) -> Files {
         let files: Vec<File> = self
             .0
             .iter()
-            .filter(|file| !exclude.contains(file.as_str()))
+            .filter(|file| !ignores.matches_self_or_parent(file.as_ref()))
             .cloned()
             .collect();
         Files(files)
@@ -91,11 +92,14 @@ mod tests {
 
     mod remove {
         use super::super::Files;
+        use crate::domain::Ignores;
+        use big_s::S;
+        use std::path::Path;
 
         #[test]
         fn matching_removes() {
             let files = Files::from(vec!["a.rs", "b.rs", "c.rs"]);
-            let exclude = Files::from(vec!["b.rs"]);
+            let exclude = Ignores::new(&[S("b.rs")], Path::new("./")).unwrap();
             let have = files.remove(&exclude);
             let want = Files::from(vec!["a.rs", "c.rs"]);
             assert_eq!(have, want);
@@ -104,7 +108,7 @@ mod tests {
         #[test]
         fn empty_exclude() {
             let files = Files::from(vec!["a.rs", "b.rs"]);
-            let have = files.remove(&Files::empty());
+            let have = files.remove(&Ignores::new(&[], Path::new("./")).unwrap());
             let want = files;
             assert_eq!(have, want);
         }
@@ -112,8 +116,8 @@ mod tests {
         #[test]
         fn remove_all() {
             let files = Files::from(vec!["a.rs", "b.rs"]);
-            let exclude = Files::from(vec!["a.rs", "b.rs"]);
-            let have = files.remove(&exclude);
+            let ignores = Ignores::new(&[S("a.rs"), S("b.rs")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
             let want = Files::empty();
             assert_eq!(have, want);
         }
@@ -121,15 +125,16 @@ mod tests {
         #[test]
         fn non_matching_removes() {
             let files = Files::from(vec!["a.rs", "b.rs"]);
-            let exclude = Files::from(vec!["c.rs"]);
-            let have = files.remove(&exclude);
+            let ignores = Ignores::new(&[S("c.rs")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
             let want = files;
             assert_eq!(have, want);
         }
 
         #[test]
         fn empty_files() {
-            let have = Files::empty().remove(&Files::from(vec!["a.rs"]));
+            let ignores = Ignores::new(&[S("a.rs")], Path::new("./")).unwrap();
+            let have = Files::empty().remove(&ignores);
             let want = Files::empty();
             assert_eq!(have, want);
         }
