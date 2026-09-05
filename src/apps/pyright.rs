@@ -1,4 +1,4 @@
-use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Lint, StackType, Tool, UserError};
 use big_s::S;
@@ -27,12 +27,13 @@ impl Lint for Pyright {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.pyright.as_ref());
-        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 3);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.pyright.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("run"));
         args.push(S("--"));
         args.push(S("pyright"));
-        args.extend(filtered_files.into_iter().map(Into::into));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("type-check {} ({self})", stack.stack),
             app: &rta::applications::Uv {},
