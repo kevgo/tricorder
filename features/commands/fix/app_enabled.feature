@@ -1,4 +1,4 @@
-Feature: disable an application
+Feature: "tricorder fix" skips disabled applications
 
   Background:
     Given a file "run-that-app" with content
@@ -13,25 +13,7 @@ Feature: disable an application
       key =     "value"
       """
 
-  Scenario: lint skips a disabled application
-    Given a file "tricorder.json" with content
-      """
-      {
-        "applications": {
-          "taplo": {
-            "enabled": false
-          }
-        }
-      }
-      """
-    When executing "tricorder lint --show=all"
-    Then it does not print
-      """
-      Taplo
-      """
-    And the exit code is 0
-
-  Scenario: fix skips a disabled application
+  Scenario: skips a disabled application
     Given a file "tricorder.json" with content
       """
       {
@@ -43,6 +25,10 @@ Feature: disable an application
       }
       """
     When executing "tricorder fix --show=all"
+    Then it prints the block
+      """
+      delete empty folders
+      """
     Then it does not print
       """
       Taplo
@@ -53,7 +39,7 @@ Feature: disable an application
       """
     And the exit code is 0
 
-  Scenario: fix skips a disabled global application
+  Scenario: skips a disabled global application
     Given a file "tricorder.json" with content
       """
       {
@@ -68,5 +54,9 @@ Feature: disable an application
     Then it does not print
       """
       delete empty folders
+      """
+    And it prints the block
+      """
+      Taplo
       """
     And the exit code is 0
