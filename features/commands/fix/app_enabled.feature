@@ -29,7 +29,7 @@ Feature: "tricorder fix" skips disabled applications
       """
       delete empty folders
       """
-    Then it does not print
+    And it does not print
       """
       Taplo
       """

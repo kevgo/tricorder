@@ -1,6 +1,6 @@
 Feature: "tricorder postedit" skips disabled applications
 
-  Background:
+  Scenario: skips a disabled application
     Given a file "run-that-app" with content
       """
       taplo 0.10.0
@@ -12,9 +12,7 @@ Feature: "tricorder postedit" skips disabled applications
       """
       key =     "value"
       """
-
-  Scenario: skips a disabled application
-    Given a file "tricorder.json" with content
+    And a file "tricorder.json" with content
       """
       {
         "applications": {
