@@ -64,21 +64,20 @@ pub struct Config {
 }
 
 impl Config {
-    /// provides all files paths that should be excluded when running a tool for the given app
+    /// provides all files that should be excluded when running any tool for the given app
     pub fn excluded_files_for_app(
         &self,
-        filter: impl Fn(&Applications) -> Option<&Application>,
+        app_selector: impl Fn(&Applications) -> Option<&Application>,
     ) -> Files {
-        let ignore_files_opt = self
+        let ignore_files = self
             .applications
             .as_ref()
-            .and_then(filter)
+            .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
-        let Some(ignore_files) = ignore_files_opt else {
-            // no ignore files --> return all files
-            return Files::empty();
-        };
-        Files::from(ignore_files)
+        match ignore_files {
+            Some(ignore_files) => Files::from(ignore_files),
+            None => Files::empty(),
+        }
     }
 
     pub fn load() -> Result<Self> {
