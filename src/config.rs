@@ -1,4 +1,3 @@
-use crate::domain::Files;
 use crate::domain::{Ignores, Result, StackType, UserError};
 use ahash::AHashMap;
 use jsonc_parser::ParseOptions;

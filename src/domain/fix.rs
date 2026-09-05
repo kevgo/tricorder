@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::domain::{DetectedStack, Tool, UserError};
+use crate::domain::{DetectedStack, Result, Tool};
 
 /// a fix that Tricorder can run
 pub trait Fix: Tool {

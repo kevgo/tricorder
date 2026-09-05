@@ -1,6 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
-use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 

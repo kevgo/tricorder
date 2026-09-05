@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use std::fmt::Display;
 
 pub struct Checkstyle;
