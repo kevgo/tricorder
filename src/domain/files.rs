@@ -12,13 +12,9 @@ impl Files {
     }
 
     #[must_use]
-    pub fn contains(&self, file: &str) -> bool {
-        for self_file in &self.0 {
-            if self_file.as_str() == file {
-                return true;
-            }
-        }
-        false
+    pub fn contains<AS: AsRef<str>>(&self, file: AS) -> bool {
+        let file = file.as_ref();
+        self.0.iter().any(|self_file| self_file.as_str() == file)
     }
 
     #[must_use]
@@ -26,13 +22,12 @@ impl Files {
         self.0.contains(file)
     }
 
-    pub fn filter(&self, excluded_files: &[&str]) -> Vec<&File> {
-        Self(
-            self.0
-                .iter()
-                .filter(|file| !excluded_files.contains(*file))
-                .collect(),
-        )
+    #[must_use]
+    pub fn filter(&self, exclude: &Files) -> Vec<&File> {
+        self.0
+            .iter()
+            .filter(|file| !exclude.contains(file.as_str()))
+            .collect()
     }
 
     #[must_use]
@@ -72,7 +67,7 @@ impl From<Vec<PathBuf>> for Files {
 
 impl From<&Vec<String>> for Files {
     fn from(paths: &Vec<String>) -> Self {
-        let normalized_paths = paths.into_iter().map(Into::into).collect();
+        let normalized_paths = paths.iter().map(Into::into).collect();
         Self(normalized_paths)
     }
 }
