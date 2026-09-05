@@ -97,14 +97,16 @@ mod tests {
             let files = Files::from(vec!["a.rs", "b.rs", "c.rs"]);
             let exclude = Files::from(vec!["b.rs"]);
             let have = files.remove(&exclude);
-            assert_eq!(have, Files::from(vec!["a.rs", "c.rs"]));
+            let want = Files::from(vec!["a.rs", "c.rs"]);
+            assert_eq!(have, want);
         }
 
         #[test]
         fn empty_exclude() {
             let files = Files::from(vec!["a.rs", "b.rs"]);
             let have = files.remove(&Files::empty());
-            assert_eq!(have, files);
+            let want = files;
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -112,7 +114,8 @@ mod tests {
             let files = Files::from(vec!["a.rs", "b.rs"]);
             let exclude = Files::from(vec!["a.rs", "b.rs"]);
             let have = files.remove(&exclude);
-            assert!(have.is_empty());
+            let want = Files::empty();
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -120,13 +123,15 @@ mod tests {
             let files = Files::from(vec!["a.rs", "b.rs"]);
             let exclude = Files::from(vec!["c.rs"]);
             let have = files.remove(&exclude);
-            assert_eq!(have, files);
+            let want = files;
+            assert_eq!(have, want);
         }
 
         #[test]
         fn empty_files() {
             let have = Files::empty().remove(&Files::from(vec!["a.rs"]));
-            assert!(have.is_empty());
+            let want = Files::empty();
+            assert_eq!(have, want);
         }
     }
 }
