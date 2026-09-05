@@ -1,4 +1,4 @@
-use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
 use big_s::S;
@@ -28,12 +28,13 @@ impl Lint for GherkinLint {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.gherkin_lint.as_ref());
-        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 3);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.gherkin_lint.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("exec"));
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
-        args.extend(filtered_files.into_iter().map(Into::into));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Npm {},
