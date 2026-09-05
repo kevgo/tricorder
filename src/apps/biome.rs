@@ -13,7 +13,7 @@ impl Tool for Biome {
         //     || detected_stacks.has_file(StackType::Unknown, "biome.jsonc")
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.biome.as_ref()
     }
 }

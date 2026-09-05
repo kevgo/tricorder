@@ -12,7 +12,7 @@ impl Tool for Ruff {
         //     .contains_any(&["ruff.toml", "ruff.toml.json"])
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.ruff.as_ref()
     }
 }

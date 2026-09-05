@@ -29,7 +29,7 @@ impl Tool for GolangciLint {
         // false
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.golangci_lint.as_ref()
     }
 }

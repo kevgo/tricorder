@@ -68,7 +68,7 @@ impl Config {
         let ignore_def = self
             .applications
             .as_ref()
-            .and_then(|apps| app.application(apps))
+            .and_then(|apps| app.config_section(apps))
             .and_then(|app| app.ignore_files.as_ref());
         match ignore_def {
             Some(ignore) => Ignores::new(ignore, Path::new("./")),
@@ -91,7 +91,7 @@ impl Config {
     /// whether the given tool is enabled in this config
     #[must_use]
     pub fn tool_enabled(&self, tool: &dyn Tool) -> bool {
-        self.app_enabled(|apps| tool.application(apps))
+        self.app_enabled(|apps| tool.config_section(apps))
     }
 
     pub fn load() -> Result<Self> {

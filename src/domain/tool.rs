@@ -7,8 +7,8 @@ use std::path::Path;
 pub trait Tool: Display {
     fn enabled_when(&self) -> EnabledWhen;
 
-    /// the application configuration for this tool
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application>;
+    /// selects the application-specific section in the config file
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application>;
 }
 
 /// describes under which conditions a tool is enabled

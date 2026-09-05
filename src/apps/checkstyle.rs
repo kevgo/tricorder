@@ -12,7 +12,7 @@ impl Tool for Checkstyle {
         EnabledWhen::Always
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.checkstyle.as_ref()
     }
 }

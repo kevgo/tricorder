@@ -17,7 +17,7 @@ impl Tool for Rumdl {
         //     .contains_any(&["rumdl.toml", ".rumdl.toml", ".config/rumdl.toml"])
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.rumdl.as_ref()
     }
 }

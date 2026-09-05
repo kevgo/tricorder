@@ -11,7 +11,7 @@ impl Tool for Ghokin {
         EnabledWhen::Always
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.ghokin.as_ref()
     }
 }

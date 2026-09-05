@@ -11,7 +11,7 @@ impl Tool for Gofumpt {
         EnabledWhen::Always
     }
 
-    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
         apps.gofumpt.as_ref()
     }
 }
