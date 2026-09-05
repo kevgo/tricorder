@@ -24,8 +24,8 @@ impl Lint for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let exclude_files = config.ignores_for_app(|apps| apps.taplo.as_ref());
-        let files = stack.files.remove(&exclude_files);
+        let ignores = config.ignores_for_app(|apps| apps.taplo.as_ref())?;
+        let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);
         }
@@ -48,8 +48,8 @@ impl Fix for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>> {
-        let exclude_files = config.ignores_for_app(|apps| apps.taplo.as_ref());
-        let files = stack.files.remove(&exclude_files);
+        let ignores = config.ignores_for_app(|apps| apps.taplo.as_ref())?;
+        let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(Vec::new());
         }
@@ -70,8 +70,8 @@ impl Fix for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>> {
-        let exclude_files = config.ignores_for_app(|apps| apps.taplo.as_ref());
-        let files = stack.files.remove(&exclude_files);
+        let ignores = config.ignores_for_app(|apps| apps.taplo.as_ref())?;
+        let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(Vec::new());
         }

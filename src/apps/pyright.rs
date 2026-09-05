@@ -27,8 +27,8 @@ impl Lint for Pyright {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let exclude_files = config.ignores_for_app(|apps| apps.pyright.as_ref());
-        let files = stack.files.remove(&exclude_files);
+        let ignores = config.ignores_for_app(|apps| apps.pyright.as_ref())?;
+        let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);
         }
