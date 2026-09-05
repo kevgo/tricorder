@@ -64,7 +64,7 @@ pub struct Config {
 }
 
 impl Config {
-    /// provides all files that should be excluded when running any tool for the given app
+    /// provides all files that should be excluded when running the given app
     pub fn excluded_files_for_app(
         &self,
         app_selector: impl Fn(&Applications) -> Option<&Application>,
