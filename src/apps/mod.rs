@@ -18,9 +18,7 @@ pub mod taplo;
 pub mod text_runner;
 pub mod tikibase;
 
-use crate::config::{Application, Applications, Config};
 use crate::domain::UserError;
-use crate::domain::{File, Files};
 use rta::applications::AppDefinition;
 
 /// Provides the RTA command to run the given RTA App.
