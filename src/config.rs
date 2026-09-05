@@ -69,12 +69,12 @@ impl Config {
         &self,
         app_selector: impl Fn(&Applications) -> Option<&Application>,
     ) -> Files {
-        let ignore_files = self
+        let ignore_files_opt = self
             .applications
             .as_ref()
             .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
-        match ignore_files {
+        match ignore_files_opt {
             Some(ignore_files) => ignore_files.into(),
             None => Files::empty(),
         }
