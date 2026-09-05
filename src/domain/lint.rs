@@ -1,4 +1,4 @@
-use crate::domain::{DetectedStack, Tool, UserError};
+use crate::domain::{DetectedStack, Result, Tool};
 
 /// a lint that Tricorder can run
 pub trait Lint: Tool {
@@ -7,5 +7,5 @@ pub trait Lint: Tool {
     /// If it runs, the lint should only verify the files in the given `DetectedStack`,
     /// not find all the files to lint by itself.
     /// This is for performance reasons. Finding files requires expensive OS calls.
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError>;
+    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>>;
 }

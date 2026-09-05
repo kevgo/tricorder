@@ -1,10 +1,10 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{File, UserError};
+use crate::domain::{File, Result, UserError};
 use big_s::S;
 use std::path::Path;
 
 /// provides the paths (relative to the current directory) of all files that contain `pattern`
-pub fn files_with_matches(pattern: &str, ignores: &[String]) -> Result<Vec<File>, UserError> {
+pub fn files_with_matches(pattern: &str, ignores: &[String]) -> Result<Vec<File>> {
     files_with_matches_in(pattern, None, ignores)
 }
 
@@ -12,7 +12,7 @@ fn files_with_matches_in(
     pattern: &str,
     path: Option<&Path>,
     ignores: &[String],
-) -> Result<Vec<File>, UserError> {
+) -> Result<Vec<File>> {
     let mut args = vec![S("--files-with-matches"), S("--fixed-strings")];
     for ignore in ignores {
         args.push(format!("--glob=!{ignore}"));
@@ -41,7 +41,7 @@ fn files_with_matches_in(
 }
 
 /// exit code 0: matches found, exit code 1: no matches found
-fn check_exit_code(code: Option<i32>, stderr: &[u8]) -> Result<(), UserError> {
+fn check_exit_code(code: Option<i32>, stderr: &[u8]) -> Result<()> {
     match code {
         Some(0 | 1) => Ok(()),
         _ => Err(UserError::CannotRunRipgrep {

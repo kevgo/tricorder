@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 
@@ -24,7 +24,7 @@ impl Display for Rumdl {
 }
 
 impl Lint for Rumdl {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         args.extend(stack.files.into_iter().map(Into::into));
@@ -39,7 +39,7 @@ impl Lint for Rumdl {
 }
 
 impl Fix for Rumdl {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
+    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fmt"));
         args.extend(stack.files.into_iter().map(Into::into));
@@ -52,10 +52,7 @@ impl Fix for Rumdl {
         Ok(executable.into_iter().collect())
     }
 
-    fn unsafe_fix_commands(
-        &self,
-        _stack: &DetectedStack,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    fn unsafe_fix_commands(&self, _stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }
