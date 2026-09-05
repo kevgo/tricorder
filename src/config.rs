@@ -75,7 +75,7 @@ impl Config {
             .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
         match ignore_files {
-            Some(ignore_files) => Files::from(ignore_files),
+            Some(ignore_files) => ignore_files.into(),
             None => Files::empty(),
         }
     }
