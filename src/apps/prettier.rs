@@ -26,6 +26,9 @@ impl Fix for Prettier {
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.prettier.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
         let mut args: Vec<String> = Vec::with_capacity(files.len() + 1);
         args.push(S("--write"));
         args.extend(files.into_strings());

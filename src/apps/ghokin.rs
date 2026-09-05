@@ -26,6 +26,9 @@ impl Fix for Ghokin {
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.ghokin.as_ref());
         let files = &stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
         let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));

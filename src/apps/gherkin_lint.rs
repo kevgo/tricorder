@@ -30,6 +30,9 @@ impl Lint for GherkinLint {
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.gherkin_lint.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(None);
+        }
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("exec"));
         args.push(S("--yes"));

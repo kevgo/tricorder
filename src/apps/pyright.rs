@@ -29,6 +29,9 @@ impl Lint for Pyright {
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.pyright.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(None);
+        }
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("run"));
         args.push(S("--"));

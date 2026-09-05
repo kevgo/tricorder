@@ -27,6 +27,9 @@ impl Lint for Ruff {
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(None);
+        }
         let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
         args.extend(files.into_strings());
@@ -57,6 +60,9 @@ impl Fix for Ruff {
         // run "ruff format --check"
         let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
         let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("check"));
         args.push(S("--fix"));
@@ -98,6 +104,9 @@ impl Fix for Ruff {
         // run "ruff format --check"
         let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("check"));
         args.push(S("--fix"));
