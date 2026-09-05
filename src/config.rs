@@ -67,15 +67,15 @@ impl Config {
     pub fn ignores_for_app(
         &self,
         app_selector: impl Fn(&Applications) -> Option<&Application>,
-    ) -> Ignores {
+    ) -> Result<Ignores> {
         let ignore_opt = self
             .applications
             .as_ref()
             .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
         match ignore_opt {
-            Some(ignore) => Ignores::new(ignore, Path::new("./")).unwrap(),
-            None => Ignores::empty(),
+            Some(ignore) => Ignores::new(ignore, Path::new("./")),
+            None => Ok(Ignores::empty()),
         }
     }
 
