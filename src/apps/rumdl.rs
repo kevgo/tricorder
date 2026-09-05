@@ -29,7 +29,7 @@ impl Lint for Rumdl {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>, UserError> {
+    ) -> Result<Option<conc::Runnable>> {
         let exclude_files = config.ignores_for_app(|apps| apps.rumdl.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
@@ -53,7 +53,7 @@ impl Fix for Rumdl {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         let exclude_files = config.ignores_for_app(|apps| apps.rumdl.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
@@ -75,7 +75,7 @@ impl Fix for Rumdl {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

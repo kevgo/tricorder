@@ -26,7 +26,7 @@ impl Lint for Tikibase {
         &self,
         stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Option<conc::Runnable>, UserError> {
+    ) -> Result<Option<conc::Runnable>> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         let executable = get_rta_command(&GetRTACmdArgs {
@@ -44,7 +44,7 @@ impl Fix for Tikibase {
         &self,
         stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("fix"));
         let executable = get_rta_command(&GetRTACmdArgs {
@@ -60,7 +60,7 @@ impl Fix for Tikibase {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

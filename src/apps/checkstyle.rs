@@ -24,7 +24,7 @@ impl Lint for Checkstyle {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Option<conc::Runnable>, UserError> {
+    ) -> Result<Option<conc::Runnable>> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",

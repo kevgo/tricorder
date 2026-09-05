@@ -23,7 +23,7 @@ impl Fix for Ghokin {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         let exclude_files = config.ignores_for_app(|apps| apps.ghokin.as_ref());
         let files = &stack.files.remove(&exclude_files);
         if files.is_empty() {
@@ -53,7 +53,7 @@ impl Fix for Ghokin {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

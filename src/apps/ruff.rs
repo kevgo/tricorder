@@ -24,7 +24,7 @@ impl Lint for Ruff {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>, UserError> {
+    ) -> Result<Option<conc::Runnable>> {
         let exclude_files = config.ignores_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
@@ -51,7 +51,7 @@ impl Fix for Ruff {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         let mut executables = Vec::with_capacity(2);
 
         // NOTE: Ruff has separate commands for formatting and linting
@@ -98,7 +98,7 @@ impl Fix for Ruff {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+    ) -> Result<Vec<conc::Executable>> {
         let mut executables = Vec::with_capacity(2);
 
         // run "ruff format --check"
