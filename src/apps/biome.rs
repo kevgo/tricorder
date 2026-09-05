@@ -27,10 +27,10 @@ impl Lint for Biome {
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("lint"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -48,11 +48,11 @@ impl Fix for Biome {
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("format"));
         args.push(S("--write"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
@@ -68,12 +68,12 @@ impl Fix for Biome {
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("lint"));
         args.push(S("--write"));
         args.push(S("--unsafe"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("unsafe fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},

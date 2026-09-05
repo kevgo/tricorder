@@ -25,11 +25,11 @@ impl Fix for Gofumpt {
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.gofumpt.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("-l"));
         args.push(S("-w"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Gofumpt {},

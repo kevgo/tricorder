@@ -28,12 +28,12 @@ impl Lint for Pyright {
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.pyright.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("run"));
         args.push(S("--"));
         args.push(S("pyright"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("type-check {} ({self})", stack.stack),
             app: &rta::applications::Uv {},

@@ -25,10 +25,10 @@ impl Fix for Prettier {
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.prettier.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args: Vec<String> = Vec::with_capacity(files.len() + 1);
         args.push(S("--write"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Prettier {},
