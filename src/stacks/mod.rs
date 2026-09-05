@@ -69,7 +69,7 @@ pub fn from_files<'a>(
         .into_iter()
         .map(|stack| DetectedStack {
             stack,
-            files: Files::new(),
+            files: Files::empty(),
         })
         .collect();
     for file in files {
@@ -108,7 +108,7 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
         .into_iter()
         .map(|stack| DetectedStack {
             stack,
-            files: Files::new(),
+            files: Files::empty(),
         })
         .collect();
     let ignores2 = ignores.clone();

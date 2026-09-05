@@ -7,18 +7,14 @@ pub struct Files(Vec<File>);
 
 impl Files {
     #[must_use]
-    pub fn new() -> Self {
+    pub fn empty() -> Self {
         Self(vec![])
     }
 
     #[must_use]
-    pub fn contains(&self, file: &str) -> bool {
-        for self_file in &self.0 {
-            if self_file.as_ref() == file {
-                return true;
-            }
-        }
-        false
+    pub fn contains<AS: AsRef<str>>(&self, file: AS) -> bool {
+        let file = file.as_ref();
+        self.0.iter().any(|self_file| self_file.as_str() == file)
     }
 
     #[must_use]
@@ -56,7 +52,6 @@ impl<'a> IntoIterator for &'a Files {
 
 impl From<Vec<PathBuf>> for Files {
     fn from(paths: Vec<PathBuf>) -> Self {
-        let normalized_paths = paths.into_iter().map(Into::into).collect();
-        Self(normalized_paths)
+        Self(paths.into_iter().map(Into::into).collect())
     }
 }
