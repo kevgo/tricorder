@@ -68,12 +68,12 @@ impl Config {
         &self,
         app_selector: impl Fn(&Applications) -> Option<&Application>,
     ) -> Result<Ignores> {
-        let ignore_opt = self
+        let ignore_def = self
             .applications
             .as_ref()
             .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
-        match ignore_opt {
+        match ignore_def {
             Some(ignore) => Ignores::new(ignore, Path::new("./")),
             None => Ok(Ignores::empty()),
         }
