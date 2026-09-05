@@ -53,7 +53,7 @@ impl Fix for Biome {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
-            return Ok(Vec::new());
+            return Ok(vec![]);
         }
         let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("format"));
@@ -76,7 +76,7 @@ impl Fix for Biome {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
-            return Ok(Vec::new());
+            return Ok(vec![]);
         }
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("lint"));
