@@ -26,11 +26,11 @@ impl Lint for Biome {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let excluded_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
-        let filtered_files = &stack.files.filter(&excluded_files);
-        let mut args = Vec::with_capacity(stack.files.len() - excluded_files.len() + 1);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
+        let files = &stack.files.filter(&exclude_files);
+        let mut args = Vec::with_capacity(stack.files.len() - exclude_files.len() + 1);
         args.push(S("lint"));
-        args.extend(filtered_files.iter().map(std::string::ToString::to_string));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
