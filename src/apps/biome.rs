@@ -27,7 +27,7 @@ impl Lint for Biome {
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
-        let files = &stack.files.filter(&exclude_files);
+        let files = &stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(stack.files.len() - exclude_files.len() + 1);
         args.push(S("lint"));
         args.extend(files.iter().map(ToString::to_string));

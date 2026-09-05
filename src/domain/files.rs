@@ -23,14 +23,6 @@ impl Files {
     }
 
     #[must_use]
-    pub fn filter(&self, exclude: &Files) -> Vec<&File> {
-        self.0
-            .iter()
-            .filter(|file| !exclude.contains(file.as_str()))
-            .collect()
-    }
-
-    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
@@ -42,6 +34,15 @@ impl Files {
 
     pub fn push(&mut self, file: File) {
         self.0.push(file);
+    }
+
+    /// provides a Files collection containing the files in this collection without the given files
+    #[must_use]
+    pub fn remove(&self, exclude: &Files) -> Vec<&File> {
+        self.0
+            .iter()
+            .filter(|file| !exclude.contains(file.as_str()))
+            .collect()
     }
 
     pub fn sort_unstable(&mut self) {
