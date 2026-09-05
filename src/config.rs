@@ -63,22 +63,6 @@ pub struct Config {
 }
 
 impl Config {
-    /// provides all files that should be excluded when running the given app
-    pub fn ignores_for_app(
-        &self,
-        app_selector: impl Fn(&Applications) -> Option<&Application>,
-    ) -> Result<Ignores> {
-        let ignore_opt = self
-            .applications
-            .as_ref()
-            .and_then(app_selector)
-            .and_then(|app| app.ignore_files.as_ref());
-        match ignore_opt {
-            Some(ignore) => Ignores::new(ignore, Path::new("./")),
-            None => Ok(Ignores::empty()),
-        }
-    }
-
     pub fn load() -> Result<Self> {
         for filename in CONFIG_FILENAMES {
             match fs::read_to_string(filename) {
@@ -175,27 +159,9 @@ impl From<&StackCommand> for conc::Executable {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct Applications {
-    pub actionlint: Option<Application>,
-    pub biome: Option<Application>,
-    pub checkstyle: Option<Application>,
-    pub delete_empty_folders: Option<Application>,
-    pub gherkin_lint: Option<Application>,
-    pub ghokin: Option<Application>,
-    pub git_diff_check: Option<Application>,
-    pub gofumpt: Option<Application>,
-    pub golangci_lint: Option<Application>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<Application>,
-    pub prettier: Option<Application>,
-    pub pyright: Option<Application>,
-    pub ripgrep: Option<Application>,
-    pub ruff: Option<Application>,
-    pub rumdl: Option<Application>,
-    pub sqlfmt: Option<Application>,
-    pub taplo: Option<Application>,
-    pub text_runner: Option<Application>,
-    pub tikibase: Option<Application>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -252,7 +218,6 @@ mod tests {
                         enabled: Some(false),
                         ignore_files: None,
                     }),
-                    ..Default::default()
                 }),
                 stacks: None,
             };
@@ -584,7 +549,8 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{Application, Applications, Config};
+        use crate::config::Config;
+        use crate::config::{Application, Applications};
         use big_s::S;
 
         #[test]
@@ -604,8 +570,7 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
-                    }),
-                    ..Default::default()
+                    })
                 })
             );
         }
@@ -624,8 +589,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -640,8 +604,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(false),
                             ignore_files: None
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -656,8 +619,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: None,
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -673,8 +635,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -694,8 +655,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![])
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -711,8 +671,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")])
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
@@ -727,8 +686,7 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        }),
-                        ..Default::default()
+                        })
                     })
                 );
             }
