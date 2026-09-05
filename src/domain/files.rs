@@ -2,7 +2,7 @@ use crate::domain::File;
 use std::convert::Into;
 use std::path::PathBuf;
 
-#[derive(Clone, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct Files(Vec<File>);
 
 impl Files {
@@ -86,5 +86,50 @@ impl From<Vec<&str>> for Files {
     fn from(paths: Vec<&str>) -> Self {
         let normalized_paths = paths.into_iter().map(Into::into).collect();
         Self(normalized_paths)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    mod remove {
+        use super::super::Files;
+
+        #[test]
+        fn matching_removes() {
+            let files = Files::from(vec!["a.rs", "b.rs", "c.rs"]);
+            let exclude = Files::from(vec!["b.rs"]);
+            let have = files.remove(&exclude);
+            assert_eq!(have, Files::from(vec!["a.rs", "c.rs"]));
+        }
+
+        #[test]
+        fn empty_exclude() {
+            let files = Files::from(vec!["a.rs", "b.rs"]);
+            let have = files.remove(&Files::empty());
+            assert_eq!(have, files);
+        }
+
+        #[test]
+        fn remove_all() {
+            let files = Files::from(vec!["a.rs", "b.rs"]);
+            let exclude = Files::from(vec!["a.rs", "b.rs"]);
+            let have = files.remove(&exclude);
+            assert!(have.is_empty());
+        }
+
+        #[test]
+        fn non_matching_removes() {
+            let files = Files::from(vec!["a.rs", "b.rs"]);
+            let exclude = Files::from(vec!["c.rs"]);
+            let have = files.remove(&exclude);
+            assert_eq!(have, files);
+        }
+
+        #[test]
+        fn empty_files() {
+            let have = Files::empty().remove(&Files::from(vec!["a.rs"]));
+            assert!(have.is_empty());
+        }
     }
 }
