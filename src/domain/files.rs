@@ -52,7 +52,6 @@ impl<'a> IntoIterator for &'a Files {
 
 impl From<Vec<PathBuf>> for Files {
     fn from(paths: Vec<PathBuf>) -> Self {
-        let normalized_paths = paths.into_iter().map(Into::into).collect();
-        Self(normalized_paths)
+        Self(paths.into_iter().map(Into::into).collect())
     }
 }
