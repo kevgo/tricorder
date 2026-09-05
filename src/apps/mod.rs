@@ -236,7 +236,7 @@ mod tests {
 
         #[test]
         fn empty_files() {
-            let files = Files::new();
+            let files = Files::empty();
             let config = Config {
                 applications: Some(Applications {
                     taplo: Some(Application {

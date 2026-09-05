@@ -7,7 +7,7 @@ pub struct Files(Vec<File>);
 
 impl Files {
     #[must_use]
-    pub fn new() -> Self {
+    pub fn empty() -> Self {
         Self(vec![])
     }
 

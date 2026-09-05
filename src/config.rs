@@ -76,7 +76,7 @@ impl Config {
             .and_then(|app| app.ignore_files.as_ref());
         let Some(ignore_files) = ignore_files_opt else {
             // no ignore files --> return all files
-            return Files::new();
+            return Files::empty();
         };
         Files::from(ignore_files)
     }
