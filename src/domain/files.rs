@@ -22,6 +22,7 @@ impl Files {
         self.0.contains(file)
     }
 
+    #[must_use]
     pub fn into_strings(self) -> Vec<String> {
         self.0.into_iter().map(|file| file.to_string()).collect()
     }
@@ -47,7 +48,7 @@ impl Files {
             .0
             .iter()
             .filter(|file| !exclude.contains(file.as_str()))
-            .map(|file| file.clone())
+            .cloned()
             .collect();
         Files(files)
     }
