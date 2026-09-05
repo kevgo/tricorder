@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use std::fmt::Display;
 
@@ -10,6 +10,10 @@ const CONFIG_ARG: &str = "-c /google_checks.xml";
 impl Tool for Checkstyle {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.checkstyle.as_ref()
     }
 }
 

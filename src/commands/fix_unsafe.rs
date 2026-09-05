@@ -46,7 +46,7 @@ pub fn determine_unsafe_fixes(
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if stacks.stack_enabled(&fix.enabled_when()) {
+            if stacks.stack_enabled(&fix.enabled_when()) && config.tool_enabled(fix.as_ref()) {
                 stack_executables.extend(fix.unsafe_fix_commands(stack, config)?);
             }
         }

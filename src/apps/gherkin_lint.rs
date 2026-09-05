@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -13,6 +13,10 @@ impl Tool for GherkinLint {
         //     return false;
         // };
         // other_stack.files.contains(".gherkin-lintrc")
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.gherkin_lint.as_ref()
     }
 }
 
@@ -28,7 +32,7 @@ impl Lint for GherkinLint {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let ignores = config.ignores_for_app(|apps| apps.gherkin_lint.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);

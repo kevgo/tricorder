@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -16,6 +16,10 @@ impl Tool for Rumdl {
         //     .files
         //     .contains_any(&["rumdl.toml", ".rumdl.toml", ".config/rumdl.toml"])
     }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.rumdl.as_ref()
+    }
 }
 
 impl Display for Rumdl {
@@ -30,7 +34,7 @@ impl Lint for Rumdl {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let ignores = config.ignores_for_app(|apps| apps.rumdl.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);
@@ -54,7 +58,7 @@ impl Fix for Rumdl {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>> {
-        let ignores = config.ignores_for_app(|apps| apps.rumdl.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(vec![]);

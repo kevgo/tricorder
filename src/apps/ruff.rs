@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -10,6 +10,10 @@ impl Tool for Ruff {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
         //     .contains_any(&["ruff.toml", "ruff.toml.json"])
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.ruff.as_ref()
     }
 }
 
@@ -25,7 +29,7 @@ impl Lint for Ruff {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let ignores = config.ignores_for_app(|apps| apps.ruff.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);
@@ -58,7 +62,7 @@ impl Fix for Ruff {
         // until https://github.com/astral-sh/ruff/issues/8232 ships.
 
         // run "ruff format --check"
-        let ignores = config.ignores_for_app(|apps| apps.ruff.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(vec![]);
@@ -102,7 +106,7 @@ impl Fix for Ruff {
         let mut executables = Vec::with_capacity(2);
 
         // run "ruff format --check"
-        let ignores = config.ignores_for_app(|apps| apps.ruff.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(vec![]);

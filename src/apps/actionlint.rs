@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, StackType, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -12,6 +12,10 @@ impl Tool for Actionlint {
             folder: ".github/workflows",
             file_type: StackType::Yml,
         }
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.actionlint.as_ref()
     }
 }
 

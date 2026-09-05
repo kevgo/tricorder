@@ -55,7 +55,9 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+    if config.app_enabled(|apps| apps.delete_empty_folders.as_ref())
+        && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
+    {
         global.push(delete_empty_folders);
     }
 
@@ -71,7 +73,9 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
             stack_executables.extend(overrides.iter().map(conc::Executable::from));
         } else {
             for default_fix in detected_stack.stack.fixes() {
-                if default_fix.enabled_when().enabled_on_disk() {
+                if default_fix.enabled_when().enabled_on_disk()
+                    && config.tool_enabled(default_fix.as_ref())
+                {
                     stack_executables.extend(default_fix.fix_commands(detected_stack, config)?);
                 }
             }

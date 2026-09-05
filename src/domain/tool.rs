@@ -1,3 +1,4 @@
+use crate::config::{Application, Applications};
 use crate::domain::StackType;
 use std::fmt::Display;
 use std::path::Path;
@@ -5,6 +6,9 @@ use std::path::Path;
 /// a tool (lint or fix) that Tricorder can run
 pub trait Tool: Display {
     fn enabled_when(&self) -> EnabledWhen;
+
+    /// the application configuration for this tool
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application>;
 }
 
 /// describes under which conditions a tool is enabled

@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -9,6 +9,10 @@ pub struct Ghokin;
 impl Tool for Ghokin {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.ghokin.as_ref()
     }
 }
 
@@ -24,7 +28,7 @@ impl Fix for Ghokin {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>> {
-        let ignores = config.ignores_for_app(|apps| apps.ghokin.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = &stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(vec![]);

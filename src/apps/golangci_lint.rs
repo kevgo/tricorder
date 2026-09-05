@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -27,6 +27,10 @@ impl Tool for GolangciLint {
         //     return true;
         // }
         // false
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.golangci_lint.as_ref()
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::Config;
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, StackType, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -12,6 +12,10 @@ impl Tool for Pyright {
             filename: "pyrightconfig.json",
             stack_type: StackType::Json,
         }
+    }
+
+    fn application<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.pyright.as_ref()
     }
 }
 
@@ -27,7 +31,7 @@ impl Lint for Pyright {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>> {
-        let ignores = config.ignores_for_app(|apps| apps.pyright.as_ref())?;
+        let ignores = config.ignores_for_app(self)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
             return Ok(None);
