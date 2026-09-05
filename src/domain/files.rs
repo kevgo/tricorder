@@ -2,7 +2,7 @@ use crate::domain::File;
 use std::convert::Into;
 use std::path::PathBuf;
 
-#[derive(Default, PartialEq, Eq)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct Files(Vec<File>);
 
 impl Files {
@@ -22,6 +22,10 @@ impl Files {
         self.0.contains(file)
     }
 
+    pub fn into_strings(self) -> Vec<String> {
+        self.0.into_iter().map(|file| file.to_string()).collect()
+    }
+
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
@@ -38,11 +42,14 @@ impl Files {
 
     /// provides a Files collection containing the files in this collection without the given files
     #[must_use]
-    pub fn remove(&self, exclude: &Files) -> Vec<&File> {
-        self.0
+    pub fn remove(&self, exclude: &Files) -> Files {
+        let files: Vec<File> = self
+            .0
             .iter()
             .filter(|file| !exclude.contains(file.as_str()))
-            .collect()
+            .map(|file| file.clone())
+            .collect();
+        Files(files)
     }
 
     pub fn sort_unstable(&mut self) {

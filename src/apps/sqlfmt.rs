@@ -25,14 +25,14 @@ impl Fix for Sqlfmt {
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
         let exclude_files = config.excluded_files_for_app(|apps| apps.sqlfmt.as_ref());
-        let files = &stack.files.remove(&exclude_files);
+        let files = stack.files.remove(&exclude_files);
         let mut args = Vec::with_capacity(files.len() + 5);
         args.push(S("tool"));
         args.push(S("run"));
         args.push(S("--from"));
         args.push(S("shandy-sqlfmt"));
         args.push(S("sqlfmt"));
-        args.extend(files.iter().map(ToString::to_string));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Uv {},
