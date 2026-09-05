@@ -30,7 +30,7 @@ impl Lint for Biome {
         let filtered_files = &stack.files.filter(&excluded_files);
         let mut args = Vec::with_capacity(stack.files.len() - excluded_files.len() + 1);
         args.push(S("lint"));
-        args.extend(filtered_files.iter().map(|file| file.as_str().to_string()));
+        args.extend(filtered_files.iter().map(std::string::ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
