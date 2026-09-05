@@ -785,19 +785,6 @@ mod tests {
         use crate::apps::taplo::Taplo;
         use crate::config::{Application, Applications, Config};
 
-        fn config_with_taplo(enabled: Option<bool>) -> Config {
-            Config {
-                applications: Some(Applications {
-                    taplo: Some(Application {
-                        enabled,
-                        ignore_files: None,
-                    }),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            }
-        }
-
         #[test]
         fn missing_applications() {
             let config = Config::default();
@@ -817,21 +804,48 @@ mod tests {
 
         #[test]
         fn unset() {
-            let config = config_with_taplo(None);
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: None,
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
             assert!(config.tool_enabled(&Taplo {}));
         }
 
         #[test]
         fn enabled() {
-            let config = config_with_taplo(Some(true));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: Some(true),
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
             assert!(config.tool_enabled(&Taplo {}));
         }
 
         #[test]
         fn disabled() {
-            let config = config_with_taplo(Some(false));
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: Some(false),
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
             assert!(!config.app_enabled(|apps| apps.taplo.as_ref()));
             assert!(!config.tool_enabled(&Taplo {}));
         }
