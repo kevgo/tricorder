@@ -1,4 +1,3 @@
-use crate::apps::filter_files;
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
@@ -25,10 +24,11 @@ impl Lint for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
-        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 1);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.taplo.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("lint"));
-        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -45,10 +45,11 @@ impl Fix for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
-        let mut args = Vec::with_capacity(filtered_files.len() + 1);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.taplo.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("format"));
-        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -63,11 +64,12 @@ impl Fix for Taplo {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.taplo.as_ref());
-        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.taplo.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("format"));
         args.push(S("--force"));
-        args.extend(filtered_files.into_iter().map(std::convert::Into::into));
+        args.extend(files.iter().map(ToString::to_string));
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("force fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
