@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, StackType, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -12,6 +13,10 @@ impl Tool for Pyright {
             stack_type: StackType::Json,
         }
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.pyright.as_ref()
+    }
 }
 
 impl Display for Pyright {
@@ -21,12 +26,21 @@ impl Display for Pyright {
 }
 
 impl Lint for Pyright {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 3);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(None);
+        }
+        let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("run"));
         args.push(S("--"));
         args.push(S("pyright"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("type-check {} ({self})", stack.stack),
             app: &rta::applications::Uv {},

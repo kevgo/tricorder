@@ -1,4 +1,4 @@
-use crate::domain::{Ignores, Result, StackType, UserError};
+use crate::domain::{Ignores, Result, StackType, Tool, UserError};
 use ahash::AHashMap;
 use jsonc_parser::ParseOptions;
 use schemars::JsonSchema;
@@ -63,6 +63,37 @@ pub struct Config {
 }
 
 impl Config {
+    /// provides all files that should be excluded when running the given app
+    pub fn ignores_for_app(&self, app: &dyn Tool) -> Result<Ignores> {
+        let ignore_def = self
+            .applications
+            .as_ref()
+            .and_then(|apps| app.config_section(apps))
+            .and_then(|app| app.ignore_files.as_ref());
+        match ignore_def {
+            Some(ignore) => Ignores::new(ignore, Path::new("./")),
+            None => Ok(Ignores::empty()),
+        }
+    }
+
+    /// whether the given application is enabled (missing config means enabled)
+    #[must_use]
+    pub fn app_enabled(
+        &self,
+        app_selector: impl Fn(&Applications) -> Option<&Application>,
+    ) -> bool {
+        self.applications
+            .as_ref()
+            .and_then(app_selector)
+            .is_none_or(Application::enabled)
+    }
+
+    /// whether the given tool is enabled in this config
+    #[must_use]
+    pub fn tool_enabled(&self, tool: &dyn Tool) -> bool {
+        self.app_enabled(|apps| tool.config_section(apps))
+    }
+
     pub fn load() -> Result<Self> {
         for filename in CONFIG_FILENAMES {
             match fs::read_to_string(filename) {
@@ -159,9 +190,27 @@ impl From<&StackCommand> for conc::Executable {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct Applications {
+    pub actionlint: Option<Application>,
+    pub biome: Option<Application>,
+    pub checkstyle: Option<Application>,
+    pub delete_empty_folders: Option<Application>,
+    pub gherkin_lint: Option<Application>,
+    pub ghokin: Option<Application>,
+    pub git_diff_check: Option<Application>,
+    pub gofumpt: Option<Application>,
+    pub golangci_lint: Option<Application>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<Application>,
+    pub prettier: Option<Application>,
+    pub pyright: Option<Application>,
+    pub ripgrep: Option<Application>,
+    pub ruff: Option<Application>,
+    pub rumdl: Option<Application>,
+    pub sqlfmt: Option<Application>,
+    pub taplo: Option<Application>,
+    pub text_runner: Option<Application>,
+    pub tikibase: Option<Application>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -218,6 +267,7 @@ mod tests {
                         enabled: Some(false),
                         ignore_files: None,
                     }),
+                    ..Default::default()
                 }),
                 stacks: None,
             };
@@ -549,8 +599,7 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::Config;
-        use crate::config::{Application, Applications};
+        use crate::config::{Application, Applications, Config};
         use big_s::S;
 
         #[test]
@@ -570,7 +619,8 @@ mod tests {
                     keep_sorted: Some(Application {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
-                    })
+                    }),
+                    ..Default::default()
                 })
             );
         }
@@ -589,7 +639,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -604,7 +655,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(false),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -619,7 +671,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: None,
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -635,7 +688,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -655,7 +709,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![])
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -671,7 +726,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")])
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -686,7 +742,8 @@ mod tests {
                         keep_sorted: Some(Application {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -721,6 +778,76 @@ mod tests {
                 ignore_files: None,
             };
             assert!(!give.enabled());
+        }
+    }
+
+    mod app_enabled {
+        use crate::apps::taplo::Taplo;
+        use crate::config::{Application, Applications, Config};
+
+        #[test]
+        fn missing_applications() {
+            let config = Config::default();
+            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
+            assert!(config.tool_enabled(&Taplo {}));
+        }
+
+        #[test]
+        fn missing_app() {
+            let config = Config {
+                applications: Some(Applications::default()),
+                ..Default::default()
+            };
+            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
+            assert!(config.tool_enabled(&Taplo {}));
+        }
+
+        #[test]
+        fn unset() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: None,
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
+            assert!(config.tool_enabled(&Taplo {}));
+        }
+
+        #[test]
+        fn enabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: Some(true),
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
+            assert!(config.tool_enabled(&Taplo {}));
+        }
+
+        #[test]
+        fn disabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(Application {
+                        enabled: Some(false),
+                        ignore_files: None,
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(!config.app_enabled(|apps| apps.taplo.as_ref()));
+            assert!(!config.tool_enabled(&Taplo {}));
         }
     }
 }

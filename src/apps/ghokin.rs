@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -9,6 +10,10 @@ impl Tool for Ghokin {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.ghokin.as_ref()
+    }
 }
 
 impl Display for Ghokin {
@@ -18,11 +23,20 @@ impl Display for Ghokin {
 }
 
 impl Fix for Ghokin {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = &stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
+        let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));
-        for file in &stack.files {
+        for file in files {
             let filename = if file.starts_with("./") {
                 file[2..].to_string()
             } else {
@@ -39,7 +53,11 @@ impl Fix for Ghokin {
         Ok(executable.into_iter().collect())
     }
 
-    fn unsafe_fix_commands(&self, _stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
+    fn unsafe_fix_commands(
+        &self,
+        _stack: &DetectedStack,
+        _config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

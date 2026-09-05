@@ -83,7 +83,9 @@ pub fn determine_precommit_fixes(
 ) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+    if config.app_enabled(|apps| apps.delete_empty_folders.as_ref())
+        && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
+    {
         global.push(delete_empty_folders);
     }
 
@@ -98,8 +100,10 @@ pub fn determine_precommit_fixes(
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in staged_stack.stack.fixes() {
-                if default_fix.enabled_when().enabled_on_disk() {
-                    stack_executables.extend(default_fix.fix_commands(staged_stack)?);
+                if default_fix.enabled_when().enabled_on_disk()
+                    && config.tool_enabled(default_fix.as_ref())
+                {
+                    stack_executables.extend(default_fix.fix_commands(staged_stack, config)?);
                 }
             }
         }

@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -9,6 +10,10 @@ impl Tool for Taplo {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.taplo.as_ref()
+    }
 }
 
 impl Display for Taplo {
@@ -18,10 +23,19 @@ impl Display for Taplo {
 }
 
 impl Lint for Taplo {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(None);
+        }
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("lint"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -33,10 +47,19 @@ impl Lint for Taplo {
 }
 
 impl Fix for Taplo {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(Vec::new());
+        }
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("format"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
@@ -46,11 +69,20 @@ impl Fix for Taplo {
         Ok(executable.into_iter().collect())
     }
 
-    fn unsafe_fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 2);
+    fn unsafe_fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(Vec::new());
+        }
+        let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("format"));
         args.push(S("--force"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("force fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},

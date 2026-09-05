@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, StackType, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -12,6 +13,10 @@ impl Tool for TextRunner {
             stack_type: StackType::JsonC,
         }
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.text_runner.as_ref()
+    }
 }
 
 impl Display for TextRunner {
@@ -21,7 +26,11 @@ impl Display for TextRunner {
 }
 
 impl Lint for TextRunner {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        _config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", stack.stack),

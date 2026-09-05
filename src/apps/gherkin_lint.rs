@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -13,6 +14,10 @@ impl Tool for GherkinLint {
         // };
         // other_stack.files.contains(".gherkin-lintrc")
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.gherkin_lint.as_ref()
+    }
 }
 
 impl Display for GherkinLint {
@@ -22,12 +27,21 @@ impl Display for GherkinLint {
 }
 
 impl Lint for GherkinLint {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 3);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(None);
+        }
+        let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("exec"));
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Npm {},

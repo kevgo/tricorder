@@ -1,4 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
+use crate::config::{Application, Applications, Config};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -15,6 +16,10 @@ impl Tool for Rumdl {
         //     .files
         //     .contains_any(&["rumdl.toml", ".rumdl.toml", ".config/rumdl.toml"])
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
+        apps.rumdl.as_ref()
+    }
 }
 
 impl Display for Rumdl {
@@ -24,10 +29,19 @@ impl Display for Rumdl {
 }
 
 impl Lint for Rumdl {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(None);
+        }
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::Rumdl {},
@@ -39,10 +53,19 @@ impl Lint for Rumdl {
 }
 
 impl Fix for Rumdl {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
-        let mut args = Vec::with_capacity(stack.files.len() + 1);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("fmt"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Rumdl {},
@@ -52,7 +75,11 @@ impl Fix for Rumdl {
         Ok(executable.into_iter().collect())
     }
 
-    fn unsafe_fix_commands(&self, _stack: &DetectedStack) -> Result<Vec<conc::Executable>> {
+    fn unsafe_fix_commands(
+        &self,
+        _stack: &DetectedStack,
+        _config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }
