@@ -138,5 +138,55 @@ mod tests {
             let want = Files::empty();
             assert_eq!(have, want);
         }
+
+        #[test]
+        fn glob_extension() {
+            let files = Files::from(vec!["a.rs", "b.rs", "c.toml"]);
+            let ignores = Ignores::new(&[S("*.rs")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
+            let want = Files::from(vec!["c.toml"]);
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn glob_extension_matches_nested() {
+            let files = Files::from(vec!["a.rs", "src/b.rs", "src/nested/c.rs", "readme.md"]);
+            let ignores = Ignores::new(&[S("*.rs")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
+            let want = Files::from(vec!["readme.md"]);
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn glob_recursive() {
+            let files = Files::from(vec![
+                "style.css",
+                "style.min.css",
+                "dist/app.min.css",
+                "dist/app.css",
+            ]);
+            let ignores = Ignores::new(&[S("**/*.min.css")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
+            let want = Files::from(vec!["style.css", "dist/app.css"]);
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn glob_directory() {
+            let files = Files::from(vec!["main.rs", "vendor/lib.rs", "vendor/nested/foo.rs"]);
+            let ignores = Ignores::new(&[S("vendor/")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
+            let want = Files::from(vec!["main.rs"]);
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn glob_single_directory() {
+            let files = Files::from(vec!["a.rs", "src/a.rs", "src/nested/a.rs"]);
+            let ignores = Ignores::new(&[S("src/*.rs")], Path::new("./")).unwrap();
+            let have = files.remove(&ignores);
+            let want = Files::from(vec!["a.rs", "src/nested/a.rs"]);
+            assert_eq!(have, want);
+        }
     }
 }
