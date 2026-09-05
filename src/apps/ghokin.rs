@@ -1,4 +1,4 @@
-use crate::apps::{GetRTACmdArgs, filter_files, get_rta_command};
+use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
 use big_s::S;
@@ -24,11 +24,12 @@ impl Fix for Ghokin {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let filtered_files = filter_files(&stack.files, config, |apps| apps.ghokin.as_ref());
-        let mut args = Vec::with_capacity(stack.files.len() - filtered_files.len() + 2);
+        let exclude_files = config.excluded_files_for_app(|apps| apps.ghokin.as_ref());
+        let files = &stack.files.remove(&exclude_files);
+        let mut args = Vec::with_capacity(files.len() + 2);
         args.push(S("fmt"));
         args.push(S("replace"));
-        for file in filtered_files {
+        for file in files {
             let filename = if file.starts_with("./") {
                 file[2..].to_string()
             } else {
