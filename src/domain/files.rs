@@ -76,8 +76,7 @@ impl From<Vec<PathBuf>> for Files {
 
 impl From<&Vec<String>> for Files {
     fn from(paths: &Vec<String>) -> Self {
-        let normalized_paths = paths.iter().map(Into::into).collect();
-        Self(normalized_paths)
+        Self(paths.iter().map(Into::into).collect())
     }
 }
 
