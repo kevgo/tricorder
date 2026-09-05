@@ -28,7 +28,7 @@ impl Lint for GherkinLint {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.gherkin_lint.as_ref());
+        let exclude_files = config.ignores_for_app(|apps| apps.gherkin_lint.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(None);

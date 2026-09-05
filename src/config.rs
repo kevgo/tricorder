@@ -65,18 +65,18 @@ pub struct Config {
 
 impl Config {
     /// provides all files that should be excluded when running the given app
-    pub fn excluded_files_for_app(
+    pub fn ignores_for_app(
         &self,
         app_selector: impl Fn(&Applications) -> Option<&Application>,
-    ) -> Files {
-        let ignore_files_opt = self
+    ) -> Ignores {
+        let ignore_opt = self
             .applications
             .as_ref()
             .and_then(app_selector)
             .and_then(|app| app.ignore_files.as_ref());
-        match ignore_files_opt {
-            Some(ignore_files) => ignore_files.into(),
-            None => Files::empty(),
+        match ignore_opt {
+            Some(ignore) => Ignores::new(ignore, Path::new("./")).unwrap(),
+            None => Ignores::empty(),
         }
     }
 

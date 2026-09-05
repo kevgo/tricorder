@@ -24,7 +24,7 @@ impl Fix for Prettier {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Vec<conc::Executable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.prettier.as_ref());
+        let exclude_files = config.ignores_for_app(|apps| apps.prettier.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(vec![]);

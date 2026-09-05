@@ -1,5 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::Config;
+use crate::domain::Result;
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Tool, UserError};
 use big_s::S;
 use std::fmt::Display;
@@ -25,8 +26,8 @@ impl Lint for Biome {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
+    ) -> Result<Option<conc::Runnable>> {
+        let exclude_files = config.ignores_for_app(|apps| apps.biome.as_ref())?;
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(None);
@@ -49,8 +50,8 @@ impl Fix for Biome {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
+    ) -> Result<Vec<conc::Executable>> {
+        let exclude_files = config.ignores_for_app(|apps| apps.biome.as_ref())?;
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(vec![]);
@@ -72,8 +73,8 @@ impl Fix for Biome {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.biome.as_ref());
+    ) -> Result<Vec<conc::Executable>> {
+        let exclude_files = config.ignores_for_app(|apps| apps.biome.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(vec![]);

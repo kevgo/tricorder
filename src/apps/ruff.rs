@@ -25,7 +25,7 @@ impl Lint for Ruff {
         stack: &DetectedStack,
         config: &Config,
     ) -> Result<Option<conc::Runnable>, UserError> {
-        let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
+        let exclude_files = config.ignores_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(None);
@@ -58,7 +58,7 @@ impl Fix for Ruff {
         // until https://github.com/astral-sh/ruff/issues/8232 ships.
 
         // run "ruff format --check"
-        let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
+        let exclude_files = config.ignores_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(vec![]);
@@ -102,7 +102,7 @@ impl Fix for Ruff {
         let mut executables = Vec::with_capacity(2);
 
         // run "ruff format --check"
-        let exclude_files = config.excluded_files_for_app(|apps| apps.ruff.as_ref());
+        let exclude_files = config.ignores_for_app(|apps| apps.ruff.as_ref());
         let files = stack.files.remove(&exclude_files);
         if files.is_empty() {
             return Ok(vec![]);
