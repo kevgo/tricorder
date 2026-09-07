@@ -1,4 +1,6 @@
-use crate::apps::{delete_empty_folders, keep_sorted};
+use crate::apps::delete_empty_folders;
+use crate::apps::delete_empty_folders::DeleteEmptyFolders;
+use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, GlobalFix};
@@ -55,7 +57,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if config.app_enabled(|apps| apps.delete_empty_folders.as_ref())
+    if config.app_enabled(&DeleteEmptyFolders {})
         && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
     {
         global.push(delete_empty_folders);
@@ -74,7 +76,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         } else {
             for default_fix in detected_stack.stack.fixes() {
                 if default_fix.enabled_when().enabled_on_disk()
-                    && config.tool_enabled(default_fix.as_ref())
+                    && config.app_enabled(default_fix.as_ref())
                 {
                     stack_executables.extend(default_fix.fix_commands(detected_stack, config)?);
                 }

@@ -1,5 +1,28 @@
+use crate::domain::{EnabledWhen, Tool};
 use crate::git;
 use big_s::S;
+use std::fmt::Display;
+
+pub struct GitDiffCheck;
+
+impl Tool for GitDiffCheck {
+    fn enabled_when(&self) -> EnabledWhen {
+        EnabledWhen::Always
+    }
+
+    fn config_section<'a>(
+        &self,
+        apps: &'a crate::config::Applications,
+    ) -> Option<&'a crate::config::Application> {
+        apps.git_diff_check.as_ref()
+    }
+}
+
+impl Display for GitDiffCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("git diff check")
+    }
+}
 
 /// provides the command that checks the Git changes for whitespace errors,
 /// if the current directory is a Git repository

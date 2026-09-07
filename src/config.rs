@@ -78,20 +78,11 @@ impl Config {
 
     /// whether the given application is enabled (missing config means enabled)
     #[must_use]
-    pub fn app_enabled(
-        &self,
-        app_selector: impl Fn(&Applications) -> Option<&Application>,
-    ) -> bool {
+    pub fn app_enabled(&self, app: &dyn Tool) -> bool {
         self.applications
             .as_ref()
-            .and_then(app_selector)
+            .and_then(|apps| app.config_section(apps))
             .is_none_or(Application::enabled)
-    }
-
-    /// whether the given tool is enabled in this config
-    #[must_use]
-    pub fn tool_enabled(&self, tool: &dyn Tool) -> bool {
-        self.app_enabled(|apps| tool.config_section(apps))
     }
 
     pub fn load() -> Result<Self> {
@@ -788,8 +779,7 @@ mod tests {
         #[test]
         fn missing_applications() {
             let config = Config::default();
-            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
-            assert!(config.tool_enabled(&Taplo {}));
+            assert!(config.app_enabled(&Taplo {}));
         }
 
         #[test]
@@ -798,8 +788,7 @@ mod tests {
                 applications: Some(Applications::default()),
                 ..Default::default()
             };
-            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
-            assert!(config.tool_enabled(&Taplo {}));
+            assert!(config.app_enabled(&Taplo {}));
         }
 
         #[test]
@@ -814,8 +803,7 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
-            assert!(config.tool_enabled(&Taplo {}));
+            assert!(config.app_enabled(&Taplo {}));
         }
 
         #[test]
@@ -830,8 +818,7 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(config.app_enabled(|apps| apps.taplo.as_ref()));
-            assert!(config.tool_enabled(&Taplo {}));
+            assert!(config.app_enabled(&Taplo {}));
         }
 
         #[test]
@@ -846,8 +833,7 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(!config.app_enabled(|apps| apps.taplo.as_ref()));
-            assert!(!config.tool_enabled(&Taplo {}));
+            assert!(!config.app_enabled(&Taplo {}));
         }
     }
 }
