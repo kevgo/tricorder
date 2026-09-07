@@ -66,12 +66,12 @@ pub struct Config {
 
 impl Config {
     /// provides all files that should be excluded when running the given app
-    pub fn ignores_for_app(&self, app: &dyn Tool) -> Result<Ignores> {
+    pub fn ignores_for_app(&self, tool: &dyn Tool) -> Result<Ignores> {
         let ignore_def = self
             .applications
             .as_ref()
-            .and_then(|apps| app.config_section(apps))
-            .and_then(|app| app.ignore_files.as_ref());
+            .and_then(|apps_section| tool.config_section(apps_section))
+            .and_then(|tool_section| tool_section.ignore_files.as_ref());
         match ignore_def {
             Some(ignore) => Ignores::new(ignore, Path::new("./")),
             None => Ok(Ignores::empty()),
