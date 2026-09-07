@@ -101,8 +101,8 @@ pub fn determine_precommit_fixes(
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in staged_stack.stack.fixes() {
-                if default_fix.enabled_when().enabled_on_disk()
-                    && config.app_enabled(default_fix.as_ref())
+                if config.app_enabled(default_fix.as_ref())
+                    && default_fix.enabled_when().enabled_on_disk()
                 {
                     stack_executables.extend(default_fix.fix_commands(staged_stack, config)?);
                 }
