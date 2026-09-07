@@ -16,7 +16,7 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
-    tokio::time::sleep(Duration::from_millis(rand::random_range(0..=500))).await;
+    tokio::time::sleep(Duration::from_millis(rand::random_range(0..=1000))).await;
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");

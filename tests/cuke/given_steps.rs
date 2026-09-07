@@ -1,6 +1,7 @@
 use crate::world::{ExistingFile, TricorderWorld};
 use cucumber::gherkin::Step;
 use cucumber::given;
+use std::time::Duration;
 use tokio::fs;
 use tokio::process::Command;
 
@@ -61,6 +62,7 @@ async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: Str
 
 #[given(expr = "a Git repository")]
 async fn a_git_repository(world: &mut TricorderWorld) {
+    tokio::time::sleep(Duration::from_millis(rand::random_range(0..=1000))).await;
     Command::new("git")
         .arg("init")
         .current_dir(&world.dir)
