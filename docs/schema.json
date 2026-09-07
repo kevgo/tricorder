@@ -138,7 +138,7 @@
         "checkstyle": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -148,7 +148,7 @@
         "delete_empty_folders": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -178,7 +178,7 @@
         "git_diff_check": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -288,7 +288,7 @@
         "text_runner": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -298,7 +298,7 @@
         "tikibase": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
