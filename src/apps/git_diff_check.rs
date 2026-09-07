@@ -1,3 +1,4 @@
+use crate::config::{Application, Applications};
 use crate::domain::{EnabledWhen, Tool};
 use crate::git;
 use big_s::S;
@@ -10,10 +11,7 @@ impl Tool for GitDiffCheck {
         EnabledWhen::Always
     }
 
-    fn config_section<'a>(
-        &self,
-        apps: &'a crate::config::Applications,
-    ) -> Option<&'a dyn crate::config::Application> {
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
         Some(apps.git_diff_check.as_ref()?)
     }
 }
