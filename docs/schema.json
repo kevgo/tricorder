@@ -235,16 +235,6 @@
             }
           ]
         },
-        "ripgrep": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
         "ruff": {
           "anyOf": [
             {

@@ -193,7 +193,6 @@ pub struct Applications {
     pub keep_sorted: Option<ApplicationWithFileArgs>,
     pub prettier: Option<ApplicationWithFileArgs>,
     pub pyright: Option<ApplicationWithFileArgs>,
-    pub ripgrep: Option<ApplicationWithFileArgs>,
     pub ruff: Option<ApplicationWithFileArgs>,
     pub rumdl: Option<ApplicationWithFileArgs>,
     pub sqlfmt: Option<ApplicationWithFileArgs>,
