@@ -5,10 +5,10 @@ use std::path::Path;
 
 /// a tool (lint or fix) that Tricorder can run
 pub trait Tool: Display {
-    fn enabled_when(&self) -> EnabledWhen;
-
     /// provides the application-specific section in the config file
     fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application>;
+
+    fn enabled_when(&self) -> EnabledWhen;
 }
 
 /// describes under which conditions a tool is enabled
