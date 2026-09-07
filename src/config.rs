@@ -44,6 +44,7 @@ pub struct Config {
     #[schemars(rename = "$schema")]
     pub schema: Option<String>,
 
+    // TODO: add docstrings
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
     pub global_fixes: Option<Vec<GlobalFix>>,
