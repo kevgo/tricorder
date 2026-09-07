@@ -3,7 +3,7 @@ use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, GlobalFix};
+use crate::config::{Application, Config, GlobalFix};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;

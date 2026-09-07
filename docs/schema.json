@@ -118,7 +118,7 @@
         "actionlint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -128,7 +128,7 @@
         "biome": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -138,7 +138,7 @@
         "checkstyle": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -148,7 +148,7 @@
         "delete_empty_folders": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -158,7 +158,7 @@
         "gherkin_lint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -168,7 +168,7 @@
         "ghokin": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -178,7 +178,7 @@
         "git_diff_check": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -188,7 +188,7 @@
         "gofumpt": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -198,7 +198,7 @@
         "golangci_lint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationNoFileArgs"
             },
             {
               "type": "null"
@@ -208,7 +208,7 @@
         "keep-sorted": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -218,7 +218,7 @@
         "prettier": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -228,7 +228,7 @@
         "pyright": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -238,7 +238,7 @@
         "ripgrep": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -248,7 +248,7 @@
         "ruff": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -258,7 +258,7 @@
         "rumdl": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -268,7 +268,7 @@
         "sqlfmt": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -278,7 +278,7 @@
         "taplo": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -288,7 +288,7 @@
         "text_runner": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -298,7 +298,7 @@
         "tikibase": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Application"
+              "$ref": "#/$defs/ApplicationWithFileArgs"
             },
             {
               "type": "null"
@@ -308,7 +308,16 @@
       },
       "additionalProperties": false
     },
-    "Application": {
+    "ApplicationNoFileArgs": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": ["boolean", "null"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApplicationWithFileArgs": {
       "type": "object",
       "properties": {
         "enabled": {

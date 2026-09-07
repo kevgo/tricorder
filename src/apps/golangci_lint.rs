@@ -29,8 +29,8 @@ impl Tool for GolangciLint {
         // false
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.golangci_lint.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.golangci_lint.as_ref()?)
     }
 }
 

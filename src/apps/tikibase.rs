@@ -14,8 +14,8 @@ impl Tool for Tikibase {
         }
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.tikibase.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.tikibase.as_ref()?)
     }
 }
 

@@ -11,8 +11,8 @@ impl Tool for Taplo {
         EnabledWhen::Always
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.taplo.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.taplo.as_ref()?)
     }
 }
 

@@ -3,7 +3,7 @@ use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::{Runnables, add_custom_fixes};
-use crate::config::Config;
+use crate::config::{Application, Config};
 use crate::domain::UserError;
 use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
 use crate::git;

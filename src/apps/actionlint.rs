@@ -14,8 +14,8 @@ impl Tool for Actionlint {
         }
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.actionlint.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.actionlint.as_ref()?)
     }
 }
 

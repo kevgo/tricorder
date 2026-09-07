@@ -11,8 +11,8 @@ impl Tool for Sqlfmt {
         EnabledWhen::Always
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.sqlfmt.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.sqlfmt.as_ref()?)
     }
 }
 

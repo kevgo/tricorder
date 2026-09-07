@@ -14,8 +14,8 @@ impl Tool for TextRunner {
         }
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.text_runner.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.text_runner.as_ref()?)
     }
 }
 

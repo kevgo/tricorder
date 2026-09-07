@@ -13,8 +13,8 @@ impl Tool for GitDiffCheck {
     fn config_section<'a>(
         &self,
         apps: &'a crate::config::Applications,
-    ) -> Option<&'a crate::config::Application> {
-        apps.git_diff_check.as_ref()
+    ) -> Option<&'a dyn crate::config::Application> {
+        Some(apps.git_diff_check.as_ref()?)
     }
 }
 

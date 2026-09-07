@@ -8,7 +8,7 @@ pub trait Tool: Display {
     fn enabled_when(&self) -> EnabledWhen;
 
     /// provides the application-specific section in the config file
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application>;
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application>;
 }
 
 /// describes under which conditions a tool is enabled

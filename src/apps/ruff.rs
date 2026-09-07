@@ -12,8 +12,8 @@ impl Tool for Ruff {
         //     .contains_any(&["ruff.toml", "ruff.toml.json"])
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.ruff.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.ruff.as_ref()?)
     }
 }
 

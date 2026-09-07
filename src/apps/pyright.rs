@@ -14,8 +14,8 @@ impl Tool for Pyright {
         }
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application> {
-        apps.pyright.as_ref()
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.pyright.as_ref()?)
     }
 }
 
