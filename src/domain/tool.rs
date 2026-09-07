@@ -7,7 +7,7 @@ use std::path::Path;
 pub trait Tool: Display {
     fn enabled_when(&self) -> EnabledWhen;
 
-    /// selects the application-specific section in the config file
+    /// provides the application-specific section in the config file
     fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a Application>;
 }
 
