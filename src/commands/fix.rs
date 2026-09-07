@@ -1,7 +1,9 @@
-use crate::apps::{delete_empty_folders, keep_sorted};
+use crate::apps::delete_empty_folders;
+use crate::apps::delete_empty_folders::DeleteEmptyFolders;
+use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, GlobalFix};
+use crate::config::{Application, Config, GlobalFix};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -55,7 +57,9 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+    if config.app_enabled(&DeleteEmptyFolders {})
+        && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
+    {
         global.push(delete_empty_folders);
     }
 
@@ -71,8 +75,10 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
             stack_executables.extend(overrides.iter().map(conc::Executable::from));
         } else {
             for default_fix in detected_stack.stack.fixes() {
-                if default_fix.enabled_when().enabled_on_disk() {
-                    stack_executables.extend(default_fix.fix_commands(detected_stack)?);
+                if config.app_enabled(default_fix.as_ref())
+                    && default_fix.enabled_when().enabled_on_disk()
+                {
+                    stack_executables.extend(default_fix.fix_commands(detected_stack, config)?);
                 }
             }
         }

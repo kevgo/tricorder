@@ -1,8 +1,9 @@
+use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::fix::{Runnables, add_custom_fixes};
-use crate::config::Config;
+use crate::config::{Application, Config};
 use crate::domain::UserError;
 use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
 use crate::git;
@@ -83,7 +84,9 @@ pub fn determine_precommit_fixes(
 ) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if let Some(delete_empty_folders) = delete_empty_folders::format_command()? {
+    if config.app_enabled(&DeleteEmptyFolders {})
+        && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
+    {
         global.push(delete_empty_folders);
     }
 
@@ -98,8 +101,10 @@ pub fn determine_precommit_fixes(
             stack_executables.extend(override_fixes.iter().map(conc::Executable::from));
         } else {
             for default_fix in staged_stack.stack.fixes() {
-                if default_fix.enabled_when().enabled_on_disk() {
-                    stack_executables.extend(default_fix.fix_commands(staged_stack)?);
+                if config.app_enabled(default_fix.as_ref())
+                    && default_fix.enabled_when().enabled_on_disk()
+                {
+                    stack_executables.extend(default_fix.fix_commands(staged_stack, config)?);
                 }
             }
         }
