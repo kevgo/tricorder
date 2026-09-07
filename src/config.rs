@@ -1,4 +1,4 @@
-use crate::domain::{Ignores, Result, StackType, UserError};
+use crate::domain::{Ignores, Result, StackType, Tool, UserError};
 use ahash::AHashMap;
 use jsonc_parser::ParseOptions;
 use schemars::JsonSchema;
@@ -44,6 +44,7 @@ pub struct Config {
     #[schemars(rename = "$schema")]
     pub schema: Option<String>,
 
+    // TODO: add docstrings
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
     pub global_fixes: Option<Vec<GlobalFix>>,
@@ -54,6 +55,7 @@ pub struct Config {
 
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
+    // TODO: rename to blacklist
     pub ignore_files: Option<Vec<String>>,
 
     pub applications: Option<Applications>,
@@ -63,6 +65,23 @@ pub struct Config {
 }
 
 impl Config {
+    /// provides all files that should be excluded when running the given app
+    pub fn ignores_for_app(&self, tool: &dyn Tool) -> Result<Ignores> {
+        self.applications
+            .as_ref()
+            .and_then(|apps_section| tool.config_section(apps_section))
+            .map_or_else(|| Ok(Ignores::empty()), Application::ignores)
+    }
+
+    /// whether the given application is enabled (missing config means enabled)
+    #[must_use]
+    pub fn app_enabled(&self, tool: &dyn Tool) -> bool {
+        self.applications
+            .as_ref()
+            .and_then(|apps_section| tool.config_section(apps_section))
+            .is_none_or(Application::enabled)
+    }
+
     pub fn load() -> Result<Self> {
         for filename in CONFIG_FILENAMES {
             match fs::read_to_string(filename) {
@@ -107,7 +126,7 @@ impl Config {
 
     /// provides keep-sorted configuration if present
     #[must_use]
-    pub fn keep_sorted(&self) -> Option<&KeepSorted> {
+    pub fn keep_sorted(&self) -> Option<&ApplicationWithFileArgs> {
         self.applications.as_ref()?.keep_sorted.as_ref()
     }
 }
@@ -158,30 +177,68 @@ impl From<&StackCommand> for conc::Executable {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
+// TODO: rename to ApplicationsSection
 pub struct Applications {
+    pub actionlint: Option<ApplicationNoFileArgs>,
+    pub biome: Option<ApplicationWithFileArgs>,
+    pub checkstyle: Option<ApplicationNoFileArgs>,
+    pub delete_empty_folders: Option<ApplicationNoFileArgs>,
+    pub gherkin_lint: Option<ApplicationWithFileArgs>,
+    pub ghokin: Option<ApplicationWithFileArgs>,
+    pub git_diff_check: Option<ApplicationNoFileArgs>,
+    pub gofumpt: Option<ApplicationWithFileArgs>,
+    pub golangci_lint: Option<ApplicationNoFileArgs>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
-    pub keep_sorted: Option<KeepSorted>,
+    pub keep_sorted: Option<ApplicationWithFileArgs>,
+    pub prettier: Option<ApplicationWithFileArgs>,
+    pub pyright: Option<ApplicationWithFileArgs>,
+    pub ruff: Option<ApplicationWithFileArgs>,
+    pub rumdl: Option<ApplicationWithFileArgs>,
+    pub sqlfmt: Option<ApplicationWithFileArgs>,
+    pub taplo: Option<ApplicationWithFileArgs>,
+    pub text_runner: Option<ApplicationNoFileArgs>,
+    pub tikibase: Option<ApplicationNoFileArgs>,
+}
+
+pub trait Application {
+    fn enabled(&self) -> bool;
+    fn ignores(&self) -> Result<Ignores>;
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct KeepSorted {
+// TODO: rename to ApplicationSection
+pub struct ApplicationNoFileArgs {
+    pub enabled: Option<bool>,
+}
+
+impl Application for ApplicationNoFileArgs {
+    fn enabled(&self) -> bool {
+        self.enabled.unwrap_or(true)
+    }
+
+    fn ignores(&self) -> Result<Ignores> {
+        Ok(Ignores::empty())
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+// TODO: rename to ApplicationSection
+pub struct ApplicationWithFileArgs {
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
 }
 
-impl KeepSorted {
-    /// indicates whether the app is enabled
-    #[must_use]
-    pub fn enabled(&self) -> bool {
+impl Application for ApplicationWithFileArgs {
+    fn enabled(&self) -> bool {
         self.enabled.unwrap_or(true)
     }
 
-    /// provides the matcher for the files that keep-sorted should not sort
-    pub fn ignores(&self) -> Result<Ignores> {
+    fn ignores(&self) -> Result<Ignores> {
         Ignores::new(
             self.ignore_files.as_deref().unwrap_or_default(),
             Path::new("./"),
@@ -193,7 +250,9 @@ impl KeepSorted {
 mod tests {
 
     mod default_json {
-        use crate::config::{Applications, Config, KeepSorted, SCHEMA_URL, default_json};
+        use crate::config::{
+            ApplicationWithFileArgs, Applications, Config, SCHEMA_URL, default_json,
+        };
 
         #[test]
         fn contains_vscode_schema_link() {
@@ -214,10 +273,11 @@ mod tests {
                 global_lints: Some(vec![]),
                 ignore_files: Some(vec![]),
                 applications: Some(Applications {
-                    keep_sorted: Some(KeepSorted {
+                    keep_sorted: Some(ApplicationWithFileArgs {
                         enabled: Some(false),
                         ignore_files: None,
                     }),
+                    ..Default::default()
                 }),
                 stacks: None,
             };
@@ -549,8 +609,7 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::Config;
-        use crate::config::{Applications, KeepSorted};
+        use crate::config::{ApplicationWithFileArgs, Applications, Config};
         use big_s::S;
 
         #[test]
@@ -567,16 +626,17 @@ mod tests {
             assert_eq!(
                 have.applications,
                 Some(Applications {
-                    keep_sorted: Some(KeepSorted {
+                    keep_sorted: Some(ApplicationWithFileArgs {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
-                    })
+                    }),
+                    ..Default::default()
                 })
             );
         }
 
         mod enabled {
-            use crate::config::{Applications, Config, KeepSorted};
+            use crate::config::{ApplicationWithFileArgs, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -586,10 +646,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -601,10 +662,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: Some(false),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -616,10 +678,11 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: None,
                             ignore_files: None,
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -632,17 +695,18 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
         }
 
         mod ignore_files {
-            use crate::config::{Applications, Config, KeepSorted};
+            use crate::config::{ApplicationWithFileArgs, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -652,10 +716,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: None,
                             ignore_files: Some(vec![])
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -668,10 +733,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")])
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -683,10 +749,11 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(KeepSorted {
+                        keep_sorted: Some(ApplicationWithFileArgs {
                             enabled: Some(true),
                             ignore_files: None
-                        })
+                        }),
+                        ..Default::default()
                     })
                 );
             }
@@ -694,11 +761,12 @@ mod tests {
     }
 
     mod enabled {
-        use crate::config::KeepSorted;
+        use crate::config::Application;
+        use crate::config::ApplicationWithFileArgs;
 
         #[test]
         fn none() {
-            let give = KeepSorted {
+            let give = ApplicationWithFileArgs {
                 enabled: None,
                 ignore_files: None,
             };
@@ -707,7 +775,7 @@ mod tests {
 
         #[test]
         fn enabled() {
-            let give = KeepSorted {
+            let give = ApplicationWithFileArgs {
                 enabled: Some(true),
                 ignore_files: None,
             };
@@ -716,11 +784,92 @@ mod tests {
 
         #[test]
         fn disabled() {
-            let give = KeepSorted {
+            let give = ApplicationWithFileArgs {
                 enabled: Some(false),
                 ignore_files: None,
             };
             assert!(!give.enabled());
+        }
+    }
+
+    mod app_enabled {
+        use crate::apps::taplo::Taplo;
+        use crate::config::{ApplicationWithFileArgs, Applications, Config};
+
+        #[test]
+        fn missing_applications() {
+            let config = Config {
+                applications: None,
+                ..Default::default()
+            };
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn missing_app() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: None,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unset() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileArgs {
+                        enabled: None,
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn enabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileArgs {
+                        enabled: Some(true),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
+        }
+
+        #[test]
+        fn disabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileArgs {
+                        enabled: Some(false),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let have = config.app_enabled(&Taplo {});
+            let want = false;
+            assert_eq!(have, want);
         }
     }
 }

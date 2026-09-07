@@ -1,5 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Lint, Tool, UserError};
+use crate::config::{Application, Applications, Config};
+use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 
@@ -27,6 +28,10 @@ impl Tool for GolangciLint {
         // }
         // false
     }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.golangci_lint.as_ref()?)
+    }
 }
 
 impl Display for GolangciLint {
@@ -36,7 +41,11 @@ impl Display for GolangciLint {
 }
 
 impl Lint for GolangciLint {
-    fn lint_commands(&self, stack: &DetectedStack) -> Result<Option<conc::Runnable>, UserError> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        _config: &Config,
+    ) -> Result<Option<conc::Runnable>> {
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::GolangCiLint {},

@@ -18,14 +18,12 @@ pub mod taplo;
 pub mod text_runner;
 pub mod tikibase;
 
-use crate::domain::UserError;
+use crate::domain::{Result, UserError};
 use rta::applications::AppDefinition;
 
 /// Provides the RTA command to run the given RTA App.
 /// Installs the app if needed.
-pub(crate) fn get_rta_command(
-    args: &GetRTACmdArgs<'_>,
-) -> Result<Option<conc::Executable>, UserError> {
+pub(crate) fn get_rta_command(args: &GetRTACmdArgs<'_>) -> Result<Option<conc::Executable>> {
     // Apps like Prettier need to install multiple apps to run (first Node, then Prettier).
     // So we keep trying in a loop until either the command is available,
     // or we get stuck needing the same app installed again after having already installed it.

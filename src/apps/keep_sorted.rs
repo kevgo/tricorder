@@ -1,7 +1,7 @@
 use crate::apps::ripgrep;
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::domain::File;
-use crate::domain::{DetectedStacks, StackType, UserError};
+use crate::domain::{DetectedStacks, Result, StackType};
 use ahash::AHashMap;
 
 const MARKER: &str = "keep-sorted end";
@@ -15,7 +15,7 @@ pub fn fix_commands(
         global_ignores,
         keep_sorted_ignores,
     }: FixCommandsArgs,
-) -> Result<Vec<(StackType, conc::Executable)>, UserError> {
+) -> Result<Vec<(StackType, conc::Executable)>> {
     // step 2: find all files that contain the "keep-sorted end" marker
     let mut ignores = vec![];
     if let Some(global_ignores) = global_ignores {

@@ -1,5 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::domain::{DetectedStack, EnabledWhen, Fix, Tool, UserError};
+use crate::config::{Application, Applications, Config};
+use crate::domain::{DetectedStack, EnabledWhen, Fix, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 
@@ -8,6 +9,10 @@ pub struct Sqlfmt;
 impl Tool for Sqlfmt {
     fn enabled_when(&self) -> EnabledWhen {
         EnabledWhen::Always
+    }
+
+    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+        Some(apps.sqlfmt.as_ref()?)
     }
 }
 
@@ -18,14 +23,23 @@ impl Display for Sqlfmt {
 }
 
 impl Fix for Sqlfmt {
-    fn fix_commands(&self, stack: &DetectedStack) -> Result<Vec<conc::Executable>, UserError> {
-        let mut args = Vec::with_capacity(stack.files.len() + 5);
+    fn fix_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
+        let ignores = config.ignores_for_app(self)?;
+        let files = stack.files.remove(&ignores);
+        if files.is_empty() {
+            return Ok(vec![]);
+        }
+        let mut args = Vec::with_capacity(files.len() + 5);
         args.push(S("tool"));
         args.push(S("run"));
         args.push(S("--from"));
         args.push(S("shandy-sqlfmt"));
         args.push(S("sqlfmt"));
-        args.extend(stack.files.into_iter().map(Into::into));
+        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("fix {} ({self})", stack.stack),
             app: &rta::applications::Uv {},
@@ -38,7 +52,8 @@ impl Fix for Sqlfmt {
     fn unsafe_fix_commands(
         &self,
         _stack: &DetectedStack,
-    ) -> Result<Vec<conc::Executable>, UserError> {
+        _config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
         Ok(vec![])
     }
 }

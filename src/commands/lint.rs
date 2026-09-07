@@ -1,4 +1,5 @@
 use crate::apps::git_diff_check;
+use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, GlobalLint};
@@ -60,8 +61,9 @@ pub fn determine_lints(
             }
         } else {
             for default_lint in detected_stack.stack.lints() {
-                if default_lint.enabled_when().enabled_on_disk()
-                    && let Some(executable) = default_lint.lint_commands(detected_stack)?
+                if config.app_enabled(default_lint.as_ref())
+                    && default_lint.enabled_when().enabled_on_disk()
+                    && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
                 {
                     result.push(executable);
                 }
@@ -86,7 +88,9 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if let Some(repo) = git_repo {
+    if config.app_enabled(&GitDiffCheck {})
+        && let Some(repo) = git_repo
+    {
         let executable = git_diff_check::lint_command(repo);
         result.push(conc::Runnable::Single(executable));
     }
