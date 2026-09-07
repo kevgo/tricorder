@@ -181,11 +181,11 @@ impl From<&StackCommand> for conc::Executable {
 pub struct Applications {
     pub actionlint: Option<ApplicationNoFileArgs>,
     pub biome: Option<ApplicationWithFileArgs>,
-    pub checkstyle: Option<ApplicationWithFileArgs>,
-    pub delete_empty_folders: Option<ApplicationWithFileArgs>,
+    pub checkstyle: Option<ApplicationNoFileArgs>,
+    pub delete_empty_folders: Option<ApplicationNoFileArgs>,
     pub gherkin_lint: Option<ApplicationWithFileArgs>,
     pub ghokin: Option<ApplicationWithFileArgs>,
-    pub git_diff_check: Option<ApplicationWithFileArgs>,
+    pub git_diff_check: Option<ApplicationNoFileArgs>,
     pub gofumpt: Option<ApplicationWithFileArgs>,
     pub golangci_lint: Option<ApplicationNoFileArgs>,
     #[serde(alias = "keep-sorted")]
@@ -198,8 +198,8 @@ pub struct Applications {
     pub rumdl: Option<ApplicationWithFileArgs>,
     pub sqlfmt: Option<ApplicationWithFileArgs>,
     pub taplo: Option<ApplicationWithFileArgs>,
-    pub text_runner: Option<ApplicationWithFileArgs>,
-    pub tikibase: Option<ApplicationWithFileArgs>,
+    pub text_runner: Option<ApplicationNoFileArgs>,
+    pub tikibase: Option<ApplicationNoFileArgs>,
 }
 
 pub trait Application {
