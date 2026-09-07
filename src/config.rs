@@ -794,7 +794,10 @@ mod tests {
         #[test]
         fn missing_app() {
             let config = Config {
-                applications: Some(Applications::default()),
+                applications: Some(Applications {
+                    taplo: None,
+                    ..Default::default()
+                }),
                 ..Default::default()
             };
             let have = config.app_enabled(&Taplo {});
