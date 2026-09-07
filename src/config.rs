@@ -782,7 +782,10 @@ mod tests {
 
         #[test]
         fn missing_applications() {
-            let config = Config::default();
+            let config = Config {
+                applications: None,
+                ..Default::default()
+            };
             let have = config.app_enabled(&Taplo {});
             let want = true;
             assert_eq!(have, want);
