@@ -182,6 +182,7 @@ impl From<&StackCommand> for conc::Executable {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
+// TODO: rename to ApplicationsSection
 pub struct Applications {
     pub actionlint: Option<Application>,
     pub biome: Option<Application>,
@@ -208,6 +209,7 @@ pub struct Applications {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
+// TODO: rename to ApplicationSection
 pub struct Application {
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
