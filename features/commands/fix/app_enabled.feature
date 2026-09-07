@@ -33,10 +33,7 @@ Feature: "tricorder fix" skips disabled applications
       """
       Taplo
       """
-    And file "config.toml" now has content
-      """
-      key =     "value"
-      """
+    And file "config.toml" is unchanged
     And the exit code is 0
 
   Scenario: skips a disabled global application
