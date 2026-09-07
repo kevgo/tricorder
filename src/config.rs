@@ -811,7 +811,7 @@ mod tests {
                 applications: Some(Applications {
                     taplo: Some(Application {
                         enabled: None,
-                        ignore_files: None,
+                        ..Default::default()
                     }),
                     ..Default::default()
                 }),
@@ -828,7 +828,7 @@ mod tests {
                 applications: Some(Applications {
                     taplo: Some(Application {
                         enabled: Some(true),
-                        ignore_files: None,
+                        ..Default::default()
                     }),
                     ..Default::default()
                 }),
@@ -845,7 +845,7 @@ mod tests {
                 applications: Some(Applications {
                     taplo: Some(Application {
                         enabled: Some(false),
-                        ignore_files: None,
+                        ..Default::default()
                     }),
                     ..Default::default()
                 }),
