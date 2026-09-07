@@ -33,10 +33,7 @@ Feature: "tricorder pitstop" skips disabled applications
       """
       delete empty folders
       """
-    And file "config.toml" now has content
-      """
-      key =     "value"
-      """
+    And file "config.toml" is unchanged
     And the exit code is 0
 
   Scenario: skips a disabled global application
@@ -58,5 +55,9 @@ Feature: "tricorder pitstop" skips disabled applications
     And it prints the block
       """
       Taplo
+      """
+    And file "config.toml" now has content
+      """
+      key = "value"
       """
     And the exit code is 0
