@@ -783,7 +783,9 @@ mod tests {
         #[test]
         fn missing_applications() {
             let config = Config::default();
-            assert!(config.app_enabled(&Taplo {}));
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -792,7 +794,9 @@ mod tests {
                 applications: Some(Applications::default()),
                 ..Default::default()
             };
-            assert!(config.app_enabled(&Taplo {}));
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -807,7 +811,9 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(config.app_enabled(&Taplo {}));
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -822,7 +828,9 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(config.app_enabled(&Taplo {}));
+            let have = config.app_enabled(&Taplo {});
+            let want = true;
+            assert_eq!(have, want);
         }
 
         #[test]
@@ -837,7 +845,9 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            assert!(!config.app_enabled(&Taplo {}));
+            let have = config.app_enabled(&Taplo {});
+            let want = false;
+            assert_eq!(have, want);
         }
     }
 }
