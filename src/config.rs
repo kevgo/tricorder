@@ -80,10 +80,10 @@ impl Config {
 
     /// whether the given application is enabled (missing config means enabled)
     #[must_use]
-    pub fn app_enabled(&self, app: &dyn Tool) -> bool {
+    pub fn app_enabled(&self, tool: &dyn Tool) -> bool {
         self.applications
             .as_ref()
-            .and_then(|apps| app.config_section(apps))
+            .and_then(|apps_section| tool.config_section(apps_section))
             .is_none_or(Application::enabled)
     }
 
