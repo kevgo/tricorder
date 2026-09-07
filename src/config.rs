@@ -54,6 +54,7 @@ pub struct Config {
 
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
+    // TODO: rename to blacklist
     pub ignore_files: Option<Vec<String>>,
 
     pub applications: Option<Applications>,
