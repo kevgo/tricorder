@@ -54,11 +54,19 @@ Feature: exclude a file from being linted by a specific app only
     Then it prints the block matching
       """
       fix TOML \(Taplo\)
-      \S+/taplo fix config\.toml\n
+      \S+/taplo format Cargo\.toml other\.toml\n
       """
-    And it does not print
+    And file "other.toml" now has content
       """
-      Cargo.toml
+      key = "value"
+      """
+    And file "Cargo.toml" now has content
+      """
+      [package]
+      name = "demo"
+
+      [lints.clippy]
+      pedantic = { level = "warn", priority = -1 }
       """
     And the exit code is 0
 
