@@ -5,8 +5,9 @@ AI hallucinates non-existing APIs, dead code, and mismatching formatting styles.
 Strict automated guardrails are the only things keeping your codebase from
 turning into an untamable, hallucinated mess.
 
-Tricorder runs all type checkers, linters,
-and formatters that apply to your codebase concurrently for the fastest results.
+Tricorder solves this problem for you.
+It runs all applicable type checkers, linters,
+and formatters concurrently for the fastest results.
 
 ## Demo
 
@@ -14,14 +15,15 @@ Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
 500 ms and prints:
 
 ```sh
-98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
-running 5 tools
+114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
+running 6 tools
 
 lint Markdown (rumdl)
 lint TOML (Taplo)
 lint Git diff markers (git diff HEAD --check)
 GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
+cargo clippy
 ```
 
 Tricorder has classified 203 files
