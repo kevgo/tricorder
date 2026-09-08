@@ -65,21 +65,38 @@ pub struct Config {
 }
 
 impl Config {
-    /// provides all files that should be excluded when running the given app
-    pub fn ignores_for_app(&self, tool: &dyn Tool) -> Result<Ignores> {
-        self.applications
-            .as_ref()
-            .and_then(|apps_section| tool.config_section(apps_section))
-            .map_or_else(|| Ok(Ignores::empty()), Application::ignores)
+    /// provides all files that should be excluded when running the given app for the given operation
+    pub fn ignores_for(&self, tool: &dyn Tool, op: Operation) -> Result<Ignores> {
+        let Some(app) = self.app_section(tool) else {
+            return Ok(Ignores::empty());
+        };
+        let mut patterns = app.ignore_files().to_vec();
+        if let Some(operation) = app.operation(op) {
+            patterns.extend_from_slice(operation.ignore_files());
+        }
+        Ignores::new(&patterns, Path::new("./"))
     }
 
     /// whether the given application is enabled (missing config means enabled)
     #[must_use]
     pub fn app_enabled(&self, tool: &dyn Tool) -> bool {
+        self.app_section(tool).is_none_or(Application::enabled)
+    }
+
+    /// whether the given application is enabled for the given operation
+    ///
+    /// An operation is enabled when the app is enabled and that operation is not `enabled: false`.
+    /// Missing keys default to enabled.
+    #[must_use]
+    pub fn operation_enabled(&self, tool: &dyn Tool, op: Operation) -> bool {
+        self.app_section(tool)
+            .is_none_or(|app| app.enabled() && app.operation(op).is_none_or(Application::enabled))
+    }
+
+    fn app_section(&self, tool: &dyn Tool) -> Option<&dyn Application> {
         self.applications
             .as_ref()
             .and_then(|apps_section| tool.config_section(apps_section))
-            .is_none_or(Application::enabled)
     }
 
     pub fn load() -> Result<Self> {
@@ -126,7 +143,7 @@ impl Config {
 
     /// provides keep-sorted configuration if present
     #[must_use]
-    pub fn keep_sorted(&self) -> Option<&ApplicationWithFileArgs> {
+    pub fn keep_sorted(&self) -> Option<&ApplicationWithFileSection> {
         self.applications.as_ref()?.keep_sorted.as_ref()
     }
 }
@@ -179,31 +196,117 @@ impl From<&StackCommand> for conc::Executable {
 #[serde(deny_unknown_fields)]
 // TODO: rename to ApplicationsSection
 pub struct Applications {
-    pub actionlint: Option<ApplicationNoFileArgs>,
-    pub biome: Option<ApplicationWithFileArgs>,
-    pub checkstyle: Option<ApplicationNoFileArgs>,
-    pub delete_empty_folders: Option<ApplicationNoFileArgs>,
-    pub gherkin_lint: Option<ApplicationWithFileArgs>,
-    pub ghokin: Option<ApplicationWithFileArgs>,
-    pub git_diff_check: Option<ApplicationNoFileArgs>,
-    pub gofumpt: Option<ApplicationWithFileArgs>,
-    pub golangci_lint: Option<ApplicationNoFileArgs>,
+    pub actionlint: Option<ApplicationNoFileSection>,
+    pub biome: Option<ApplicationWithFileSection>,
+    pub checkstyle: Option<ApplicationNoFileSection>,
+    pub delete_empty_folders: Option<ApplicationNoFileSection>,
+    pub gherkin_lint: Option<ApplicationWithFileSection>,
+    pub ghokin: Option<ApplicationWithFileSection>,
+    pub git_diff_check: Option<ApplicationNoFileSection>,
+    pub gofumpt: Option<ApplicationWithFileSection>,
+    pub golangci_lint: Option<ApplicationNoFileSection>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
-    pub keep_sorted: Option<ApplicationWithFileArgs>,
-    pub prettier: Option<ApplicationWithFileArgs>,
-    pub pyright: Option<ApplicationWithFileArgs>,
-    pub ruff: Option<ApplicationWithFileArgs>,
-    pub rumdl: Option<ApplicationWithFileArgs>,
-    pub sqlfmt: Option<ApplicationWithFileArgs>,
-    pub taplo: Option<ApplicationWithFileArgs>,
-    pub text_runner: Option<ApplicationNoFileArgs>,
-    pub tikibase: Option<ApplicationNoFileArgs>,
+    pub keep_sorted: Option<ApplicationWithFileSection>,
+    pub prettier: Option<ApplicationWithFileSection>,
+    pub pyright: Option<ApplicationWithFileSection>,
+    pub ruff: Option<ApplicationWithFileSection>,
+    pub rumdl: Option<ApplicationWithFileSection>,
+    pub sqlfmt: Option<ApplicationWithFileSection>,
+    pub taplo: Option<ApplicationWithFileSection>,
+    pub text_runner: Option<ApplicationNoFileSection>,
+    pub tikibase: Option<ApplicationNoFileSection>,
+}
+
+/// a Tricorder operation that applications can be configured for
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum Operation {
+    Lint,
+    Fix,
+    FixUnsafe,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct Operations<T> {
+    pub lint: Option<T>,
+    pub fix: Option<T>,
+    #[serde(alias = "fix-unsafe")]
+    #[schemars(rename = "fix-unsafe")]
+    pub fix_unsafe: Option<T>,
+}
+
+impl<T> Operations<T> {
+    fn get(&self, op: Operation) -> Option<&T> {
+        match op {
+            Operation::Lint => self.lint.as_ref(),
+            Operation::Fix => self.fix.as_ref(),
+            Operation::FixUnsafe => self.fix_unsafe.as_ref(),
+        }
+    }
 }
 
 pub trait Application {
     fn enabled(&self) -> bool;
-    fn ignores(&self) -> Result<Ignores>;
+
+    fn ignores(&self) -> Result<Ignores> {
+        Ignores::new(self.ignore_files(), Path::new("./"))
+    }
+
+    fn operation(&self, op: Operation) -> Option<&dyn Application>;
+
+    fn ignore_files(&self) -> &[String];
+}
+
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct ApplicationNoFileSection {
+    pub enabled: Option<bool>,
+    pub operations: Option<Operations<ApplicationNoFileArgs>>,
+}
+
+impl Application for ApplicationNoFileSection {
+    fn enabled(&self) -> bool {
+        self.enabled.unwrap_or(true)
+    }
+
+    fn operation(&self, op: Operation) -> Option<&dyn Application> {
+        self.operations
+            .as_ref()?
+            .get(op)
+            .map(|cfg| cfg as &dyn Application)
+    }
+
+    fn ignore_files(&self) -> &[String] {
+        &[]
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct ApplicationWithFileSection {
+    pub enabled: Option<bool>,
+    #[serde(alias = "ignore-files")]
+    #[schemars(rename = "ignore-files")]
+    pub ignore_files: Option<Vec<String>>,
+    pub operations: Option<Operations<ApplicationWithFileArgs>>,
+}
+
+impl Application for ApplicationWithFileSection {
+    fn enabled(&self) -> bool {
+        self.enabled.unwrap_or(true)
+    }
+
+    fn operation(&self, op: Operation) -> Option<&dyn Application> {
+        self.operations
+            .as_ref()?
+            .get(op)
+            .map(|cfg| cfg as &dyn Application)
+    }
+
+    fn ignore_files(&self) -> &[String] {
+        self.ignore_files.as_deref().unwrap_or_default()
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -218,8 +321,12 @@ impl Application for ApplicationNoFileArgs {
         self.enabled.unwrap_or(true)
     }
 
-    fn ignores(&self) -> Result<Ignores> {
-        Ok(Ignores::empty())
+    fn operation(&self, _op: Operation) -> Option<&dyn Application> {
+        None
+    }
+
+    fn ignore_files(&self) -> &[String] {
+        &[]
     }
 }
 
@@ -238,11 +345,12 @@ impl Application for ApplicationWithFileArgs {
         self.enabled.unwrap_or(true)
     }
 
-    fn ignores(&self) -> Result<Ignores> {
-        Ignores::new(
-            self.ignore_files.as_deref().unwrap_or_default(),
-            Path::new("./"),
-        )
+    fn operation(&self, _op: Operation) -> Option<&dyn Application> {
+        None
+    }
+
+    fn ignore_files(&self) -> &[String] {
+        self.ignore_files.as_deref().unwrap_or_default()
     }
 }
 
@@ -251,7 +359,7 @@ mod tests {
 
     mod default_json {
         use crate::config::{
-            ApplicationWithFileArgs, Applications, Config, SCHEMA_URL, default_json,
+            ApplicationWithFileSection, Applications, Config, SCHEMA_URL, default_json,
         };
 
         #[test]
@@ -273,9 +381,10 @@ mod tests {
                 global_lints: Some(vec![]),
                 ignore_files: Some(vec![]),
                 applications: Some(Applications {
-                    keep_sorted: Some(ApplicationWithFileArgs {
+                    keep_sorted: Some(ApplicationWithFileSection {
                         enabled: Some(false),
                         ignore_files: None,
+                        operations: None,
                     }),
                     ..Default::default()
                 }),
@@ -609,7 +718,7 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{ApplicationWithFileArgs, Applications, Config};
+        use crate::config::{ApplicationWithFileSection, Applications, Config};
         use big_s::S;
 
         #[test]
@@ -626,9 +735,10 @@ mod tests {
             assert_eq!(
                 have.applications,
                 Some(Applications {
-                    keep_sorted: Some(ApplicationWithFileArgs {
+                    keep_sorted: Some(ApplicationWithFileSection {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
+                        operations: None,
                     }),
                     ..Default::default()
                 })
@@ -636,7 +746,7 @@ mod tests {
         }
 
         mod enabled {
-            use crate::config::{ApplicationWithFileArgs, Applications, Config};
+            use crate::config::{ApplicationWithFileSection, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -646,9 +756,10 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: Some(true),
-                            ignore_files: None
+                            ignore_files: None,
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -662,9 +773,10 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: Some(false),
-                            ignore_files: None
+                            ignore_files: None,
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -678,9 +790,10 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: None,
                             ignore_files: None,
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -695,9 +808,10 @@ mod tests {
                 assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -706,7 +820,7 @@ mod tests {
         }
 
         mod ignore_files {
-            use crate::config::{ApplicationWithFileArgs, Applications, Config};
+            use crate::config::{ApplicationWithFileSection, Applications, Config};
             use big_s::S;
 
             #[test]
@@ -716,9 +830,10 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: None,
-                            ignore_files: Some(vec![])
+                            ignore_files: Some(vec![]),
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -733,9 +848,10 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: None,
-                            ignore_files: Some(vec![S("README.md")])
+                            ignore_files: Some(vec![S("README.md")]),
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -749,9 +865,10 @@ mod tests {
                 pretty::assert_eq!(
                     have.applications,
                     Some(Applications {
-                        keep_sorted: Some(ApplicationWithFileArgs {
+                        keep_sorted: Some(ApplicationWithFileSection {
                             enabled: Some(true),
-                            ignore_files: None
+                            ignore_files: None,
+                            operations: None,
                         }),
                         ..Default::default()
                     })
@@ -794,7 +911,7 @@ mod tests {
 
     mod app_enabled {
         use crate::apps::taplo::Taplo;
-        use crate::config::{ApplicationWithFileArgs, Applications, Config};
+        use crate::config::{ApplicationWithFileSection, Applications, Config};
 
         #[test]
         fn missing_applications() {
@@ -825,7 +942,7 @@ mod tests {
         fn unset() {
             let config = Config {
                 applications: Some(Applications {
-                    taplo: Some(ApplicationWithFileArgs {
+                    taplo: Some(ApplicationWithFileSection {
                         enabled: None,
                         ..Default::default()
                     }),
@@ -842,7 +959,7 @@ mod tests {
         fn enabled() {
             let config = Config {
                 applications: Some(Applications {
-                    taplo: Some(ApplicationWithFileArgs {
+                    taplo: Some(ApplicationWithFileSection {
                         enabled: Some(true),
                         ..Default::default()
                     }),
@@ -859,7 +976,7 @@ mod tests {
         fn disabled() {
             let config = Config {
                 applications: Some(Applications {
-                    taplo: Some(ApplicationWithFileArgs {
+                    taplo: Some(ApplicationWithFileSection {
                         enabled: Some(false),
                         ..Default::default()
                     }),
@@ -870,6 +987,219 @@ mod tests {
             let have = config.app_enabled(&Taplo {});
             let want = false;
             assert_eq!(have, want);
+        }
+    }
+
+    mod operations {
+        use crate::config::{
+            ApplicationWithFileArgs, ApplicationWithFileSection, Applications, Config, Operations,
+        };
+        use crate::domain::UserError;
+        use big_s::S;
+
+        #[test]
+        fn parse_lint_ignore_files() {
+            let give = r#"
+{
+  "applications": {
+    "taplo": {
+      "operations": {
+        "lint": { "ignore-files": ["Cargo.toml"] }
+      }
+    }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            pretty::assert_eq!(
+                have.applications,
+                Some(Applications {
+                    taplo: Some(ApplicationWithFileSection {
+                        enabled: None,
+                        ignore_files: None,
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileArgs {
+                                enabled: None,
+                                ignore_files: Some(vec![S("Cargo.toml")]),
+                            }),
+                            ..Default::default()
+                        }),
+                    }),
+                    ..Default::default()
+                })
+            );
+        }
+
+        #[test]
+        fn unknown_operation_key() {
+            let give = r#"
+{
+  "applications": {
+    "taplo": {
+      "operations": {
+        "unknown": { "enabled": false }
+      }
+    }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap_err();
+            let UserError::ConfigCannotParse { filename, err } = have else {
+                panic!("expected ConfigCannotParse, got {have:?}");
+            };
+            assert_eq!(filename, "test.json");
+            assert!(
+                err.contains("unknown field `unknown`"),
+                "error should mention the unknown field, got: {err}"
+            );
+        }
+
+        #[test]
+        fn ignore_files_rejected_for_no_file_app() {
+            let give = r#"
+{
+  "applications": {
+    "actionlint": {
+      "operations": {
+        "lint": { "ignore-files": ["foo.yml"] }
+      }
+    }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap_err();
+            let UserError::ConfigCannotParse { filename, err } = have else {
+                panic!("expected ConfigCannotParse, got {have:?}");
+            };
+            assert_eq!(filename, "test.json");
+            assert!(
+                err.contains("unknown field `ignore-files`"),
+                "error should mention the unknown field, got: {err}"
+            );
+        }
+    }
+
+    mod operation_enabled {
+        use crate::apps::taplo::Taplo;
+        use crate::config::{
+            ApplicationWithFileArgs, ApplicationWithFileSection, Applications, Config, Operation,
+            Operations,
+        };
+
+        #[test]
+        fn missing_config_defaults_to_enabled() {
+            let config = Config::default();
+            assert!(config.operation_enabled(&Taplo {}, Operation::Lint));
+            assert!(config.operation_enabled(&Taplo {}, Operation::Fix));
+        }
+
+        #[test]
+        fn app_disabled_disables_all_operations() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileSection {
+                        enabled: Some(false),
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileArgs {
+                                enabled: Some(true),
+                                ignore_files: None,
+                            }),
+                            ..Default::default()
+                        }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(!config.operation_enabled(&Taplo {}, Operation::Lint));
+            assert!(!config.operation_enabled(&Taplo {}, Operation::Fix));
+        }
+
+        #[test]
+        fn operation_disabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileSection {
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileArgs {
+                                enabled: Some(false),
+                                ignore_files: None,
+                            }),
+                            ..Default::default()
+                        }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(!config.operation_enabled(&Taplo {}, Operation::Lint));
+            assert!(config.operation_enabled(&Taplo {}, Operation::Fix));
+        }
+
+        #[test]
+        fn both_enabled() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileSection {
+                        enabled: Some(true),
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileArgs {
+                                enabled: Some(true),
+                                ignore_files: None,
+                            }),
+                            fix: Some(ApplicationWithFileArgs {
+                                enabled: Some(true),
+                                ignore_files: None,
+                            }),
+                            ..Default::default()
+                        }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            assert!(config.operation_enabled(&Taplo {}, Operation::Lint));
+            assert!(config.operation_enabled(&Taplo {}, Operation::Fix));
+        }
+    }
+
+    mod ignores_for {
+        use crate::apps::taplo::Taplo;
+        use crate::config::{
+            ApplicationWithFileArgs, ApplicationWithFileSection, Applications, Config, Operation,
+            Operations,
+        };
+        use big_s::S;
+        use std::path::Path;
+
+        #[test]
+        fn unions_app_and_operation_patterns() {
+            let config = Config {
+                applications: Some(Applications {
+                    taplo: Some(ApplicationWithFileSection {
+                        ignore_files: Some(vec![S("app.toml")]),
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileArgs {
+                                enabled: None,
+                                ignore_files: Some(vec![S("lint.toml")]),
+                            }),
+                            ..Default::default()
+                        }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let lint = config.ignores_for(&Taplo {}, Operation::Lint).unwrap();
+            assert!(lint.matches_self(Path::new("app.toml"), false));
+            assert!(lint.matches_self(Path::new("lint.toml"), false));
+            let fix = config.ignores_for(&Taplo {}, Operation::Fix).unwrap();
+            assert!(fix.matches_self(Path::new("app.toml"), false));
+            assert!(!fix.matches_self(Path::new("lint.toml"), false));
         }
     }
 }

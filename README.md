@@ -249,6 +249,11 @@ If both exist, **tricorder.json** takes precedence.
     "keep-sorted": {
       "enabled": true,
       "ignore-files": ["README.md"] // ignored only by keep-sorted
+    },
+    "taplo": {
+      "operations": {
+        "lint": { "ignore-files": ["Cargo.toml"] } // ignore only for linting
+      }
     }
   }
 }

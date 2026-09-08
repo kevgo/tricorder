@@ -21,9 +21,7 @@ pub fn fix_commands(
     if let Some(global_ignores) = global_ignores {
         ignores.extend(global_ignores.iter().cloned());
     }
-    if let Some(keep_sorted_ignores) = keep_sorted_ignores {
-        ignores.extend(keep_sorted_ignores.iter().cloned());
-    }
+    ignores.extend_from_slice(keep_sorted_ignores);
     let matches = ripgrep::files_with_matches(MARKER, &ignores)?;
     if matches.is_empty() {
         return Ok(vec![]);
@@ -58,5 +56,5 @@ pub fn fix_commands(
 pub struct FixCommandsArgs<'a> {
     pub detected_stacks: &'a DetectedStacks,
     pub global_ignores: Option<&'a Vec<String>>,
-    pub keep_sorted_ignores: Option<&'a Vec<String>>,
+    pub keep_sorted_ignores: &'a [String],
 }
