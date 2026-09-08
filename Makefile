@@ -65,7 +65,7 @@ psa: ps cuke  ## pitstop, run during active development
 
 test: unit lint cuke  ## runs all tests
 
-todo:  # lists all TODOs in the code
+todo: ${RTA}  # lists all TODOs in the code
 	$(RIPGREP) --fixed-strings --glob='!Makefile' 'TODO'
 
 unit:  # runs the unit tests
