@@ -48,8 +48,7 @@ Feature: disable an application's lint operation
       """
     And the exit code is 0
 
-  @this
-  Scenario: fix still runs when lint is disabled for an application
+  Scenario: fix still runs the application
     When executing "tricorder fix --show=verbose"
     Then it prints the block matching
       """
@@ -60,5 +59,14 @@ Feature: disable an application's lint operation
       """
       fix Markdown \(rumdl\)
       \S+/rumdl fmt other.md\n
+      """
+    And the exit code is 0
+
+  Scenario: fix-unsafe still runs the application
+    When executing "tricorder fix-unsafe --show=verbose"
+    Then it prints the block matching
+      """
+      fix TOML \(Taplo\)
+      \S+/taplo format --force Cargo\.toml
       """
     And the exit code is 0
