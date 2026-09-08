@@ -1,5 +1,5 @@
+use crate::jitter::jitter;
 use crate::world::TricorderWorld;
-use crate::{JITTER_MAX_MS, JITTER_MIN_MS};
 use cucumber::when;
 use std::time::Duration;
 use tokio::process::Command;
@@ -17,10 +17,7 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
-    tokio::time::sleep(Duration::from_millis(rand::random_range(
-        JITTER_MIN_MS..JITTER_MAX_MS,
-    )))
-    .await;
+    jitter().await;
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");
