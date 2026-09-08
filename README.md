@@ -205,12 +205,18 @@ If both exist, **tricorder.json** takes precedence.
   // using gitignore syntax
   "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
 
-  // define a custom lint (always runs)
-  // TODO: rename this to "global-lints" ?
-  "custom-lints": [
+  // define a global lint (not stack specific, runs always)
+  "global-lints": [
     {
       "name": "custom lint 1",
-      "command": "lints/one.sh"
+      "command": "tools/lint_1.sh"
+    },
+  ],
+  // define a global fix (not stack specific, runs always)
+  "global-fixes": [
+    {
+      "name": "custom fix 1",
+      "command": "tools/fix_1.sh"
     },
   ],
 
