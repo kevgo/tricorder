@@ -16,7 +16,7 @@ use std::sync::{
 use test_helpers::snapshots;
 use world::TricorderWorld;
 
-const JITTER_MIN_MS: u64 = 100;
+const JITTER_MIN_MS: u64 = 10;
 const JITTER_MAX_MS: u64 = 1000;
 
 #[tokio::main(flavor = "current_thread")]
