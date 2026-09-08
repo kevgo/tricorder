@@ -1,3 +1,4 @@
+use crate::jitter::jitter;
 use crate::world::{ExistingFile, TricorderWorld};
 use cucumber::gherkin::Step;
 use cucumber::given;
@@ -61,6 +62,7 @@ async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: Str
 
 #[given(expr = "a Git repository")]
 async fn a_git_repository(world: &mut TricorderWorld) {
+    jitter().await;
     Command::new("git")
         .arg("init")
         .current_dir(&world.dir)
