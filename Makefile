@@ -66,7 +66,7 @@ psa: ps cuke  ## pitstop, run during active development
 test: unit lint cuke  ## runs all tests
 
 todo:  # lists all TODOs in the code
-	$(RIPGREP) --fixed-strings --no-heading -n 'TODO' | $(RIPGREP) -v Makefile
+	$(RIPGREP) --fixed-strings -n 'TODO' | $(RIPGREP) -v Makefile
 
 unit:  # runs the unit tests
 	cargo nextest run --locked --workspace --status-level fail
