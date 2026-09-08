@@ -3,6 +3,7 @@ RUN_THAT_APP_VERSION = 0.42.1  # run-that-app version to use
 RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
+RIPGREP      = $(RTA) ripgrep
 TRICORDER    = target/debug/tricorder
 
 build:  # builds the project in debug mode
@@ -63,6 +64,9 @@ ps: build unit $(TRICORDER)
 psa: ps cuke  ## pitstop, run during active development
 
 test: unit lint cuke  ## runs all tests
+
+todo: ${RTA}  # lists all TODOs in the code
+	$(RIPGREP) --fixed-strings --glob='!Makefile' 'TODO' || true
 
 unit:  # runs the unit tests
 	cargo nextest run --locked --workspace --status-level fail
