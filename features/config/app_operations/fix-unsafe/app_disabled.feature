@@ -1,4 +1,4 @@
-Feature: disable an application's lint operation
+Feature: disable an application's fix-unsafe operation
 
   Background:
     Given a file "run-that-app" with content
@@ -7,7 +7,7 @@ Feature: disable an application's lint operation
       delete-empty-folders 0.0.2
       node 26.4.0
       prettier 3.7.0
-      rumdl 0.2.14
+      biome 2.4.0
       """
     Given a file "tricorder.json" with content
       """
@@ -15,7 +15,7 @@ Feature: disable an application's lint operation
         "applications": {
           "taplo": {
             "operations": {
-              "lint": {
+              "fix-unsafe": {
                 "enabled": false
               }
             }
@@ -23,9 +23,11 @@ Feature: disable an application's lint operation
         }
       }
       """
-    Given a file "other.md" with content
+    Given a file "other.css" with content
       """
-      # a markdown file
+      .foo {
+      \tcolor: red;
+      }
       """
     And a file "Cargo.toml" with content
       """
@@ -36,15 +38,30 @@ Feature: disable an application's lint operation
       pedantic = { level = "warn", priority = -1 }
       """
 
-  Scenario: lint skips the application
-    When executing "tricorder lint --show=all"
+  Scenario: fix-unsafe skips the application
+    When executing "tricorder fix-unsafe --show=all"
     Then it prints the block
       """
-      lint Markdown (rumdl)
+      unsafe fix CSS (Biome)
       """
     Then it does not print
       """
       Taplo
+      """
+    And file "Cargo.toml" is unchanged
+    And the exit code is 0
+
+  Scenario: lint still runs the application
+    When executing "tricorder lint --show=verbose"
+    Then it prints the block matching
+      """
+      lint TOML \(Taplo\)
+      \S+/taplo lint Cargo\.toml
+      """
+    And it prints the block matching
+      """
+      lint CSS \(Biome\)
+      \S+/biome lint other\.css\n
       """
     And the exit code is 0
 
@@ -57,16 +74,7 @@ Feature: disable an application's lint operation
       """
     And it prints the block matching
       """
-      fix Markdown \(rumdl\)
-      \S+/rumdl fmt other.md\n
-      """
-    And the exit code is 0
-
-  Scenario: fix-unsafe still runs the application
-    When executing "tricorder fix-unsafe --show=verbose"
-    Then it prints the block matching
-      """
-      force fix TOML \(Taplo\)
-      \S+/taplo format --force Cargo\.toml
+      fix CSS \(Biome\)
+      \S+/biome format --write other\.css\n
       """
     And the exit code is 0

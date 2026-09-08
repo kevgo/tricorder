@@ -1,4 +1,4 @@
-Feature: disable an application's lint operation
+Feature: disable an application's fix operation
 
   Background:
     Given a file "run-that-app" with content
@@ -15,7 +15,7 @@ Feature: disable an application's lint operation
         "applications": {
           "taplo": {
             "operations": {
-              "lint": {
+              "fix": {
                 "enabled": false
               }
             }
@@ -36,29 +36,30 @@ Feature: disable an application's lint operation
       pedantic = { level = "warn", priority = -1 }
       """
 
-  Scenario: lint skips the application
-    When executing "tricorder lint --show=all"
+  Scenario: fix skips the application
+    When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      lint Markdown (rumdl)
+      fix Markdown (rumdl)
       """
     Then it does not print
       """
       Taplo
       """
+    And file "Cargo.toml" is unchanged
     And the exit code is 0
 
-  Scenario: fix still runs the application
-    When executing "tricorder fix --show=verbose"
+  Scenario: lint still runs the application
+    When executing "tricorder lint --show=verbose"
     Then it prints the block matching
       """
-      fix TOML \(Taplo\)
-      \S+/taplo format Cargo\.toml
+      lint TOML \(Taplo\)
+      \S+/taplo lint Cargo\.toml
       """
     And it prints the block matching
       """
-      fix Markdown \(rumdl\)
-      \S+/rumdl fmt other.md\n
+      lint Markdown \(rumdl\)
+      \S+/rumdl check other.md\n
       """
     And the exit code is 0
 

@@ -1,4 +1,4 @@
-Feature: exclude a file from being linted by a specific app only
+Feature: exclude a file from being fixed by a specific app only
 
   Background:
     Given a file "run-that-app" with content
@@ -14,7 +14,7 @@ Feature: exclude a file from being linted by a specific app only
         "applications": {
           "taplo": {
             "operations": {
-              "lint": {
+              "fix": {
                 "ignore-files": ["Cargo.toml"]
               }
             }
@@ -35,37 +35,30 @@ Feature: exclude a file from being linted by a specific app only
       pedantic = { level = "warn", priority = -1 }
       """
 
-  Scenario: lint ignores the file
-    When executing "tricorder lint --show=verbose"
+  Scenario: fix ignores the file
+    When executing "tricorder fix --show=verbose"
     Then it prints the block matching
       """
-      lint TOML \(Taplo\)
-      \S+/taplo lint other\.toml\n
+      fix TOML \(Taplo\)
+      \S+/taplo format other\.toml\n
       """
     And it does not print
       """
       Cargo.toml
       """
-    And the exit code is 0
-
-  Scenario: fix still formats the file
-    When executing "tricorder fix --show=verbose"
-    Then it prints the block matching
-      """
-      fix TOML \(Taplo\)
-      \S+/taplo format Cargo\.toml other\.toml\n
-      """
     And file "other.toml" now has content
       """
       key = "value"
       """
-    And file "Cargo.toml" now has content
-      """
-      [package]
-      name = "demo"
+    And file "Cargo.toml" is unchanged
+    And the exit code is 0
 
-      [lints.clippy]
-      pedantic = { level = "warn", priority = -1 }
+  Scenario: lint still lints the file
+    When executing "tricorder lint --show=verbose"
+    Then it prints the block matching
+      """
+      lint TOML \(Taplo\)
+      \S+/taplo lint Cargo\.toml other\.toml\n
       """
     And the exit code is 0
 
