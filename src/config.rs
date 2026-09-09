@@ -227,6 +227,9 @@ pub struct Applications {
 }
 
 /// a Tricorder operation that applications can be configured for
+///
+/// Operations are more basic primitives than Tricorder commands.
+/// All Tricorder commands execute variations of these three basic operations on various files.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Operation {
     Lint,
