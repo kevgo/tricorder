@@ -22,11 +22,6 @@ Feature: lint multiple stacks
       console.log("hello");
       """
 
-  Scenario: default visibility
-    When executing "tricorder lint"
-    Then it prints nothing to STDOUT
-    And all files are unchanged
-
   Scenario: --show=all
     When executing "tricorder lint --show=all"
     Then it prints to STDERR

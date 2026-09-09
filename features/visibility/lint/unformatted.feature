@@ -22,19 +22,6 @@ Feature: lint multiple stacks with unformatted files
       console.log(  "hello"  );
       """
 
-  Scenario: default visibility
-    When executing "tricorder lint"
-    Then it prints nothing to STDERR
-    And it does not print any of these lines
-      """
-      lint CSS (Biome)
-      lint TypeScript (Biome)
-      lint Python (ruff)
-      """
-    And it prints nothing to STDOUT
-    And the exit code is 0
-    And all files are unchanged
-
   Scenario: --show=all
     When executing "tricorder lint --show=all"
     Then it prints to STDERR

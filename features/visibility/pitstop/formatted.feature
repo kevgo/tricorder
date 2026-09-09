@@ -22,11 +22,6 @@ Feature: pitstop multiple good stacks
       console.log("hello");
       """
 
-  Scenario: default visibility
-    When executing "tricorder pitstop"
-    Then it prints nothing to STDOUT
-    And all files are unchanged
-
   Scenario: --show=all
     When executing "tricorder pitstop --show=all"
     Then it prints to STDERR

@@ -20,32 +20,6 @@ Feature: lint multiple stacks with invalid code
       console.log("
       """
 
-  Scenario: default visibility
-    When executing "tricorder lint"
-    Then it prints nothing to STDERR
-    And it does not print any of these lines
-      """
-      lint CSS (Biome)
-      lint TypeScript (Biome)
-      lint Python (ruff)
-      """
-    And it prints the block
-      """
-      Found 2 errors.
-      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Found 1 error.
-      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      invalid-syntax: missing closing quote in string literal
-       --> main.py:1:7
-      """
-    And all files are unchanged
-
   Scenario: --show=all
     When executing "tricorder lint --show=all"
     Then it prints to STDERR

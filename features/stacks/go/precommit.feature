@@ -26,7 +26,7 @@ Feature: precommit Go
       }
       """
     And I ran "git add main.go"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.go" is unchanged
@@ -49,7 +49,7 @@ Feature: precommit Go
       }
       """
     And I ran "git add main.go other.go"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.go" now has content

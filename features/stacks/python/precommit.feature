@@ -18,7 +18,7 @@ Feature: precommit Python
       print("Hello, other!")
       """
     And I ran "git add main.py other.py"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.py" is unchanged
@@ -34,7 +34,7 @@ Feature: precommit Python
       print   ("Hello, other!")
       """
     And I ran "git add main.py other.py"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.py" now has content
@@ -56,7 +56,7 @@ Feature: precommit Python
       print("
       """
     And I ran "git add main.py other.py"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints
       """
       invalid-syntax: missing closing quote in string literal

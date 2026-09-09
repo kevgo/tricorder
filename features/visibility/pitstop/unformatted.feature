@@ -22,25 +22,6 @@ Feature: pitstop multiple unformatted stacks
       console.log(  "hello"  );
       """
 
-  Scenario: default visibility
-    When executing "tricorder pitstop"
-    Then it prints nothing to STDOUT
-    And it prints nothing to STDERR
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-
   Scenario: --show=all
     When executing "tricorder pitstop --show=all"
     Then it prints to STDERR

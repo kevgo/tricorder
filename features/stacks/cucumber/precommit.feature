@@ -39,7 +39,7 @@ Feature: precommit Cucumber
           Given   another step
       """
     And I ran "git add -A"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.feature" now has content
@@ -63,7 +63,7 @@ Feature: precommit Cucumber
       Feat
       """
     And I ran "git add -A"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints
       """
       Parser errors:

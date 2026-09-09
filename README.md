@@ -316,7 +316,14 @@ If both exist, **tricorder.json** takes precedence.
     "ruff": { "enabled": true, "ignore-files": [] },
     "rumdl": { "enabled": true, "ignore-files": [] },
     "sqlfmt": { "enabled": true, "ignore-files": [] },
-    "taplo": { "enabled": true, "ignore-files": [] },
+    "taplo": {
+      "operations": {
+        "lint": {
+          "enabled": true,
+          "ignore-files": ["Cargo.toml"] // ignore only for linting
+        }
+      }
+    }
     "text_runner": { "enabled": true },
     "tikibase": { "enabled": true }
   }

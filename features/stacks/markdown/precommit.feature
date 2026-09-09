@@ -14,7 +14,7 @@ Feature: precommit Markdown
       # Hello
       """
     And I ran "git add main.md"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" is unchanged
@@ -25,7 +25,7 @@ Feature: precommit Markdown
       #     Hello
       """
     And I ran "git add main.md"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" now has content
@@ -39,7 +39,7 @@ Feature: precommit Markdown
       #     Hello
       """
     And I ran "git add -A"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "my file.md" now has content
@@ -55,7 +55,7 @@ Feature: precommit Markdown
       [e
       """
     And I ran "git add main.md"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.md" is unchanged

@@ -17,6 +17,6 @@ Feature: don't fix files in .gitignore
       """
       delete-empty-folders 0.0.2
       """
-    When executing "tricorder fix"
+    When executing "tricorder fix --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
