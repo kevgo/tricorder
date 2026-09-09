@@ -1015,7 +1015,9 @@ mod tests {
   "applications": {
     "taplo": {
       "operations": {
-        "lint": { "ignore-files": ["Cargo.toml"] }
+        "lint": {
+          "ignore-files": ["Cargo.toml"]
+        }
       }
     }
   }
@@ -1072,7 +1074,9 @@ mod tests {
   "applications": {
     "actionlint": {
       "operations": {
-        "lint": { "ignore-files": ["foo.yml"] }
+        "lint": {
+          "ignore-files": ["foo.yml"]
+        }
       }
     }
   }
