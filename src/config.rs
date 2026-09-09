@@ -207,11 +207,19 @@ pub struct Applications {
     pub actionlint: Option<ApplicationNoFile>,
     pub biome: Option<ApplicationWithFile>,
     pub checkstyle: Option<ApplicationNoFile>,
+    #[serde(alias = "delete-empty-folders")]
+    #[schemars(rename = "delete-empty-folders")]
     pub delete_empty_folders: Option<ApplicationNoFile>,
+    #[serde(alias = "gherkin-lint")]
+    #[schemars(rename = "gherkin-lint")]
     pub gherkin_lint: Option<ApplicationWithFile>,
     pub ghokin: Option<ApplicationWithFile>,
+    #[serde(alias = "git-diff-check")]
+    #[schemars(rename = "git-diff-check")]
     pub git_diff_check: Option<ApplicationNoFile>,
     pub gofumpt: Option<ApplicationWithFile>,
+    #[serde(alias = "golangci-lint")]
+    #[schemars(rename = "golangci-lint")]
     pub golangci_lint: Option<ApplicationNoFile>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
@@ -222,6 +230,8 @@ pub struct Applications {
     pub rumdl: Option<ApplicationWithFile>,
     pub sqlfmt: Option<ApplicationWithFile>,
     pub taplo: Option<ApplicationWithFile>,
+    #[serde(alias = "text-runner")]
+    #[schemars(rename = "text-runner")]
     pub text_runner: Option<ApplicationNoFile>,
     pub tikibase: Option<ApplicationNoFile>,
 }
