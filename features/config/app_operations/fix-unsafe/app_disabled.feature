@@ -3,11 +3,11 @@ Feature: disable an application's fix-unsafe operation
   Background:
     Given a file "run-that-app" with content
       """
-      taplo 0.10.0
+      biome 2.4.0
       delete-empty-folders 0.0.2
       node 26.4.0
       prettier 3.7.0
-      biome 2.4.0
+      taplo 0.10.0
       """
     Given a file "tricorder.json" with content
       """
