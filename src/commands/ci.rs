@@ -13,7 +13,7 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let stacks = stacks::discover_all(&ignores);
-    let args_show = args.with_default_show(conc::Show::Names);
+    let args_show = args.with_default_show(conc::Show::All);
     let exit_code = run_fix_then_lint(&args_show, &config, &stacks, repo.as_ref())?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);

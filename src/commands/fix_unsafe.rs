@@ -12,7 +12,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
 
     // step 2: discover the stacks
     let all_stacks = stacks::discover_all(&ignores);
