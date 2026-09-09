@@ -3,10 +3,10 @@ Feature: exclude a file from being linted by a specific app only
   Background:
     Given a file "run-that-app" with content
       """
-      taplo 0.10.0
       delete-empty-folders 0.0.2
       node 26.4.0
       prettier 3.7.0
+      taplo 0.10.0
       """
     And a file "tricorder.json" with content
       """
@@ -32,7 +32,7 @@ Feature: exclude a file from being linted by a specific app only
       name =      "demo"
 
       [lints.clippy]
-      pedantic = { level = "warn", priority = -1 }
+      pedantic = { level = "warn" }
       """
 
   Scenario: lint ignores the file
@@ -65,7 +65,7 @@ Feature: exclude a file from being linted by a specific app only
       name = "demo"
 
       [lints.clippy]
-      pedantic = { level = "warn", priority = -1 }
+      pedantic = { level = "warn" }
       """
     And the exit code is 0
 
@@ -86,6 +86,6 @@ Feature: exclude a file from being linted by a specific app only
       name = "demo"
 
       [lints.clippy]
-      pedantic = { level = "warn", priority = -1 }
+      pedantic = { level = "warn" }
       """
     And the exit code is 0
