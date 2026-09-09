@@ -67,11 +67,11 @@ pub struct Config {
 impl Config {
     /// provides all files that should be excluded when running the given app for the given operation
     pub fn ignores_for(&self, tool: &dyn Tool, op: Operation) -> Result<Ignores> {
-        let Some(app) = self.app_section(tool) else {
+        let Some(app_section) = self.app_section(tool) else {
             return Ok(Ignores::empty());
         };
-        let mut patterns = app.ignore_files().to_vec();
-        if let Some(operation) = app.operation(op) {
+        let mut patterns = app_section.ignore_files().to_vec();
+        if let Some(operation) = app_section.operation(op) {
             patterns.extend_from_slice(operation.ignore_files());
         }
         Ignores::new(&patterns, Path::new("./"))
