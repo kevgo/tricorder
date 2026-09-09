@@ -1,6 +1,6 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::Config;
+use crate::config::{Config, Operation};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -46,7 +46,9 @@ pub fn determine_unsafe_fixes(
             .entry(stack.stack.stack_type())
             .or_default();
         for fix in stack.stack.fixes() {
-            if config.app_enabled(fix.as_ref()) && stacks.stack_enabled(&fix.enabled_when()) {
+            if config.operation_enabled(fix.as_ref(), Operation::FixUnsafe)
+                && stacks.stack_enabled(&fix.enabled_when())
+            {
                 stack_executables.extend(fix.unsafe_fix_commands(stack, config)?);
             }
         }

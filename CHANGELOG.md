@@ -1,5 +1,6 @@
 # Tricorder changelog
 
+- Application config now supports per-operation `enabled` and `ignore-files` under `operations.lint`, `operations.fix`, and `operations.fix-unsafe`
 - `tricorder update:tools` updates third-party tool versions to the latest available
 - `tricorder precommit` now exits 0 even when setup fails (invalid config, missing Git repo, etc.)
 
