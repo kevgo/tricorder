@@ -1115,7 +1115,7 @@ mod tests {
                         operations: Some(Operations {
                             lint: Some(ApplicationWithFileOperation {
                                 enabled: Some(true),
-                                ignore_files: None,
+                                ..Default::default()
                             }),
                             ..Default::default()
                         }),
@@ -1137,7 +1137,7 @@ mod tests {
                         operations: Some(Operations {
                             lint: Some(ApplicationWithFileOperation {
                                 enabled: Some(false),
-                                ignore_files: None,
+                                ..Default::default()
                             }),
                             ..Default::default()
                         }),
@@ -1160,11 +1160,11 @@ mod tests {
                         operations: Some(Operations {
                             lint: Some(ApplicationWithFileOperation {
                                 enabled: Some(true),
-                                ignore_files: None,
+                                ..Default::default()
                             }),
                             fix: Some(ApplicationWithFileOperation {
                                 enabled: Some(true),
-                                ignore_files: None,
+                                ..Default::default()
                             }),
                             ..Default::default()
                         }),
