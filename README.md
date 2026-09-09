@@ -207,37 +207,59 @@ If both exist, **tricorder.json** takes precedence.
   // using gitignore syntax
   "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
 
-  // define a global lint (not stack specific, runs always)
+  // not stack specific, always run; "name" is optional and defaults to the command
   "global-lints": [
-    {
-      "name": "custom lint 1",
-      "command": "tools/lint_1.sh"
-    },
+    { "name": "custom lint 1", "command": "tools/lint_1.sh" },
+    { "command": "tools/lint_2.sh" },
   ],
-  // define a global fix (not stack specific, runs always)
   "global-fixes": [
-    {
-      "name": "custom fix 1",
-      "command": "tools/fix_1.sh"
-    },
+    { "name": "custom fix 1", "command": "tools/fix_1.sh" },
+    { "command": "tools/fix_2.sh" },
   ],
 
+  // each stack accepts "lint" and "fix"
+  // "add" runs in addition to the built-in tools
+  // "replace" runs instead of the built-in tools (use [] to disable them)
+  // "name" and "command" are required
   "stacks": {
-    // add stack-specific lint to the default lints for that stack
+    "css": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "cucumber": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "go": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "java": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "json": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "jsonc": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "markdown": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
     "python": {
       "lint": {
-        // these lints run in addition to the default lints
         "add": [{ "name": "mypy", "command": "mypy ." }]
       },
       "fix": {
-        // these fixes run in addition to the default fixes
         "add": [{ "name": "isort", "command": "isort ." }]
       }
     },
-    // override stack-specific lints and fixes
     "rust": {
       "lint": {
-        // these lints run instead of the default lints
         "replace": [
           {
             "name": "clippy",
@@ -246,20 +268,57 @@ If both exist, **tricorder.json** takes precedence.
         ]
       },
       "fix": {
-        // these fixes run instead of the default fixes
         "replace": [{ "name": "rustfmt", "command": "cargo +nightly fmt" }]
       }
+    },
+    "sql": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "toml": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "typescript": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "unknown": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
+    },
+    "yml": {
+      "lint": { "add": [] },
+      "fix": { "add": [] }
     }
   },
 
+  // "enabled" defaults to true when omitted
+  // applications that receive file paths also accept "ignore-files" (gitignore syntax)
   // github.com/google/keep-sorted is disabled by default
   // because it scans the file content of all workspace files for markers
-  // to determine which files to sort
   "applications": {
+    "actionlint": { "enabled": true },
+    "biome": { "enabled": true, "ignore-files": [] },
+    "checkstyle": { "enabled": true },
+    "delete_empty_folders": { "enabled": true },
+    "gherkin_lint": { "enabled": true, "ignore-files": [] },
+    "ghokin": { "enabled": true, "ignore-files": [] },
+    "git_diff_check": { "enabled": true },
+    "gofumpt": { "enabled": true, "ignore-files": [] },
+    "golangci_lint": { "enabled": true },
     "keep-sorted": {
       "enabled": true,
       "ignore-files": ["README.md"] // ignored only by keep-sorted
-    }
+    },
+    "prettier": { "enabled": true, "ignore-files": [] },
+    "pyright": { "enabled": true, "ignore-files": [] },
+    "ruff": { "enabled": true, "ignore-files": [] },
+    "rumdl": { "enabled": true, "ignore-files": [] },
+    "sqlfmt": { "enabled": true, "ignore-files": [] },
+    "taplo": { "enabled": true, "ignore-files": [] },
+    "text_runner": { "enabled": true },
+    "tikibase": { "enabled": true }
   }
 }
 ```
