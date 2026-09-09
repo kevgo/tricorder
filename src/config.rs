@@ -1210,9 +1210,11 @@ mod tests {
             let lint = config.ignores_for(&Taplo {}, Operation::Lint).unwrap();
             assert!(lint.matches_self(Path::new("app.toml"), false));
             assert!(lint.matches_self(Path::new("lint.toml"), false));
+            assert!(!lint.matches_self(Path::new("other.toml"), false));
             let fix = config.ignores_for(&Taplo {}, Operation::Fix).unwrap();
             assert!(fix.matches_self(Path::new("app.toml"), false));
             assert!(!fix.matches_self(Path::new("lint.toml"), false));
+            assert!(!fix.matches_self(Path::new("other.toml"), false));
         }
     }
 }
