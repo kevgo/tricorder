@@ -9,7 +9,7 @@ Feature: disable an application's lint operation
       prettier 3.7.0
       rumdl 0.2.14
       """
-    Given a file "tricorder.json" with content
+    And a file "tricorder.json" with content
       """
       {
         "applications": {
@@ -23,7 +23,7 @@ Feature: disable an application's lint operation
         }
       }
       """
-    Given a file "other.md" with content
+    And a file "other.md" with content
       """
       # a markdown file
       """
@@ -42,7 +42,7 @@ Feature: disable an application's lint operation
       """
       lint Markdown (rumdl)
       """
-    Then it does not print
+    And it does not print
       """
       Taplo
       """

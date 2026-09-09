@@ -8,7 +8,7 @@ Feature: exclude a file from being linted by a specific app only
       node 26.4.0
       prettier 3.7.0
       """
-    Given a file "tricorder.json" with content
+    And a file "tricorder.json" with content
       """
       {
         "applications": {
@@ -22,7 +22,7 @@ Feature: exclude a file from being linted by a specific app only
         }
       }
       """
-    Given a file "other.toml" with content
+    And a file "other.toml" with content
       """
       key =     "value"
       """

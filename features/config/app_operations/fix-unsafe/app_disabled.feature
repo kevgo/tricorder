@@ -9,7 +9,7 @@ Feature: disable an application's fix-unsafe operation
       prettier 3.7.0
       taplo 0.10.0
       """
-    Given a file "tricorder.json" with content
+    And a file "tricorder.json" with content
       """
       {
         "applications": {
@@ -23,7 +23,7 @@ Feature: disable an application's fix-unsafe operation
         }
       }
       """
-    Given a file "other.css" with content
+    And a file "other.css" with content
       """
       .foo {
       \tcolor: red;
@@ -44,7 +44,7 @@ Feature: disable an application's fix-unsafe operation
       """
       unsafe fix CSS (Biome)
       """
-    Then it does not print
+    And it does not print
       """
       Taplo
       """
