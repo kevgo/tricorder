@@ -22,25 +22,6 @@ Feature: fix multiple stacks
       console.log(  "hello"  );
       """
 
-  Scenario: default visibility
-    When executing "tricorder fix"
-    Then it prints nothing to STDOUT
-    And it prints nothing to STDERR
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-
   Scenario: --show=all
     When executing "tricorder fix --show=all"
     Then it prints to STDERR

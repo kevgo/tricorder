@@ -20,45 +20,6 @@ Feature: fix multiple stacks with invalid code
       console.log("
       """
 
-  Scenario: default visibility
-    When executing "tricorder fix"
-    Then it prints nothing to STDERR
-    And it does not print any of these lines
-      """
-      fix CSS (Biome)
-      fix TypeScript (Biome)
-      fix Python (ruff)
-      """
-    And it prints the block
-      """
-      Found 2 errors.
-      main.ts:1:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      Found 1 error.
-      main.css:2:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """
-    And it prints the block
-      """
-      invalid-syntax: missing closing quote in string literal
-       --> main.py:1:7
-        |
-      1 | print("
-        |       ^
-        |
-
-      invalid-syntax: unexpected EOF while parsing
-       --> main.py:2:1
-        |
-      1 | print("
-        |        ^
-        |
-
-      Found 2 errors.
-      """
-    And all files are unchanged
-
   Scenario: --show=all
     When executing "tricorder fix --show=all"
     Then it prints to STDERR

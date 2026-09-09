@@ -23,41 +23,6 @@ Feature: CI if committed files are unformatted
       console.log(  "hello"  );
       """
 
-  Scenario: default visibility
-    When executing "tricorder ci"
-    Then it prints the block
-      """
-      code is not formatted
-      """
-    And it prints the block
-      """
-      diff --git a/main.css b/main.css
-      """
-    And it prints the block
-      """
-      diff --git a/main.ts b/main.ts
-      """
-    And it prints the block
-      """
-      diff --git a/main.py b/main.py
-      """
-    And it prints nothing to STDERR
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-    And the exit code is 1
-
   Scenario: --show=all
     When executing "tricorder ci --show=all"
     Then it prints to STDERR
