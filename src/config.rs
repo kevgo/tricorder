@@ -89,8 +89,16 @@ impl Config {
     /// Missing keys default to enabled.
     #[must_use]
     pub fn operation_enabled(&self, tool: &dyn Tool, op: Operation) -> bool {
-        self.app_section(tool)
-            .is_none_or(|app| app.enabled() && app.operation(op).is_none_or(Application::enabled))
+        let Some(app_section) = self.app_section(tool) else {
+            return true;
+        };
+        if !app_section.enabled() {
+            return false;
+        }
+        let Some(operation) = app_section.operation(op) else {
+            return true;
+        };
+        operation.enabled()
     }
 
     fn app_section(&self, tool: &dyn Tool) -> Option<&dyn Application> {
