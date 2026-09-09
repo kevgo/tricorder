@@ -18,7 +18,7 @@ Feature: "tricorder precommit" formats and stages files with fully staged change
       #     New
       """
     And I ran "git add file.md"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the staged changes are
       """
@@ -50,7 +50,7 @@ Feature: "tricorder precommit" formats and stages files with fully staged change
       #     New
       """
     And I ran "git add -A"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the staged changes are
       """

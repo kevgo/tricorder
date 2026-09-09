@@ -23,7 +23,7 @@ fn run(args: &RunArgs) -> Result<()> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let repo = git::Repo::load().ok_or(UserError::NoGitRepository)?;
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
 

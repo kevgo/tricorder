@@ -12,7 +12,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let repo = git::Repo::load();
