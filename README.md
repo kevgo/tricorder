@@ -252,7 +252,10 @@ If both exist, **tricorder.json** takes precedence.
     },
     "taplo": {
       "operations": {
-        "lint": { "ignore-files": ["Cargo.toml"] } // ignore only for linting
+        "lint": {
+          "enabled": true,
+          "ignore-files": ["Cargo.toml"] // ignore only for linting
+        }
       }
     }
   }
