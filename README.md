@@ -201,6 +201,8 @@ If both exist, **tricorder.json** takes precedence.
 
 ```jsonc
 {
+  "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+
   // make these files invisible to Tricorder
   // using gitignore syntax
   "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
@@ -223,28 +225,30 @@ If both exist, **tricorder.json** takes precedence.
   "stacks": {
     // add stack-specific lint to the default lints for that stack
     "python": {
-      // these lints run in addition to the default lints
-      "additional-lints": [
-        { "name": "mypy", "command": "mypy ." }
-      ],
-      // these fixes run in addition to the default fixes
-      "additional-fixes": [
-        { "name": "isort", "command": "isort ." }
-      ]
+      "lint": {
+        // these lints run in addition to the default lints
+        "add": [{ "name": "mypy", "command": "mypy ." }]
+      },
+      "fix": {
+        // these fixes run in addition to the default fixes
+        "add": [{ "name": "isort", "command": "isort ." }]
+      }
     },
     // override stack-specific lints and fixes
     "rust": {
-      // these lints run instead of the default lints
-      "replace-lints": [
-        {
-          "name": "clippy",
-          "command": "cargo clippy --all-targets"
-        }
-      ],
-      // these fixes run instead of the default fixes
-      "replace-fixes": [
-        { "name": "rustfmt", "command": "cargo +nightly fmt" }
-      ]
+      "lint": {
+        // these lints run instead of the default lints
+        "replace": [
+          {
+            "name": "clippy",
+            "command": "cargo clippy --all-targets"
+          }
+        ]
+      },
+      "fix": {
+        // these fixes run instead of the default fixes
+        "replace": [{ "name": "rustfmt", "command": "cargo +nightly fmt" }]
+      }
     }
   },
 
