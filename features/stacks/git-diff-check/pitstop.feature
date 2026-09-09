@@ -12,7 +12,7 @@ Feature: "tricorder pitstop" runs "git diff --check"
       """
 
   Scenario: clean repository
-    When executing "tricorder pitstop"
+    When executing "tricorder pitstop --show=failed"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0

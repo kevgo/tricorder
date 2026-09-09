@@ -12,7 +12,7 @@ Feature: "tricorder lint" runs "git diff --check"
       """
 
   Scenario: clean repository
-    When executing "tricorder lint"
+    When executing "tricorder lint --show=failed"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0
