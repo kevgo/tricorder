@@ -1,8 +1,28 @@
 use crate::cli::input::InitArgs;
-use crate::config::{self, default_json};
+use crate::config;
+use crate::config::SCHEMA_URL;
 use crate::domain::{Result, UserError};
 use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::process::ExitCode;
+
+/// default `tricorder.json` contents written by `tricorder init:config`
+#[must_use]
+pub fn default_json() -> String {
+    format!(
+        r#"{{
+  "$schema": "{SCHEMA_URL}",
+  "global-fixes": [],
+  "global-lints": [],
+  "ignore-files": [],
+  "applications": {{
+    "keep-sorted": {{
+      "enabled": false
+    }}
+  }}
+}}
+"#
+    )
+}
 
 /// writes the default configuration into the existing config file, or `tricorder.json` if none exists
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
@@ -29,7 +49,8 @@ fn create_config(path: &str, force: bool) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::create_config;
-    use crate::config::{self, default_json};
+    use crate::commands::init_config::default_json;
+    use crate::config;
     use crate::domain::UserError;
     use std::fs;
     use tempfile::TempDir;
@@ -65,6 +86,42 @@ mod tests {
             fs::write(&path, "existing").unwrap();
             create_config(&path.to_string_lossy(), true).unwrap();
             pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+        }
+    }
+
+    mod default_json {
+        use crate::commands::init_config::default_json;
+        use crate::config::{ApplicationWithFile, Applications, Config, SCHEMA_URL};
+
+        #[test]
+        fn contains_vscode_schema_link() {
+            let have = default_json();
+            let want = format!(r#""$schema": "{SCHEMA_URL}""#);
+            assert!(
+                have.contains(&want),
+                "default config should contain the VS Code schema link `{want}`\n\nHAVE:\n{have}"
+            );
+        }
+
+        #[test]
+        fn parses_as_default_settings() {
+            let have = Config::parse(&default_json(), "tricorder.json").unwrap();
+            let want = Config {
+                schema: Some(SCHEMA_URL.to_string()),
+                global_fixes: Some(vec![]),
+                global_lints: Some(vec![]),
+                ignore_files: Some(vec![]),
+                applications: Some(Applications {
+                    keep_sorted: Some(ApplicationWithFile {
+                        enabled: Some(false),
+                        ignore_files: None,
+                        operations: None,
+                    }),
+                    ..Default::default()
+                }),
+                stacks: None,
+            };
+            pretty::assert_eq!(have, want);
         }
     }
 }

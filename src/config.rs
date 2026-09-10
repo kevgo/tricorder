@@ -16,25 +16,6 @@ pub const CONFIG_FILENAMES: [&str; 2] = [FILENAME, "tricorder.jsonc"];
 pub const SCHEMA_URL: &str =
     "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json";
 
-/// default `tricorder.json` contents written by `tricorder init:config`
-#[must_use]
-pub fn default_json() -> String {
-    format!(
-        r#"{{
-  "$schema": "{SCHEMA_URL}",
-  "global-fixes": [],
-  "global-lints": [],
-  "ignore-files": [],
-  "applications": {{
-    "keep-sorted": {{
-      "enabled": false
-    }}
-  }}
-}}
-"#
-    )
-}
-
 #[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 #[schemars(title = "Tricorder configuration")]
@@ -123,7 +104,7 @@ impl Config {
         Ok(Self::default())
     }
 
-    fn parse(text: &str, filename: &str) -> Result<Config> {
+    pub(crate) fn parse(text: &str, filename: &str) -> Result<Config> {
         // empty or comment-only files deserialize as null, hence Option
         let config: Option<Config> =
             jsonc_parser::parse_to_serde_value(text, &ParseOptions::default()).map_err(|err| {
@@ -367,41 +348,6 @@ impl Application for ApplicationWithFileOperation {
 
 #[cfg(test)]
 mod tests {
-
-    mod default_json {
-        use crate::config::{ApplicationWithFile, Applications, Config, SCHEMA_URL, default_json};
-
-        #[test]
-        fn contains_vscode_schema_link() {
-            let have = default_json();
-            let want = format!(r#""$schema": "{SCHEMA_URL}""#);
-            assert!(
-                have.contains(&want),
-                "default config should contain the VS Code schema link `{want}`\n\nHAVE:\n{have}"
-            );
-        }
-
-        #[test]
-        fn parses_as_default_settings() {
-            let have = Config::parse(&default_json(), "tricorder.json").unwrap();
-            let want = Config {
-                schema: Some(SCHEMA_URL.to_string()),
-                global_fixes: Some(vec![]),
-                global_lints: Some(vec![]),
-                ignore_files: Some(vec![]),
-                applications: Some(Applications {
-                    keep_sorted: Some(ApplicationWithFile {
-                        enabled: Some(false),
-                        ignore_files: None,
-                        operations: None,
-                    }),
-                    ..Default::default()
-                }),
-                stacks: None,
-            };
-            pretty::assert_eq!(have, want);
-        }
-    }
 
     mod parse {
         use crate::config::StackTools;
