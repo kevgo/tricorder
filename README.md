@@ -289,8 +289,6 @@ If both exist, **tricorder.json** takes precedence.
   //
   // Only applications that can receive file paths as arguments
   // accept "ignore-files" here (in gitignore syntax).
-  // github.com/google/keep-sorted is disabled by default
-  // because using it requires scanning the file content of all workspace files for markers.
   "applications": {
     "actionlint": { "enabled": true },
     "biome": { "enabled": true, "ignore-files": [] },
@@ -301,7 +299,9 @@ If both exist, **tricorder.json** takes precedence.
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
-    "keep-sorted": { "enabled": true, "ignore-files": [] },
+    // github.com/google/keep-sorted is disabled by default
+    // because using it requires scanning the file content of all workspace files for markers.
+    "keep-sorted": { "enabled": false, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
