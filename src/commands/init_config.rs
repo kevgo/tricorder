@@ -5,8 +5,7 @@ use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::process::ExitCode;
 
 /// default `tricorder.json` contents written by `tricorder init:config`
-#[must_use]
-pub fn default_json() -> &'static str {
+const DEFAULT_JSON: &str = r#"
     r#"
 {
   // link to the JSON schema for this file,
@@ -138,8 +137,7 @@ pub fn default_json() -> &'static str {
     "tikibase": { "enabled": true }
   }
 }
-"#
-}
+"#;
 
 /// writes the default configuration into the existing config file, or `tricorder.json` if none exists
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
@@ -160,13 +158,13 @@ fn create_config(path: &str, force: bool) -> Result<()> {
             filename: path.to_string(),
         });
     }
-    create_file(path, &default_json(), FileMode::NotExecutable)
+    create_file(path, DEFAULT_JSON, FileMode::NotExecutable)
 }
 
 #[cfg(test)]
 mod tests {
+    use super::DEFAULT_JSON;
     use super::create_config;
-    use crate::commands::init_config::default_json;
     use crate::config;
     use crate::domain::UserError;
     use std::fs;
@@ -177,7 +175,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         create_config(&path.to_string_lossy(), false).unwrap();
-        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), DEFAULT_JSON);
     }
 
     #[test]
@@ -202,18 +200,18 @@ mod tests {
             let path = dir.path().join(filename);
             fs::write(&path, "existing").unwrap();
             create_config(&path.to_string_lossy(), true).unwrap();
-            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), DEFAULT_JSON);
         }
     }
 
     mod default_json {
-        use crate::commands::init_config::default_json;
+        use super::DEFAULT_JSON;
         use crate::config::{ApplicationWithFile, Applications, Config, SCHEMA_URL};
         use big_s::S;
 
         #[test]
         fn contains_vscode_schema_link() {
-            let have = default_json();
+            let have = DEFAULT_JSON;
             let want = format!(r#""$schema": "{SCHEMA_URL}""#);
             assert!(
                 have.contains(&want),
@@ -223,7 +221,7 @@ mod tests {
 
         #[test]
         fn parses_as_default_settings() {
-            let have = Config::parse(&default_json(), "tricorder.json").unwrap();
+            let have = Config::parse(DEFAULT_JSON, "tricorder.json").unwrap();
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
                 ignore_files: Some(vec![S("custom.css"), S("vendor/"), S("**/*/min.css")]),
