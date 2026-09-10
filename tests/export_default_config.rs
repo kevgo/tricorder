@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::Path;
-use tricorder::commands::DEFAULT_JSON;
+use tricorder::commands::init_config::DEFAULT_JSON;
 
 const START: &str = "<!-- DEFAULT-CONFIG-START -->";
 const END: &str = "<!-- DEFAULT_CONFIG-END -->";
