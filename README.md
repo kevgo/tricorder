@@ -226,7 +226,7 @@ If both exist, **tricorder.json** takes precedence.
 
   // configure the supported software stacks
   //
-  // The given example settings apply to all stacks.
+  // The fields in the given example settings can be used for any stack.
   // "add" runs the given tool in addition to the built-in tools.
   // "replace" runs the given tool instead of the built-in tools.
   // Use "replace: []" to disable the built-in tools.
