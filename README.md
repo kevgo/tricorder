@@ -199,6 +199,8 @@ and formatters in **tricorder.json** or **tricorder.jsonc**.
 Comments and trailing commas are allowed in either file.
 If both exist, **tricorder.json** takes precedence.
 
+<!-- DEFAULT-CONFIG-START -->
+
 ```jsonc
 {
   // link to the JSON schema for this file,
@@ -332,3 +334,5 @@ If both exist, **tricorder.json** takes precedence.
   }
 }
 ```
+
+<!-- DEFAULT_CONFIG-END -->
