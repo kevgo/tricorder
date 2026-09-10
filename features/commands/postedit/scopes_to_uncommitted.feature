@@ -4,8 +4,8 @@ Feature: "tricorder postedit" lints only uncommitted files
     Given a Git repository
     And a committed file "run-that-app" with content
       """
-      rumdl 0.2.14
       delete-empty-folders 0.0.2
+      rumdl 0.2.14
       """
 
   Scenario: no uncommitted files
