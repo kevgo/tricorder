@@ -107,6 +107,7 @@ const DEFAULT_JSON: &str = r#"{
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
+    "markdownlint": { "enabled": true, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
@@ -293,6 +294,11 @@ mod tests {
                     }),
                     keep_sorted: Some(ApplicationWithFile {
                         enabled: Some(false),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    markdownlint: Some(ApplicationWithFile {
+                        enabled: Some(true),
                         ignore_files: Some(vec![]),
                         operations: None,
                     }),

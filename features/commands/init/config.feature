@@ -112,6 +112,7 @@ Feature: "tricorder init:config" writes the default config file
           // github.com/google/keep-sorted is disabled by default
           // because using it requires scanning the file content of all workspace files for markers.
           "keep-sorted": { "enabled": false, "ignore-files": [] },
+          "markdownlint": { "enabled": true, "ignore-files": [] },
           "prettier": { "enabled": true, "ignore-files": [] },
           "pyright": { "enabled": true, "ignore-files": [] },
           "ruff": { "enabled": true, "ignore-files": [] },
@@ -278,6 +279,7 @@ Feature: "tricorder init:config" writes the default config file
           // github.com/google/keep-sorted is disabled by default
           // because using it requires scanning the file content of all workspace files for markers.
           "keep-sorted": { "enabled": false, "ignore-files": [] },
+          "markdownlint": { "enabled": true, "ignore-files": [] },
           "prettier": { "enabled": true, "ignore-files": [] },
           "pyright": { "enabled": true, "ignore-files": [] },
           "ruff": { "enabled": true, "ignore-files": [] },
