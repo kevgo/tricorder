@@ -145,7 +145,7 @@
             }
           ]
         },
-        "delete_empty_folders": {
+        "delete-empty-folders": {
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationNoFile"
@@ -155,7 +155,7 @@
             }
           ]
         },
-        "gherkin_lint": {
+        "gherkin-lint": {
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationWithFile"
@@ -175,7 +175,7 @@
             }
           ]
         },
-        "git_diff_check": {
+        "git-diff-check": {
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationNoFile"
@@ -195,7 +195,7 @@
             }
           ]
         },
-        "golangci_lint": {
+        "golangci-lint": {
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationNoFile"
@@ -275,7 +275,7 @@
             }
           ]
         },
-        "text_runner": {
+        "text-runner": {
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationNoFile"

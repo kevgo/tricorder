@@ -204,14 +204,24 @@ impl From<&StackCommand> for conc::Executable {
 #[serde(deny_unknown_fields)]
 // TODO: rename to ApplicationsSection
 pub struct Applications {
+    #[serde(alias = "actionlint")]
+    #[schemars(rename = "actionlint")]
     pub actionlint: Option<ApplicationNoFile>,
     pub biome: Option<ApplicationWithFile>,
     pub checkstyle: Option<ApplicationNoFile>,
+    #[serde(alias = "delete-empty-folders")]
+    #[schemars(rename = "delete-empty-folders")]
     pub delete_empty_folders: Option<ApplicationNoFile>,
+    #[serde(alias = "gherkin-lint")]
+    #[schemars(rename = "gherkin-lint")]
     pub gherkin_lint: Option<ApplicationWithFile>,
     pub ghokin: Option<ApplicationWithFile>,
+    #[serde(alias = "git-diff-check")]
+    #[schemars(rename = "git-diff-check")]
     pub git_diff_check: Option<ApplicationNoFile>,
     pub gofumpt: Option<ApplicationWithFile>,
+    #[serde(alias = "golangci-lint")]
+    #[schemars(rename = "golangci-lint")]
     pub golangci_lint: Option<ApplicationNoFile>,
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
@@ -222,6 +232,8 @@ pub struct Applications {
     pub rumdl: Option<ApplicationWithFile>,
     pub sqlfmt: Option<ApplicationWithFile>,
     pub taplo: Option<ApplicationWithFile>,
+    #[serde(alias = "text-runner")]
+    #[schemars(rename = "text-runner")]
     pub text_runner: Option<ApplicationNoFile>,
     pub tikibase: Option<ApplicationNoFile>,
 }
@@ -722,6 +734,77 @@ mod tests {
             assert!(
                 err.contains("unknown field `unknown-key`"),
                 "error should mention the unknown field, got: {err}"
+            );
+        }
+    }
+
+    mod applications {
+        use crate::config::{ApplicationNoFile, ApplicationWithFile, Applications, Config};
+
+        fn disabled_no_file() -> ApplicationNoFile {
+            ApplicationNoFile {
+                enabled: Some(false),
+                operations: None,
+            }
+        }
+
+        fn disabled_with_file() -> ApplicationWithFile {
+            ApplicationWithFile {
+                enabled: Some(false),
+                ignore_files: None,
+                operations: None,
+            }
+        }
+
+        #[test]
+        fn parses_all() {
+            let give = r#"
+{
+  "applications": {
+    "actionlint": { "enabled": false },
+    "biome": { "enabled": false },
+    "checkstyle": { "enabled": false },
+    "delete-empty-folders": { "enabled": false },
+    "gherkin-lint": { "enabled": false },
+    "ghokin": { "enabled": false },
+    "git-diff-check": { "enabled": false },
+    "gofumpt": { "enabled": false },
+    "golangci-lint": { "enabled": false },
+    "keep-sorted": { "enabled": false },
+    "prettier": { "enabled": false },
+    "pyright": { "enabled": false },
+    "ruff": { "enabled": false },
+    "rumdl": { "enabled": false },
+    "sqlfmt": { "enabled": false },
+    "taplo": { "enabled": false },
+    "text-runner": { "enabled": false },
+    "tikibase": { "enabled": false }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            pretty::assert_eq!(
+                have.applications,
+                Some(Applications {
+                    actionlint: Some(disabled_no_file()),
+                    biome: Some(disabled_with_file()),
+                    checkstyle: Some(disabled_no_file()),
+                    delete_empty_folders: Some(disabled_no_file()),
+                    gherkin_lint: Some(disabled_with_file()),
+                    ghokin: Some(disabled_with_file()),
+                    git_diff_check: Some(disabled_no_file()),
+                    gofumpt: Some(disabled_with_file()),
+                    golangci_lint: Some(disabled_no_file()),
+                    keep_sorted: Some(disabled_with_file()),
+                    prettier: Some(disabled_with_file()),
+                    pyright: Some(disabled_with_file()),
+                    ruff: Some(disabled_with_file()),
+                    rumdl: Some(disabled_with_file()),
+                    sqlfmt: Some(disabled_with_file()),
+                    taplo: Some(disabled_with_file()),
+                    text_runner: Some(disabled_no_file()),
+                    tikibase: Some(disabled_no_file()),
+                })
             );
         }
     }
