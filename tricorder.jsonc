@@ -41,6 +41,10 @@
           {
             "name": "cargo fmt",
             "command": "cargo +nightly fmt"
+          },
+          {
+            "name": "document configuration in README.md",
+            "command": "cargo test --test=export_default_config --locked --quiet"
           }
         ]
       }

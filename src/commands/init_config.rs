@@ -5,7 +5,7 @@ use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::process::ExitCode;
 
 /// default `tricorder.json` contents written by `tricorder init:config`
-const DEFAULT_JSON: &str = r#"{
+pub const DEFAULT_JSON: &str = r#"{
   // link to the JSON schema for this file,
   // for auto-complete in VSCode and compatible editors
   "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
