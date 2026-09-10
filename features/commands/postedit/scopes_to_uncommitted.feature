@@ -4,8 +4,10 @@ Feature: "tricorder postedit" lints only uncommitted files
     Given a Git repository
     And a committed file "run-that-app" with content
       """
-      rumdl 0.2.14
       delete-empty-folders 0.0.2
+      markdownlint 0.41.1
+      node 26.4.0
+      rumdl 0.2.14
       """
 
   Scenario: no uncommitted files
@@ -49,7 +51,7 @@ Feature: "tricorder postedit" lints only uncommitted files
     Then it prints to STDERR
       """
       2 Markdown
-      running 2 tools
+      running 3 tools
       """
     And it prints the lines
       """
@@ -78,7 +80,7 @@ Feature: "tricorder postedit" lints only uncommitted files
     Then it prints to STDERR
       """
       1 Markdown
-      running 2 tools
+      running 3 tools
       """
     And it prints the lines
       """

@@ -5,6 +5,7 @@ Feature: lint documentation with Text-Runner
       """
       biome 2.5.2
       delete-empty-folders 0.0.2
+      markdownlint 0.41.1
       node 26.0.0
       npm 26.0.0
       rumdl 0.2.14
@@ -22,6 +23,12 @@ Feature: lint documentation with Text-Runner
     And a file "rumdl.toml" with content
       """
       enable = []
+      """
+    And a file ".markdownlint.json" with content
+      """
+      {
+        "MD033": false
+      }
       """
 
   Scenario: valid Markdown

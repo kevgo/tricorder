@@ -16,9 +16,10 @@ Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
 
 ```sh
 114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
-running 6 tools
+running 7 tools
 
 lint Markdown (rumdl)
+lint Markdown (markdownlint)
 lint TOML (Taplo)
 lint Git diff markers (git diff HEAD --check)
 GitHub Actions (actionlint)
@@ -27,11 +28,13 @@ cargo clippy
 ```
 
 Tricorder has classified 203 files
-and executed 5 tools concurrently to lint them.
+and executed 6 tools concurrently to lint them.
 In this example:
 
 - [Taplo](https://github.com/tamasfe/taplo) for the 3 TOML files
-- [rumdl](https://github.com/rvben/rumdl) for the 4 Markdown files
+- [rumdl](https://github.com/rvben/rumdl) and
+  [markdownlint](https://github.com/DavidAnson/markdownlint)
+  for the 4 Markdown files
 - [gherkin-lint](https://github.com/gherkin-lint/gherkin-lint)
   for the 98 Cucumber files
 - [actionlint](https://github.com/rhysd/actionlint)
@@ -301,6 +304,7 @@ If both exist, **tricorder.json** takes precedence.
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
     "keep-sorted": { "enabled": true, "ignore-files": [] },
+    "markdownlint": { "enabled": true, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },

@@ -8,6 +8,7 @@ pub mod git_diff_check;
 pub mod gofumpt;
 pub mod golangci_lint;
 pub mod keep_sorted;
+pub mod markdownlint;
 pub mod prettier;
 pub mod pyright;
 pub mod ripgrep;

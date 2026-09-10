@@ -215,6 +215,16 @@
             }
           ]
         },
+        "markdownlint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "prettier": {
           "anyOf": [
             {

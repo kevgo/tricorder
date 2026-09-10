@@ -3,8 +3,10 @@ Feature: lint a Tikibase
   Background:
     Given a file "run-that-app" with content
       """
-      rumdl 0.2.14
       delete-empty-folders 0.0.2
+      markdownlint 0.41.1
+      node 26.4.0
+      rumdl 0.2.14
       tikibase 0.6.2
       """
     And a file "tikibase.json" with content

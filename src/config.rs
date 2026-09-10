@@ -207,6 +207,7 @@ pub struct Applications {
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<ApplicationWithFile>,
+    pub markdownlint: Option<ApplicationWithFile>,
     pub prettier: Option<ApplicationWithFile>,
     pub pyright: Option<ApplicationWithFile>,
     pub ruff: Option<ApplicationWithFile>,
@@ -717,6 +718,7 @@ mod tests {
     "gofumpt": { "enabled": false },
     "golangci-lint": { "enabled": false },
     "keep-sorted": { "enabled": false },
+    "markdownlint": { "enabled": false },
     "prettier": { "enabled": false },
     "pyright": { "enabled": false },
     "ruff": { "enabled": false },
@@ -742,6 +744,7 @@ mod tests {
                     gofumpt: Some(disabled_with_file()),
                     golangci_lint: Some(disabled_no_file()),
                     keep_sorted: Some(disabled_with_file()),
+                    markdownlint: Some(disabled_with_file()),
                     prettier: Some(disabled_with_file()),
                     pyright: Some(disabled_with_file()),
                     ruff: Some(disabled_with_file()),
