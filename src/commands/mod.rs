@@ -1,7 +1,7 @@
 mod ci;
 mod fix;
 mod fix_unsafe;
-mod init_config;
+pub mod init_config;
 mod lint;
 mod pitstop;
 mod post_edit;
