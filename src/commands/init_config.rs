@@ -1,28 +1,142 @@
 use crate::cli::input::InitArgs;
 use crate::config;
-use crate::config::SCHEMA_URL;
 use crate::domain::{Result, UserError};
 use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::process::ExitCode;
 
 /// default `tricorder.json` contents written by `tricorder init:config`
-#[must_use]
-pub fn default_json() -> String {
-    format!(
-        r#"{{
-  "$schema": "{SCHEMA_URL}",
-  "global-fixes": [],
-  "global-lints": [],
-  "ignore-files": [],
-  "applications": {{
-    "keep-sorted": {{
-      "enabled": false
-    }}
-  }}
-}}
-"#
-    )
+const DEFAULT_JSON: &str = r#"{
+  // link to the JSON schema for this file,
+  // for auto-complete in VSCode and compatible editors
+  "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+
+  // globally ignored files
+  //
+  // These files are invisible to Tricorder.
+  // Supports gitignore syntax.
+  "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
+
+  // global tools
+  //
+  // These tools always run.
+  // "name" is optional and defaults to the command
+  "global-lints": [
+    { "command": "tools/lint_1.sh", "name": "custom lint 1" },
+    { "command": "tools/lint_2.sh" },
+  ],
+  "global-fixes": [
+    { "command": "tools/fix_1.sh", "name": "custom fix 1" },
+    { "command": "tools/fix_2.sh" },
+  ],
+
+  // configure the supported software stacks
+  //
+  // The fields in the given example settings can be used for any stack.
+  // "add" runs the given tool in addition to the built-in tools.
+  // "replace" runs the given tool instead of the built-in tools.
+  // Use "replace: []" to disable the built-in tools.
+  "stacks": {
+    "css": {},
+    "cucumber": {},
+    "go": {},
+    "java": {},
+    "json": {},
+    "jsonc": {},
+    "markdown": {},
+    "python": {
+      "lint": {
+        // additional lints for Python files
+        "add": [
+          {
+            "name": "mypy",
+            "command": "mypy .",
+          }
+        ]
+      },
+      "fix": {
+        // additional fixes for Python files
+        "add": [
+          {
+            "name": "isort",
+            "command": "isort ."
+          }
+        ]
+      }
+    },
+    "rust": {
+      "lint": {
+        // replace all built-in lints for Rust files with these ones
+        "replace": [
+          {
+            "name": "clippy",
+            "command": "cargo clippy --all-targets"
+          }
+        ]
+      },
+      "fix": {
+        // replace all built-in fixes for Rust files with these ones
+        "replace": [
+          {
+            "name": "rustfmt",
+            "command": "cargo +nightly fmt"
+          }
+        ]
+      }
+    },
+    "sql": {},
+    "toml": {},
+    "typescript": {},
+    "unknown": {},
+    "yml": {}
+  },
+
+  // configure the built-in tools
+  //
+  // Only applications that can receive file paths as arguments
+  // accept "ignore-files" here (in gitignore syntax).
+  "applications": {
+    "actionlint": { "enabled": true },
+    "biome": { "enabled": true, "ignore-files": [] },
+    "checkstyle": { "enabled": true },
+    "delete_empty_folders": { "enabled": true },
+    "gherkin_lint": { "enabled": true, "ignore-files": [] },
+    "ghokin": { "enabled": true, "ignore-files": [] },
+    "git_diff_check": { "enabled": true },
+    "gofumpt": { "enabled": true, "ignore-files": [] },
+    "golangci_lint": { "enabled": true },
+    // github.com/google/keep-sorted is disabled by default
+    // because using it requires scanning the file content of all workspace files for markers.
+    "keep-sorted": { "enabled": false, "ignore-files": [] },
+    "prettier": { "enabled": true, "ignore-files": [] },
+    "pyright": { "enabled": true, "ignore-files": [] },
+    "ruff": { "enabled": true, "ignore-files": [] },
+    "rumdl": { "enabled": true, "ignore-files": [] },
+    "sqlfmt": { "enabled": true, "ignore-files": [] },
+    "taplo": {
+      // enable or disable the application
+      "enabled": true,
+      // files that Taplo should ignore altogtether
+      "ignore-files": [],
+      "operations": {
+        "lint": {
+          // enable or disable all Taplo lints
+          "enabled": true,
+          // don't lint the files listed here
+          "ignore-files": []
+        },
+        "fix": {
+          // enable or disable all Taplo fixes
+          "enabled": true,
+          // don't fix the files listed here
+          "ignore-files": []
+        }
+      }
+    },
+    "text-runner": { "enabled": true },
+    "tikibase": { "enabled": true }
+  }
 }
+"#;
 
 /// writes the default configuration into the existing config file, or `tricorder.json` if none exists
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
@@ -43,13 +157,13 @@ fn create_config(path: &str, force: bool) -> Result<()> {
             filename: path.to_string(),
         });
     }
-    create_file(path, &default_json(), FileMode::NotExecutable)
+    create_file(path, DEFAULT_JSON, FileMode::NotExecutable)
 }
 
 #[cfg(test)]
 mod tests {
+    use super::DEFAULT_JSON;
     use super::create_config;
-    use crate::commands::init_config::default_json;
     use crate::config;
     use crate::domain::UserError;
     use std::fs;
@@ -60,7 +174,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let path = dir.path().join(config::FILENAME);
         create_config(&path.to_string_lossy(), false).unwrap();
-        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+        pretty::assert_eq!(fs::read_to_string(&path).unwrap(), DEFAULT_JSON);
     }
 
     #[test]
@@ -85,17 +199,24 @@ mod tests {
             let path = dir.path().join(filename);
             fs::write(&path, "existing").unwrap();
             create_config(&path.to_string_lossy(), true).unwrap();
-            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), default_json());
+            pretty::assert_eq!(fs::read_to_string(&path).unwrap(), DEFAULT_JSON);
         }
     }
 
     mod default_json {
-        use crate::commands::init_config::default_json;
-        use crate::config::{ApplicationWithFile, Applications, Config, SCHEMA_URL};
+        use super::DEFAULT_JSON;
+        use crate::config::{
+            ApplicationNoFile, ApplicationWithFile, ApplicationWithFileOperation, Applications,
+            Config, GlobalFix, GlobalLint, Operations, SCHEMA_URL, StackCommand, StackConfig,
+            StackTools,
+        };
+        use crate::domain::StackType;
+        use ahash::AHashMap;
+        use big_s::S;
 
         #[test]
         fn contains_vscode_schema_link() {
-            let have = default_json();
+            let have = DEFAULT_JSON;
             let want = format!(r#""$schema": "{SCHEMA_URL}""#);
             assert!(
                 have.contains(&want),
@@ -105,21 +226,177 @@ mod tests {
 
         #[test]
         fn parses_as_default_settings() {
-            let have = Config::parse(&default_json(), "tricorder.json").unwrap();
+            let have = Config::parse(DEFAULT_JSON, "tricorder.json").unwrap();
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
-                global_fixes: Some(vec![]),
-                global_lints: Some(vec![]),
-                ignore_files: Some(vec![]),
+                global_fixes: Some(vec![
+                    GlobalFix {
+                        name: Some(S("custom fix 1")),
+                        command: S("tools/fix_1.sh"),
+                    },
+                    GlobalFix {
+                        name: None,
+                        command: S("tools/fix_2.sh"),
+                    },
+                ]),
+                global_lints: Some(vec![
+                    GlobalLint {
+                        name: Some(S("custom lint 1")),
+                        command: S("tools/lint_1.sh"),
+                    },
+                    GlobalLint {
+                        name: None,
+                        command: S("tools/lint_2.sh"),
+                    },
+                ]),
+                ignore_files: Some(vec![S("two.css"), S("vendor/"), S("**/*.min.css")]),
                 applications: Some(Applications {
-                    keep_sorted: Some(ApplicationWithFile {
-                        enabled: Some(false),
-                        ignore_files: None,
+                    actionlint: Some(ApplicationNoFile {
+                        enabled: Some(true),
                         operations: None,
                     }),
-                    ..Default::default()
+                    biome: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    checkstyle: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    delete_empty_folders: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    gherkin_lint: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    ghokin: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    git_diff_check: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    gofumpt: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    golangci_lint: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    keep_sorted: Some(ApplicationWithFile {
+                        enabled: Some(false),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    prettier: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    pyright: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    ruff: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    rumdl: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    sqlfmt: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    taplo: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileOperation {
+                                enabled: Some(true),
+                                ignore_files: Some(vec![]),
+                            }),
+                            fix: Some(ApplicationWithFileOperation {
+                                enabled: Some(true),
+                                ignore_files: Some(vec![]),
+                            }),
+                            fix_unsafe: None,
+                        }),
+                    }),
+                    text_runner: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    tikibase: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
                 }),
-                stacks: None,
+                stacks: Some(AHashMap::from_iter([
+                    (StackType::Css, StackConfig::default()),
+                    (StackType::Cucumber, StackConfig::default()),
+                    (StackType::Go, StackConfig::default()),
+                    (StackType::Java, StackConfig::default()),
+                    (StackType::Json, StackConfig::default()),
+                    (StackType::JsonC, StackConfig::default()),
+                    (StackType::Markdown, StackConfig::default()),
+                    (
+                        StackType::Python,
+                        StackConfig {
+                            lint: Some(StackTools {
+                                add: Some(vec![StackCommand {
+                                    name: S("mypy"),
+                                    command: S("mypy ."),
+                                }]),
+                                replace: None,
+                            }),
+                            fix: Some(StackTools {
+                                add: Some(vec![StackCommand {
+                                    name: S("isort"),
+                                    command: S("isort ."),
+                                }]),
+                                replace: None,
+                            }),
+                        },
+                    ),
+                    (
+                        StackType::Rust,
+                        StackConfig {
+                            lint: Some(StackTools {
+                                add: None,
+                                replace: Some(vec![StackCommand {
+                                    name: S("clippy"),
+                                    command: S("cargo clippy --all-targets"),
+                                }]),
+                            }),
+                            fix: Some(StackTools {
+                                add: None,
+                                replace: Some(vec![StackCommand {
+                                    name: S("rustfmt"),
+                                    command: S("cargo +nightly fmt"),
+                                }]),
+                            }),
+                        },
+                    ),
+                    (StackType::Sql, StackConfig::default()),
+                    (StackType::Toml, StackConfig::default()),
+                    (StackType::Typescript, StackConfig::default()),
+                    (StackType::Unknown, StackConfig::default()),
+                    (StackType::Yml, StackConfig::default()),
+                ])),
             };
             pretty::assert_eq!(have, want);
         }
