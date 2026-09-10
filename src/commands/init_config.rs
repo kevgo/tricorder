@@ -30,7 +30,7 @@ const DEFAULT_JSON: &str = r#"
     { "command": "tools/fix_2.sh" },
   ],
 
-  // configuration the software stacks
+  // configure the software stacks
   //
   // "add" runs the given tool in addition to the built-in tools.
   // "replace" runs the given tool instead of the built-in tools.
