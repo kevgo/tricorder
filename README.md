@@ -201,65 +201,65 @@ If both exist, **tricorder.json** takes precedence.
 
 ```jsonc
 {
+  // link to the JSON schema for this file,
+  // for auto-complete in VSCode and compatible editors
   "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
 
-  // make these files invisible to Tricorder
-  // using gitignore syntax
+  // globally ignored files
+  //
+  // These files are invisible to Tricorder.
+  // Supports gitignore syntax.
   "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
 
-  // not stack specific, always run; "name" is optional and defaults to the command
+  // global tools
+  //
+  // These tools always run.
+  // "name" is optional and defaults to the command
   "global-lints": [
-    { "name": "custom lint 1", "command": "tools/lint_1.sh" },
+    { "command": "tools/lint_1.sh", "name": "custom lint 1" },
     { "command": "tools/lint_2.sh" },
   ],
   "global-fixes": [
-    { "name": "custom fix 1", "command": "tools/fix_1.sh" },
+    { "command": "tools/fix_1.sh", "name": "custom fix 1" },
     { "command": "tools/fix_2.sh" },
   ],
 
-  // each stack accepts "lint" and "fix"
-  // "add" runs in addition to the built-in tools
-  // "replace" runs instead of the built-in tools (use [] to disable them)
-  // "name" and "command" are required
+  // configuration the software stacks
+  //
+  // "add" runs the given tool in addition to the built-in tools.
+  // "replace" runs the given tool instead of the built-in tools.
+  // Use "replace: []" to disable the built-in tools.
   "stacks": {
-    "css": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "cucumber": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "go": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "java": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "json": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "jsonc": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "markdown": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
+    "css": {},
+    "cucumber": {},
+    "go": {},
+    "java": {},
+    "json": {},
+    "jsonc": {},
+    "markdown": {},
     "python": {
       "lint": {
-        "add": [{ "name": "mypy", "command": "mypy ." }]
+        // additional lints for Python files
+        "add": [
+          {
+            "name": "mypy",
+            "command": "mypy .",
+          }
+        ]
       },
       "fix": {
-        "add": [{ "name": "isort", "command": "isort ." }]
+        // additional fixes for Python files
+        "add": [
+          {
+            "name": "isort",
+            "command": "isort ."
+          }
+        ]
       }
     },
     "rust": {
       "lint": {
+        // replace all built-in lints for Rust files with these ones
         "replace": [
           {
             "name": "clippy",
@@ -268,35 +268,28 @@ If both exist, **tricorder.json** takes precedence.
         ]
       },
       "fix": {
-        "replace": [{ "name": "rustfmt", "command": "cargo +nightly fmt" }]
+        // replace all built-in fixes for Rust files with these ones
+        "replace": [
+          {
+            "name": "rustfmt",
+            "command": "cargo +nightly fmt"
+          }
+        ]
       }
     },
-    "sql": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "toml": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "typescript": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "unknown": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    },
-    "yml": {
-      "lint": { "add": [] },
-      "fix": { "add": [] }
-    }
+    "sql": {},
+    "toml": {},
+    "typescript": {},
+    "unknown": {},
+    "yml": {}
   },
 
-  // "enabled" defaults to true when omitted
-  // applications that receive file paths also accept "ignore-files" (gitignore syntax)
+  // configure the built-in tools
+  //
+  // Only applications that can receive file paths as arguments
+  // accept "ignore-files" here (in gitignore syntax).
   // github.com/google/keep-sorted is disabled by default
-  // because it scans the file content of all workspace files for markers
+  // because using it requires scanning the file content of all workspace files for markers.
   "applications": {
     "actionlint": { "enabled": true },
     "biome": { "enabled": true, "ignore-files": [] },
@@ -307,29 +300,32 @@ If both exist, **tricorder.json** takes precedence.
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
-    "keep-sorted": {
-      "enabled": true,
-      "ignore-files": ["README.md"] // ignored only by keep-sorted
-    },
+    "keep-sorted": { "enabled": true, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
     "rumdl": { "enabled": true, "ignore-files": [] },
     "sqlfmt": { "enabled": true, "ignore-files": [] },
     "taplo": {
+      // enable or disable the application
       "enabled": true,
+      // files that Taplo should ignore altogtether
       "ignore-files": [],
       "operations": {
         "lint": {
+          // enable or disable all Taplo lints
           "enabled": true,
-          "ignore-files": [] // ignore only for linting
+          // don't lint the files listed here
+          "ignore-files": []
         },
         "fix": {
+          // enable or disable all Taplo fixes
           "enabled": true,
-          "ignore-files": [] // ignore only for fixing
+          // don't fix the files listed here
+          "ignore-files": [] // ignore the files listed here only for fixing
         }
       }
-    }
+    },
     "text-runner": { "enabled": true },
     "tikibase": { "enabled": true }
   }
