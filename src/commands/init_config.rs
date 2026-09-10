@@ -6,7 +6,6 @@ use std::process::ExitCode;
 
 /// default `tricorder.json` contents written by `tricorder init:config`
 const DEFAULT_JSON: &str = r#"
-    r#"
 {
   // link to the JSON schema for this file,
   // for auto-complete in VSCode and compatible editors
@@ -206,7 +205,13 @@ mod tests {
 
     mod default_json {
         use super::DEFAULT_JSON;
-        use crate::config::{ApplicationWithFile, Applications, Config, SCHEMA_URL};
+        use crate::config::{
+            ApplicationNoFile, ApplicationWithFile, ApplicationWithFileOperation, Applications,
+            Config, GlobalFix, GlobalLint, Operations, SCHEMA_URL, StackCommand, StackConfig,
+            StackTools,
+        };
+        use crate::domain::StackType;
+        use ahash::AHashMap;
         use big_s::S;
 
         #[test]
@@ -224,34 +229,174 @@ mod tests {
             let have = Config::parse(DEFAULT_JSON, "tricorder.json").unwrap();
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
-                ignore_files: Some(vec![S("custom.css"), S("vendor/"), S("**/*/min.css")]),
-                global_fixes: Some(vec![]),
-                global_lints: Some(vec![]),
+                global_fixes: Some(vec![
+                    GlobalFix {
+                        name: Some(S("custom fix 1")),
+                        command: S("tools/fix_1.sh"),
+                    },
+                    GlobalFix {
+                        name: None,
+                        command: S("tools/fix_2.sh"),
+                    },
+                ]),
+                global_lints: Some(vec![
+                    GlobalLint {
+                        name: Some(S("custom lint 1")),
+                        command: S("tools/lint_1.sh"),
+                    },
+                    GlobalLint {
+                        name: None,
+                        command: S("tools/lint_2.sh"),
+                    },
+                ]),
+                ignore_files: Some(vec![S("two.css"), S("vendor/"), S("**/*.min.css")]),
                 applications: Some(Applications {
-                    actionlint: None,
-                    biome: None,
-                    checkstyle: None,
-                    delete_empty_folders: None,
-                    gherkin_lint: None,
-                    ghokin: None,
-                    git_diff_check: None,
-                    gofumpt: None,
-                    golangci_lint: None,
-                    keep_sorted: Some(ApplicationWithFile {
-                        enabled: Some(false),
-                        ignore_files: None,
+                    actionlint: Some(ApplicationNoFile {
+                        enabled: Some(true),
                         operations: None,
                     }),
-                    prettier: None,
-                    pyright: None,
-                    ruff: None,
-                    rumdl: None,
-                    sqlfmt: None,
-                    taplo: None,
-                    text_runner: None,
-                    tikibase: None,
+                    biome: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    checkstyle: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    delete_empty_folders: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    gherkin_lint: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    ghokin: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    git_diff_check: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    gofumpt: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    golangci_lint: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    keep_sorted: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    prettier: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    pyright: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    ruff: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    rumdl: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    sqlfmt: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
+                    taplo: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: Some(Operations {
+                            lint: Some(ApplicationWithFileOperation {
+                                enabled: Some(true),
+                                ignore_files: Some(vec![]),
+                            }),
+                            fix: Some(ApplicationWithFileOperation {
+                                enabled: Some(true),
+                                ignore_files: Some(vec![]),
+                            }),
+                            fix_unsafe: None,
+                        }),
+                    }),
+                    text_runner: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
+                    tikibase: Some(ApplicationNoFile {
+                        enabled: Some(true),
+                        operations: None,
+                    }),
                 }),
-                stacks: None,
+                stacks: Some(AHashMap::from_iter([
+                    (StackType::Css, StackConfig::default()),
+                    (StackType::Cucumber, StackConfig::default()),
+                    (StackType::Go, StackConfig::default()),
+                    (StackType::Java, StackConfig::default()),
+                    (StackType::Json, StackConfig::default()),
+                    (StackType::JsonC, StackConfig::default()),
+                    (StackType::Markdown, StackConfig::default()),
+                    (
+                        StackType::Python,
+                        StackConfig {
+                            lint: Some(StackTools {
+                                add: Some(vec![StackCommand {
+                                    name: S("mypy"),
+                                    command: S("mypy ."),
+                                }]),
+                                replace: None,
+                            }),
+                            fix: Some(StackTools {
+                                add: Some(vec![StackCommand {
+                                    name: S("isort"),
+                                    command: S("isort ."),
+                                }]),
+                                replace: None,
+                            }),
+                        },
+                    ),
+                    (
+                        StackType::Rust,
+                        StackConfig {
+                            lint: Some(StackTools {
+                                add: None,
+                                replace: Some(vec![StackCommand {
+                                    name: S("clippy"),
+                                    command: S("cargo clippy --all-targets"),
+                                }]),
+                            }),
+                            fix: Some(StackTools {
+                                add: None,
+                                replace: Some(vec![StackCommand {
+                                    name: S("rustfmt"),
+                                    command: S("cargo +nightly fmt"),
+                                }]),
+                            }),
+                        },
+                    ),
+                    (StackType::Sql, StackConfig::default()),
+                    (StackType::Toml, StackConfig::default()),
+                    (StackType::Typescript, StackConfig::default()),
+                    (StackType::Unknown, StackConfig::default()),
+                    (StackType::Yml, StackConfig::default()),
+                ])),
             };
             pretty::assert_eq!(have, want);
         }
