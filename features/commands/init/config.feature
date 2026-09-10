@@ -11,14 +11,134 @@ Feature: "tricorder init:config" writes the default config file
     And file "tricorder.json" now has content
       """
       {
+        // link to the JSON schema for this file,
+        // for auto-complete in VSCode and compatible editors
         "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
-        "global-fixes": [],
-        "global-lints": [],
-        "ignore-files": [],
+
+        // globally ignored files
+        //
+        // These files are invisible to Tricorder.
+        // Supports gitignore syntax.
+        "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
+
+        // global tools
+        //
+        // These tools always run.
+        // "name" is optional and defaults to the command
+        "global-lints": [
+          { "command": "tools/lint_1.sh", "name": "custom lint 1" },
+          { "command": "tools/lint_2.sh" },
+        ],
+        "global-fixes": [
+          { "command": "tools/fix_1.sh", "name": "custom fix 1" },
+          { "command": "tools/fix_2.sh" },
+        ],
+
+        // configure the supported software stacks
+        //
+        // The fields in the given example settings can be used for any stack.
+        // "add" runs the given tool in addition to the built-in tools.
+        // "replace" runs the given tool instead of the built-in tools.
+        // Use "replace: []" to disable the built-in tools.
+        "stacks": {
+          "css": {},
+          "cucumber": {},
+          "go": {},
+          "java": {},
+          "json": {},
+          "jsonc": {},
+          "markdown": {},
+          "python": {
+            "lint": {
+              // additional lints for Python files
+              "add": [
+                {
+                  "name": "mypy",
+                  "command": "mypy .",
+                }
+              ]
+            },
+            "fix": {
+              // additional fixes for Python files
+              "add": [
+                {
+                  "name": "isort",
+                  "command": "isort ."
+                }
+              ]
+            }
+          },
+          "rust": {
+            "lint": {
+              // replace all built-in lints for Rust files with these ones
+              "replace": [
+                {
+                  "name": "clippy",
+                  "command": "cargo clippy --all-targets"
+                }
+              ]
+            },
+            "fix": {
+              // replace all built-in fixes for Rust files with these ones
+              "replace": [
+                {
+                  "name": "rustfmt",
+                  "command": "cargo +nightly fmt"
+                }
+              ]
+            }
+          },
+          "sql": {},
+          "toml": {},
+          "typescript": {},
+          "unknown": {},
+          "yml": {}
+        },
+
+        // configure the built-in tools
+        //
+        // Only applications that can receive file paths as arguments
+        // accept "ignore-files" here (in gitignore syntax).
         "applications": {
-          "keep-sorted": {
-            "enabled": false
-          }
+          "actionlint": { "enabled": true },
+          "biome": { "enabled": true, "ignore-files": [] },
+          "checkstyle": { "enabled": true },
+          "delete_empty_folders": { "enabled": true },
+          "gherkin_lint": { "enabled": true, "ignore-files": [] },
+          "ghokin": { "enabled": true, "ignore-files": [] },
+          "git_diff_check": { "enabled": true },
+          "gofumpt": { "enabled": true, "ignore-files": [] },
+          "golangci_lint": { "enabled": true },
+          // github.com/google/keep-sorted is disabled by default
+          // because using it requires scanning the file content of all workspace files for markers.
+          "keep-sorted": { "enabled": false, "ignore-files": [] },
+          "prettier": { "enabled": true, "ignore-files": [] },
+          "pyright": { "enabled": true, "ignore-files": [] },
+          "ruff": { "enabled": true, "ignore-files": [] },
+          "rumdl": { "enabled": true, "ignore-files": [] },
+          "sqlfmt": { "enabled": true, "ignore-files": [] },
+          "taplo": {
+            // enable or disable the application
+            "enabled": true,
+            // files that Taplo should ignore altogtether
+            "ignore-files": [],
+            "operations": {
+              "lint": {
+                // enable or disable all Taplo lints
+                "enabled": true,
+                // don't lint the files listed here
+                "ignore-files": []
+              },
+              "fix": {
+                // enable or disable all Taplo fixes
+                "enabled": true,
+                // don't fix the files listed here
+                "ignore-files": []
+              }
+            }
+          },
+          "text-runner": { "enabled": true },
+          "tikibase": { "enabled": true }
         }
       }
       """
