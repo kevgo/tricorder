@@ -4,8 +4,8 @@ Feature: pitstop on a feature branch
     Given a Git repository
     And a committed file "run-that-app" with content
       """
-      rumdl 0.2.14
       delete-empty-folders 0.0.2
+      rumdl 0.2.14
       """
 
   Scenario: processes only changes committed to the branch and uncommitted changes
