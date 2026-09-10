@@ -323,7 +323,7 @@ If both exist, **tricorder.json** takes precedence.
           // enable or disable all Taplo fixes
           "enabled": true,
           // don't fix the files listed here
-          "ignore-files": [] // ignore the files listed here only for fixing
+          "ignore-files": []
         }
       }
     },
