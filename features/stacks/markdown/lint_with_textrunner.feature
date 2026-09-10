@@ -5,7 +5,7 @@ Feature: lint documentation with Text-Runner
       """
       biome 2.5.2
       delete-empty-folders 0.0.2
-      markdownlint 0.41.1
+      markdownlint 0.49.1
       node 26.0.0
       npm 26.0.0
       rumdl 0.2.14

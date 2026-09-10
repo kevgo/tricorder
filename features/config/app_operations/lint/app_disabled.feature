@@ -4,7 +4,7 @@ Feature: disable an application's lint operation
     Given a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
-      markdownlint 0.41.1
+      markdownlint 0.49.1
       node 26.4.0
       prettier 3.7.0
       rumdl 0.2.14
