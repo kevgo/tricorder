@@ -107,7 +107,7 @@ const DEFAULT_JSON: &str = r#"
     "golangci_lint": { "enabled": true },
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
-    "keep-sorted": { "enabled": true, "ignore-files": [] },
+    "keep-sorted": { "enabled": false, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
@@ -293,7 +293,7 @@ mod tests {
                         operations: None,
                     }),
                     keep_sorted: Some(ApplicationWithFile {
-                        enabled: Some(true),
+                        enabled: Some(false),
                         ignore_files: Some(vec![]),
                         operations: None,
                     }),
