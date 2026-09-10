@@ -40,8 +40,6 @@ install:  # installs Tricorder into the global path
 
 fix: build ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
 	$(TRICORDER) fix --show=names
-	cargo test --test=export_default_config --locked --quiet
-
 
 ghokin: ${RTA}  # format the Cucumber files
 	${GHOKIN} fmt replace features/
