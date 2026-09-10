@@ -95,8 +95,6 @@ const DEFAULT_JSON: &str = r#"
   //
   // Only applications that can receive file paths as arguments
   // accept "ignore-files" here (in gitignore syntax).
-  // github.com/google/keep-sorted is disabled by default
-  // because using it requires scanning the file content of all workspace files for markers.
   "applications": {
     "actionlint": { "enabled": true },
     "biome": { "enabled": true, "ignore-files": [] },
@@ -107,6 +105,8 @@ const DEFAULT_JSON: &str = r#"
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
+    // github.com/google/keep-sorted is disabled by default
+    // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": true, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
