@@ -19,8 +19,8 @@ impl Stack for Markdown {
     fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![
             Box::new(Rumdl {}),
-            Box::new(Tikibase {}),
             Box::new(TextRunner {}),
+            Box::new(Tikibase {}),
         ]
     }
 
