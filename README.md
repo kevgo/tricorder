@@ -224,8 +224,9 @@ If both exist, **tricorder.json** takes precedence.
     { "command": "tools/fix_2.sh" },
   ],
 
-  // configuration the software stacks
+  // configure the supported software stacks
   //
+  // The fields in the given example settings can be used for any stack.
   // "add" runs the given tool in addition to the built-in tools.
   // "replace" runs the given tool instead of the built-in tools.
   // Use "replace: []" to disable the built-in tools.
@@ -288,8 +289,6 @@ If both exist, **tricorder.json** takes precedence.
   //
   // Only applications that can receive file paths as arguments
   // accept "ignore-files" here (in gitignore syntax).
-  // github.com/google/keep-sorted is disabled by default
-  // because using it requires scanning the file content of all workspace files for markers.
   "applications": {
     "actionlint": { "enabled": true },
     "biome": { "enabled": true, "ignore-files": [] },
@@ -300,7 +299,9 @@ If both exist, **tricorder.json** takes precedence.
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
-    "keep-sorted": { "enabled": true, "ignore-files": [] },
+    // github.com/google/keep-sorted is disabled by default
+    // because using it requires scanning the file content of all workspace files for markers.
+    "keep-sorted": { "enabled": false, "ignore-files": [] },
     "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
@@ -322,7 +323,7 @@ If both exist, **tricorder.json** takes precedence.
           // enable or disable all Taplo fixes
           "enabled": true,
           // don't fix the files listed here
-          "ignore-files": [] // ignore the files listed here only for fixing
+          "ignore-files": []
         }
       }
     },
