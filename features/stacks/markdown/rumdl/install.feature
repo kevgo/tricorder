@@ -3,6 +3,12 @@ Feature: install Rumdl
 
   @this
   Scenario: not installed
+    Given a file "run-that-app" with content
+      """
+      # more info at https://github.com/kevgo/run-that-app
+
+      delete-empty-folders 0.0.2
+      """
     Given a file "main.md" with content
       """
       #     Hello
@@ -12,9 +18,7 @@ Feature: install Rumdl
       {
         "applications": {
           "markdownlint": { "enabled": false },
-          "prettier": { "enabled": false },
-          "text-runner": { "enabled": false },
-          "tikibase": { "enabled": false }
+          "prettier": { "enabled": false }
         }
       }
       """

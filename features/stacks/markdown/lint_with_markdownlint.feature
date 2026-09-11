@@ -56,8 +56,8 @@ Feature: lint Markdown with markdownlint
       """
     And the exit code is 1
     And file "my file.md" is unchanged
+  #@this @online
 
-  @this @online
   Scenario: not installed
     Given a file "run-that-app" with content
       """
