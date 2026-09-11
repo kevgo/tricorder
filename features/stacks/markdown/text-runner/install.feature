@@ -11,7 +11,7 @@ Feature: install Text-Runner
       {
         "applications": {
           "prettier": { "enabled": false },
-          "rumdl": { "enabled": false }
+          "rumdl": { "enabled": false },
           "tikibase": { "enabled": false }
         }
       }
