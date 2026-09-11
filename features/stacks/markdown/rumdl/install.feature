@@ -1,10 +1,20 @@
 @online
-Feature: install all Markdown tools
+Feature: install Rumdl
 
   Scenario: not installed
     Given a file "main.md" with content
       """
       #     Hello
+      """
+    And a file "tricorder.json" with content
+      """
+      {
+        "applications": {
+          "prettier": { "enabled": false },
+          "text-runner": { "enabled": false },
+          "tikibase": { "enabled": false }
+        }
+      }
       """
     When executing "tricorder fix --show=all"
     Then it prints the lines to STDERR
