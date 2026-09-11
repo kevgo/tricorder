@@ -32,11 +32,10 @@ impl Lint for MarkdownLint {
         if files.is_empty() {
             return Ok(None);
         }
-        let args = files.into_strings();
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::MarkdownLint {},
-            args,
+            args: files.into_strings(),
             version: None,
         })?;
         Ok(executable.map(conc::Runnable::Single))
