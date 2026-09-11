@@ -1,5 +1,5 @@
 @online
-Feature: install all Cucumber tools
+Feature: install Ghokin
 
   Scenario: not installed
     Given a file "main.feature" with content
