@@ -1,6 +1,7 @@
 @online
 Feature: install Rumdl
 
+  @this
   Scenario: not installed
     Given a file "main.md" with content
       """
@@ -10,6 +11,7 @@ Feature: install Rumdl
       """
       {
         "applications": {
+          "markdownlint": { "enabled": false },
           "prettier": { "enabled": false },
           "text-runner": { "enabled": false },
           "tikibase": { "enabled": false }
