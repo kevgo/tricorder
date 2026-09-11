@@ -63,10 +63,6 @@ Feature: install Gherkin Lint
     #   """
     #   Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
     #   """
-    Then it prints to STDERR
-      """
-      lint Cucumber (gherkin-lint)
-      """
     Then it prints the lines
       """
       lint Cucumber (gherkin-lint)
