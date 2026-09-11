@@ -1,7 +1,6 @@
 @online
 Feature: install Text-Runner
 
-  @this
   Scenario: not installed
     Given a file "main.md" with content
       """
