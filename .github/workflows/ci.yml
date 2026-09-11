@@ -15,6 +15,4 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@nextest
       - run: make setup-ci
-      - run: make unit lint cuke-slow
-      - run: make fix
-      - run: git diff HEAD --exit-code --color
+      - run: make ci
