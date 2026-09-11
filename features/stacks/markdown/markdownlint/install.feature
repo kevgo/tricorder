@@ -26,7 +26,7 @@ Feature: install Markdownlint
       """
       Talking to GitHub API (https://api.github.com/repos/igorshubovych/markdownlint-cli/releases/latest) ... ok
       """
-    Then it prints the lines
+    And it prints the lines
       """
       lint Markdown (markdownlint)
       main.md:1 error MD041/first-line-heading/first-line-h1 First line in a file should be a top-level heading [Context: "text"]

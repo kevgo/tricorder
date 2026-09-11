@@ -8,7 +8,7 @@ Feature: install Rumdl
 
       delete-empty-folders 0.0.2
       """
-    Given a file "main.md" with content
+    And a file "main.md" with content
       """
       #     Hello
       """
