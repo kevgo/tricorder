@@ -10,6 +10,9 @@
         "features/commands/pitstop/keep_sorted.feature"
       ]
     },
+    "markdownlint": {
+      "ignore-files": ["CHANGELOG.md"]
+    },
     "taplo": {
       "ignore-files": ["Cargo.toml"]
     }
