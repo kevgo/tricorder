@@ -10,9 +10,7 @@ Feature: install Rumdl
       """
       {
         "applications": {
-          "prettier": { "enabled": false },
-          "text-runner": { "enabled": false },
-          "tikibase": { "enabled": false }
+          "prettier": { "enabled": false }
         }
       }
       """
