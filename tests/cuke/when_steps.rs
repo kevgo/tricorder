@@ -1,3 +1,4 @@
+use crate::jitter::jitter;
 use crate::world::TricorderWorld;
 use cucumber::when;
 use std::time::Duration;
@@ -16,6 +17,7 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 
 #[when(expr = "executing {string}")]
 async fn executing(world: &mut TricorderWorld, command: String) {
+    jitter().await;
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     assert!(executable == "tricorder", "can only execute 'tricorder'");

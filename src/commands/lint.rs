@@ -2,7 +2,7 @@ use crate::apps::git_diff_check;
 use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Config, GlobalLint};
+use crate::config::{Config, GlobalLint, Operation};
 use crate::domain::{DetectedStacks, Result};
 use crate::git;
 use crate::stacks;
@@ -12,7 +12,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let repo = git::Repo::load();
@@ -61,7 +61,7 @@ pub fn determine_lints(
             }
         } else {
             for default_lint in detected_stack.stack.lints() {
-                if config.app_enabled(default_lint.as_ref())
+                if config.operation_enabled(default_lint.as_ref(), Operation::Lint)
                     && default_lint.enabled_when().enabled_on_disk()
                     && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
                 {
@@ -88,7 +88,7 @@ pub fn determine_lints(
     }
 
     // determine the Git lint
-    if config.app_enabled(&GitDiffCheck {})
+    if config.operation_enabled(&GitDiffCheck {}, Operation::Lint)
         && let Some(repo) = git_repo
     {
         let executable = git_diff_check::lint_command(repo);

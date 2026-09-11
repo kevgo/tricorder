@@ -4,10 +4,10 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
     Given a Git repository
     And a committed file "run-that-app" with content
       """
-      taplo 0.10.0
       delete-empty-folders 0.0.2
-      ripgrep 15.2.0
       keep-sorted 0.9.1
+      ripgrep 15.2.0
+      taplo 0.10.0
       """
     And a committed file "tricorder.json" with content
       """

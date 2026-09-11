@@ -5,8 +5,9 @@ AI hallucinates non-existing APIs, dead code, and mismatching formatting styles.
 Strict automated guardrails are the only things keeping your codebase from
 turning into an untamable, hallucinated mess.
 
-Tricorder runs all type checkers, linters,
-and formatters that apply to your codebase concurrently for the fastest results.
+Tricorder solves this problem for you.
+It runs all applicable type checkers, linters,
+and formatters concurrently for the fastest results.
 
 ## Demo
 
@@ -14,14 +15,15 @@ Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
 500 ms and prints:
 
 ```sh
-98 Cucumber, 2 JSON, 4 Markdown, 3 TOML, 3 YML, 93 other
-running 5 tools
+114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
+running 6 tools
 
 lint Markdown (rumdl)
 lint TOML (Taplo)
 lint Git diff markers (git diff HEAD --check)
 GitHub Actions (actionlint)
 lint Cucumber (gherkin-lint)
+cargo clippy
 ```
 
 Tricorder has classified 203 files
@@ -197,57 +199,140 @@ and formatters in **tricorder.json** or **tricorder.jsonc**.
 Comments and trailing commas are allowed in either file.
 If both exist, **tricorder.json** takes precedence.
 
+<!-- DEFAULT-CONFIG-START -->
+
 ```jsonc
 {
-  // make these files invisible to Tricorder
-  // using gitignore syntax
+  // link to the JSON schema for this file,
+  // for auto-complete in VSCode and compatible editors
+  "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+
+  // globally ignored files
+  //
+  // These files are invisible to Tricorder.
+  // Supports gitignore syntax.
   "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
 
-  // define a custom lint (always runs)
-  // TODO: rename this to "global-lints" ?
-  "custom-lints": [
-    {
-      "name": "custom lint 1",
-      "command": "lints/one.sh"
-    },
+  // global tools
+  //
+  // These tools always run.
+  // "name" is optional and defaults to the command
+  "global-lints": [
+    { "command": "tools/lint_1.sh", "name": "custom lint 1" },
+    { "command": "tools/lint_2.sh" },
+  ],
+  "global-fixes": [
+    { "command": "tools/fix_1.sh", "name": "custom fix 1" },
+    { "command": "tools/fix_2.sh" },
   ],
 
+  // configure the supported software stacks
+  //
+  // The fields in the given example settings can be used for any stack.
+  // "add" runs the given tool in addition to the built-in tools.
+  // "replace" runs the given tool instead of the built-in tools.
+  // Use "replace: []" to disable the built-in tools.
   "stacks": {
-    // add stack-specific lint to the default lints for that stack
+    "css": {},
+    "cucumber": {},
+    "go": {},
+    "java": {},
+    "json": {},
+    "jsonc": {},
+    "markdown": {},
     "python": {
-      // these lints run in addition to the default lints
-      "additional-lints": [
-        { "name": "mypy", "command": "mypy ." }
-      ],
-      // these fixes run in addition to the default fixes
-      "additional-fixes": [
-        { "name": "isort", "command": "isort ." }
-      ]
+      "lint": {
+        // additional lints for Python files
+        "add": [
+          {
+            "name": "mypy",
+            "command": "mypy .",
+          }
+        ]
+      },
+      "fix": {
+        // additional fixes for Python files
+        "add": [
+          {
+            "name": "isort",
+            "command": "isort ."
+          }
+        ]
+      }
     },
-    // override stack-specific lints and fixes
     "rust": {
-      // these lints run instead of the default lints
-      "replace-lints": [
-        {
-          "name": "clippy",
-          "command": "cargo clippy --all-targets"
-        }
-      ],
-      // these fixes run instead of the default fixes
-      "replace-fixes": [
-        { "name": "rustfmt", "command": "cargo +nightly fmt" }
-      ]
-    }
+      "lint": {
+        // replace all built-in lints for Rust files with these ones
+        "replace": [
+          {
+            "name": "clippy",
+            "command": "cargo clippy --all-targets"
+          }
+        ]
+      },
+      "fix": {
+        // replace all built-in fixes for Rust files with these ones
+        "replace": [
+          {
+            "name": "rustfmt",
+            "command": "cargo +nightly fmt"
+          }
+        ]
+      }
+    },
+    "sql": {},
+    "toml": {},
+    "typescript": {},
+    "unknown": {},
+    "yml": {}
   },
 
-  // github.com/google/keep-sorted is disabled by default
-  // because it scans the file content of all workspace files for markers
-  // to determine which files to sort
+  // configure the built-in tools
+  //
+  // Only applications that can receive file paths as arguments
+  // accept "ignore-files" here (in gitignore syntax).
   "applications": {
-    "keep-sorted": {
+    "actionlint": { "enabled": true },
+    "biome": { "enabled": true, "ignore-files": [] },
+    "checkstyle": { "enabled": true },
+    "delete_empty_folders": { "enabled": true },
+    "gherkin_lint": { "enabled": true, "ignore-files": [] },
+    "ghokin": { "enabled": true, "ignore-files": [] },
+    "git_diff_check": { "enabled": true },
+    "gofumpt": { "enabled": true, "ignore-files": [] },
+    "golangci_lint": { "enabled": true },
+    // github.com/google/keep-sorted is disabled by default
+    // because using it requires scanning the file content of all workspace files for markers.
+    "keep-sorted": { "enabled": false, "ignore-files": [] },
+    "prettier": { "enabled": true, "ignore-files": [] },
+    "pyright": { "enabled": true, "ignore-files": [] },
+    "ruff": { "enabled": true, "ignore-files": [] },
+    "rumdl": { "enabled": true, "ignore-files": [] },
+    "sqlfmt": { "enabled": true, "ignore-files": [] },
+    "taplo": {
+      // enable or disable the application
       "enabled": true,
-      "ignore-files": ["README.md"] // ignored only by keep-sorted
-    }
+      // files that Taplo should ignore altogtether
+      "ignore-files": [],
+      "operations": {
+        "lint": {
+          // enable or disable all Taplo lints
+          "enabled": true,
+          // don't lint the files listed here
+          "ignore-files": []
+        },
+        "fix": {
+          // enable or disable all Taplo fixes
+          "enabled": true,
+          // don't fix the files listed here
+          "ignore-files": []
+        }
+      }
+    },
+    "text-runner": { "enabled": true },
+    "tikibase": { "enabled": true }
   }
 }
 ```
+
+<!-- DEFAULT_CONFIG-END -->

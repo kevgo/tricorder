@@ -6,11 +6,6 @@ Feature: formatting a codebase without any code
       delete-empty-folders 0.0.2
       """
 
-  Scenario: default visibility
-    When executing "tricorder fix"
-    Then it prints nothing to STDOUT
-    And the exit code is 0
-
   Scenario: --show=all
     When executing "tricorder fix --show=all"
     Then it prints

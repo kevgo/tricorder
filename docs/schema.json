@@ -118,7 +118,7 @@
         "actionlint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
@@ -128,7 +128,7 @@
         "biome": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -138,27 +138,27 @@
         "checkstyle": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
             }
           ]
         },
-        "delete_empty_folders": {
+        "delete-empty-folders": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
             }
           ]
         },
-        "gherkin_lint": {
+        "gherkin-lint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -168,17 +168,17 @@
         "ghokin": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
             }
           ]
         },
-        "git_diff_check": {
+        "git-diff-check": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
@@ -188,17 +188,17 @@
         "gofumpt": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
             }
           ]
         },
-        "golangci_lint": {
+        "golangci-lint": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
@@ -208,7 +208,7 @@
         "keep-sorted": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -218,7 +218,7 @@
         "prettier": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -228,7 +228,7 @@
         "pyright": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -238,7 +238,7 @@
         "ruff": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -248,7 +248,7 @@
         "rumdl": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -258,7 +258,7 @@
         "sqlfmt": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
@@ -268,17 +268,17 @@
         "taplo": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationWithFileArgs"
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"
             }
           ]
         },
-        "text_runner": {
+        "text-runner": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
@@ -288,7 +288,7 @@
         "tikibase": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ApplicationNoFileArgs"
+              "$ref": "#/$defs/ApplicationNoFile"
             },
             {
               "type": "null"
@@ -298,7 +298,62 @@
       },
       "additionalProperties": false
     },
-    "ApplicationNoFileArgs": {
+    "ApplicationNoFile": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": ["boolean", "null"]
+        },
+        "operations": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Operations"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Operations": {
+      "type": "object",
+      "properties": {
+        "lint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationNoFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fix": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationNoFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fix-unsafe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationNoFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApplicationNoFileOperation": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -307,7 +362,68 @@
       },
       "additionalProperties": false
     },
-    "ApplicationWithFileArgs": {
+    "ApplicationWithFile": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": ["boolean", "null"]
+        },
+        "ignore-files": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string"
+          }
+        },
+        "operations": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Operations2"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Operations2": {
+      "type": "object",
+      "properties": {
+        "lint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fix": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fix-unsafe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFileOperation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApplicationWithFileOperation": {
       "type": "object",
       "properties": {
         "enabled": {

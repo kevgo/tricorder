@@ -3,7 +3,7 @@ use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Application, Config, GlobalFix};
+use crate::config::{Application, Config, GlobalFix, Operation};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -13,7 +13,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
@@ -57,7 +57,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
     // global fixes
     let mut global = Vec::new();
-    if config.app_enabled(&DeleteEmptyFolders {})
+    if config.operation_enabled(&DeleteEmptyFolders {}, Operation::Fix)
         && let Some(delete_empty_folders) = delete_empty_folders::format_command()?
     {
         global.push(delete_empty_folders);
@@ -75,7 +75,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
             stack_executables.extend(overrides.iter().map(conc::Executable::from));
         } else {
             for default_fix in detected_stack.stack.fixes() {
-                if config.app_enabled(default_fix.as_ref())
+                if config.operation_enabled(default_fix.as_ref(), Operation::Fix)
                     && default_fix.enabled_when().enabled_on_disk()
                 {
                     stack_executables.extend(default_fix.fix_commands(detected_stack, config)?);
@@ -94,19 +94,24 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     }
 
     // keep-sorted
-    if let Some(keep_sorted_config) = config.keep_sorted()
-        && keep_sorted_config.enabled()
-    {
-        let sort_result = keep_sorted::fix_commands(keep_sorted::FixCommandsArgs {
-            detected_stacks,
-            global_ignores: config.ignore_files.as_ref(),
-            keep_sorted_ignores: keep_sorted_config.ignore_files.as_ref(),
-        })?;
-        for (stack_type, executable) in sort_result {
-            stacks_executables
-                .entry(stack_type)
-                .or_default()
-                .push(executable);
+    if let Some(keep_sorted_config) = config.keep_sorted() {
+        let fix_op = keep_sorted_config.operation(Operation::Fix);
+        if keep_sorted_config.enabled() && fix_op.is_none_or(Application::enabled) {
+            let mut keep_sorted_ignores = keep_sorted_config.ignore_files().to_vec();
+            if let Some(op_config) = fix_op {
+                keep_sorted_ignores.extend_from_slice(op_config.ignore_files());
+            }
+            let sort_result = keep_sorted::fix_commands(keep_sorted::FixCommandsArgs {
+                detected_stacks,
+                global_ignores: config.ignore_files.as_ref(),
+                keep_sorted_ignores: &keep_sorted_ignores,
+            })?;
+            for (stack_type, executable) in sort_result {
+                stacks_executables
+                    .entry(stack_type)
+                    .or_default()
+                    .push(executable);
+            }
         }
     }
 

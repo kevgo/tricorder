@@ -6,12 +6,6 @@ Feature: pitstop for a codebase without any code
       delete-empty-folders 0.0.2
       """
 
-  Scenario: default visibility
-    When executing "tricorder pitstop"
-    Then it prints nothing to STDOUT
-    And it prints nothing to STDERR
-    And the exit code is 0
-
   Scenario: --show=all
     When executing "tricorder pitstop --show=all"
     Then it prints

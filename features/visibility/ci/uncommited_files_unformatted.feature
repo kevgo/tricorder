@@ -23,37 +23,6 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       console.log(  "hello"  );
       """
 
-  Scenario: default visibility
-    When executing "tricorder ci"
-    Then it prints only these lines in any order
-      """
-      delete empty folders
-      fix Python (ruff)
-      format Python (ruff)
-      lint Python (ruff)
-      fix CSS (Biome)
-      lint CSS (Biome)
-      fix TypeScript (Biome)
-      lint TypeScript (Biome)
-      lint Git diff markers (git diff HEAD --check)
-      """
-    And it prints nothing to STDERR
-    And file "main.py" now has content
-      """
-      print("hello")
-      """
-    And file "main.css" now has content
-      """
-      p {
-      \tcolor: red;
-      }
-      """
-    And file "main.ts" now has content
-      """
-      console.log("hello");
-      """
-    And the exit code is 0
-
   Scenario: --show=all
     When executing "tricorder ci --show=all"
     Then it prints to STDERR

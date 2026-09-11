@@ -15,7 +15,7 @@ Feature: precommit JSON
       { "key": "value" }
       """
     And I ran "git add main.json"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" is unchanged
@@ -26,7 +26,7 @@ Feature: precommit JSON
       {"key":"value"}
       """
     And I ran "git add main.json"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.json" now has content

@@ -18,7 +18,7 @@ Feature: precommit SQL
       select id, name from two
       """
     And I ran "git add one.sql two.sql"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -34,7 +34,7 @@ Feature: precommit SQL
       SELECT            id, name FROM two
       """
     And I ran "git add one.sql two.sql"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" now has content
@@ -56,7 +56,7 @@ Feature: precommit SQL
       SELECT FROM "
       """
     And I ran "git add one.sql two.sql"
-    When executing "tricorder precommit"
+    When executing "tricorder precommit --show=failed"
     Then it prints
       """
       2 files had errors while formatting.

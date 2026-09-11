@@ -29,7 +29,7 @@ pub(crate) fn run_fix_then_lint(
     stacks: &DetectedStacks,
     repo: Option<&Repo>,
 ) -> Result<ExitCode> {
-    let show = args.show.unwrap_or(conc::Show::Failed);
+    let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
 

@@ -2,6 +2,7 @@
 
 mod dot_writer;
 mod given_steps;
+mod jitter;
 mod run_that_app_file;
 mod then_steps;
 mod when_steps;
