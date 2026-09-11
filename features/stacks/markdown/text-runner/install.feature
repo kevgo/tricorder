@@ -28,9 +28,6 @@ Feature: install Text-Runner
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/nodejs/node/releases/latest) ... ok
-      """
-    Then it prints the lines to STDERR
-      """
       Talking to GitHub API (https://api.github.com/repos/kevgo/text-runner/releases/latest) ... ok
       """
     And it prints the lines
