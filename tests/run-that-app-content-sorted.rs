@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 
 const GIVEN: &str = r#"Given a file "run-that-app" with content"#;
 const AND: &str = r#"And a file "run-that-app" with content"#;
-const DOCSTRING: &str = r#"""""#;
+const DOCSTRING: &str = "\"\"\"";
 
 #[test]
 fn run_that_app_content_sorted() {
