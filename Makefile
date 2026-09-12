@@ -26,6 +26,9 @@ cuke: build-release ${RTA}  # runs all end-to-end tests
 cuke-slow: build-release ${RTA}  # runs the end-to-end tests one by one
 	cargo test --test=cuke -- -t "not @online" --concurrency 1
 
+cuke-online: build-release ${RTA}  # runs the end-to-end tests online
+	cargo test --test=cuke -- -t @online --concurrency 1
+
 cuke-update: build-release ${RTA}  # updates the golden snapshots in the end-to-end tests
 	TRICORDER_UPDATE_SNAPSHOTS=1 cargo test --test=cuke -- --concurrency 1
 
