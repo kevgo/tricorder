@@ -17,7 +17,7 @@ Feature: install dprint for JSON
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
         }
       }
       """
