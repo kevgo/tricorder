@@ -183,7 +183,6 @@ impl From<&StackCommand> for conc::Executable {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-// TODO: rename to ApplicationsSection
 pub struct ApplicationSection {
     #[serde(alias = "actionlint")]
     #[schemars(rename = "actionlint")]
