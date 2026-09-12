@@ -15,7 +15,7 @@ impl Stack for Json {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![Box::new(Dprint {})]
+        vec![]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
