@@ -1,11 +1,11 @@
-@online
 Feature: lint Cucumber
 
   Background:
     Given a file "run-that-app" with content
       """
-      npm 26.3.0
       delete-empty-folders 0.0.2
+      gherkin-lint 4.2.4
+      node 26.4.0
       """
     And a file ".gherkin-lintrc" with content
       """
