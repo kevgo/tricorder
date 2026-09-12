@@ -25,21 +25,25 @@ pub struct Config {
     #[schemars(rename = "$schema")]
     pub schema: Option<String>,
 
-    // TODO: add docstrings
+    // custom fixes that aren't stack-specific
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
-    pub global_fixes: Option<Vec<GlobalFix>>,
+    pub global_fixes: Option<Vec<ToolDefinition>>,
 
+    // custom lints that aren't stack-specific
     #[serde(alias = "global-lints")]
     #[schemars(rename = "global-lints")]
-    pub global_lints: Option<Vec<GlobalLint>>,
+    pub global_lints: Option<Vec<ToolDefinition>>,
 
+    // files that should be excluded when running any tool
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
 
+    // application-specific configuration
     pub applications: Option<ApplicationSection>,
 
+    // stack-specific configuration
     #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
 }
@@ -138,46 +142,45 @@ impl Config {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct GlobalFix {
+pub struct ToolDefinition {
+    /// display name for the fix
     pub name: Option<String>,
+
+    /// the command that implements the fix
     pub command: String,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct GlobalLint {
-    pub name: Option<String>,
-    pub command: String,
+impl From<&ToolDefinition> for conc::Executable {
+    fn from(command: &ToolDefinition) -> Self {
+        let name = command
+            .name
+            .clone()
+            .unwrap_or_else(|| command.command.clone());
+        conc::Executable {
+            name,
+            command: conc::shell_command(&command.command),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackConfig {
+    /// customize the lints for this stack
     pub lint: Option<StackTools>,
+
+    /// customize the fixes for this stack
     pub fix: Option<StackTools>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackTools {
-    pub add: Option<Vec<StackCommand>>,
-    pub replace: Option<Vec<StackCommand>>,
-}
+    /// these commands run in addition to the built-in ones
+    pub add: Option<Vec<ToolDefinition>>,
 
-#[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct StackCommand {
-    pub name: String,
-    pub command: String,
-}
-
-impl From<&StackCommand> for conc::Executable {
-    fn from(command: &StackCommand) -> Self {
-        conc::Executable {
-            name: command.name.clone(),
-            command: conc::shell_command(&command.command),
-        }
-    }
+    /// these commands replace the built-in ones
+    pub replace: Option<Vec<ToolDefinition>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -186,34 +189,51 @@ pub struct ApplicationSection {
     #[serde(alias = "actionlint")]
     #[schemars(rename = "actionlint")]
     pub actionlint: Option<ApplicationNoFile>,
+
     pub biome: Option<ApplicationWithFile>,
+
     pub checkstyle: Option<ApplicationNoFile>,
+
     #[serde(alias = "delete-empty-folders")]
     #[schemars(rename = "delete-empty-folders")]
     pub delete_empty_folders: Option<ApplicationNoFile>,
+
     #[serde(alias = "gherkin-lint")]
     #[schemars(rename = "gherkin-lint")]
     pub gherkin_lint: Option<ApplicationWithFile>,
+
     pub ghokin: Option<ApplicationWithFile>,
+
     #[serde(alias = "git-diff-check")]
     #[schemars(rename = "git-diff-check")]
     pub git_diff_check: Option<ApplicationNoFile>,
+
     pub gofumpt: Option<ApplicationWithFile>,
+
     #[serde(alias = "golangci-lint")]
     #[schemars(rename = "golangci-lint")]
     pub golangci_lint: Option<ApplicationNoFile>,
+
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<ApplicationWithFile>,
+
     pub prettier: Option<ApplicationWithFile>,
+
     pub pyright: Option<ApplicationWithFile>,
+
     pub ruff: Option<ApplicationWithFile>,
+
     pub rumdl: Option<ApplicationWithFile>,
+
     pub sqlfmt: Option<ApplicationWithFile>,
+
     pub taplo: Option<ApplicationWithFile>,
+
     #[serde(alias = "text-runner")]
     #[schemars(rename = "text-runner")]
     pub text_runner: Option<ApplicationNoFile>,
+
     pub tikibase: Option<ApplicationNoFile>,
 }
 
@@ -232,7 +252,9 @@ pub enum Operation {
 #[serde(deny_unknown_fields)]
 pub struct Operations<T> {
     pub lint: Option<T>,
+
     pub fix: Option<T>,
+
     #[serde(alias = "fix-unsafe")]
     #[schemars(rename = "fix-unsafe")]
     pub fix_unsafe: Option<T>,
@@ -263,7 +285,10 @@ pub trait Application {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationNoFile {
+    /// enable or disable the entire application
     pub enabled: Option<bool>,
+
+    /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationNoFileOperation>>,
 }
 
@@ -287,10 +312,15 @@ impl Application for ApplicationNoFile {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationWithFile {
+    /// enable or disable the entire application
     pub enabled: Option<bool>,
+
+    /// make this app ignore these files
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
+
+    /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationWithFileOperation>>,
 }
 
@@ -334,9 +364,12 @@ impl Application for ApplicationNoFileOperation {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationWithFileOperation {
+    /// enable or disable this operation
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
+
+    /// files that this operation should ignore
     pub ignore_files: Option<Vec<String>>,
 }
 
@@ -359,7 +392,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
+        use crate::config::{Config, StackConfig, ToolDefinition};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -391,21 +424,21 @@ mod tests {
             let want = Config {
                 schema: None,
                 global_fixes: Some(vec![
-                    GlobalFix {
+                    ToolDefinition {
                         name: None,
                         command: S("fixes/organize.py"),
                     },
-                    GlobalFix {
+                    ToolDefinition {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    GlobalLint {
+                    ToolDefinition {
                         name: None,
                         command: S("lints/one.sh"),
                     },
-                    GlobalLint {
+                    ToolDefinition {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
                     },
@@ -533,8 +566,8 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
-                                name: S("mypy"),
+                            add: Some(vec![ToolDefinition {
+                                name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
                             replace: None,
@@ -570,8 +603,8 @@ mod tests {
                     StackType::Rust,
                     StackConfig {
                         lint: Some(StackTools {
-                            replace: Some(vec![StackCommand {
-                                name: S("Clippy"),
+                            replace: Some(vec![ToolDefinition {
+                                name: Some(S("Clippy")),
                                 command: S("cargo clippy --all-targets"),
                             }]),
                             add: None,
@@ -607,8 +640,8 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
-                                name: S("mypy"),
+                            add: Some(vec![ToolDefinition {
+                                name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
                             replace: None,
@@ -635,11 +668,11 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: None,
-                global_lints: Some(vec![GlobalLint {
+                global_lints: Some(vec![ToolDefinition {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
                 }]),
-                global_fixes: Some(vec![GlobalFix {
+                global_fixes: Some(vec![ToolDefinition {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),

@@ -110,7 +110,6 @@ impl UserError {
                 println!("code is not formatted\n");
                 let _ = std::io::stdout().write_all(&diff);
             }
-            // TODO: for CONFIG errors, print the config file path and then the message
             UserError::Cli { msg } => println!("{msg}"),
             UserError::ConfigAlreadyExists { filename } => {
                 println!("config file {filename} already exists");
