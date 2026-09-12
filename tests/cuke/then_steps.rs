@@ -79,7 +79,7 @@ async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: Str
     let want = want.replace("\\t", "\t");
     let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
-    assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
+    pretty::assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
 
 #[then(expr = "file {string} now matches these lines")]
