@@ -59,7 +59,7 @@ fn sort_run_that_app_content(source: &str) -> String {
         while lines.peek().is_some_and(|inner| inner.trim() != DOCSTRING) {
             docstring.push(lines.next().expect("peeked docstring line"));
         }
-        docstring.sort();
+        docstring.sort_unstable();
         for inner in docstring {
             push_line(&mut result, inner);
         }
