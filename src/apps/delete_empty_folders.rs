@@ -4,6 +4,8 @@ use crate::domain::{EnabledWhen, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
 
+const DEFAULT_VERSION: &str = "0.0.2";
+
 pub struct DeleteEmptyFolders;
 
 impl Tool for DeleteEmptyFolders {
@@ -32,7 +34,7 @@ pub fn format_command(config: &Config) -> Result<Option<conc::Executable>> {
         args: vec![],
         // TODO: if the run-that-app file defines a different version, use that one
         // and only fall back to the hard-coded one if the run-that-app file does not define a version
-        version: configSome(rta::Version::from("0.0.2")),
+        version: Some(rta::Version::from(DEFAULT_VERSION)),
     })
 }
 
