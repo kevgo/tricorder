@@ -3,6 +3,7 @@ use ahash::AHashMap;
 use jsonc_parser::ParseOptions;
 use schemars::JsonSchema;
 use serde::Deserialize;
+use std::fmt::Display;
 use std::fs;
 use std::path::Path;
 
@@ -150,15 +151,15 @@ pub struct ToolDefinition {
     pub command: String,
 }
 
-impl From<&ToolDefinition> for conc::Executable {
-    fn from(command: &ToolDefinition) -> Self {
-        let name = command
-            .name
-            .clone()
-            .unwrap_or_else(|| command.command.clone());
+impl ToolDefinition {
+    /// Converts this tool into an executable whose printed name matches built-in tools:
+    /// `{operation} {stack} ({name})`.
+    #[must_use]
+    pub fn to_executable(&self, operation: Operation, stack: StackType) -> conc::Executable {
+        let tool_name = self.name.as_deref().unwrap_or(&self.command);
         conc::Executable {
-            name,
-            command: conc::shell_command(&command.command),
+            name: format!("{operation} {stack} ({tool_name})"),
+            command: conc::shell_command(&self.command),
         }
     }
 }
@@ -246,6 +247,16 @@ pub enum Operation {
     Lint,
     Fix,
     FixUnsafe,
+}
+
+impl Display for Operation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Operation::Lint => f.write_str("lint"),
+            Operation::Fix => f.write_str("fix"),
+            Operation::FixUnsafe => f.write_str("unsafe-fix"),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -1235,6 +1246,42 @@ mod tests {
             };
             assert!(config.operation_enabled(&Taplo {}, Operation::Lint));
             assert!(config.operation_enabled(&Taplo {}, Operation::Fix));
+        }
+    }
+
+    mod tool_definition {
+        use crate::config::{Operation, ToolDefinition};
+        use crate::domain::StackType;
+        use big_s::S;
+
+        #[test]
+        fn named_tool_includes_operation_and_stack() {
+            let tool = ToolDefinition {
+                name: Some(S("run-that-app-sorted")),
+                command: S("echo hello"),
+            };
+            let executable = tool.to_executable(Operation::Fix, StackType::Cucumber);
+            pretty::assert_eq!(executable.name, "fix Cucumber (run-that-app-sorted)");
+        }
+
+        #[test]
+        fn unnamed_tool_falls_back_to_command() {
+            let tool = ToolDefinition {
+                name: None,
+                command: S("echo hello"),
+            };
+            let executable = tool.to_executable(Operation::Lint, StackType::Python);
+            pretty::assert_eq!(executable.name, "lint Python (echo hello)");
+        }
+
+        #[test]
+        fn unsafe_fix_uses_hyphenated_operation() {
+            let tool = ToolDefinition {
+                name: Some(S("my fix")),
+                command: S("echo hello"),
+            };
+            let executable = tool.to_executable(Operation::FixUnsafe, StackType::Toml);
+            pretty::assert_eq!(executable.name, "unsafe-fix TOML (my fix)");
         }
     }
 

@@ -39,7 +39,7 @@ Feature: exclude a file from being unsafe-fixed by a specific app only
     When executing "tricorder fix-unsafe --show=verbose"
     Then it prints the block matching
       """
-      force fix TOML \(Taplo\)
+      unsafe-fix TOML \(Taplo\)
       \S+/taplo format --force other\.toml\n
       """
     And it does not print

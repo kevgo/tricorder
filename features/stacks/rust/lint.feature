@@ -42,7 +42,7 @@ Feature: lint Rust
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      my custom linter
+      lint Rust (my custom linter)
       custom linter running
       """
     And it prints to STDERR

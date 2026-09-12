@@ -16,7 +16,7 @@ Feature: unsafe-fix TypeScript
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
-      unsafe fix TypeScript (Biome)
+      unsafe-fix TypeScript (Biome)
       """
     And the exit code is 0
     And file "main.ts" now has content

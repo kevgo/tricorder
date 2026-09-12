@@ -55,12 +55,12 @@ Feature: pitstop Rust
     When executing "tricorder pitstop --show=all"
     Then it prints the block
       """
-      my custom fix
+      fix Rust (my custom fix)
       custom fix running
       """
     And it prints the block
       """
-      my custom linter
+      lint Rust (my custom linter)
       custom linter running
       """
     And it prints to STDERR

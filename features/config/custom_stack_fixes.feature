@@ -35,7 +35,7 @@ Feature: stack-specific fixes
       """
     And it prints the block
       """
-      my fix
+      fix Python (my fix)
       MY FIX RAN
       """
     And the exit code is 0
@@ -62,7 +62,7 @@ Feature: stack-specific fixes
     When executing "tricorder fix --show=all"
     Then it prints the block
       """
-      my fix
+      fix Python (my fix)
       MY FIX RAN
       """
     And it does not print any of these lines

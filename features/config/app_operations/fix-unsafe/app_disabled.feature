@@ -42,7 +42,7 @@ Feature: disable an application's fix-unsafe operation
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the block
       """
-      unsafe fix CSS (Biome)
+      unsafe-fix CSS (Biome)
       """
     And it does not print
       """
