@@ -25,21 +25,25 @@ pub struct Config {
     #[schemars(rename = "$schema")]
     pub schema: Option<String>,
 
-    // TODO: add docstrings
+    // custom fixes that aren't stack-specific
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
     pub global_fixes: Option<Vec<GlobalFix>>,
 
+    // custom lints that aren't stack-specific
     #[serde(alias = "global-lints")]
     #[schemars(rename = "global-lints")]
     pub global_lints: Option<Vec<GlobalLint>>,
 
+    // files that should be excluded when running any tool
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
 
+    // application-specific configuration
     pub applications: Option<ApplicationSection>,
 
+    // stack-specific configuration
     #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
 }
