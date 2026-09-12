@@ -11,7 +11,11 @@
       ]
     },
     "taplo": {
-      "ignore-files": ["Cargo.toml"]
+      "operations": {
+        "lint": {
+          "ignore-files": ["Cargo.toml"]
+        }
+      }
     }
   },
   "stacks": {
