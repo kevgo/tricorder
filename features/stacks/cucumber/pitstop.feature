@@ -1,11 +1,12 @@
-@online
-Feature: lint Cucumber
+Feature: pitstop Cucumber
 
   Background:
     Given a file "run-that-app" with content
       """
-      npm 26.3.0
       delete-empty-folders 0.0.2
+      gherkin-lint 4.2.4
+      ghokin 3.10.0
+      node 26.4.0
       """
     And a file ".gherkin-lintrc" with content
       """
@@ -52,49 +53,61 @@ Feature: lint Cucumber
       }
       """
 
-  Scenario: valid Cucumber
-    Given a file "features/one.feature" with content
+  Scenario: unformatted Cucumber
+    Given a file "main.feature" with content
       """
-      Feature: one
+      Feature:   foo
 
-        Scenario: one
-          Given a step
+        Scenario:   bar
+          Given   a step
       """
-    When executing "tricorder lint --show=all"
-    Then it prints
+    And a file "other.feature" with content
       """
+      Feature:   foo2
+
+        Scenario:   bar2
+          Given   another step
+      """
+    When executing "tricorder pitstop --show=all"
+    Then it prints the lines
+      """
+      fix Cucumber (Ghokin)
       lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
-    And file "features/one.feature" is unchanged
-
-  Scenario: unformatted Cucumber
-    Given a file "features/one.feature" with content
+    And file "main.feature" now has content
       """
-      Feature: one
+      Feature: foo
 
-        Scenario: one
-                  Given a step
+        Scenario: bar
+          Given a step
       """
-    When executing "tricorder lint --show=all"
+    And file "other.feature" now has content
+      """
+      Feature: foo2
+
+        Scenario: bar2
+          Given another step
+      """
+
+  Scenario: unformatted Cucumber with lint error
+    Given a file "main.feature" with content
+      """
+      Feature:    foo
+
+          Given a step
+      """
+    When executing "tricorder pitstop --show=all"
     Then it prints the lines
       """
+      fix Cucumber (Ghokin)
       lint Cucumber (gherkin-lint)
-        4    Wrong indentation for "given", expected indentation level of 4, but got 12    indentation
+        1    Feature file does not have any Scenarios    no-files-without-scenarios
       """
     And the exit code is 1
-    And file "features/one.feature" is unchanged
+    And file "main.feature" now has content
+      """
+      Feature: foo
 
-  Scenario: invalid Cucumber
-    Given a file "features/one.feature" with content
+        Given a step
       """
-      Feat
-      """
-    When executing "tricorder lint --show=all"
-    Then it prints the lines
-      """
-      lint Cucumber (gherkin-lint)
-        1    (1:1): expected: #EOF, #Language, #TagLine, #FeatureLine, #Comment, #Empty, got 'Feat'    unexpected-error
-      """
-    And the exit code is 1
-    And file "features/one.feature" is unchanged
