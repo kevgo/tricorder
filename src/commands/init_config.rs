@@ -207,8 +207,8 @@ mod tests {
         use super::DEFAULT_JSON;
         use crate::config::{
             ApplicationNoFile, ApplicationSection, ApplicationWithFile,
-            ApplicationWithFileOperation, Config, GlobalFix, GlobalLint, Operations, SCHEMA_URL,
-            StackCommand, StackConfig, StackTools,
+            ApplicationWithFileOperation, Config, Operations, SCHEMA_URL, StackCommand,
+            StackConfig, StackTools, ToolOptName,
         };
         use crate::domain::StackType;
         use ahash::AHashMap;
@@ -230,21 +230,21 @@ mod tests {
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
                 global_fixes: Some(vec![
-                    GlobalFix {
+                    ToolOptName {
                         name: Some(S("custom fix 1")),
                         command: S("tools/fix_1.sh"),
                     },
-                    GlobalFix {
+                    ToolOptName {
                         name: None,
                         command: S("tools/fix_2.sh"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    GlobalLint {
+                    ToolOptName {
                         name: Some(S("custom lint 1")),
                         command: S("tools/lint_1.sh"),
                     },
-                    GlobalLint {
+                    ToolOptName {
                         name: None,
                         command: S("tools/lint_2.sh"),
                     },

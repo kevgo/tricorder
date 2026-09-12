@@ -28,12 +28,12 @@ pub struct Config {
     // custom fixes that aren't stack-specific
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
-    pub global_fixes: Option<Vec<GlobalFix>>,
+    pub global_fixes: Option<Vec<ToolOptName>>,
 
     // custom lints that aren't stack-specific
     #[serde(alias = "global-lints")]
     #[schemars(rename = "global-lints")]
-    pub global_lints: Option<Vec<GlobalLint>>,
+    pub global_lints: Option<Vec<ToolOptName>>,
 
     // files that should be excluded when running any tool
     #[serde(alias = "ignore-files")]
@@ -142,21 +142,11 @@ impl Config {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct GlobalFix {
+pub struct ToolOptName {
     /// display name for the fix
     pub name: Option<String>,
 
     /// the command that implements the fix
-    pub command: String,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct GlobalLint {
-    /// display name for the lint
-    pub name: Option<String>,
-
-    /// the command that implements the lint
     pub command: String,
 }
 
@@ -408,7 +398,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
+        use crate::config::{Config, StackCommand, StackConfig, ToolOptName};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -440,21 +430,21 @@ mod tests {
             let want = Config {
                 schema: None,
                 global_fixes: Some(vec![
-                    GlobalFix {
+                    ToolOptName {
                         name: None,
                         command: S("fixes/organize.py"),
                     },
-                    GlobalFix {
+                    ToolOptName {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    GlobalLint {
+                    ToolOptName {
                         name: None,
                         command: S("lints/one.sh"),
                     },
-                    GlobalLint {
+                    ToolOptName {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
                     },
@@ -684,11 +674,11 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: None,
-                global_lints: Some(vec![GlobalLint {
+                global_lints: Some(vec![ToolOptName {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
                 }]),
-                global_fixes: Some(vec![GlobalFix {
+                global_fixes: Some(vec![ToolOptName {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),
