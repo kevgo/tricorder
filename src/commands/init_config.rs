@@ -87,7 +87,7 @@ pub const DEFAULT_JSON: &str = r#"{
     "biome": { "enabled": true, "ignore-files": [] },
     "checkstyle": { "enabled": true },
     "delete_empty_folders": { "enabled": true },
-    "dprint": { "enabled": true, "ignore-files": [] },
+    "dprint": { "enabled": false, "ignore-files": [] },
     "gherkin_lint": { "enabled": true, "ignore-files": [] },
     "ghokin": { "enabled": true, "ignore-files": [] },
     "git_diff_check": { "enabled": true },
@@ -96,7 +96,7 @@ pub const DEFAULT_JSON: &str = r#"{
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
-    "prettier": { "enabled": false, "ignore-files": [] },
+    "prettier": { "enabled": true, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
     "rumdl": { "enabled": true, "ignore-files": [] },
@@ -258,7 +258,7 @@ mod tests {
                         operations: None,
                     }),
                     dprint: Some(ApplicationWithFile {
-                        enabled: Some(true),
+                        enabled: Some(false),
                         ignore_files: Some(vec![]),
                         operations: None,
                     }),

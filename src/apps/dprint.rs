@@ -36,9 +36,8 @@ impl Lint for Dprint {
         if files.is_empty() {
             return Ok(None);
         }
-        let mut args = Vec::with_capacity(files.len() + 2);
+        let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
-        args.push(S("--allow-no-files"));
         args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
