@@ -1,4 +1,4 @@
-Feature: lint TypeScript with dprint
+Feature: lint JSON with dprint
 
   Background:
     Given a file "run-that-app" with content
@@ -9,61 +9,60 @@ Feature: lint TypeScript with dprint
     And a file "dprint.json" with content
       """
       {
-        "plugins": ["https://plugins.dprint.dev/typescript-0.96.1.wasm"]
+        "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
     And a file "tricorder.json" with content
       """
       {
         "applications": {
-          "biome": { "enabled": false },
           "prettier": { "enabled": false },
           "dprint": { "ignore-files": ["dprint.json", "tricorder.json"] }
         }
       }
       """
 
-  Scenario: formatted TypeScript
-    Given a file "main.ts" with content
+  Scenario: formatted JSON
+    Given a file "main.json" with content
       """
-      console.log("hello");
+      { "key": "value" }
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      lint TypeScript (dprint)
+      lint JSON (dprint)
       """
     And the exit code is 0
-    And file "main.ts" is unchanged
+    And file "main.json" is unchanged
 
-  Scenario: unformatted TypeScript
-    Given a file "main.ts" with content
+  Scenario: unformatted JSON
+    Given a file "main.json" with content
       """
-      console.log(  "hello"  );
+      {  "key"  :  "value"  }
       """
-    And a file "other.ts" with content
+    And a file "other.json" with content
       """
-      console.log(  "other"  );
+      {  "key"  :  "other"  }
       """
     When executing "tricorder lint --show=all"
     Then it prints the lines
       """
-      lint TypeScript (dprint)
+      lint JSON (dprint)
       """
     And the exit code is 20
-    And file "main.ts" is unchanged
-    And file "other.ts" is unchanged
+    And file "main.json" is unchanged
+    And file "other.json" is unchanged
 
-  Scenario: invalid TypeScript
-    Given a file "main.ts" with content
+  Scenario: invalid JSON
+    Given a file "main.json" with content
       """
-      console.log("
+      { "key":
       """
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      lint TypeScript (dprint)
+      lint JSON (dprint)
       Error formatting
       """
     And the exit code is 1
-    And file "main.ts" is unchanged
+    And file "main.json" is unchanged

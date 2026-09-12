@@ -141,13 +141,13 @@ All linters run in parallel.
 
 | Stack      | Linter                                                                          |
 | ---------- | ------------------------------------------------------------------------------- |
-| TypeScript | biome, dprint (when `dprint.json` is present)                                   |
+| TypeScript | biome                                                                           |
 | CSS        | biome                                                                           |
 | JSON       | prettier, dprint (when `dprint.json` is present)                                |
-| JSONC      | prettier, dprint (when `dprint.json` is present)                                |
+| JSONC      | prettier                                                                        |
 | YAML       | prettier                                                                        |
-| Markdown   | rumdl, dprint (when `dprint.json` is present)                                   |
-| TOML       | taplo, dprint (when `dprint.json` is present)                                   |
+| Markdown   | rumdl                                                                           |
+| TOML       | taplo                                                                           |
 | Python     | ruff                                                                            |
 | Rust       | (none, please define your Rust commands as custom lints and fixes)              |
 | Go         | golangci-lint                                                                   |

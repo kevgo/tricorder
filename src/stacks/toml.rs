@@ -1,4 +1,3 @@
-use crate::apps::dprint::Dprint;
 use crate::apps::taplo::Taplo;
 use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
@@ -15,11 +14,11 @@ impl Stack for Toml {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![Box::new(Dprint {}), Box::new(Taplo {})]
+        vec![Box::new(Taplo {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Dprint {}), Box::new(Taplo {})]
+        vec![Box::new(Taplo {})]
     }
 }
 
