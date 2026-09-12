@@ -1,7 +1,6 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
 use crate::config::{Application, Applications, Config, Operation};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
-use big_s::S;
 use std::fmt::Display;
 
 pub struct GherkinLint;
@@ -37,15 +36,10 @@ impl Lint for GherkinLint {
         if files.is_empty() {
             return Ok(None);
         }
-        let mut args = Vec::with_capacity(files.len() + 3);
-        args.push(S("exec"));
-        args.push(S("--yes"));
-        args.push(S("gherkin-lint"));
-        args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
-            app: &rta::applications::Npm {},
-            args,
+            app: &rta::applications::GherkinLint {},
+            args: files.into_strings(),
             version: None,
         })?;
         Ok(executable.map(conc::Runnable::Single))
