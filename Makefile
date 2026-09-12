@@ -52,9 +52,6 @@ fix: build ${RTA} ${TRICORDER}  # corrects all auto-fixable issues
 ghokin: ${RTA}  # format the Cucumber files
 	${GHOKIN} fmt replace features/
 
-run-that-app-content-sorted:  # sorts run-that-app content in feature files
-	cargo test --test=run-that-app-content-sorted
-
 help:  # prints all available targets
 	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 

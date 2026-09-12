@@ -23,8 +23,8 @@
       "fix": {
         "add": [
           {
-            "name": "run-that-app file content sorted",
-            "command": "cucumber fix"
+            "name": "run-that-app-sorted",
+            "command": "cargo test --test=run-that-app-content-sorted"
           }
         ]
       }
