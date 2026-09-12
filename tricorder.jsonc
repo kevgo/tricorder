@@ -23,7 +23,7 @@
       "fix": {
         "add": [
           {
-            "name": "run-that-app-sorted",
+            "name": "sort-run-that-app",
             "command": "cargo test --test=run-that-app-content-sorted"
           }
         ]
