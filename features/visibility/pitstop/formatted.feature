@@ -4,8 +4,8 @@ Feature: pitstop multiple good stacks
     Given a file "run-that-app" with content
       """
       biome 2.4.0
-      ruff 0.15.16
       delete-empty-folders 0.0.2
+      ruff 0.15.16
       """
     And a file "main.py" with content
       """

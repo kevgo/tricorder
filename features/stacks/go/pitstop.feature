@@ -8,9 +8,9 @@ Feature: pitstop Go
       """
     And a file "run-that-app" with content
       """
+      delete-empty-folders 0.0.2
       gofumpt 0.10.0
       golangci-lint 2.12.2
-      delete-empty-folders 0.0.2
       """
 
   Scenario: unformatted Go

@@ -5,8 +5,8 @@ Feature: stack-scoped custom fixes
     And a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
-      rumdl 0.2.14
       ruff 0.15.16
+      rumdl 0.2.14
       """
     And a file "tricorder.json" with content
       """

@@ -3,8 +3,8 @@ Feature: unsafe-fix Python
   Background:
     Given a file "run-that-app" with content
       """
-      ruff 0.15.16
       delete-empty-folders 0.0.2
+      ruff 0.15.16
       taplo 0.10.0
       """
     And a file "main.py" with content
