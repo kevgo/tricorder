@@ -1,5 +1,8 @@
 # Tricorder changelog
 
+- app: dprint
+
+
 ## 0.1.0
 
 #### BREAKING CHANGES

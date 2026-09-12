@@ -1,3 +1,4 @@
+use crate::apps::dprint::Dprint;
 use crate::apps::rumdl::Rumdl;
 use crate::apps::text_runner::TextRunner;
 use crate::apps::tikibase::Tikibase;
@@ -17,6 +18,7 @@ impl Stack for Markdown {
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
         vec![
+            Box::new(Dprint {}),
             Box::new(Rumdl {}),
             Box::new(TextRunner {}),
             Box::new(Tikibase {}),
@@ -24,7 +26,11 @@ impl Stack for Markdown {
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Tikibase {}), Box::new(Rumdl {})]
+        vec![
+            Box::new(Dprint {}),
+            Box::new(Tikibase {}),
+            Box::new(Rumdl {}),
+        ]
     }
 }
 

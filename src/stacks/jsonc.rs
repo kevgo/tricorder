@@ -1,3 +1,4 @@
+use crate::apps::dprint::Dprint;
 use crate::apps::prettier::Prettier;
 use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
@@ -14,11 +15,11 @@ impl Stack for JsonC {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![]
+        vec![Box::new(Dprint {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Prettier {})]
+        vec![Box::new(Dprint {}), Box::new(Prettier {})]
     }
 }
 
