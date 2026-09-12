@@ -115,7 +115,8 @@ Given a file "run-that-app" with content
   line B
   """
 "#;
-    pretty::assert_eq!(sort_run_that_app_content(give), want);
+    let have = sort_run_that_app_content(give);
+    pretty::assert_eq!(have, want);
 }
 
 #[test]
@@ -134,7 +135,8 @@ fn sorts_and_step_docstring() {
       taplo 0.10.0
       """
 "#;
-    pretty::assert_eq!(sort_run_that_app_content(give), want);
+    let have = sort_run_that_app_content(give);
+    pretty::assert_eq!(have, want);
 }
 
 #[test]
