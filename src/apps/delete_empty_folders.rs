@@ -12,7 +12,7 @@ impl Tool for DeleteEmptyFolders {
 
     fn config_section<'a>(
         &self,
-        apps: &'a crate::config::Applications,
+        apps: &'a crate::config::ApplicationSection,
     ) -> Option<&'a dyn crate::config::Application> {
         Some(apps.delete_empty_folders.as_ref()?)
     }
