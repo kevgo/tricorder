@@ -8,7 +8,7 @@ impl Stack for Rust {
         StackType::Rust
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "rs")
     }
 
@@ -43,7 +43,7 @@ mod tests {
         };
         let rust = Rust {};
         for (give, want) in tests {
-            let have = rust.owns(Path::new(give));
+            let have = rust.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

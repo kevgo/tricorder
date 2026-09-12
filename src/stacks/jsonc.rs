@@ -9,7 +9,7 @@ impl Stack for JsonC {
         StackType::JsonC
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "jsonc")
     }
 
@@ -39,7 +39,7 @@ mod tests {
         };
         let json = JsonC {};
         for (give, want) in tests {
-            let have = json.owns(Path::new(give));
+            let have = json.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

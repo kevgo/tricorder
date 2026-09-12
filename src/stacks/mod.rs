@@ -77,7 +77,7 @@ pub fn from_files<'a>(
             continue;
         }
         for detected_stack in &mut detected_stacks {
-            if detected_stack.stack.owns(file.as_ref()) {
+            if detected_stack.stack.matches(file.as_ref()) {
                 detected_stack.files.push(file.clone());
                 break;
             }
@@ -147,7 +147,7 @@ pub fn discover_all_in(dir: &Path, ignores: &Ignores) -> DetectedStacks {
             continue;
         }
         for detected_stack in &mut detected_stacks {
-            if detected_stack.stack.owns(path) {
+            if detected_stack.stack.matches(path) {
                 detected_stack.files.push(path.into());
                 break;
             }
