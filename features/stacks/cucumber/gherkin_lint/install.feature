@@ -6,7 +6,7 @@ Feature: install Gherkin Lint
       """
       delete-empty-folders 0.0.2
       """
-    Given a file "features/one.feature" with content
+    And a file "features/one.feature" with content
       """
       Feature: one
 
