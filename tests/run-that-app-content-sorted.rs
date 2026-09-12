@@ -100,7 +100,7 @@ fn push_line(result: &mut String, line: &str) {
 }
 
 #[test]
-fn sorts_given_step_docstring() {
+fn sorts_given_step() {
     let give = r#"\
 Given a file "run-that-app" with content
   """
@@ -120,7 +120,7 @@ Given a file "run-that-app" with content
 }
 
 #[test]
-fn sorts_and_step_docstring() {
+fn sorts_and_step() {
     let give = r#"\
     And a file "run-that-app" with content
       """
@@ -158,22 +158,20 @@ fn leaves_other_file_docstrings_alone() {
 }
 
 #[test]
-fn comments_then_blanks_then_sorted_content() {
+fn leaves_comments_and_blank_lines() {
     let give = r#"\
 Given a file "run-that-app" with content
   """
-  line B
+  # comment
 
-  # comment B
+  line B
   line A
-  # comment A
   """
 "#;
     let want = r#"\
 Given a file "run-that-app" with content
   """
-  # comment A
-  # comment B
+  # comment
 
   line A
   line B
