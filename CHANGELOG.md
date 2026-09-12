@@ -1,29 +1,36 @@
 # Tricorder changelog
 
-- Application config now supports per-operation `enabled` and `ignore-files` under `operations.lint`, `operations.fix`, and `operations.fix-unsafe`
-- `tricorder update:tools` updates third-party tool versions to the latest available
-- `tricorder precommit` now exits 0 even when setup fails (invalid config, missing Git repo, etc.)
-
-
 ## 0.1.0
 
 #### BREAKING CHANGES
 
 - breaking: the config file is in JSONC format now because there is too much nesting for TOML
+- breaking: many keys in the config file are simplified
 - breaking: `tricorder pitstop` now processes only files changed on the current branch
 - breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 - breaking: the `keep-sorted` config key now lives under `applications`
 - breaking: unknown keys in the config file are now an error
-- breaking: split init command to `init:claude` and `init:githook`
+- breaking: splits the `init` command into `init:config`, `init:claude`, and `init:githook`
 - breaking: the `ignore` config key is renamed to `ignore-files`
+- breaking: commands have now specific default visibilities
 
 #### New Features
 
 - The new `postedit` command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
+- `tricorder update:tools` updates third-party tool versions to the latest available
 - JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
 - New `rust` stack, but you need to define the commands for linting and fixing yourself because there are no widely adopted standards.
 - `tricorder init:config` writes a `tricorder.json` with default settings
 - app: actionlint
+- now versions `delete-empty-folders` through the `run-that-app` file
+- all tool definitions in the config file have optional names now
+- installs `gherkin-lint` as a standalone Node app now
+- config: you can now enable/disable and ignore files for individual tools
+- config: you can now enable/disable and ignore files for individual operations of each tool
+
+#### Bug fixes
+
+- `precommit` now always exits with code 0, even if the Tricorder config file is invalid
 
 ## 0.0.17 (2026-08-15)
 
