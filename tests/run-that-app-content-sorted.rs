@@ -20,7 +20,6 @@ fn run_that_app_content_sorted() {
 fn feature_files(dir: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
     collect_feature_files(dir, &mut files);
-    files.sort_unstable();
     files
 }
 
