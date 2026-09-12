@@ -237,7 +237,7 @@ mod tests {
                         command: S("tools/lint_2.sh"),
                     },
                 ]),
-                ignore_files: Some(vec![S("two.css"), S("vendor/"), S("**/*.min.css")]),
+                ignore_files: Some(vec![S("vendor/"), S("**/*.min.css")]),
                 applications: Some(ApplicationSection {
                     actionlint: Some(ApplicationNoFile {
                         enabled: Some(true),
