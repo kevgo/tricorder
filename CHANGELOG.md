@@ -1,12 +1,5 @@
 # Tricorder changelog
 
-## 0.1.1
-- Application config now supports per-operation `enabled` and `ignore-files` under `operations.lint`, `operations.fix`, and `operations.fix-unsafe`
-- `tricorder update:tools` updates third-party tool versions to the latest available
-- `tricorder precommit` now exits 0 even when setup fails (invalid config, missing Git repo, etc.)
-
-- The new `tricorder update:tools` command updates third-party tools listed in file `run-that-app` to the latest available version.
-
 ## 0.1.0
 
 #### BREAKING CHANGES
@@ -24,6 +17,7 @@
 #### New Features
 
 - The new `postedit` command is optimized for running after code was changed, for example insided the agentic loop. It only lints the uncommitted files.
+- `tricorder update:tools` updates third-party tool versions to the latest available
 - JSON-Schema for the config file is available at https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json.
 - New `rust` stack, but you need to define the commands for linting and fixing yourself because there are no widely adopted standards.
 - `tricorder init:config` writes a `tricorder.json` with default settings
