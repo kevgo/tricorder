@@ -101,80 +101,82 @@ fn push_line(result: &mut String, line: &str) {
 
 #[test]
 fn sorts_given_step_docstring() {
-    let give = "\
-Given a file \"run-that-app\" with content
-  \"\"\"
+    let give = r#"\
+Given a file "run-that-app" with content
+  """
   line B
   line A
-  \"\"\"
-";
-    let want = "\
-Given a file \"run-that-app\" with content
-  \"\"\"
+  """
+"#;
+    let want = r#"\
+Given a file "run-that-app" with content
+  """
   line A
   line B
-  \"\"\"
-";
+  """
+"#;
     pretty::assert_eq!(sort_run_that_app_content(give), want);
 }
 
 #[test]
 fn sorts_and_step_docstring() {
-    let give = "\
-    And a file \"run-that-app\" with content
-      \"\"\"
+    let give = r#"\
+    And a file "run-that-app" with content
+      """
       taplo 0.10.0
       delete-empty-folders 0.0.2
-      \"\"\"
-";
-    let want = "\
-    And a file \"run-that-app\" with content
-      \"\"\"
+      """
+"#;
+    let want = r#"\
+    And a file "run-that-app" with content
+      """
       delete-empty-folders 0.0.2
       taplo 0.10.0
-      \"\"\"
-";
+      """
+"#;
     pretty::assert_eq!(sort_run_that_app_content(give), want);
 }
 
 #[test]
 fn leaves_other_file_docstrings_alone() {
-    let give = "\
-    Given a file \"main.rs\" with content
-      \"\"\"
+    let give = r#"\
+    Given a file "main.rs" with content
+      """
       line B
       line A
-      \"\"\"
-    And a committed file \"run-that-app\" with content
-      \"\"\"
+      """
+    And a committed file "run-that-app" with content
+      """
       line B
       line A
-      \"\"\"
-";
-    pretty::assert_eq!(sort_run_that_app_content(give), give);
+      """
+"#;
+    let have = sort_run_that_app_content(give);
+    pretty::assert_eq!(have, give);
 }
 
 #[test]
 fn comments_then_blanks_then_sorted_content() {
-    let give = "\
-Given a file \"run-that-app\" with content
-  \"\"\"
+    let give = r#"\
+Given a file "run-that-app" with content
+  """
   line B
 
   # comment B
   line A
   # comment A
-  \"\"\"
-";
-    let want = "\
-Given a file \"run-that-app\" with content
-  \"\"\"
+  """
+"#;
+    let want = r#"\
+Given a file "run-that-app" with content
+  """
   # comment A
   # comment B
 
   line A
   line B
-  \"\"\"
-";
-    pretty::assert_eq!(sort_run_that_app_content(give), want);
+  """
+"#;
+    let have = sort_run_that_app_content(give);
+    pretty::assert_eq!(have, want);
 }
