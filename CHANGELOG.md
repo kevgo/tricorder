@@ -12,6 +12,7 @@
 #### BREAKING CHANGES
 
 - breaking: the config file is in JSONC format now because there is too much nesting for TOML
+- breaking: many keys in the config file are simplified
 - breaking: `tricorder pitstop` now processes only files changed on the current branch
 - breaking: the `stack` field on `[[custom-lints]]` and `[[custom-fixes]]` is removed; use `[stack.<name>]` with `lint`/`add-lint` and `fix`/`add-fix` to replace or extend a stack's built-in tools
 - breaking: the `keep-sorted` config key now lives under `applications`
@@ -32,6 +33,10 @@
 - installs `gherkin-lint` as a standalone Node app now
 - config: you can now enable/disable and ignore files for individual tools
 - config: you can now enable/disable and ignore files for individual operations of each tool
+
+#### Bug fixes
+
+- `precommit` now always exits with code 0, even if the Tricorder config file is invalid
 
 ## 0.0.17 (2026-08-15)
 
