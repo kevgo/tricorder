@@ -169,31 +169,20 @@ Feature: "tricorder init:config" writes the default config file
         // for auto-complete in VSCode and compatible editors
         "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
 
-        // globally ignored files
-        //
         // These files are invisible to Tricorder.
-        // Supports gitignore syntax.
-        "ignore-files": ["two.css", "vendor/", "**/*.min.css"],
+        "ignore-files": ["vendor/", "**/*.min.css"],
 
-        // global tools
-        //
         // These tools always run.
-        // "name" is optional and defaults to the command
         "global-lints": [
           { "command": "tools/lint_1.sh", "name": "custom lint 1" },
-          { "command": "tools/lint_2.sh" },
+          { "command": "tools/lint_2.sh" }
         ],
         "global-fixes": [
           { "command": "tools/fix_1.sh", "name": "custom fix 1" },
-          { "command": "tools/fix_2.sh" },
+          { "command": "tools/fix_2.sh" }
         ],
 
         // configure the supported software stacks
-        //
-        // The fields in the given example settings can be used for any stack.
-        // "add" runs the given tool in addition to the built-in tools.
-        // "replace" runs the given tool instead of the built-in tools.
-        // Use "replace: []" to disable the built-in tools.
         "stacks": {
           "css": {},
           "cucumber": {},
@@ -251,8 +240,7 @@ Feature: "tricorder init:config" writes the default config file
 
         // configure the built-in tools
         //
-        // Only applications that can receive file paths as arguments
-        // accept "ignore-files" here (in gitignore syntax).
+        // Only applications that can receive file paths as CLI arguments have an "ignore-files" key.
         "applications": {
           "actionlint": { "enabled": true },
           "biome": { "enabled": true, "ignore-files": [] },
@@ -280,13 +268,13 @@ Feature: "tricorder init:config" writes the default config file
               "lint": {
                 // enable or disable all Taplo lints
                 "enabled": true,
-                // don't lint the files listed here
+                // Taplo won't lint these files
                 "ignore-files": []
               },
               "fix": {
                 // enable or disable all Taplo fixes
                 "enabled": true,
-                // don't fix the files listed here
+                // Taplo won't fix these files
                 "ignore-files": []
               }
             }
