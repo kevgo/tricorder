@@ -1,7 +1,6 @@
 @online
 Feature: install Gherkin Lint
 
-  @this
   Scenario: not installed
     Given a file "run-that-app" with content
       """
