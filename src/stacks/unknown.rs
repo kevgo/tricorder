@@ -8,7 +8,7 @@ impl Stack for Unknown {
         StackType::Unknown
     }
 
-    fn owns(&self, _file: &Path) -> bool {
+    fn matches(&self, _file: &Path) -> bool {
         true
     }
 
@@ -38,7 +38,7 @@ mod tests {
         };
         let unknown = Unknown {};
         for (give, want) in tests {
-            let have = unknown.owns(Path::new(give));
+            let have = unknown.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
