@@ -59,7 +59,7 @@ fn sort_run_that_app_content(source: &str) -> String {
         while lines.peek().is_some_and(|inner| inner.trim() != DOCSTRING) {
             docstring.push(lines.next().expect("peeked docstring line"));
         }
-        docstring.sort_unstable();
+        sort_docstring_lines(&mut docstring);
         for inner in docstring {
             push_line(&mut result, inner);
         }
@@ -71,6 +71,27 @@ fn sort_run_that_app_content(source: &str) -> String {
         result.pop();
     }
     result
+}
+
+fn sort_docstring_lines(lines: &mut Vec<&str>) {
+    let mut comments = Vec::new();
+    let mut blanks = Vec::new();
+    let mut content = Vec::new();
+    for line in lines.drain(..) {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            blanks.push(line);
+        } else if trimmed.starts_with('#') {
+            comments.push(line);
+        } else {
+            content.push(line);
+        }
+    }
+    comments.sort_unstable();
+    content.sort_unstable();
+    lines.extend(comments);
+    lines.extend(blanks);
+    lines.extend(content);
 }
 
 fn push_line(result: &mut String, line: &str) {
@@ -131,4 +152,29 @@ fn leaves_other_file_docstrings_alone() {
       \"\"\"
 ";
     pretty::assert_eq!(sort_run_that_app_content(give), give);
+}
+
+#[test]
+fn comments_then_blanks_then_sorted_content() {
+    let give = "\
+Given a file \"run-that-app\" with content
+  \"\"\"
+  line B
+
+  # comment B
+  line A
+  # comment A
+  \"\"\"
+";
+    let want = "\
+Given a file \"run-that-app\" with content
+  \"\"\"
+  # comment A
+  # comment B
+
+  line A
+  line B
+  \"\"\"
+";
+    pretty::assert_eq!(sort_run_that_app_content(give), want);
 }

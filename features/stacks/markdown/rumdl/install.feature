@@ -4,8 +4,8 @@ Feature: install Rumdl
   Scenario: not installed
     Given a file "run-that-app" with content
       """
-
       # more info at https://github.com/kevgo/run-that-app
+
       delete-empty-folders 0.0.2
       """
     And a file "main.md" with content
