@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::{Application, Applications, Config, Operation};
+use crate::config::{Application, ApplicationSection, Config, Operation};
 use crate::domain::{DetectedStack, EnabledWhen, Lint, Result, Tool};
 use std::fmt::Display;
 
@@ -14,7 +14,7 @@ impl Tool for GherkinLint {
         // other_stack.files.contains(".gherkin-lintrc")
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+    fn config_section<'a>(&self, apps: &'a ApplicationSection) -> Option<&'a dyn Application> {
         Some(apps.gherkin_lint.as_ref()?)
     }
 }

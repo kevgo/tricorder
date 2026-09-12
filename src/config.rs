@@ -39,7 +39,7 @@ pub struct Config {
     // TODO: rename to blacklist
     pub ignore_files: Option<Vec<String>>,
 
-    pub applications: Option<Applications>,
+    pub applications: Option<ApplicationSection>,
 
     #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
@@ -184,7 +184,7 @@ impl From<&StackCommand> for conc::Executable {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 // TODO: rename to ApplicationsSection
-pub struct Applications {
+pub struct ApplicationSection {
     #[serde(alias = "actionlint")]
     #[schemars(rename = "actionlint")]
     pub actionlint: Option<ApplicationNoFile>,
@@ -685,7 +685,7 @@ mod tests {
     }
 
     mod applications {
-        use crate::config::{ApplicationNoFile, ApplicationWithFile, Applications, Config};
+        use crate::config::{ApplicationNoFile, ApplicationSection, ApplicationWithFile, Config};
 
         fn disabled_no_file() -> ApplicationNoFile {
             ApplicationNoFile {
@@ -731,7 +731,7 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             pretty::assert_eq!(
                 have.applications,
-                Some(Applications {
+                Some(ApplicationSection {
                     actionlint: Some(disabled_no_file()),
                     biome: Some(disabled_with_file()),
                     checkstyle: Some(disabled_no_file()),
@@ -756,7 +756,7 @@ mod tests {
     }
 
     mod keep_sorted {
-        use crate::config::{ApplicationWithFile, Applications, Config};
+        use crate::config::{ApplicationSection, ApplicationWithFile, Config};
         use big_s::S;
 
         #[test]
@@ -772,7 +772,7 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             assert_eq!(
                 have.applications,
-                Some(Applications {
+                Some(ApplicationSection {
                     keep_sorted: Some(ApplicationWithFile {
                         enabled: Some(true),
                         ignore_files: Some(vec![S("README.md")]),
@@ -784,7 +784,7 @@ mod tests {
         }
 
         mod enabled {
-            use crate::config::{ApplicationWithFile, Applications, Config};
+            use crate::config::{ApplicationSection, ApplicationWithFile, Config};
             use big_s::S;
 
             #[test]
@@ -793,7 +793,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: Some(true),
                             ignore_files: None,
@@ -810,7 +810,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: Some(false),
                             ignore_files: None,
@@ -827,7 +827,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: None,
                             ignore_files: None,
@@ -845,7 +845,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
@@ -858,7 +858,7 @@ mod tests {
         }
 
         mod ignore_files {
-            use crate::config::{ApplicationWithFile, Applications, Config};
+            use crate::config::{ApplicationSection, ApplicationWithFile, Config};
             use big_s::S;
 
             #[test]
@@ -867,7 +867,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 pretty::assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: None,
                             ignore_files: Some(vec![]),
@@ -885,7 +885,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 pretty::assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: None,
                             ignore_files: Some(vec![S("README.md")]),
@@ -902,7 +902,7 @@ mod tests {
                 let have = Config::parse(give, "test.json").unwrap();
                 pretty::assert_eq!(
                     have.applications,
-                    Some(Applications {
+                    Some(ApplicationSection {
                         keep_sorted: Some(ApplicationWithFile {
                             enabled: Some(true),
                             ignore_files: None,
@@ -949,7 +949,7 @@ mod tests {
 
     mod app_enabled {
         use crate::apps::taplo::Taplo;
-        use crate::config::{ApplicationWithFile, Applications, Config};
+        use crate::config::{ApplicationSection, ApplicationWithFile, Config};
 
         #[test]
         fn missing_applications() {
@@ -965,7 +965,7 @@ mod tests {
         #[test]
         fn missing_app() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: None,
                     ..Default::default()
                 }),
@@ -979,7 +979,7 @@ mod tests {
         #[test]
         fn unset() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: None,
                         ..Default::default()
@@ -996,7 +996,7 @@ mod tests {
         #[test]
         fn enabled() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: Some(true),
                         ..Default::default()
@@ -1013,7 +1013,7 @@ mod tests {
         #[test]
         fn disabled() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: Some(false),
                         ..Default::default()
@@ -1030,7 +1030,8 @@ mod tests {
 
     mod operations {
         use crate::config::{
-            ApplicationWithFile, ApplicationWithFileOperation, Applications, Config, Operations,
+            ApplicationSection, ApplicationWithFile, ApplicationWithFileOperation, Config,
+            Operations,
         };
         use crate::domain::UserError;
         use big_s::S;
@@ -1053,7 +1054,7 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             pretty::assert_eq!(
                 have.applications,
-                Some(Applications {
+                Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: None,
                         ignore_files: None,
@@ -1124,8 +1125,8 @@ mod tests {
     mod operation_enabled {
         use crate::apps::taplo::Taplo;
         use crate::config::{
-            ApplicationWithFile, ApplicationWithFileOperation, Applications, Config, Operation,
-            Operations,
+            ApplicationSection, ApplicationWithFile, ApplicationWithFileOperation, Config,
+            Operation, Operations,
         };
 
         #[test]
@@ -1138,7 +1139,7 @@ mod tests {
         #[test]
         fn app_disabled_disables_all_operations() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: Some(false),
                         operations: Some(Operations {
@@ -1161,7 +1162,7 @@ mod tests {
         #[test]
         fn operation_disabled() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         operations: Some(Operations {
                             lint: Some(ApplicationWithFileOperation {
@@ -1183,7 +1184,7 @@ mod tests {
         #[test]
         fn both_enabled() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         enabled: Some(true),
                         operations: Some(Operations {
@@ -1211,8 +1212,8 @@ mod tests {
     mod ignores_for {
         use crate::apps::taplo::Taplo;
         use crate::config::{
-            ApplicationWithFile, ApplicationWithFileOperation, Applications, Config, Operation,
-            Operations,
+            ApplicationSection, ApplicationWithFile, ApplicationWithFileOperation, Config,
+            Operation, Operations,
         };
         use big_s::S;
         use std::path::Path;
@@ -1220,7 +1221,7 @@ mod tests {
         #[test]
         fn unions_app_and_operation_patterns() {
             let config = Config {
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     taplo: Some(ApplicationWithFile {
                         ignore_files: Some(vec![S("app.toml")]),
                         operations: Some(Operations {
