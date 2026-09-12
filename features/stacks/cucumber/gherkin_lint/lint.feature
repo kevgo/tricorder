@@ -3,6 +3,7 @@ Feature: lint Cucumber
   Background:
     Given a file "run-that-app" with content
       """
+      gherkin-lint 4.2.4
       node 26.4.0
       delete-empty-folders 0.0.2
       """
