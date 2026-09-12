@@ -1,5 +1,4 @@
 use crate::apps::biome::Biome;
-use crate::apps::dprint::Dprint;
 use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
 
@@ -16,11 +15,11 @@ impl Stack for Typescript {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![Box::new(Biome {}), Box::new(Dprint {})]
+        vec![Box::new(Biome {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Biome {}), Box::new(Dprint {})]
+        vec![Box::new(Biome {})]
     }
 }
 
