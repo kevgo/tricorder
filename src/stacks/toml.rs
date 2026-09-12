@@ -9,7 +9,7 @@ impl Stack for Toml {
         StackType::Toml
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "toml")
     }
 
@@ -38,7 +38,7 @@ mod tests {
         };
         let toml = Toml {};
         for (give, want) in tests {
-            let have = toml.owns(Path::new(give));
+            let have = toml.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

@@ -9,7 +9,7 @@ impl Stack for Yml {
         StackType::Yml
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension()
             .is_some_and(|ext| ext == "yml" || ext == "yaml")
     }
@@ -41,7 +41,7 @@ mod tests {
         };
         let yml = Yml {};
         for (give, want) in tests {
-            let have = yml.owns(Path::new(give));
+            let have = yml.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

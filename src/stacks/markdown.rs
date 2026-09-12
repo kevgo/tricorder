@@ -11,8 +11,7 @@ impl Stack for Markdown {
         StackType::Markdown
     }
 
-    // TODO: rename to "matches"
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "md")
     }
 
@@ -45,7 +44,7 @@ mod tests {
         };
         let markdown = Markdown {};
         for (give, want) in tests {
-            let have = markdown.owns(Path::new(give));
+            let have = markdown.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
