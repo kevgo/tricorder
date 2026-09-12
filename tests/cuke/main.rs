@@ -10,6 +10,7 @@ mod world;
 
 use cucumber::{World, WriterExt as _, event};
 use dot_writer::DotWriter;
+use std::borrow::Cow;
 use std::sync::{
     Arc,
     atomic::{AtomicBool, Ordering},
@@ -25,7 +26,7 @@ async fn main() {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
         })
-        .after(|_feature, _rule, scenario, ev, world| {
+        .after(|feature, _rule, scenario, ev, world| {
             Box::pin(async move {
                 if !matches!(ev, event::ScenarioFinished::StepPassed) {
                     // the scenario already reports a failure
@@ -36,7 +37,14 @@ async fn main() {
                     return;
                 }
                 if let Err(err) = run_that_app_file::verify_unchanged(world).await {
-                    panic!("Scenario unexpectedly changed file run-that-app: {err}");
+                    let path = match feature.path.as_ref() {
+                        Some(path) => path.to_string_lossy(),
+                        None => Cow::Borrowed("(unknown)"),
+                    };
+                    panic!(
+                        "{path}:{line}  Scenario unexpectedly changed file run-that-app: {err}",
+                        line = scenario.position.line,
+                    );
                 }
             })
         })
