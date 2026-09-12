@@ -164,15 +164,15 @@ pub struct StackConfig {
 #[serde(deny_unknown_fields)]
 pub struct StackTools {
     /// these commands run in addition to the built-in ones
-    pub add: Option<Vec<StackCommand>>,
+    pub add: Option<Vec<ToolName>>,
 
     /// these commands replace the built-in ones
-    pub replace: Option<Vec<StackCommand>>,
+    pub replace: Option<Vec<ToolName>>,
 }
 
 #[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct StackCommand {
+pub struct ToolName {
     /// display name for the command
     pub name: String,
 
@@ -180,8 +180,8 @@ pub struct StackCommand {
     pub command: String,
 }
 
-impl From<&StackCommand> for conc::Executable {
-    fn from(command: &StackCommand) -> Self {
+impl From<&ToolName> for conc::Executable {
+    fn from(command: &ToolName) -> Self {
         conc::Executable {
             name: command.name.clone(),
             command: conc::shell_command(&command.command),
@@ -398,7 +398,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, StackCommand, StackConfig, ToolOptName};
+        use crate::config::{Config, StackConfig, ToolName, ToolOptName};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -572,7 +572,7 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
+                            add: Some(vec![ToolName {
                                 name: S("mypy"),
                                 command: S("mypy ."),
                             }]),
@@ -609,7 +609,7 @@ mod tests {
                     StackType::Rust,
                     StackConfig {
                         lint: Some(StackTools {
-                            replace: Some(vec![StackCommand {
+                            replace: Some(vec![ToolName {
                                 name: S("Clippy"),
                                 command: S("cargo clippy --all-targets"),
                             }]),
@@ -646,7 +646,7 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
+                            add: Some(vec![ToolName {
                                 name: S("mypy"),
                                 command: S("mypy ."),
                             }]),
