@@ -25,7 +25,7 @@ async fn main() {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})
         })
-        .after(|_feature, _rule, scenario, ev, world| {
+        .after(|feature, _rule, scenario, ev, world| {
             Box::pin(async move {
                 if !matches!(ev, event::ScenarioFinished::StepPassed) {
                     // the scenario already reports a failure
@@ -36,7 +36,10 @@ async fn main() {
                     return;
                 }
                 if let Err(err) = run_that_app_file::verify_unchanged(world).await {
-                    panic!("Scenario unexpectedly changed file run-that-app: {err}");
+                    panic!(
+                        "{}:{}  Scenario unexpectedly changed file run-that-app: {err}",
+                        feature.path, scenario.position.line,
+                    );
                 }
             })
         })
