@@ -5,7 +5,6 @@ Feature: install Gherkin Lint
   Scenario: not installed
     Given a file "run-that-app" with content
       """
-      node 26.4.0
       delete-empty-folders 0.0.2
       """
     Given a file "features/one.feature" with content
