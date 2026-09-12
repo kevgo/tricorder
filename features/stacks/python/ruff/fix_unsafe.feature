@@ -27,7 +27,7 @@ Feature: unsafe-fix Python
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
-      unsafe fix Python (ruff)
+      unsafe-fix Python (ruff)
       Found 1 error (1 fixed, 0 remaining).
       format Python (ruff)
       1 file left unchanged

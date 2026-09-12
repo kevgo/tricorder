@@ -67,7 +67,7 @@ Feature: disable an application's fix operation
     When executing "tricorder fix-unsafe --show=verbose"
     Then it prints the block matching
       """
-      force fix TOML \(Taplo\)
+      unsafe-fix TOML \(Taplo\)
       \S+/taplo format --force Cargo\.toml
       """
     And the exit code is 0

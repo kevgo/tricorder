@@ -254,7 +254,7 @@ impl Display for Operation {
         match self {
             Operation::Lint => f.write_str("lint"),
             Operation::Fix => f.write_str("fix"),
-            Operation::FixUnsafe => f.write_str("unsafe fix"),
+            Operation::FixUnsafe => f.write_str("unsafe-fix"),
         }
     }
 }
@@ -1272,6 +1272,16 @@ mod tests {
             };
             let executable = tool.to_executable(Operation::Lint, StackType::Python);
             pretty::assert_eq!(executable.name, "lint Python (echo hello)");
+        }
+
+        #[test]
+        fn unsafe_fix_uses_hyphenated_operation() {
+            let tool = ToolDefinition {
+                name: Some(S("my fix")),
+                command: S("echo hello"),
+            };
+            let executable = tool.to_executable(Operation::FixUnsafe, StackType::Toml);
+            pretty::assert_eq!(executable.name, "unsafe-fix TOML (my fix)");
         }
     }
 

@@ -84,7 +84,7 @@ impl Fix for Taplo {
         args.push(S("--force"));
         args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("force fix {} ({self})", stack.stack),
+            name: format!("unsafe-fix {} ({self})", stack.stack),
             app: &rta::applications::Taplo {},
             args,
             version: None,

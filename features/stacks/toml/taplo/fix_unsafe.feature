@@ -17,7 +17,7 @@ Feature: unsafe-fix TOML
     When executing "tricorder fix-unsafe --show=all"
     Then it prints the lines
       """
-      force fix TOML (Taplo)
+      unsafe-fix TOML (Taplo)
       """
     And the exit code is 0
     And file "main.toml" now has content

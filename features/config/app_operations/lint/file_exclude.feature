@@ -73,7 +73,7 @@ Feature: exclude a file from being linted by a specific app only
     When executing "tricorder fix-unsafe --show=verbose"
     Then it prints the block matching
       """
-      force fix TOML \(Taplo\)
+      unsafe-fix TOML \(Taplo\)
       \S+/taplo format --force Cargo\.toml other\.toml\n
       """
     And file "other.toml" now has content

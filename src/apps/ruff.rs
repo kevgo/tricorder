@@ -117,7 +117,7 @@ impl Fix for Ruff {
         args.push(S("--unsafe-fixes"));
         args.extend(files.clone().into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("unsafe fix {} (ruff)", stack.stack),
+            name: format!("unsafe-fix {} (ruff)", stack.stack),
             app: &rta::applications::Ruff {},
             args,
             version: None,
