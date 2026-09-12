@@ -3,8 +3,8 @@ Feature: fix TypeScript with dprint
   Background:
     Given a file "run-that-app" with content
       """
-      dprint 0.57.4
       delete-empty-folders 0.0.2
+      dprint 0.57.4
       """
     And a file "dprint.json" with content
       """
