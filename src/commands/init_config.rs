@@ -208,7 +208,7 @@ mod tests {
         use crate::config::{
             ApplicationNoFile, ApplicationSection, ApplicationWithFile,
             ApplicationWithFileOperation, Config, Operations, SCHEMA_URL, StackConfig, StackTools,
-            ToolOptName,
+            ToolDefinition,
         };
         use crate::domain::StackType;
         use ahash::AHashMap;
@@ -230,21 +230,21 @@ mod tests {
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
                 global_fixes: Some(vec![
-                    ToolOptName {
+                    ToolDefinition {
                         name: Some(S("custom fix 1")),
                         command: S("tools/fix_1.sh"),
                     },
-                    ToolOptName {
+                    ToolDefinition {
                         name: None,
                         command: S("tools/fix_2.sh"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    ToolOptName {
+                    ToolDefinition {
                         name: Some(S("custom lint 1")),
                         command: S("tools/lint_1.sh"),
                     },
-                    ToolOptName {
+                    ToolDefinition {
                         name: None,
                         command: S("tools/lint_2.sh"),
                     },
@@ -357,14 +357,14 @@ mod tests {
                         StackType::Python,
                         StackConfig {
                             lint: Some(StackTools {
-                                add: Some(vec![ToolOptName {
+                                add: Some(vec![ToolDefinition {
                                     name: Some(S("mypy")),
                                     command: S("mypy ."),
                                 }]),
                                 replace: None,
                             }),
                             fix: Some(StackTools {
-                                add: Some(vec![ToolOptName {
+                                add: Some(vec![ToolDefinition {
                                     name: Some(S("isort")),
                                     command: S("isort ."),
                                 }]),
@@ -377,14 +377,14 @@ mod tests {
                         StackConfig {
                             lint: Some(StackTools {
                                 add: None,
-                                replace: Some(vec![ToolOptName {
+                                replace: Some(vec![ToolDefinition {
                                     name: Some(S("clippy")),
                                     command: S("cargo clippy --all-targets"),
                                 }]),
                             }),
                             fix: Some(StackTools {
                                 add: None,
-                                replace: Some(vec![ToolOptName {
+                                replace: Some(vec![ToolDefinition {
                                     name: Some(S("rustfmt")),
                                     command: S("cargo +nightly fmt"),
                                 }]),

@@ -3,7 +3,7 @@ use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Application, Config, Operation, ToolOptName};
+use crate::config::{Application, Config, ToolDefinitionToolOptName};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::stacks;
 use ahash::AHashMap;
@@ -148,7 +148,10 @@ impl Runnables {
 }
 
 /// adds the custom fixes defined in the config file to the global fix collection
-pub(crate) fn add_custom_fixes(custom_fixes: &[ToolOptName], global: &mut Vec<conc::Executable>) {
+pub(crate) fn add_custom_fixes(
+    custom_fixes: &[ToolDefinition],
+    global: &mut Vec<conc::Executable>,
+) {
     for fix in custom_fixes {
         global.push(conc::Executable {
             name: fix.name.clone().unwrap_or_else(|| fix.command.clone()),
@@ -160,7 +163,7 @@ pub(crate) fn add_custom_fixes(custom_fixes: &[ToolOptName], global: &mut Vec<co
 #[cfg(test)]
 mod tests {
     use super::add_custom_fixes;
-    use crate::config::ToolOptName;
+    use crate::config::ToolDefinition;
     use big_s::S;
 
     fn executable_names(executables: &[conc::Executable]) -> Vec<&str> {
@@ -175,11 +178,11 @@ mod tests {
         let mut global = Vec::new();
         add_custom_fixes(
             &[
-                ToolOptName {
+                ToolDefinition {
                     name: Some(S("global fix")),
                     command: S("echo global"),
                 },
-                ToolOptName {
+                ToolDefinition {
                     name: None,
                     command: S("echo unnamed"),
                 },

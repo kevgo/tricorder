@@ -28,12 +28,12 @@ pub struct Config {
     // custom fixes that aren't stack-specific
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
-    pub global_fixes: Option<Vec<ToolOptName>>,
+    pub global_fixes: Option<Vec<ToolDefinition>>,
 
     // custom lints that aren't stack-specific
     #[serde(alias = "global-lints")]
     #[schemars(rename = "global-lints")]
-    pub global_lints: Option<Vec<ToolOptName>>,
+    pub global_lints: Option<Vec<ToolDefinition>>,
 
     // files that should be excluded when running any tool
     #[serde(alias = "ignore-files")]
@@ -142,7 +142,7 @@ impl Config {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct ToolOptName {
+pub struct ToolDefinition {
     /// display name for the fix
     pub name: Option<String>,
 
@@ -150,8 +150,8 @@ pub struct ToolOptName {
     pub command: String,
 }
 
-impl From<&ToolOptName> for conc::Executable {
-    fn from(command: &ToolOptName) -> Self {
+impl From<&ToolDefinition> for conc::Executable {
+    fn from(command: &ToolDefinition) -> Self {
         let name = command
             .name
             .clone()
@@ -177,10 +177,10 @@ pub struct StackConfig {
 #[serde(deny_unknown_fields)]
 pub struct StackTools {
     /// these commands run in addition to the built-in ones
-    pub add: Option<Vec<ToolOptName>>,
+    pub add: Option<Vec<ToolDefinition>>,
 
     /// these commands replace the built-in ones
-    pub replace: Option<Vec<ToolOptName>>,
+    pub replace: Option<Vec<ToolDefinition>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -392,7 +392,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, StackConfig, ToolOptName};
+        use crate::config::{Config, StackConfig, ToolDefinition};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -424,21 +424,21 @@ mod tests {
             let want = Config {
                 schema: None,
                 global_fixes: Some(vec![
-                    ToolOptName {
+                    ToolDefinition {
                         name: None,
                         command: S("fixes/organize.py"),
                     },
-                    ToolOptName {
+                    ToolDefinition {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    ToolOptName {
+                    ToolDefinition {
                         name: None,
                         command: S("lints/one.sh"),
                     },
-                    ToolOptName {
+                    ToolDefinition {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
                     },
@@ -566,7 +566,7 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![ToolOptName {
+                            add: Some(vec![ToolDefinition {
                                 name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
@@ -603,7 +603,7 @@ mod tests {
                     StackType::Rust,
                     StackConfig {
                         lint: Some(StackTools {
-                            replace: Some(vec![ToolOptName {
+                            replace: Some(vec![ToolDefinition {
                                 name: Some(S("Clippy")),
                                 command: S("cargo clippy --all-targets"),
                             }]),
@@ -640,7 +640,7 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![ToolOptName {
+                            add: Some(vec![ToolDefinition {
                                 name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
@@ -668,11 +668,11 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: None,
-                global_lints: Some(vec![ToolOptName {
+                global_lints: Some(vec![ToolDefinition {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
                 }]),
-                global_fixes: Some(vec![ToolOptName {
+                global_fixes: Some(vec![ToolDefinition {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),
