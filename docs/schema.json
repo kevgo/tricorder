@@ -10,13 +10,13 @@
     "global-fixes": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/GlobalFix"
+        "$ref": "#/$defs/ToolOptName"
       }
     },
     "global-lints": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/GlobalLint"
+        "$ref": "#/$defs/ToolOptName"
       }
     },
     "ignore-files": {
@@ -28,7 +28,7 @@
     "applications": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Applications"
+          "$ref": "#/$defs/ApplicationSection"
         },
         {
           "type": "null"
@@ -86,33 +86,22 @@
   },
   "additionalProperties": false,
   "$defs": {
-    "GlobalFix": {
+    "ToolOptName": {
       "type": "object",
       "properties": {
         "name": {
+          "description": "display name for the fix",
           "type": ["string", "null"]
         },
         "command": {
+          "description": "the command that implements the fix",
           "type": "string"
         }
       },
       "additionalProperties": false,
       "required": ["command"]
     },
-    "GlobalLint": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": ["string", "null"]
-        },
-        "command": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": ["command"]
-    },
-    "Applications": {
+    "ApplicationSection": {
       "type": "object",
       "properties": {
         "actionlint": {
@@ -302,9 +291,11 @@
       "type": "object",
       "properties": {
         "enabled": {
+          "description": "enable or disable the entire application",
           "type": ["boolean", "null"]
         },
         "operations": {
+          "description": "enable or disable individual operations",
           "anyOf": [
             {
               "$ref": "#/$defs/Operations"
@@ -366,15 +357,18 @@
       "type": "object",
       "properties": {
         "enabled": {
+          "description": "enable or disable the entire application",
           "type": ["boolean", "null"]
         },
         "ignore-files": {
+          "description": "make this app ignore these files",
           "type": ["array", "null"],
           "items": {
             "type": "string"
           }
         },
         "operations": {
+          "description": "enable or disable individual operations",
           "anyOf": [
             {
               "$ref": "#/$defs/Operations2"
@@ -427,9 +421,11 @@
       "type": "object",
       "properties": {
         "enabled": {
+          "description": "enable or disable this operation",
           "type": ["boolean", "null"]
         },
         "ignore-files": {
+          "description": "files that this operation should ignore",
           "type": ["array", "null"],
           "items": {
             "type": "string"
@@ -442,6 +438,7 @@
       "type": "object",
       "properties": {
         "lint": {
+          "description": "customize the lints for this stack",
           "anyOf": [
             {
               "$ref": "#/$defs/StackTools"
@@ -452,6 +449,7 @@
           ]
         },
         "fix": {
+          "description": "customize the fixes for this stack",
           "anyOf": [
             {
               "$ref": "#/$defs/StackTools"
@@ -468,27 +466,31 @@
       "type": "object",
       "properties": {
         "add": {
+          "description": "these commands run in addition to the built-in ones",
           "type": ["array", "null"],
           "items": {
-            "$ref": "#/$defs/StackCommand"
+            "$ref": "#/$defs/ToolName"
           }
         },
         "replace": {
+          "description": "these commands replace the built-in ones",
           "type": ["array", "null"],
           "items": {
-            "$ref": "#/$defs/StackCommand"
+            "$ref": "#/$defs/ToolName"
           }
         }
       },
       "additionalProperties": false
     },
-    "StackCommand": {
+    "ToolName": {
       "type": "object",
       "properties": {
         "name": {
+          "description": "display name for the command",
           "type": "string"
         },
         "command": {
+          "description": "the command that implements the command",
           "type": "string"
         }
       },

@@ -208,7 +208,7 @@ mod tests {
         use crate::config::{
             ApplicationNoFile, ApplicationSection, ApplicationWithFile,
             ApplicationWithFileOperation, Config, Operations, SCHEMA_URL, StackConfig, StackTools,
-            ToolName, ToolOptName,
+            ToolOptName,
         };
         use crate::domain::StackType;
         use ahash::AHashMap;
@@ -357,15 +357,15 @@ mod tests {
                         StackType::Python,
                         StackConfig {
                             lint: Some(StackTools {
-                                add: Some(vec![ToolName {
-                                    name: S("mypy"),
+                                add: Some(vec![ToolOptName {
+                                    name: Some(S("mypy")),
                                     command: S("mypy ."),
                                 }]),
                                 replace: None,
                             }),
                             fix: Some(StackTools {
-                                add: Some(vec![ToolName {
-                                    name: S("isort"),
+                                add: Some(vec![ToolOptName {
+                                    name: Some(S("isort")),
                                     command: S("isort ."),
                                 }]),
                                 replace: None,
@@ -377,15 +377,15 @@ mod tests {
                         StackConfig {
                             lint: Some(StackTools {
                                 add: None,
-                                replace: Some(vec![ToolName {
-                                    name: S("clippy"),
+                                replace: Some(vec![ToolOptName {
+                                    name: Some(S("clippy")),
                                     command: S("cargo clippy --all-targets"),
                                 }]),
                             }),
                             fix: Some(StackTools {
                                 add: None,
-                                replace: Some(vec![ToolName {
-                                    name: S("rustfmt"),
+                                replace: Some(vec![ToolOptName {
+                                    name: Some(S("rustfmt")),
                                     command: S("cargo +nightly fmt"),
                                 }]),
                             }),
