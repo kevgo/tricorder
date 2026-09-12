@@ -206,9 +206,9 @@ mod tests {
     mod default_json {
         use super::DEFAULT_JSON;
         use crate::config::{
-            ApplicationNoFile, ApplicationWithFile, ApplicationWithFileOperation, Applications,
-            Config, GlobalFix, GlobalLint, Operations, SCHEMA_URL, StackCommand, StackConfig,
-            StackTools,
+            ApplicationNoFile, ApplicationSection, ApplicationWithFile,
+            ApplicationWithFileOperation, Config, GlobalFix, GlobalLint, Operations, SCHEMA_URL,
+            StackCommand, StackConfig, StackTools,
         };
         use crate::domain::StackType;
         use ahash::AHashMap;
@@ -250,7 +250,7 @@ mod tests {
                     },
                 ]),
                 ignore_files: Some(vec![S("two.css"), S("vendor/"), S("**/*.min.css")]),
-                applications: Some(Applications {
+                applications: Some(ApplicationSection {
                     actionlint: Some(ApplicationNoFile {
                         enabled: Some(true),
                         operations: None,

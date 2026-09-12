@@ -1,5 +1,5 @@
 use crate::apps::{GetRTACmdArgs, get_rta_command};
-use crate::config::{Application, Applications, Config, Operation};
+use crate::config::{Application, ApplicationSection, Config, Operation};
 use crate::domain::{DetectedStack, EnabledWhen, Fix, Lint, Result, Tool};
 use big_s::S;
 use std::fmt::Display;
@@ -13,7 +13,7 @@ impl Tool for Biome {
         //     || detected_stacks.has_file(StackType::Unknown, "biome.jsonc")
     }
 
-    fn config_section<'a>(&self, apps: &'a Applications) -> Option<&'a dyn Application> {
+    fn config_section<'a>(&self, apps: &'a ApplicationSection) -> Option<&'a dyn Application> {
         Some(apps.biome.as_ref()?)
     }
 }
