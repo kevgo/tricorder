@@ -37,7 +37,7 @@ fn collect_feature_files(dir: &Path, files: &mut Vec<PathBuf>) {
 
 fn is_run_that_app_step(line: &str) -> bool {
     let trimmed = line.trim_start();
-    trimmed.starts_with(GIVEN) || trimmed.starts_with(AND)
+    trimmed == GIVEN || trimmed == AND
 }
 
 fn sort_run_that_app_content(source: &str) -> String {
