@@ -10,7 +10,7 @@ impl Stack for Go {
         StackType::Go
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "go")
     }
 
@@ -41,7 +41,7 @@ mod tests {
         };
         let go = Go {};
         for (give, want) in tests {
-            let have = go.owns(Path::new(give));
+            let have = go.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }

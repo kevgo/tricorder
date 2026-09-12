@@ -10,7 +10,7 @@ impl Stack for Python {
         StackType::Python
     }
 
-    fn owns(&self, file: &Path) -> bool {
+    fn matches(&self, file: &Path) -> bool {
         file.extension().is_some_and(|ext| ext == "py")
     }
 
@@ -39,7 +39,7 @@ mod tests {
         };
         let python = Python {};
         for (give, want) in tests {
-            let have = python.owns(Path::new(give));
+            let have = python.matches(Path::new(give));
             assert_eq!(have, want, "{give:?} -> {have:?}");
         }
     }
