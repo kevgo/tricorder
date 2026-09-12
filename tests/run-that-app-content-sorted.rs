@@ -18,19 +18,19 @@ fn run_that_app_content_sorted() {
 }
 
 fn feature_files(dir: &Path) -> Vec<PathBuf> {
-    let mut files = Vec::new();
-    collect_feature_files(dir, &mut files);
-    files.sort_unstable();
-    files
+    let mut result = Vec::new();
+    collect_feature_files(dir, &mut result);
+    result.sort_unstable();
+    result
 }
 
-fn collect_feature_files(dir: &Path, files: &mut Vec<PathBuf>) {
+fn collect_feature_files(dir: &Path, result: &mut Vec<PathBuf>) {
     for entry in fs::read_dir(dir).expect("read features directory") {
         let path = entry.expect("read directory entry").path();
         if path.is_dir() {
-            collect_feature_files(&path, files);
+            collect_feature_files(&path, result);
         } else if path.extension().is_some_and(|ext| ext == "feature") {
-            files.push(path);
+            result.push(path);
         }
     }
 }
