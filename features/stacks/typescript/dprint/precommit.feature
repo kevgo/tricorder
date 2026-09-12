@@ -4,8 +4,8 @@ Feature: precommit TypeScript with dprint
     Given a Git repository
     And a file "run-that-app" with content
       """
-      dprint 0.57.4
       delete-empty-folders 0.0.2
+      dprint 0.57.4
       """
     And a file "dprint.json" with content
       """
