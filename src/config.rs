@@ -36,7 +36,6 @@ pub struct Config {
 
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
-    // TODO: rename to blacklist
     pub ignore_files: Option<Vec<String>>,
 
     pub applications: Option<ApplicationSection>,
@@ -314,7 +313,6 @@ impl Application for ApplicationWithFile {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-// TODO: rename to ApplicationSection
 pub struct ApplicationNoFileOperation {
     pub enabled: Option<bool>,
 }
@@ -335,7 +333,6 @@ impl Application for ApplicationNoFileOperation {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-// TODO: rename to ApplicationSection
 pub struct ApplicationWithFileOperation {
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
