@@ -143,35 +143,45 @@ impl Config {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct GlobalFix {
+    /// display name for the fix
     pub name: Option<String>,
+    /// the command that implements the fix
     pub command: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct GlobalLint {
+    /// display name for the lint
     pub name: Option<String>,
+    /// the command that implements the lint
     pub command: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackConfig {
+    /// customize the lints for this stack
     pub lint: Option<StackTools>,
+    /// customize the fixes for this stack
     pub fix: Option<StackTools>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackTools {
+    /// these commands run in addition to the built-in ones
     pub add: Option<Vec<StackCommand>>,
+    /// these commands replace the built-in ones
     pub replace: Option<Vec<StackCommand>>,
 }
 
 #[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct StackCommand {
+    /// display name for the command
     pub name: String,
+    /// the command that implements the command
     pub command: String,
 }
 
@@ -267,7 +277,9 @@ pub trait Application {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationNoFile {
+    /// enable or disable the entire application
     pub enabled: Option<bool>,
+    /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationNoFileOperation>>,
 }
 
@@ -291,10 +303,13 @@ impl Application for ApplicationNoFile {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationWithFile {
+    /// enable or disable the entire application
     pub enabled: Option<bool>,
+    /// make this app ignore these files
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
+    /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationWithFileOperation>>,
 }
 
@@ -338,9 +353,11 @@ impl Application for ApplicationNoFileOperation {
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct ApplicationWithFileOperation {
+    /// enable or disable this operation
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
+    /// files that this operation should ignore
     pub ignore_files: Option<Vec<String>>,
 }
 
