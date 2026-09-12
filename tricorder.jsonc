@@ -19,6 +19,16 @@
     }
   },
   "stacks": {
+    "cucumber": {
+      "fix": {
+        "add": [
+          {
+            "name": "run-that-app file content sorted",
+            "command": "cucumber fix"
+          }
+        ]
+      }
+    },
     "rust": {
       "lint": {
         "add": [
