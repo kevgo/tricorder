@@ -64,4 +64,8 @@ Feature: install Gherkin Lint
       lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
-    And file "features/one.feature" is unchanged
+    And file "run-that-app" now has an additional line matching
+      """
+      gherkin-lint \d+\.\d+\.\d+
+      node \d+\.\d+\.\d+
+      """
