@@ -5,6 +5,7 @@ Feature: install Gherkin Lint
   Scenario: not installed
     Given a file "run-that-app" with content
       """
+      node 26.4.0
       delete-empty-folders 0.0.2
       """
     Given a file "features/one.feature" with content
@@ -59,23 +60,9 @@ Feature: install Gherkin Lint
       }
       """
     When executing "tricorder lint --show=all"
-    # Then it prints the lines to STDERR
-    #   """
-    #   Talking to GitHub API (https://api.github.com/repos/antham/ghokin/releases/latest) ... ok
-    #   """
     Then it prints the lines
       """
       lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
-    And file "main.feature" now has content
-      """
-      Feature: foo
-
-        Scenario: bar
-          Given a step
-      """
-    And file "run-that-app" now has an additional line matching
-      """
-      ghokin \d+\.\d+\.\d+
-      """
+    And file "features/one.feature" is unchanged
