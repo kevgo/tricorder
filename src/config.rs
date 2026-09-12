@@ -28,12 +28,12 @@ pub struct Config {
     // custom fixes that aren't stack-specific
     #[serde(alias = "global-fixes")]
     #[schemars(rename = "global-fixes")]
-    pub global_fixes: Option<Vec<GlobalFix>>,
+    pub global_fixes: Option<Vec<ToolDefinition>>,
 
     // custom lints that aren't stack-specific
     #[serde(alias = "global-lints")]
     #[schemars(rename = "global-lints")]
-    pub global_lints: Option<Vec<GlobalLint>>,
+    pub global_lints: Option<Vec<ToolDefinition>>,
 
     // files that should be excluded when running any tool
     #[serde(alias = "ignore-files")]
@@ -142,7 +142,7 @@ impl Config {
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct GlobalFix {
+pub struct ToolDefinition {
     /// display name for the fix
     pub name: Option<String>,
 
@@ -150,14 +150,17 @@ pub struct GlobalFix {
     pub command: String,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct GlobalLint {
-    /// display name for the lint
-    pub name: Option<String>,
-
-    /// the command that implements the lint
-    pub command: String,
+impl From<&ToolDefinition> for conc::Executable {
+    fn from(command: &ToolDefinition) -> Self {
+        let name = command
+            .name
+            .clone()
+            .unwrap_or_else(|| command.command.clone());
+        conc::Executable {
+            name,
+            command: conc::shell_command(&command.command),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -174,29 +177,10 @@ pub struct StackConfig {
 #[serde(deny_unknown_fields)]
 pub struct StackTools {
     /// these commands run in addition to the built-in ones
-    pub add: Option<Vec<StackCommand>>,
+    pub add: Option<Vec<ToolDefinition>>,
 
     /// these commands replace the built-in ones
-    pub replace: Option<Vec<StackCommand>>,
-}
-
-#[derive(Clone, Debug, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct StackCommand {
-    /// display name for the command
-    pub name: String,
-
-    /// the command that implements the command
-    pub command: String,
-}
-
-impl From<&StackCommand> for conc::Executable {
-    fn from(command: &StackCommand) -> Self {
-        conc::Executable {
-            name: command.name.clone(),
-            command: conc::shell_command(&command.command),
-        }
-    }
+    pub replace: Option<Vec<ToolDefinition>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -408,7 +392,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, GlobalFix, GlobalLint, StackCommand, StackConfig};
+        use crate::config::{Config, StackConfig, ToolDefinition};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -440,21 +424,21 @@ mod tests {
             let want = Config {
                 schema: None,
                 global_fixes: Some(vec![
-                    GlobalFix {
+                    ToolDefinition {
                         name: None,
                         command: S("fixes/organize.py"),
                     },
-                    GlobalFix {
+                    ToolDefinition {
                         name: Some(S("sort alphabetically")),
                         command: S("fixes/sort.py"),
                     },
                 ]),
                 global_lints: Some(vec![
-                    GlobalLint {
+                    ToolDefinition {
                         name: None,
                         command: S("lints/one.sh"),
                     },
-                    GlobalLint {
+                    ToolDefinition {
                         name: Some(S("custom lint 2")),
                         command: S("lints/two.sh"),
                     },
@@ -582,8 +566,8 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
-                                name: S("mypy"),
+                            add: Some(vec![ToolDefinition {
+                                name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
                             replace: None,
@@ -619,8 +603,8 @@ mod tests {
                     StackType::Rust,
                     StackConfig {
                         lint: Some(StackTools {
-                            replace: Some(vec![StackCommand {
-                                name: S("Clippy"),
+                            replace: Some(vec![ToolDefinition {
+                                name: Some(S("Clippy")),
                                 command: S("cargo clippy --all-targets"),
                             }]),
                             add: None,
@@ -656,8 +640,8 @@ mod tests {
                     StackType::Python,
                     StackConfig {
                         lint: Some(StackTools {
-                            add: Some(vec![StackCommand {
-                                name: S("mypy"),
+                            add: Some(vec![ToolDefinition {
+                                name: Some(S("mypy")),
                                 command: S("mypy ."),
                             }]),
                             replace: None,
@@ -684,11 +668,11 @@ mod tests {
             let have = Config::parse(give, "test.json").unwrap();
             let want = Config {
                 schema: None,
-                global_lints: Some(vec![GlobalLint {
+                global_lints: Some(vec![ToolDefinition {
                     name: Some(S("custom lint 1")),
                     command: S("lints/one.sh"),
                 }]),
-                global_fixes: Some(vec![GlobalFix {
+                global_fixes: Some(vec![ToolDefinition {
                     name: Some(S("custom fix 1")),
                     command: S("fixes/one.sh"),
                 }]),
