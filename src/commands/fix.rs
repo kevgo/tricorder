@@ -72,7 +72,11 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         // schedule either the override fixes or the default fixes
         let stack_fixes = stack_config.and_then(|stack_config| stack_config.fix.as_ref());
         if let Some(overrides) = stack_fixes.and_then(|sf| sf.replace.as_ref()) {
-            stack_executables.extend(overrides.iter().map(conc::Executable::from));
+            stack_executables.extend(
+                overrides
+                    .iter()
+                    .map(|tool| tool.to_executable(Operation::Fix, stack_type)),
+            );
         } else {
             for default_fix in detected_stack.stack.fixes() {
                 if config.operation_enabled(default_fix.as_ref(), Operation::Fix)
@@ -84,7 +88,11 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         }
         // schedule the additional fixes
         if let Some(additions) = stack_fixes.and_then(|stack_fixes| stack_fixes.add.as_ref()) {
-            stack_executables.extend(additions.iter().map(conc::Executable::from));
+            stack_executables.extend(
+                additions
+                    .iter()
+                    .map(|tool| tool.to_executable(Operation::Fix, stack_type)),
+            );
         }
     }
 

@@ -1,5 +1,7 @@
 # Tricorder changelog
 
+- custom stack tools now print `{operation} {stack} ({name})`, matching built-in tools
+
 ## 0.1.0
 
 #### BREAKING CHANGES
