@@ -296,7 +296,7 @@ If both exist, **tricorder.json** takes precedence.
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
-    "prettier": { "enabled": true, "ignore-files": [] },
+    "prettier": { "enabled": false, "ignore-files": [] },
     "pyright": { "enabled": true, "ignore-files": [] },
     "ruff": { "enabled": true, "ignore-files": [] },
     "rumdl": { "enabled": true, "ignore-files": [] },
