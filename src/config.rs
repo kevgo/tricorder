@@ -145,6 +145,7 @@ impl Config {
 pub struct GlobalFix {
     /// display name for the fix
     pub name: Option<String>,
+
     /// the command that implements the fix
     pub command: String,
 }
@@ -154,6 +155,7 @@ pub struct GlobalFix {
 pub struct GlobalLint {
     /// display name for the lint
     pub name: Option<String>,
+
     /// the command that implements the lint
     pub command: String,
 }
@@ -163,6 +165,7 @@ pub struct GlobalLint {
 pub struct StackConfig {
     /// customize the lints for this stack
     pub lint: Option<StackTools>,
+
     /// customize the fixes for this stack
     pub fix: Option<StackTools>,
 }
@@ -172,6 +175,7 @@ pub struct StackConfig {
 pub struct StackTools {
     /// these commands run in addition to the built-in ones
     pub add: Option<Vec<StackCommand>>,
+
     /// these commands replace the built-in ones
     pub replace: Option<Vec<StackCommand>>,
 }
@@ -181,6 +185,7 @@ pub struct StackTools {
 pub struct StackCommand {
     /// display name for the command
     pub name: String,
+
     /// the command that implements the command
     pub command: String,
 }
@@ -200,34 +205,51 @@ pub struct ApplicationSection {
     #[serde(alias = "actionlint")]
     #[schemars(rename = "actionlint")]
     pub actionlint: Option<ApplicationNoFile>,
+
     pub biome: Option<ApplicationWithFile>,
+
     pub checkstyle: Option<ApplicationNoFile>,
+
     #[serde(alias = "delete-empty-folders")]
     #[schemars(rename = "delete-empty-folders")]
     pub delete_empty_folders: Option<ApplicationNoFile>,
+
     #[serde(alias = "gherkin-lint")]
     #[schemars(rename = "gherkin-lint")]
     pub gherkin_lint: Option<ApplicationWithFile>,
+
     pub ghokin: Option<ApplicationWithFile>,
+
     #[serde(alias = "git-diff-check")]
     #[schemars(rename = "git-diff-check")]
     pub git_diff_check: Option<ApplicationNoFile>,
+
     pub gofumpt: Option<ApplicationWithFile>,
+
     #[serde(alias = "golangci-lint")]
     #[schemars(rename = "golangci-lint")]
     pub golangci_lint: Option<ApplicationNoFile>,
+
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<ApplicationWithFile>,
+
     pub prettier: Option<ApplicationWithFile>,
+
     pub pyright: Option<ApplicationWithFile>,
+
     pub ruff: Option<ApplicationWithFile>,
+
     pub rumdl: Option<ApplicationWithFile>,
+
     pub sqlfmt: Option<ApplicationWithFile>,
+
     pub taplo: Option<ApplicationWithFile>,
+
     #[serde(alias = "text-runner")]
     #[schemars(rename = "text-runner")]
     pub text_runner: Option<ApplicationNoFile>,
+
     pub tikibase: Option<ApplicationNoFile>,
 }
 
@@ -246,7 +268,9 @@ pub enum Operation {
 #[serde(deny_unknown_fields)]
 pub struct Operations<T> {
     pub lint: Option<T>,
+
     pub fix: Option<T>,
+
     #[serde(alias = "fix-unsafe")]
     #[schemars(rename = "fix-unsafe")]
     pub fix_unsafe: Option<T>,
@@ -279,6 +303,7 @@ pub trait Application {
 pub struct ApplicationNoFile {
     /// enable or disable the entire application
     pub enabled: Option<bool>,
+
     /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationNoFileOperation>>,
 }
@@ -305,10 +330,12 @@ impl Application for ApplicationNoFile {
 pub struct ApplicationWithFile {
     /// enable or disable the entire application
     pub enabled: Option<bool>,
+
     /// make this app ignore these files
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
     pub ignore_files: Option<Vec<String>>,
+
     /// enable or disable individual operations
     pub operations: Option<Operations<ApplicationWithFileOperation>>,
 }
@@ -357,6 +384,7 @@ pub struct ApplicationWithFileOperation {
     pub enabled: Option<bool>,
     #[serde(alias = "ignore-files")]
     #[schemars(rename = "ignore-files")]
+
     /// files that this operation should ignore
     pub ignore_files: Option<Vec<String>>,
 }
