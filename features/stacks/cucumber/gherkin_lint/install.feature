@@ -16,9 +16,7 @@ Feature: install Gherkin Lint
       """
     And a file ".gherkin-lintrc" with content
       """
-      {
-        "no-unused-variables": "on"
-      }
+      {}
       """
     When executing "tricorder lint --show=all"
     Then it prints the lines
