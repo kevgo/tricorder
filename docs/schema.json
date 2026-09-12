@@ -10,13 +10,13 @@
     "global-fixes": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/ToolOptName"
+        "$ref": "#/$defs/ToolDefinition"
       }
     },
     "global-lints": {
       "type": ["array", "null"],
       "items": {
-        "$ref": "#/$defs/ToolOptName"
+        "$ref": "#/$defs/ToolDefinition"
       }
     },
     "ignore-files": {
@@ -86,7 +86,7 @@
   },
   "additionalProperties": false,
   "$defs": {
-    "ToolOptName": {
+    "ToolDefinition": {
       "type": "object",
       "properties": {
         "name": {
@@ -469,33 +469,18 @@
           "description": "these commands run in addition to the built-in ones",
           "type": ["array", "null"],
           "items": {
-            "$ref": "#/$defs/ToolName"
+            "$ref": "#/$defs/ToolDefinition"
           }
         },
         "replace": {
           "description": "these commands replace the built-in ones",
           "type": ["array", "null"],
           "items": {
-            "$ref": "#/$defs/ToolName"
+            "$ref": "#/$defs/ToolDefinition"
           }
         }
       },
       "additionalProperties": false
-    },
-    "ToolName": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "description": "display name for the command",
-          "type": "string"
-        },
-        "command": {
-          "description": "the command that implements the command",
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": ["name", "command"]
     }
   }
 }
