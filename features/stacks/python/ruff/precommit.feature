@@ -4,8 +4,8 @@ Feature: precommit Python
     Given a Git repository
     And a file "run-that-app" with content
       """
-      ruff 0.15.16
       delete-empty-folders 0.0.2
+      ruff 0.15.16
       """
 
   Scenario: valid Python

@@ -19,6 +19,16 @@
     }
   },
   "stacks": {
+    "cucumber": {
+      "fix": {
+        "add": [
+          {
+            "name": "sort-run-that-app",
+            "command": "cargo test --test=run-that-app-content-sorted"
+          }
+        ]
+      }
+    },
     "rust": {
       "lint": {
         "add": [

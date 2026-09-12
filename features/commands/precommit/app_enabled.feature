@@ -4,10 +4,10 @@ Feature: "tricorder precommit" skips disabled applications
     Given a Git repository
     And a file "run-that-app" with content
       """
-      taplo 0.10.0
       delete-empty-folders 0.0.2
       node 26.4.0
       prettier 3.7.0
+      taplo 0.10.0
       """
     And a file "config.toml" with content
       """

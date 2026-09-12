@@ -8,8 +8,8 @@ Feature: lint Go
       """
     And a file "run-that-app" with content
       """
-      golangci-lint 2.12.2
       delete-empty-folders 0.0.2
+      golangci-lint 2.12.2
       """
 
   Scenario: valid Go

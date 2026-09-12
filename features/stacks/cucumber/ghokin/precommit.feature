@@ -4,8 +4,8 @@ Feature: precommit Cucumber
     Given a Git repository
     And a file "run-that-app" with content
       """
-      ghokin 3.10.0
       delete-empty-folders 0.0.2
+      ghokin 3.10.0
       """
     And I ran "git add -A"
     And I ran "git commit -m original"
