@@ -42,8 +42,8 @@ async fn main() {
                         None => Cow::Borrowed(""),
                     };
                     panic!(
-                        "{}:{}  Scenario unexpectedly changed file run-that-app: {err}",
-                        path, scenario.position.line,
+                        "{path}:{line}  Scenario unexpectedly changed file run-that-app: {err}",
+                        line = scenario.position.line,
                     );
                 }
             })
