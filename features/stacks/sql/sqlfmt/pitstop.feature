@@ -3,8 +3,8 @@ Feature: pitstop SQL
   Background:
     Given a file "run-that-app" with content
       """
-      uv 0.11.20
       delete-empty-folders 0.0.2
+      uv 0.11.20
       """
 
   Scenario: unformatted SQL

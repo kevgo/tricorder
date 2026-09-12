@@ -3,8 +3,8 @@ Feature: fix Markdown
   Background:
     Given a file "run-that-app" with content
       """
-      rumdl 0.2.14
       delete-empty-folders 0.0.2
+      rumdl 0.2.14
       """
 
   Scenario: valid Markdown

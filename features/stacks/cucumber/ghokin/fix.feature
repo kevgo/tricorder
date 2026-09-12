@@ -3,8 +3,8 @@ Feature: fix Cucumber
   Background:
     Given a file "run-that-app" with content
       """
-      ghokin 3.10.0
       delete-empty-folders 0.0.2
+      ghokin 3.10.0
       """
 
   Scenario: valid Cucumber

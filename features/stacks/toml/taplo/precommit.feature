@@ -4,8 +4,8 @@ Feature: precommit TOML
     Given a Git repository
     And a file "run-that-app" with content
       """
-      taplo 0.10.0
       delete-empty-folders 0.0.2
+      taplo 0.10.0
       """
 
   Scenario: valid TOML
