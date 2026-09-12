@@ -1,6 +1,6 @@
 # Tricorder changelog
 
-- app: dprint for JSON (when `dprint.json` is present)
+- app: dprint for JSON, JSONC, and YML (when `dprint.json` is present)
 
 
 ## 0.1.0

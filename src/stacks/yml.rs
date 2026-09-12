@@ -1,3 +1,4 @@
+use crate::apps::dprint::Dprint;
 use crate::apps::{actionlint::Actionlint, prettier::Prettier};
 use crate::domain::{Fix, Lint, Stack, StackType};
 use std::path::Path;
@@ -15,11 +16,11 @@ impl Stack for Yml {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![Box::new(Actionlint {})]
+        vec![Box::new(Actionlint {}), Box::new(Dprint {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
-        vec![Box::new(Prettier {})]
+        vec![Box::new(Dprint {}), Box::new(Prettier {})]
     }
 }
 

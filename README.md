@@ -144,8 +144,8 @@ All linters run in parallel.
 | TypeScript | biome                                                                           |
 | CSS        | biome                                                                           |
 | JSON       | prettier, dprint (when `dprint.json` is present)                                |
-| JSONC      | prettier                                                                        |
-| YAML       | prettier                                                                        |
+| JSONC      | prettier, dprint (when `dprint.json` is present)                                |
+| YAML       | prettier, dprint (when `dprint.json` is present)                                |
 | Markdown   | rumdl                                                                           |
 | TOML       | taplo                                                                           |
 | Python     | ruff                                                                            |
