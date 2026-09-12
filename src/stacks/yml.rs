@@ -16,7 +16,7 @@ impl Stack for Yml {
     }
 
     fn lints(&self) -> Vec<Box<dyn Lint>> {
-        vec![Box::new(Actionlint {}), Box::new(Dprint {})]
+        vec![Box::new(Actionlint {})]
     }
 
     fn fixes(&self) -> Vec<Box<dyn Fix>> {
