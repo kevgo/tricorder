@@ -10,6 +10,7 @@ mod world;
 
 use cucumber::{World, WriterExt as _, event};
 use dot_writer::DotWriter;
+use std::borrow::Cow;
 use std::sync::{
     Arc,
     atomic::{AtomicBool, Ordering},
@@ -36,9 +37,13 @@ async fn main() {
                     return;
                 }
                 if let Err(err) = run_that_app_file::verify_unchanged(world).await {
+                    let path = match feature.path.as_ref() {
+                        Some(path) => path.to_string_lossy(),
+                        None => Cow::Borrowed(""),
+                    };
                     panic!(
                         "{}:{}  Scenario unexpectedly changed file run-that-app: {err}",
-                        feature.path, scenario.position.line,
+                        path, scenario.position.line,
                     );
                 }
             })
