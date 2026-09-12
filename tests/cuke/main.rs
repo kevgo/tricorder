@@ -39,7 +39,7 @@ async fn main() {
                 if let Err(err) = run_that_app_file::verify_unchanged(world).await {
                     let path = match feature.path.as_ref() {
                         Some(path) => path.to_string_lossy(),
-                        None => Cow::Borrowed(""),
+                        None => Cow::Borrowed("(unknown)"),
                     };
                     panic!(
                         "{path}:{line}  Scenario unexpectedly changed file run-that-app: {err}",

@@ -1,6 +1,7 @@
 @online
 Feature: install all CSS tools
 
+  @this
   Scenario: not installed
     Given a file "main.css" with content
       """
