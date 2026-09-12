@@ -1,11 +1,12 @@
-@online
 Feature: pitstop Cucumber
 
   Background:
     Given a file "run-that-app" with content
       """
-      ghokin 3.10.0
       delete-empty-folders 0.0.2
+      gherkin-lint 4.2.4
+      ghokin 3.10.0
+      node 26.4.0
       """
     And a file ".gherkin-lintrc" with content
       """
@@ -71,7 +72,6 @@ Feature: pitstop Cucumber
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      "." formatted
       lint Cucumber (gherkin-lint)
       """
     And the exit code is 0
@@ -101,7 +101,6 @@ Feature: pitstop Cucumber
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
-      "." formatted
       lint Cucumber (gherkin-lint)
         1    Feature file does not have any Scenarios    no-files-without-scenarios
       """
