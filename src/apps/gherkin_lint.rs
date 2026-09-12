@@ -38,6 +38,7 @@ impl Lint for GherkinLint {
             return Ok(None);
         }
         let mut args = Vec::with_capacity(files.len() + 3);
+        // TODO: call gherkin-lint directly via RTA
         args.push(S("exec"));
         args.push(S("--yes"));
         args.push(S("gherkin-lint"));
