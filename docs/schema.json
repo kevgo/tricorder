@@ -227,6 +227,16 @@
             }
           ]
         },
+        "hadolint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "keep-sorted": {
           "anyOf": [
             {
