@@ -143,6 +143,7 @@ All linters run in parallel.
 | ---------- | ------------------------------------------------------------------------------- |
 | TypeScript | biome                                                                           |
 | CSS        | biome                                                                           |
+| Dockerfile | dprint (when `dprint.json` is present)                                          |
 | JSON       | prettier, dprint (when `dprint.json` is present)                                |
 | JSONC      | prettier, dprint (when `dprint.json` is present)                                |
 | YAML       | prettier, dprint (when `dprint.json` is present)                                |
@@ -227,6 +228,7 @@ If both exist, **tricorder.json** takes precedence.
   "stacks": {
     "css": {},
     "cucumber": {},
+    "dockerfile": {},
     "go": {},
     "java": {},
     "json": {},

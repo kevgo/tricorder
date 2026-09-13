@@ -1,6 +1,7 @@
 # Tricorder changelog
 
-- app: dprint for JSON, JSONC, and YML (when `dprint.json` is present)
+- stack: Dockerfile, formatted by dprint (when `dprint.json` is present)
+- app: dprint for JSON, JSONC, YML, and Dockerfile (when `dprint.json` is present)
 - custom stack tools now print `{operation} {stack} ({name})`, matching built-in tools
 - `fix-unsafe` now prints tools as `unsafe-fix <stack> (<name>)`
 

@@ -59,6 +59,9 @@
         "cucumber": {
           "$ref": "#/$defs/StackConfig"
         },
+        "dockerfile": {
+          "$ref": "#/$defs/StackConfig"
+        },
         "go": {
           "$ref": "#/$defs/StackConfig"
         },

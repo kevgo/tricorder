@@ -1,5 +1,6 @@
 mod css;
 mod cucumber;
+mod dockerfile;
 mod go;
 mod json;
 mod jsonc;
@@ -16,6 +17,7 @@ use crate::domain::{DetectedStack, DetectedStacks, File, Files, Ignores, Stack};
 use crate::git::StagedFiles;
 pub use css::Css;
 pub use cucumber::Cucumber;
+pub use dockerfile::Dockerfile;
 pub use go::Go;
 use ignore::WalkBuilder;
 pub use json::Json;
@@ -37,6 +39,7 @@ pub fn all() -> Vec<Box<dyn Stack>> {
         // keep-sorted start
         Box::new(Css {}),
         Box::new(Cucumber {}),
+        Box::new(Dockerfile {}),
         Box::new(Go {}),
         Box::new(Json {}),
         Box::new(JsonC {}),

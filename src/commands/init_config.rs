@@ -27,6 +27,7 @@ pub const DEFAULT_JSON: &str = r#"{
   "stacks": {
     "css": {},
     "cucumber": {},
+    "dockerfile": {},
     "go": {},
     "java": {},
     "json": {},
@@ -342,6 +343,7 @@ mod tests {
                 stacks: Some(AHashMap::from_iter([
                     (StackType::Css, StackConfig::default()),
                     (StackType::Cucumber, StackConfig::default()),
+                    (StackType::Dockerfile, StackConfig::default()),
                     (StackType::Go, StackConfig::default()),
                     (StackType::Java, StackConfig::default()),
                     (StackType::Json, StackConfig::default()),

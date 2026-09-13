@@ -32,6 +32,7 @@ Feature: "tricorder init:config" writes the default config file
         "stacks": {
           "css": {},
           "cucumber": {},
+          "dockerfile": {},
           "go": {},
           "java": {},
           "json": {},
@@ -187,6 +188,7 @@ Feature: "tricorder init:config" writes the default config file
         "stacks": {
           "css": {},
           "cucumber": {},
+          "dockerfile": {},
           "go": {},
           "java": {},
           "json": {},
