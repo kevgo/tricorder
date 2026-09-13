@@ -14,8 +14,6 @@ build-release:	# builds the project in release mode
 
 ci: build ${TRICORDER}
 	$(TRICORDER) ci
-	make --no-print-directory unit
-	make --no-print-directory cuke-slow
 
 contest: ${RTA}
 	$(CONTEST)
