@@ -753,7 +753,7 @@ mod tests {
     "biome": { "enabled": false },
     "checkstyle": { "enabled": false },
     "delete-empty-folders": { "enabled": false },
-    "dprint": { "enabled": true },
+    "dprint": { "enabled": false },
     "gherkin-lint": { "enabled": false },
     "ghokin": { "enabled": false },
     "git-diff-check": { "enabled": false },

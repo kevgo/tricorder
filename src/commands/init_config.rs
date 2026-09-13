@@ -258,7 +258,7 @@ mod tests {
                         operations: None,
                     }),
                     dprint: Some(ApplicationWithFile {
-                        enabled: Some(false),
+                        enabled: Some(true),
                         ignore_files: Some(vec![]),
                         operations: None,
                     }),
