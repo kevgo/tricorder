@@ -33,7 +33,7 @@ Feature: stack-specific lints
       """
     And it prints the block
       """
-      my lint
+      lint Python (my lint)
       MY LINT RAN
       """
     And the exit code is 0
@@ -60,7 +60,7 @@ Feature: stack-specific lints
     When executing "tricorder lint --show=all"
     Then it prints the block
       """
-      my lint
+      lint Python (my lint)
       MY LINT RAN
       """
     And it does not print any of these lines

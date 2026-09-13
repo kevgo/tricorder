@@ -46,7 +46,7 @@ Feature: precommit Rust
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
-      my custom fix
+      fix Rust (my custom fix)
       custom fix running
       """
     And it prints to STDERR

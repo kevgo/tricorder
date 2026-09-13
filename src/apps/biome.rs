@@ -88,7 +88,7 @@ impl Fix for Biome {
         args.push(S("--unsafe"));
         args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
-            name: format!("unsafe fix {} ({self})", stack.stack),
+            name: format!("unsafe-fix {} ({self})", stack.stack),
             app: &rta::applications::Biome {},
             args,
             version: None,

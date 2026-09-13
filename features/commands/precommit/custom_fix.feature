@@ -47,7 +47,7 @@ Feature: stack-scoped custom fixes
     When executing "tricorder precommit --show=all"
     Then it prints the block
       """
-      my python fix
+      fix Python (my python fix)
       PYTHON FIX RAN
       """
     And the exit code is 0
