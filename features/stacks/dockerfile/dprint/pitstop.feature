@@ -1,6 +1,6 @@
 Feature: pitstop Dockerfile with dprint
 
-  Background:
+  Scenario: unformatted Dockerfile
     Given a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
@@ -21,8 +21,6 @@ Feature: pitstop Dockerfile with dprint
         }
       }
       """
-
-  Scenario: unformatted Dockerfile
     Given a file "Dockerfile" with content
       """
       FROM     alpine
