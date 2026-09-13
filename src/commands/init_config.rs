@@ -87,7 +87,7 @@ pub const DEFAULT_JSON: &str = r#"{
     "biome": { "enabled": true, "ignore-files": [] },
     "checkstyle": { "enabled": true },
     "delete_empty_folders": { "enabled": true },
-    "dprint": { "enabled": false, "ignore-files": [] },
+    "dprint": { "enabled": true, "ignore-files": [] },
     "gherkin_lint": { "enabled": true, "ignore-files": [] },
     "ghokin": { "enabled": true, "ignore-files": [] },
     "git_diff_check": { "enabled": true },
@@ -258,7 +258,7 @@ mod tests {
                         operations: None,
                     }),
                     dprint: Some(ApplicationWithFile {
-                        enabled: Some(false),
+                        enabled: Some(true),
                         ignore_files: Some(vec![]),
                         operations: None,
                     }),
