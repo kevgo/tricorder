@@ -139,17 +139,20 @@ All linters run in parallel.
 
 ## Supported stacks
 
-| Stack      | Linter                                                             |
-| ---------- | ------------------------------------------------------------------ |
-| TypeScript | biome                                                              |
-| CSS        | biome                                                              |
-| JSON       | prettier                                                           |
-| YAML       | prettier                                                           |
-| Python     | ruff                                                               |
-| Rust       | (none, please define your Rust commands as custom lints and fixes) |
-| Go         | golangci-lint                                                      |
-| Java       | checkstyle                                                         |
-| SQL        | sqlfmt                                                             |
+| Stack      | Linter                                                                          |
+| ---------- | ------------------------------------------------------------------------------- |
+| TypeScript | biome                                                                           |
+| CSS        | biome                                                                           |
+| JSON       | prettier, dprint (when `dprint.json` is present)                                |
+| JSONC      | prettier, dprint (when `dprint.json` is present)                                |
+| YAML       | prettier, dprint (when `dprint.json` is present)                                |
+| Markdown   | rumdl                                                                           |
+| TOML       | taplo                                                                           |
+| Python     | ruff                                                                            |
+| Rust       | (none, please define your Rust commands as custom lints and fixes)              |
+| Go         | golangci-lint                                                                   |
+| Java       | checkstyle                                                                      |
+| SQL        | sqlfmt                                                                          |
 
 ## Q & A
 
@@ -284,6 +287,7 @@ If both exist, **tricorder.json** takes precedence.
     "biome": { "enabled": true, "ignore-files": [] },
     "checkstyle": { "enabled": true },
     "delete_empty_folders": { "enabled": true },
+    "dprint": { "enabled": false, "ignore-files": [] },
     "gherkin_lint": { "enabled": true, "ignore-files": [] },
     "ghokin": { "enabled": true, "ignore-files": [] },
     "git_diff_check": { "enabled": true },

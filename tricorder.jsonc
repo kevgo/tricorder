@@ -2,6 +2,9 @@
   "$schema": "./docs/schema.json",
   // current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
   "applications": {
+    "dprint": {
+      "enabled": true
+    },
     "keep-sorted": {
       "enabled": true,
       "ignore-files": [
@@ -10,10 +13,15 @@
         "features/commands/pitstop/keep_sorted.feature"
       ]
     },
+    "prettier": {
+      "enabled": false
+    },
     "taplo": {
       "operations": {
         "lint": {
-          "ignore-files": ["Cargo.toml"]
+          "ignore-files": [
+            "Cargo.toml"
+          ]
         }
       }
     }

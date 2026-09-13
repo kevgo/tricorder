@@ -199,6 +199,8 @@ pub struct ApplicationSection {
     #[schemars(rename = "delete-empty-folders")]
     pub delete_empty_folders: Option<ApplicationNoFile>,
 
+    pub dprint: Option<ApplicationWithFile>,
+
     #[serde(alias = "gherkin-lint")]
     #[schemars(rename = "gherkin-lint")]
     pub gherkin_lint: Option<ApplicationWithFile>,
@@ -751,6 +753,7 @@ mod tests {
     "biome": { "enabled": false },
     "checkstyle": { "enabled": false },
     "delete-empty-folders": { "enabled": false },
+    "dprint": { "enabled": false },
     "gherkin-lint": { "enabled": false },
     "ghokin": { "enabled": false },
     "git-diff-check": { "enabled": false },
@@ -776,6 +779,7 @@ mod tests {
                     biome: Some(disabled_with_file()),
                     checkstyle: Some(disabled_no_file()),
                     delete_empty_folders: Some(disabled_no_file()),
+                    dprint: Some(disabled_with_file()),
                     gherkin_lint: Some(disabled_with_file()),
                     ghokin: Some(disabled_with_file()),
                     git_diff_check: Some(disabled_no_file()),
