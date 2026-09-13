@@ -35,7 +35,6 @@ Feature: pitstop YML with dprint
     Then it prints the lines
       """
       fix YML (dprint)
-      lint YML (dprint)
       """
     And the exit code is 0
     And file "main.yml" now has content

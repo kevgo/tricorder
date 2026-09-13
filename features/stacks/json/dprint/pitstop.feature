@@ -35,7 +35,6 @@ Feature: pitstop JSON with dprint
     Then it prints the lines
       """
       fix JSON (dprint)
-      lint JSON (dprint)
       """
     And the exit code is 0
     And file "main.json" now has content

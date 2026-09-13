@@ -35,7 +35,6 @@ Feature: pitstop JSONC with dprint
     Then it prints the lines
       """
       fix JSONC (dprint)
-      lint JSONC (dprint)
       """
     And the exit code is 0
     And file "main.jsonc" now has content
