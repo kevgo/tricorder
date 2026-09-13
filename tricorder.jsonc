@@ -1,5 +1,15 @@
 {
   "$schema": "./docs/schema.json",
+  "global-lints": [
+    {
+      "name": "unit tests",
+      "command": "make unit"
+    },
+    {
+      "name": "E2E tests",
+      "command": "make cuke"
+    }
+  ],
   // current Taplo version doesn't handle Cargo.toml, see https://github.com/rust-lang/cargo/issues/15030
   "applications": {
     "dprint": {
