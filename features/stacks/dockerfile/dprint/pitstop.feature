@@ -21,7 +21,7 @@ Feature: pitstop Dockerfile with dprint
         }
       }
       """
-    Given a file "Dockerfile" with content
+    And a file "Dockerfile" with content
       """
       FROM     alpine
       """
