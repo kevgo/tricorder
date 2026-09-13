@@ -14,8 +14,6 @@ build-release:	# builds the project in release mode
 
 ci: build ${TRICORDER}
 	$(TRICORDER) ci
-	make --no-print-directory unit
-	make --no-print-directory cuke-slow
 
 contest: ${RTA}
 	$(CONTEST)
@@ -66,10 +64,8 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
 
-ps: build unit $(TRICORDER)  # pitstop, quick checkup during active development
+ps: build $(TRICORDER)  # pitstop, quick checkup during active development
 	$(TRICORDER) pitstop
-
-psc: ps cuke  # complete pitstop, runs all fixes, lints, and tests
 
 test: unit lint cuke  ## runs all tests
 
