@@ -1509,9 +1509,9 @@ dependencies = [
 
 [[package]]
 name = "run-that-app"
-version = "0.42.2"
+version = "0.42.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35529481b80dfdf3c66fd3176d05521be5d3353a942e0ab342355392950731cf"
+checksum = "225613436191ae35967ec842af961f83b2a1ff01290a5a55d36113bda2aa385b"
 dependencies = [
  "ahash",
  "big_s",
