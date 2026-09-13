@@ -59,6 +59,9 @@
         "cucumber": {
           "$ref": "#/$defs/StackConfig"
         },
+        "dockerfile": {
+          "$ref": "#/$defs/StackConfig"
+        },
         "go": {
           "$ref": "#/$defs/StackConfig"
         },
@@ -218,6 +221,16 @@
           "anyOf": [
             {
               "$ref": "#/$defs/ApplicationNoFile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hadolint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApplicationWithFile"
             },
             {
               "type": "null"

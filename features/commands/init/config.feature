@@ -32,6 +32,7 @@ Feature: "tricorder init:config" writes the default config file
         "stacks": {
           "css": {},
           "cucumber": {},
+          "dockerfile": {},
           "go": {},
           "java": {},
           "json": {},
@@ -98,6 +99,7 @@ Feature: "tricorder init:config" writes the default config file
           "git_diff_check": { "enabled": true },
           "gofumpt": { "enabled": true, "ignore-files": [] },
           "golangci_lint": { "enabled": true },
+          "hadolint": { "enabled": true, "ignore-files": [] },
           // github.com/google/keep-sorted is disabled by default
           // because using it requires scanning the file content of all workspace files for markers.
           "keep-sorted": { "enabled": false, "ignore-files": [] },
@@ -187,6 +189,7 @@ Feature: "tricorder init:config" writes the default config file
         "stacks": {
           "css": {},
           "cucumber": {},
+          "dockerfile": {},
           "go": {},
           "java": {},
           "json": {},
@@ -253,6 +256,7 @@ Feature: "tricorder init:config" writes the default config file
           "git_diff_check": { "enabled": true },
           "gofumpt": { "enabled": true, "ignore-files": [] },
           "golangci_lint": { "enabled": true },
+          "hadolint": { "enabled": true, "ignore-files": [] },
           // github.com/google/keep-sorted is disabled by default
           // because using it requires scanning the file content of all workspace files for markers.
           "keep-sorted": { "enabled": false, "ignore-files": [] },

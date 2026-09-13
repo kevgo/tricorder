@@ -9,6 +9,7 @@ use strum::EnumString;
 pub enum StackType {
     Css,
     Cucumber,
+    Dockerfile,
     Go,
     Java,
     Json,
@@ -28,6 +29,7 @@ impl Display for StackType {
         match self {
             StackType::Css => f.write_str("CSS"),
             StackType::Cucumber => f.write_str("Cucumber"),
+            StackType::Dockerfile => f.write_str("Dockerfile"),
             StackType::Go => f.write_str("Go"),
             StackType::Java => f.write_str("Java"),
             StackType::Json => f.write_str("JSON"),

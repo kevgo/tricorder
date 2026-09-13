@@ -27,6 +27,7 @@ pub const DEFAULT_JSON: &str = r#"{
   "stacks": {
     "css": {},
     "cucumber": {},
+    "dockerfile": {},
     "go": {},
     "java": {},
     "json": {},
@@ -93,6 +94,7 @@ pub const DEFAULT_JSON: &str = r#"{
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
+    "hadolint": { "enabled": true, "ignore-files": [] },
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
@@ -285,6 +287,11 @@ mod tests {
                         enabled: Some(true),
                         operations: None,
                     }),
+                    hadolint: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
+                        operations: None,
+                    }),
                     keep_sorted: Some(ApplicationWithFile {
                         enabled: Some(false),
                         ignore_files: Some(vec![]),
@@ -342,6 +349,7 @@ mod tests {
                 stacks: Some(AHashMap::from_iter([
                     (StackType::Css, StackConfig::default()),
                     (StackType::Cucumber, StackConfig::default()),
+                    (StackType::Dockerfile, StackConfig::default()),
                     (StackType::Go, StackConfig::default()),
                     (StackType::Java, StackConfig::default()),
                     (StackType::Json, StackConfig::default()),

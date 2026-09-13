@@ -8,6 +8,7 @@ pub mod ghokin;
 pub mod git_diff_check;
 pub mod gofumpt;
 pub mod golangci_lint;
+pub mod hadolint;
 pub mod keep_sorted;
 pub mod prettier;
 pub mod pyright;

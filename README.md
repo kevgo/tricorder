@@ -143,6 +143,7 @@ All linters run in parallel.
 | ---------- | ------------------------------------------------------------------------------- |
 | TypeScript | biome                                                                           |
 | CSS        | biome                                                                           |
+| Dockerfile | hadolint, dprint (when `dprint.json` is present)                                |
 | JSON       | prettier, dprint (when `dprint.json` is present)                                |
 | JSONC      | prettier, dprint (when `dprint.json` is present)                                |
 | YAML       | prettier, dprint (when `dprint.json` is present)                                |
@@ -227,6 +228,7 @@ If both exist, **tricorder.json** takes precedence.
   "stacks": {
     "css": {},
     "cucumber": {},
+    "dockerfile": {},
     "go": {},
     "java": {},
     "json": {},
@@ -293,6 +295,7 @@ If both exist, **tricorder.json** takes precedence.
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
+    "hadolint": { "enabled": true, "ignore-files": [] },
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
