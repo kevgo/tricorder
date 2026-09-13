@@ -217,6 +217,8 @@ pub struct ApplicationSection {
     #[schemars(rename = "golangci-lint")]
     pub golangci_lint: Option<ApplicationNoFile>,
 
+    pub hadolint: Option<ApplicationWithFile>,
+
     #[serde(alias = "keep-sorted")]
     #[schemars(rename = "keep-sorted")]
     pub keep_sorted: Option<ApplicationWithFile>,
@@ -759,6 +761,7 @@ mod tests {
     "git-diff-check": { "enabled": false },
     "gofumpt": { "enabled": false },
     "golangci-lint": { "enabled": false },
+    "hadolint": { "enabled": false },
     "keep-sorted": { "enabled": false },
     "prettier": { "enabled": false },
     "pyright": { "enabled": false },
@@ -785,6 +788,7 @@ mod tests {
                     git_diff_check: Some(disabled_no_file()),
                     gofumpt: Some(disabled_with_file()),
                     golangci_lint: Some(disabled_no_file()),
+                    hadolint: Some(disabled_with_file()),
                     keep_sorted: Some(disabled_with_file()),
                     prettier: Some(disabled_with_file()),
                     pyright: Some(disabled_with_file()),

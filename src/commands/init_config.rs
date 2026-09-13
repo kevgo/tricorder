@@ -94,6 +94,7 @@ pub const DEFAULT_JSON: &str = r#"{
     "git_diff_check": { "enabled": true },
     "gofumpt": { "enabled": true, "ignore-files": [] },
     "golangci_lint": { "enabled": true },
+    "hadolint": { "enabled": true, "ignore-files": [] },
     // github.com/google/keep-sorted is disabled by default
     // because using it requires scanning the file content of all workspace files for markers.
     "keep-sorted": { "enabled": false, "ignore-files": [] },
@@ -284,6 +285,11 @@ mod tests {
                     }),
                     golangci_lint: Some(ApplicationNoFile {
                         enabled: Some(true),
+                        operations: None,
+                    }),
+                    hadolint: Some(ApplicationWithFile {
+                        enabled: Some(true),
+                        ignore_files: Some(vec![]),
                         operations: None,
                     }),
                     keep_sorted: Some(ApplicationWithFile {

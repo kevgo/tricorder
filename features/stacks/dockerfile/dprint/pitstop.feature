@@ -17,6 +17,7 @@ Feature: pitstop Dockerfile with dprint
       {
         "applications": {
           "prettier": { "enabled": false },
+          "hadolint": { "enabled": false },
           "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
         }
       }
