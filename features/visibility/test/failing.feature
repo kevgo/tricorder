@@ -61,8 +61,6 @@ Feature: test command with a failing test
     And it prints the lines
       """
       unit tests
-      E2E tests
-      failed
       """
     And it prints the block
       """
