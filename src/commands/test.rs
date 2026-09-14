@@ -6,9 +6,6 @@ use std::process::ExitCode;
 pub fn test(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.show.unwrap_or(conc::Show::Names);
-    let error_on_output = false;
-    let stderr_to_stdout = true;
-
     let runnables = determine_tests(&config);
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
@@ -19,9 +16,9 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
     }
     let exit_code = conc::run(conc::RunArgs {
         runnables,
-        error_on_output,
+        error_on_output: false,
         show,
-        stderr_to_stdout,
+        stderr_to_stdout: true,
     });
     Ok(exit_code)
 }
