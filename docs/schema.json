@@ -87,7 +87,7 @@
       "additionalProperties": false
     },
     "tests": {
-      "description": "commands that `tricorder test` runs in parallel",
+      "description": "define the functional tests",
       "type": ["array", "null"],
       "items": {
         "$ref": "#/$defs/ToolDefinition"
