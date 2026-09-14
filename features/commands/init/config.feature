@@ -28,7 +28,7 @@ Feature: "tricorder init:config" writes the default config file
           { "command": "tools/fix_2.sh" }
         ],
 
-        // These tests run through the "tests" command.
+        // Define the functional tests.
         "tests": [
           { "command": "tools/test_1.sh", "name": "my test 1" },
           { "command": "tools/test_2.sh", "name": "my test 2" },
@@ -191,7 +191,7 @@ Feature: "tricorder init:config" writes the default config file
           { "command": "tools/fix_2.sh" }
         ],
 
-        // These tests run through the "tests" command.
+        // Define the functional tests.
         "tests": [
           { "command": "tools/test_1.sh", "name": "my test 1" },
           { "command": "tools/test_2.sh", "name": "my test 2" },
