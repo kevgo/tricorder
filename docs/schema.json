@@ -5,34 +5,22 @@
   "properties": {
     "$schema": {
       "description": "JSON Schema URL for editor support",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "global-fixes": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": ["array", "null"],
       "items": {
         "$ref": "#/$defs/ToolDefinition"
       }
     },
     "global-lints": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": ["array", "null"],
       "items": {
         "$ref": "#/$defs/ToolDefinition"
       }
     },
     "ignore-files": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": ["array", "null"],
       "items": {
         "type": "string"
       }
@@ -48,10 +36,7 @@
       ]
     },
     "stacks": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": ["object", "null"],
       "properties": {
         "css": {
           "$ref": "#/$defs/StackConfig"
@@ -100,6 +85,13 @@
         }
       },
       "additionalProperties": false
+    },
+    "tests": {
+      "description": "commands that `tricorder test` runs in parallel",
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "#/$defs/ToolDefinition"
+      }
     }
   },
   "additionalProperties": false,
@@ -109,10 +101,7 @@
       "properties": {
         "name": {
           "description": "display name for the fix",
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "command": {
           "description": "the command that implements the fix",
@@ -120,9 +109,7 @@
         }
       },
       "additionalProperties": false,
-      "required": [
-        "command"
-      ]
+      "required": ["command"]
     },
     "ApplicationSection": {
       "type": "object",
@@ -335,10 +322,7 @@
       "properties": {
         "enabled": {
           "description": "enable or disable the entire application",
-          "type": [
-            "boolean",
-            "null"
-          ]
+          "type": ["boolean", "null"]
         },
         "operations": {
           "description": "enable or disable individual operations",
@@ -394,10 +378,7 @@
       "type": "object",
       "properties": {
         "enabled": {
-          "type": [
-            "boolean",
-            "null"
-          ]
+          "type": ["boolean", "null"]
         }
       },
       "additionalProperties": false
@@ -407,17 +388,11 @@
       "properties": {
         "enabled": {
           "description": "enable or disable the entire application",
-          "type": [
-            "boolean",
-            "null"
-          ]
+          "type": ["boolean", "null"]
         },
         "ignore-files": {
           "description": "make this app ignore these files",
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": ["array", "null"],
           "items": {
             "type": "string"
           }
@@ -477,17 +452,11 @@
       "properties": {
         "enabled": {
           "description": "enable or disable this operation",
-          "type": [
-            "boolean",
-            "null"
-          ]
+          "type": ["boolean", "null"]
         },
         "ignore-files": {
           "description": "files that this operation should ignore",
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": ["array", "null"],
           "items": {
             "type": "string"
           }
@@ -528,20 +497,14 @@
       "properties": {
         "add": {
           "description": "these commands run in addition to the built-in ones",
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": ["array", "null"],
           "items": {
             "$ref": "#/$defs/ToolDefinition"
           }
         },
         "replace": {
           "description": "these commands replace the built-in ones",
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": ["array", "null"],
           "items": {
             "$ref": "#/$defs/ToolDefinition"
           }

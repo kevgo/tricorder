@@ -6,6 +6,7 @@ mod lint;
 mod pitstop;
 mod post_edit;
 mod precommit;
+mod test;
 mod update_tools;
 
 pub use ci::ci;
@@ -16,4 +17,5 @@ pub use lint::lint;
 pub use pitstop::pitstop;
 pub use post_edit::post_edit;
 pub use precommit::precommit;
+pub use test::test;
 pub use update_tools::update_tools;

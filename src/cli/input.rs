@@ -49,6 +49,9 @@ pub enum Command {
     /// Fix staged files before committing, never fails
     Precommit(RunArgs),
 
+    /// Run the tests defined in the config file
+    Test(RunArgs),
+
     /// Update third-party tools
     #[command(name = "update:tools")]
     UpdateTools,

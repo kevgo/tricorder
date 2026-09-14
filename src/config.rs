@@ -47,6 +47,9 @@ pub struct Config {
     // stack-specific configuration
     #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
+
+    /// commands that `tricorder test` runs in parallel
+    pub tests: Option<Vec<ToolDefinition>>,
 }
 
 impl Config {
@@ -461,6 +464,7 @@ mod tests {
                 ignore_files: None,
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -476,6 +480,7 @@ mod tests {
                 ignore_files: None,
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             assert_eq!(have, want);
         }
@@ -490,6 +495,7 @@ mod tests {
                 ignore_files: None,
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             assert_eq!(have, want);
         }
@@ -505,6 +511,7 @@ mod tests {
                 ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -525,6 +532,7 @@ mod tests {
                 ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -544,6 +552,7 @@ mod tests {
                 ignore_files: Some(vec![S("a.css"), S("b/")]),
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -590,6 +599,7 @@ mod tests {
                         fix: None,
                     },
                 )),
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -627,6 +637,7 @@ mod tests {
                         fix: None,
                     },
                 )),
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -664,6 +675,7 @@ mod tests {
                         fix: None,
                     },
                 )),
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -694,6 +706,7 @@ mod tests {
                 ignore_files: None,
                 applications: None,
                 stacks: None,
+                tests: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -709,6 +722,39 @@ mod tests {
                 ignore_files: Some(vec![S("a.css")]),
                 applications: None,
                 stacks: None,
+                tests: None,
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn tests() {
+            let give = r#"
+{
+  "tests": [
+    { "command": "make unit" },
+    { "name": "E2E tests", "command": "make cuke" }
+  ]
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            let want = Config {
+                schema: None,
+                global_fixes: None,
+                global_lints: None,
+                ignore_files: None,
+                applications: None,
+                stacks: None,
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: None,
+                        command: S("make unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("E2E tests")),
+                        command: S("make cuke"),
+                    },
+                ]),
             };
             pretty::assert_eq!(have, want);
         }

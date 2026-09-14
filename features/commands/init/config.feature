@@ -27,6 +27,10 @@ Feature: "tricorder init:config" writes the default config file
           { "command": "tools/fix_1.sh", "name": "custom fix 1" },
           { "command": "tools/fix_2.sh" }
         ],
+        "tests": [
+          { "command": "tools/test_1.sh", "name": "my test 1" },
+          { "command": "tools/test_2.sh", "name": "my test 2" },
+        ],
 
         // configure the supported software stacks
         "stacks": {
@@ -183,6 +187,10 @@ Feature: "tricorder init:config" writes the default config file
         "global-fixes": [
           { "command": "tools/fix_1.sh", "name": "custom fix 1" },
           { "command": "tools/fix_2.sh" }
+        ],
+        "tests": [
+          { "command": "tools/test_1.sh", "name": "my test 1" },
+          { "command": "tools/test_2.sh", "name": "my test 2" },
         ],
 
         // configure the supported software stacks
