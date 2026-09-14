@@ -46,7 +46,10 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        runnables: stack_specific
+            .into_iter()
+            .map(|(_, runnable)| runnable)
+            .collect(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -125,9 +128,9 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
 
     // convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    for (stack_type, stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
+            stack_specific.push((stack_type, conc::Runnable::Sequence(stack_executables)));
         }
     }
     Ok(Runnables {
@@ -142,14 +145,14 @@ pub struct Runnables {
     pub global: conc::Runnable,
 
     /// fixes that affect stack-specific files
-    pub stack_specific: Vec<conc::Runnable>,
+    pub stack_specific: Vec<(StackType, conc::Runnable)>,
 }
 
 impl Runnables {
     pub fn len(&self) -> usize {
         let mut result = self.global.len();
-        for x in &self.stack_specific {
-            result += x.len();
+        for (_stack_type, runnable) in &self.stack_specific {
+            result += runnable.len();
         }
         result
     }

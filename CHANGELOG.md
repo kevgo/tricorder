@@ -7,6 +7,7 @@
 - custom stack tools now print `{operation} {stack} ({name})`, matching built-in tools
 - `fix-unsafe` now prints tools as `unsafe-fix <stack> (<name>)`
 - new `test` command runs the tasks defined in the config `tests` key in parallel
+- new `all` command runs tests, lints, and fixes concurrently (stack lints after stack fixes)
 
 ## 0.1.0
 

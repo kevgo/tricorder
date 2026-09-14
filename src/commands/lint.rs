@@ -3,9 +3,10 @@ use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, Operation, ToolDefinition};
-use crate::domain::{DetectedStacks, Result};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
@@ -47,18 +48,45 @@ pub fn determine_lints(
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
 ) -> Result<Vec<conc::Runnable>> {
-    let mut result = Vec::new();
+    Ok(determine_lints_grouped(config, detected_stacks, git_repo)?.into_flat())
+}
+
+#[derive(Debug)]
+pub(crate) struct LintRunnables {
+    pub stack_specific: AHashMap<StackType, Vec<conc::Runnable>>,
+    pub global: Vec<conc::Runnable>,
+}
+
+impl LintRunnables {
+    fn into_flat(self) -> Vec<conc::Runnable> {
+        let mut result: Vec<_> = self
+            .stack_specific
+            .into_iter()
+            .flat_map(|(_, runnables)| runnables)
+            .collect();
+        result.extend(self.global);
+        result
+    }
+}
+
+pub(crate) fn determine_lints_grouped(
+    config: &Config,
+    detected_stacks: &DetectedStacks,
+    git_repo: Option<&git::Repo>,
+) -> Result<LintRunnables> {
+    let mut stack_specific: AHashMap<StackType, Vec<conc::Runnable>> = AHashMap::new();
 
     // determine the lints for the stacks
     for detected_stack in detected_stacks {
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
-        // schedule either the override lints or the default lints
         let stack_lints = stack_config.and_then(|sc| sc.lint.as_ref());
+        let mut entry = Vec::new();
+        // schedule either the override lints or the default lints
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
             for override_lint in overrides {
                 let executable = override_lint.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Runnable::Single(executable));
+                entry.push(conc::Runnable::Single(executable));
             }
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -66,22 +94,27 @@ pub fn determine_lints(
                     && default_lint.enabled_when().enabled_on_disk()
                     && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
                 {
-                    result.push(executable);
+                    entry.push(executable);
                 }
             }
         }
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
             for addition in additions {
                 let executable = addition.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Runnable::Single(executable));
+                entry.push(conc::Runnable::Single(executable));
             }
         }
+        if !entry.is_empty() {
+            stack_specific.entry(stack_type).or_default().extend(entry);
+        }
     }
+
+    let mut global = Vec::new();
 
     // determine the runnables for the custom lints
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
-            result.push(conc::Runnable::Single(conc::Executable {
+            global.push(conc::Runnable::Single(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
             }));
@@ -93,8 +126,11 @@ pub fn determine_lints(
         && let Some(repo) = git_repo
     {
         let executable = git_diff_check::lint_command(repo);
-        result.push(conc::Runnable::Single(executable));
+        global.push(conc::Runnable::Single(executable));
     }
 
-    Ok(result)
+    Ok(LintRunnables {
+        stack_specific,
+        global,
+    })
 }

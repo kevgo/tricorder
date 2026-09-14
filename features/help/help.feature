@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'tricorder' requires a subcommand but one was not provided
-        [subcommands: ci, init:claude, init:config, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, postedit, precommit, test, update:tools, help]
+        [subcommands: all, ci, init:claude, init:config, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, postedit, precommit, test, update:tools, help]
 
       Usage: tricorder <COMMAND>
 
@@ -22,6 +22,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
+        all           Fix, lint, and test in parallel
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
@@ -51,6 +52,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
+        all           Fix, lint, and test in parallel
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
@@ -80,6 +82,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
+        all           Fix, lint, and test in parallel
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file

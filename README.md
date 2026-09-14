@@ -53,6 +53,11 @@ process.
 Tricorder provides special commands
 for specific phases of the software development workflow:
 
+### `tricorder all`
+
+This command runs everything that Tricorder can do: a pitstop and all tests,
+all in parallel.
+
 ### `tricorder pitstop`
 
 This command provides efficient support for interactive development.

@@ -1,3 +1,4 @@
+mod all;
 mod ci;
 mod fix;
 mod fix_unsafe;
@@ -9,6 +10,7 @@ mod precommit;
 mod test;
 mod update_tools;
 
+pub use all::all;
 pub use ci::ci;
 pub use fix::fix;
 pub use fix_unsafe::fix_unsafe;

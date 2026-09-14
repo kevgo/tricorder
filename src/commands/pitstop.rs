@@ -48,6 +48,10 @@ pub(crate) fn run_fix_then_lint(
         global: global_fixes,
         stack_specific: stack_specific_fixes,
     } = fix_runnables;
+    let stack_specific_fixes: Vec<_> = stack_specific_fixes
+        .into_iter()
+        .map(|(_, runnable)| runnable)
+        .collect();
 
     // step 2: run the global fixes
     let exit_code = conc::run(conc::RunArgs {

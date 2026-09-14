@@ -22,7 +22,7 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-fn determine_tests(config: &Config) -> Vec<conc::Runnable> {
+pub(crate) fn determine_tests(config: &Config) -> Vec<conc::Runnable> {
     let Some(tests) = &config.tests else {
         return Vec::new();
     };

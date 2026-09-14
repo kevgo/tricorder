@@ -61,7 +61,10 @@ fn run(args: &RunArgs) -> Result<()> {
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        runnables: stack_specific
+            .into_iter()
+            .map(|(_, runnable)| runnable)
+            .collect(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -150,9 +153,9 @@ pub fn determine_precommit_fixes(
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    for (stack_type, stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
+            stack_specific.push((stack_type, conc::Runnable::Sequence(stack_executables)));
         }
     }
     Ok(Runnables {
