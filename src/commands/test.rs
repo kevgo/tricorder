@@ -10,7 +10,6 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
     if show.display_metadata() {
         eprintln!("running {} tools", runnables.len());
     }
-
     if runnables.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
