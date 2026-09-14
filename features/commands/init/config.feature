@@ -1,14 +1,14 @@
 Feature: "tricorder init:config" writes the default config file
 
-  Scenario: write tricorder.json into an empty project
+  Scenario: write tricorder.jsonc into an empty project
     When executing "tricorder init:config"
     Then it prints
       """
-      created tricorder.json
+      created tricorder.jsonc
       """
     And it prints nothing to STDERR
     And the exit code is 0
-    And file "tricorder.json" now has content
+    And file "tricorder.jsonc" now has content
       """
       {
         // link to the JSON schema for this file,
