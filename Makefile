@@ -71,7 +71,7 @@ ps: build unit $(TRICORDER)  # pitstop, quick checkup during active development
 
 psc: ps cuke  # complete pitstop, runs all fixes, lints, and tests
 
-test: ${TRICORDER}  ## runs all tests
+test: build ${TRICORDER}  ## runs all tests
 	$(TRICORDER) test
 
 todo: ${RTA}  # lists all TODOs in the code
