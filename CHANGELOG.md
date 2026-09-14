@@ -1,5 +1,7 @@
 # Tricorder changelog
 
+## 0.1.1
+
 - app: hadolint for Dockerfile
 - stack: Dockerfile, linted by hadolint, formatted by dprint (when `dprint.json` is present)
 - app: dprint for JSON, JSONC, YML, and Dockerfile (when `dprint.json` is present)
