@@ -48,7 +48,7 @@ pub struct Config {
     #[schemars(with = "Option<std::collections::BTreeMap<StackType, StackConfig>>")]
     pub stacks: Option<AHashMap<StackType, StackConfig>>,
 
-    /// commands that `tricorder test` runs in parallel
+    /// Define the functional tests.
     pub tests: Option<Vec<ToolDefinition>>,
 }
 
