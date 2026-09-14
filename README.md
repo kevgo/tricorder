@@ -228,8 +228,8 @@ If both exist, **tricorder.json** takes precedence.
     { "command": "tools/fix_2.sh" }
   ],
   "tests": [
-    { "command": "make unit", "name": "unit tests" },
-    { "command": "make e2e", "name": "E2E tests" }
+    { "command": "tools/test_1.sh", "name": "my test 1" },
+    { "command": "tools/test_2.sh", "name": "my test 2" },
   ],
 
   // configure the supported software stacks
