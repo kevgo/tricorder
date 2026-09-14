@@ -67,7 +67,10 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 ps: build $(TRICORDER)  # pitstop, quick checkup during active development
 	$(TRICORDER) pitstop
 
-test: unit lint cuke  ## runs all tests
+psc: ps cuke  # complete pitstop, runs all fixes, lints, and tests
+
+test: build ${TRICORDER}  ## runs all tests
+	$(TRICORDER) test
 
 todo: ${RTA}  # lists all TODOs in the code
 	$(RIPGREP) --fixed-strings --glob='!Makefile' 'TODO' || true

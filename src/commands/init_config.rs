@@ -4,7 +4,7 @@ use crate::domain::{Result, UserError};
 use crate::filesystem::{FileMode, any_file_exists, create_file};
 use std::process::ExitCode;
 
-/// default `tricorder.json` contents written by `tricorder init:config`
+/// default `tricorder.jsonc` contents written by `tricorder init:config`
 pub const DEFAULT_JSON: &str = r#"{
   // link to the JSON schema for this file,
   // for auto-complete in VSCode and compatible editors
@@ -21,6 +21,12 @@ pub const DEFAULT_JSON: &str = r#"{
   "global-fixes": [
     { "command": "tools/fix_1.sh", "name": "custom fix 1" },
     { "command": "tools/fix_2.sh" }
+  ],
+
+  // Define the functional tests.
+  "tests": [
+    { "command": "tools/test_1.sh", "name": "my test 1" },
+    { "command": "tools/test_2.sh", "name": "my test 2" },
   ],
 
   // configure the supported software stacks
@@ -129,7 +135,7 @@ pub const DEFAULT_JSON: &str = r#"{
 }
 "#;
 
-/// writes the default configuration into the existing config file, or `tricorder.json` if none exists
+/// writes the default configuration into the existing config file, or `tricorder.jsonc` if none exists
 pub fn init_config(args: &InitArgs) -> Result<ExitCode> {
     let existing = any_file_exists(&config::CONFIG_FILENAMES);
     if !existing.is_empty() && !args.force {
@@ -217,7 +223,7 @@ mod tests {
 
         #[test]
         fn parses_as_default_settings() {
-            let have = Config::parse(DEFAULT_JSON, "tricorder.json").unwrap();
+            let have = Config::parse(DEFAULT_JSON, "tricorder.jsonc").unwrap();
             let want = Config {
                 schema: Some(SCHEMA_URL.to_string()),
                 global_fixes: Some(vec![
@@ -241,6 +247,16 @@ mod tests {
                     },
                 ]),
                 ignore_files: Some(vec![S("vendor/"), S("**/*.min.css")]),
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("my test 1")),
+                        command: S("tools/test_1.sh"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("my test 2")),
+                        command: S("tools/test_2.sh"),
+                    },
+                ]),
                 applications: Some(ApplicationSection {
                     actionlint: Some(ApplicationNoFile {
                         enabled: Some(true),

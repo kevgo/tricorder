@@ -137,6 +137,10 @@ that might change program behavior and should be verified.
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
 
+### `tricorder test`
+
+This command runs all tests defined in `tricorder.jsonc` in parallel.
+
 ## Supported stacks
 
 | Stack      | Linter                                                                          |
@@ -222,6 +226,12 @@ If both exist, **tricorder.json** takes precedence.
   "global-fixes": [
     { "command": "tools/fix_1.sh", "name": "custom fix 1" },
     { "command": "tools/fix_2.sh" }
+  ],
+
+  // Define the functional tests.
+  "tests": [
+    { "command": "tools/test_1.sh", "name": "my test 1" },
+    { "command": "tools/test_2.sh", "name": "my test 2" },
   ],
 
   // configure the supported software stacks

@@ -1,14 +1,14 @@
 Feature: "tricorder init:config" writes the default config file
 
-  Scenario: write tricorder.json into an empty project
+  Scenario: write tricorder.jsonc into an empty project
     When executing "tricorder init:config"
     Then it prints
       """
-      created tricorder.json
+      created tricorder.jsonc
       """
     And it prints nothing to STDERR
     And the exit code is 0
-    And file "tricorder.json" now has content
+    And file "tricorder.jsonc" now has content
       """
       {
         // link to the JSON schema for this file,
@@ -26,6 +26,12 @@ Feature: "tricorder init:config" writes the default config file
         "global-fixes": [
           { "command": "tools/fix_1.sh", "name": "custom fix 1" },
           { "command": "tools/fix_2.sh" }
+        ],
+
+        // Define the functional tests.
+        "tests": [
+          { "command": "tools/test_1.sh", "name": "my test 1" },
+          { "command": "tools/test_2.sh", "name": "my test 2" },
         ],
 
         // configure the supported software stacks
@@ -183,6 +189,12 @@ Feature: "tricorder init:config" writes the default config file
         "global-fixes": [
           { "command": "tools/fix_1.sh", "name": "custom fix 1" },
           { "command": "tools/fix_2.sh" }
+        ],
+
+        // Define the functional tests.
+        "tests": [
+          { "command": "tools/test_1.sh", "name": "my test 1" },
+          { "command": "tools/test_2.sh", "name": "my test 2" },
         ],
 
         // configure the supported software stacks
