@@ -15,7 +15,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Run everything that Tricorder can do in parallel
+    /// Run everything that Tricorder can do
     All(RunArgs),
 
     /// Check all lints and fixes on CI

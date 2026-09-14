@@ -22,7 +22,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        all           Fix, lint, and test in parallel
+        all           Run everything that Tricorder can do
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
@@ -52,7 +52,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        all           Fix, lint, and test in parallel
+        all           Run everything that Tricorder can do
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
@@ -82,7 +82,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        all           Fix, lint, and test in parallel
+        all           Run everything that Tricorder can do
         ci            Check all lints and fixes on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
