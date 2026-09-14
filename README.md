@@ -227,6 +227,8 @@ If both exist, **tricorder.json** takes precedence.
     { "command": "tools/fix_1.sh", "name": "custom fix 1" },
     { "command": "tools/fix_2.sh" }
   ],
+
+  // These tests run through the "tests" command.
   "tests": [
     { "command": "tools/test_1.sh", "name": "my test 1" },
     { "command": "tools/test_2.sh", "name": "my test 2" },
