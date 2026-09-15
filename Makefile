@@ -13,7 +13,7 @@ build-release:	# builds the project in release mode
 	cargo build --release
 
 ci: build ${TRICORDER}  # run the full CI pipeline
-	$(TRICORDER) ci
+	$(TRICORDER) ci --test=unit+E2Eslow
 
 contest: ${RTA}
 	$(CONTEST)
