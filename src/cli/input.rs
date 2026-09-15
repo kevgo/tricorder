@@ -84,7 +84,7 @@ pub trait ShowExt {
 impl ShowExt for conc::Show {
     fn display_metadata(self) -> bool {
         match self {
-            Self::All | Self::Verbose => true,
+            Self::Output | Self::Verbose => true,
             Self::Failed | Self::Names => false,
         }
     }
@@ -101,7 +101,7 @@ fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
     .map(|s| match s.to_ascii_lowercase().as_str() {
         "failed" => conc::Show::Failed,
         "names" => conc::Show::Names,
-        "output" => conc::Show::All,
+        "output" => conc::Show::Output,
         "verbose" => conc::Show::Verbose,
         _ => unreachable!("PossibleValuesParser prevents this"),
     })
