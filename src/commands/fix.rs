@@ -46,7 +46,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        runnables: stack_runnables(stack_specific),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -123,16 +123,10 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         }
     }
 
-    // convert to runnables and return
-    let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
-        if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
-        }
-    }
+    stacks_executables.retain(|_, executables| !executables.is_empty());
     Ok(Runnables {
         global: conc::Runnable::Sequence(global),
-        stack_specific,
+        stack_specific: stacks_executables,
     })
 }
 
@@ -141,18 +135,28 @@ pub struct Runnables {
     /// fixes that affect all files
     pub global: conc::Runnable,
 
-    /// fixes that affect stack-specific files
-    pub stack_specific: Vec<conc::Runnable>,
+    /// fixes that affect stack-specific files, keyed by stack type
+    pub stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
 }
 
 impl Runnables {
     pub fn len(&self) -> usize {
         let mut result = self.global.len();
-        for x in &self.stack_specific {
-            result += x.len();
+        for executables in self.stack_specific.values() {
+            result += executables.len();
         }
         result
     }
+}
+
+/// stack-specific executables as concurrent sequences, one sequence per stack
+pub(crate) fn stack_runnables(
+    stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
+) -> Vec<conc::Runnable> {
+    stack_specific
+        .into_values()
+        .map(conc::Runnable::Sequence)
+        .collect()
 }
 
 /// adds the custom fixes defined in the config file to the global fix collection

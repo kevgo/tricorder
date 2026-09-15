@@ -2,7 +2,7 @@ use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::commands::fix::{Runnables, add_custom_fixes};
+use crate::commands::fix::{Runnables, add_custom_fixes, stack_runnables};
 use crate::config::{Application, Config, Operation};
 use crate::domain::UserError;
 use crate::domain::{DetectedStacks, Result, StackType, fingerprint};
@@ -61,7 +61,7 @@ fn run(args: &RunArgs) -> Result<()> {
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        runnables: stack_runnables(stack_specific),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -148,15 +148,9 @@ pub fn determine_precommit_fixes(
         }
     }
 
-    // step 6: convert to runnables and return
-    let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
-        if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
-        }
-    }
+    stacks_executables.retain(|_, executables| !executables.is_empty());
     Ok(Runnables {
         global: conc::Runnable::Sequence(global),
-        stack_specific,
+        stack_specific: stacks_executables,
     })
 }
