@@ -30,7 +30,7 @@ pub(crate) fn run_tasks(
     config: &Config,
     stacks: &DetectedStacks,
     repo: Option<&Repo>,
-    extra_runnables: Vec<conc::Runnable>,
+    tests: Vec<conc::Runnable>,
 ) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
@@ -43,7 +43,7 @@ pub(crate) fn run_tasks(
     // step 1: discover the runnables
     let fix_runnables = fix::determine_fixes(config, stacks)?;
     let mut lints = lint::determine_lints(config, stacks, repo)?;
-    lints.extend(extra_runnables);
+    lints.extend(tests);
     let runnable_count = fix_runnables.len() + lints.len();
     if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
