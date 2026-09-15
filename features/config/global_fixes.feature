@@ -32,7 +32,7 @@ Feature: custom fixes
       my global fix 1
       global fix 1 running
       """
-    Then it prints the lines
+    And it prints the lines
       """
       my global fix 2
       global fix 2 running
