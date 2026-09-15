@@ -65,6 +65,10 @@ pub(crate) fn run_tasks(
     }
 
     // step 3: run the stack-specific fixes
+    // TODO: don't wait until all these fixes are finished before running the lints,
+    // instead, when a fix for a stack finishes, run the lints for that stack.
+    // Tricorder should create a `runnables` here consisting of conc::Sequence for the stacks
+    // consisting of fixes + lints, and concurrently the global lints and tests.
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
