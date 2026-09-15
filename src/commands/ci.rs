@@ -14,7 +14,8 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let stacks = stacks::discover_all(&ignores);
     let args_show = args.with_default_show(conc::Show::Output);
-    let exit_code = run_fix_then_lint(&args_show, &config, &stacks, repo.as_ref())?;
+    let tests = super::test::determine_tests(&config);
+    let exit_code = run_fix_then_lint(&args_show, &config, &stacks, repo.as_ref(), tests)?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }

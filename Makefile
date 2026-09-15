@@ -12,10 +12,8 @@ build:  # builds the project in debug mode
 build-release:	# builds the project in release mode
 	cargo build --release
 
-ci: build ${TRICORDER}
+ci: build ${TRICORDER}  # run the full CI pipeline
 	$(TRICORDER) ci
-	make --no-print-directory unit
-	make --no-print-directory cuke-slow
 
 contest: ${RTA}
 	$(CONTEST)

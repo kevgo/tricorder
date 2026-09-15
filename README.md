@@ -90,6 +90,9 @@ It ensures all code passes all checks, i.e. it fails if either:
 
 - a linter reports an unresolved issue
 - some code is unformatted, i.e. a formatter would modify a file
+- a test defined in `tricorder.jsonc` fails
+
+Configured tests run in parallel with the lints, the same way global lints do.
 
 ### `tricorder init:claude`
 
