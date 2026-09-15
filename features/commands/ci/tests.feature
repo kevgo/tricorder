@@ -26,7 +26,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
       print("hello")
       """
     When executing "tricorder ci --show=output"
-    Then it prints to STDERR
+    Then it prints the lines to STDERR
       """
       1 JSON, 1 Python, 1 other
       running 6 tools
@@ -74,3 +74,58 @@ Feature: CI runs all fixes, formatters, lints, and tests
       custom test failed
       """
     And the exit code is 4
+
+  Scenario: --test selects named tests
+    Given a file "tricorder.json" with content
+      """
+      {
+        "applications": {
+          "dprint": { "enabled": false },
+          "prettier": { "enabled": false }
+        },
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" },
+          { "name": "slow", "command": "echo slow" }
+        ]
+      }
+      """
+    When executing "tricorder ci --test=unit+cuke --show=output"
+    Then it prints the lines to STDERR
+      """
+      1 JSON, 1 other
+      running 3 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it prints the block
+      """
+      cuke
+      cuke
+      """
+    And it does not print
+      """
+      slow
+      """
+    And the exit code is 0
+
+  Scenario: unknown test name
+    Given a file "tricorder.json" with content
+      """
+      {
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ]
+      }
+      """
+    When executing "tricorder ci --test=unit+missing"
+    Then it prints
+      """
+      unknown test: missing
+      available tests: unit, cuke
+      """
+    And the exit code is 1

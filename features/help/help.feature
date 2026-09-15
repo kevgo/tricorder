@@ -122,3 +122,29 @@ Feature: Displaying help
                 Print help (see a summary with '-h')
       """
     And the exit code is 0
+
+  Scenario: help for the ci command
+    When executing "tricorder help ci"
+    Then it prints
+      """
+      Runs all fixes, lints, and tests on CI
+
+      Usage: tricorder ci [OPTIONS]
+
+      Options:
+            --show <SHOW>
+                how much output to display
+
+                Possible values:
+                - failed:  only output of failed commands
+                - names:   command names and output of failed commands
+                - output:  command names and output of all commands
+                - verbose: command lines and output of all commands
+
+            --test <NAME>
+                names of tests to run, joined with +
+
+        -h, --help
+                Print help (see a summary with '-h')
+      """
+    And the exit code is 0

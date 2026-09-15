@@ -78,6 +78,10 @@ pub enum UserError {
     Rta {
         err: rta::error::UserError,
     },
+    UnknownTest {
+        names: Vec<String>,
+        available: Vec<String>,
+    },
 }
 
 impl UserError {
@@ -147,6 +151,14 @@ impl UserError {
                 println!("please run this command in the main Git worktree");
             }
             UserError::Rta { err } => err.print(),
+            UserError::UnknownTest { names, available } => {
+                println!("unknown test: {}", names.join(", "));
+                if available.is_empty() {
+                    println!("no tests are defined in the config file");
+                } else {
+                    println!("available tests: {}", available.join(", "));
+                }
+            }
         }
     }
 }
