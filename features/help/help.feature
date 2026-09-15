@@ -22,7 +22,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci            Check all lints, fixes, and tests on CI
+        ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
         init:githook  Install the Git pre-commit hook
@@ -51,7 +51,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci            Check all lints, fixes, and tests on CI
+        ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
         init:githook  Install the Git pre-commit hook
@@ -80,7 +80,7 @@ Feature: Displaying help
       Usage: tricorder <COMMAND>
 
       Commands:
-        ci            Check all lints, fixes, and tests on CI
+        ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
         init:config   Create the Tricorder configuration file
         init:githook  Install the Git pre-commit hook

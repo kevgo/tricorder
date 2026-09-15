@@ -15,7 +15,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Check all lints, fixes, and tests on CI
+    /// Runs all fixes, lints, and tests on CI
     Ci(RunArgs),
 
     /// Embed into claude-compatible coding agents
