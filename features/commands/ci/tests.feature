@@ -26,7 +26,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
       print("hello")
       """
     When executing "tricorder ci --show=output"
-    Then it prints to STDERR
+    Then it prints the lines to STDERR
       """
       1 JSON, 1 Python, 1 other
       running 6 tools
