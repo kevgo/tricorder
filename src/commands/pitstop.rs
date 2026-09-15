@@ -19,15 +19,18 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_fix_then_lint(args, &config, &stacks, repo.as_ref())
+    run_tasks(args, &config, &stacks, repo.as_ref(), Vec::new())
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
-pub(crate) fn run_fix_then_lint(
+///
+/// `extra_runnables` run in parallel with the lints, the same way global lints do.
+pub(crate) fn run_tasks(
     args: &RunArgs,
     config: &Config,
     stacks: &DetectedStacks,
     repo: Option<&Repo>,
+    tests: Vec<conc::Runnable>,
 ) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
@@ -39,7 +42,8 @@ pub(crate) fn run_fix_then_lint(
 
     // step 1: discover the runnables
     let fix_runnables = fix::determine_fixes(config, stacks)?;
-    let lints = lint::determine_lints(config, stacks, repo)?;
+    let mut lints = lint::determine_lints(config, stacks, repo)?;
+    lints.extend(tests);
     let runnable_count = fix_runnables.len() + lints.len();
     if show.display_metadata() {
         eprintln!("running {runnable_count} tools");
@@ -61,6 +65,10 @@ pub(crate) fn run_fix_then_lint(
     }
 
     // step 3: run the stack-specific fixes
+    // TODO: don't wait until all these fixes are finished before running the lints,
+    // instead, when a fix for a stack finishes, run the lints for that stack.
+    // Tricorder should create a `runnables` here consisting of conc::Sequence for the stacks
+    // consisting of fixes + lints, and concurrently the global lints and tests.
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
