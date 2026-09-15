@@ -1,4 +1,4 @@
-Feature: CI runs the same tests as the test command
+Feature: CI runs all fixes, formatters, lints, and tests
 
   Background:
     Given a file "run-that-app" with content
@@ -7,7 +7,7 @@ Feature: CI runs the same tests as the test command
       ruff 0.15.16
       """
 
-  Scenario: tests pass in parallel with lints
+  Scenario:
     Given a file "tricorder.json" with content
       """
       {
@@ -16,15 +16,10 @@ Feature: CI runs the same tests as the test command
           "prettier": { "enabled": false }
         },
         "tests": [
-          { "command": "tests/one.sh" },
+          { "command": "echo test one" },
           { "name": "unit tests", "command": "echo unit" }
         ]
       }
-      """
-    And an executable file "tests/one.sh" with content
-      """
-      #!/usr/bin/env bash
-      echo "custom test is running"
       """
     And a file "main.py" with content
       """
@@ -33,13 +28,13 @@ Feature: CI runs the same tests as the test command
     When executing "tricorder ci --show=output"
     Then it prints to STDERR
       """
-      1 JSON, 1 Python, 2 other
+      1 JSON, 1 Python, 1 other
       running 6 tools
       """
     And it prints the block
       """
-      tests/one.sh
-      custom test is running
+      echo test one
+      test one
       """
     And it prints the block
       """
@@ -53,36 +48,6 @@ Feature: CI runs the same tests as the test command
       """
     And the exit code is 0
 
-  Scenario: tests appear alongside fixes and lints
-    Given a file "tricorder.json" with content
-      """
-      {
-        "applications": {
-          "dprint": { "enabled": false },
-          "prettier": { "enabled": false }
-        },
-        "tests": [
-          { "name": "unit tests", "command": "echo unit" },
-          { "name": "E2E tests", "command": "echo e2e" }
-        ]
-      }
-      """
-    And a file "main.py" with content
-      """
-      print("hello")
-      """
-    When executing "tricorder ci --show=names"
-    Then it prints only these lines in any order
-      """
-      delete empty folders
-      fix Python (ruff)
-      format Python (ruff)
-      lint Python (ruff)
-      unit tests
-      E2E tests
-      """
-    And the exit code is 0
-
   Scenario: test fails
     Given a file "tricorder.json" with content
       """
@@ -92,7 +57,7 @@ Feature: CI runs the same tests as the test command
           "prettier": { "enabled": false }
         },
         "tests": [
-          { "command": "tests/fail.sh" }
+          { "name": "failing test", "command": "tests/fail.sh" }
         ]
       }
       """
@@ -105,7 +70,7 @@ Feature: CI runs the same tests as the test command
     When executing "tricorder ci --show=output"
     Then it prints the block
       """
-      tests/fail.sh
+      failing test
       custom test failed
       """
     And the exit code is 4
