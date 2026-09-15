@@ -36,7 +36,7 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
       a = 2
       # keep-sorted end
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)
@@ -66,7 +66,7 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
       a = 4
       # keep-sorted end
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)

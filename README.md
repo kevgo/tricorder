@@ -11,8 +11,8 @@ and formatters concurrently for the fastest results.
 
 ## Demo
 
-Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
-500 ms and prints:
+Running `tricorder lint --show=output` on the Tricorder codebase finishes in
+about 500 ms and prints:
 
 ```sh
 114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
@@ -137,6 +137,10 @@ that might change program behavior and should be verified.
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
 
+### `tricorder test`
+
+This command runs all tests defined in `tricorder.jsonc` in parallel.
+
 ## Supported stacks
 
 | Stack      | Linter                                                                          |
@@ -222,6 +226,12 @@ If both exist, **tricorder.json** takes precedence.
   "global-fixes": [
     { "command": "tools/fix_1.sh", "name": "custom fix 1" },
     { "command": "tools/fix_2.sh" }
+  ],
+
+  // Define the functional tests.
+  "tests": [
+    { "command": "tools/test_1.sh", "name": "my test 1" },
+    { "command": "tools/test_2.sh", "name": "my test 2" },
   ],
 
   // configure the supported software stacks

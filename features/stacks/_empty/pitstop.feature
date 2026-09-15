@@ -6,8 +6,8 @@ Feature: pitstop for a codebase without any code
       delete-empty-folders 0.0.2
       """
 
-  Scenario: --show=all
-    When executing "tricorder pitstop --show=all"
+  Scenario: --show=output
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders

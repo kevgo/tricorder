@@ -12,7 +12,7 @@ Feature: fix Markdown
       """
       # Hello
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -25,7 +25,7 @@ Feature: fix Markdown
       """
       #     Hello
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -44,7 +44,7 @@ Feature: fix Markdown
 
       [e]()
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -58,7 +58,7 @@ Feature: fix Markdown
       """
       #     Hello
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)

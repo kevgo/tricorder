@@ -6,8 +6,8 @@ Feature: checking a codebase without any code
       delete-empty-folders 0.0.2
       """
 
-  Scenario: --show=all
-    When executing "tricorder lint --show=all"
+  Scenario: --show=output
+    When executing "tricorder lint --show=output"
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """

@@ -39,7 +39,7 @@ Feature: disable an application's fix-unsafe operation
       """
 
   Scenario: fix-unsafe skips the application
-    When executing "tricorder fix-unsafe --show=all"
+    When executing "tricorder fix-unsafe --show=output"
     Then it prints the block
       """
       unsafe-fix CSS (Biome)

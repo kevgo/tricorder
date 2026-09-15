@@ -31,7 +31,7 @@ Feature: pitstop JSONC with dprint
       """
       {  "key"  :  "other"  } // comment
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix JSONC (dprint)
@@ -51,7 +51,7 @@ Feature: pitstop JSONC with dprint
       """
       { "key":
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)

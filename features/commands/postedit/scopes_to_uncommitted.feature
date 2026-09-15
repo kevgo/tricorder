@@ -13,7 +13,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it prints to STDERR
       """
       running 1 tools
@@ -45,7 +45,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it prints to STDERR
       """
       2 Markdown
@@ -74,7 +74,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it prints to STDERR
       """
       1 Markdown

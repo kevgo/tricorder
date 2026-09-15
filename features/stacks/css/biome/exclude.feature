@@ -28,7 +28,7 @@ Feature: ignore a CSS file
         col
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint CSS (Biome)
@@ -50,7 +50,7 @@ Feature: ignore a CSS file
         color : green ;
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)

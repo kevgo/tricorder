@@ -21,7 +21,7 @@ Feature: lint Go
       	fmt.Println("Hello, world!")
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Go (golangci-lint)
@@ -38,7 +38,7 @@ Feature: lint Go
       	fmt.Println("
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Go (golangci-lint)

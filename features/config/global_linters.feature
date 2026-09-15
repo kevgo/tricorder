@@ -25,7 +25,7 @@ Feature: custom lints
       #!/usr/bin/env bash
       echo "custom lint is running"
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lints/one.sh
@@ -53,7 +53,7 @@ Feature: custom lints
       echo "custom lint failed"
       exit 4
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lints/fail.sh

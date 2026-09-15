@@ -19,9 +19,7 @@
     "taplo": {
       "operations": {
         "lint": {
-          "ignore-files": [
-            "Cargo.toml"
-          ]
+          "ignore-files": ["Cargo.toml"]
         }
       }
     }
@@ -71,5 +69,15 @@
         ]
       }
     }
-  }
+  },
+  "tests": [
+    {
+      "name": "unit tests",
+      "command": "make unit"
+    },
+    {
+      "name": "E2E tests",
+      "command": "make cuke"
+    }
+  ]
 }

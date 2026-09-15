@@ -25,7 +25,7 @@ Feature: pitstop on the main branch
       """
       #     Bar
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -58,7 +58,7 @@ Feature: pitstop on the main branch
       """
       missing header
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders

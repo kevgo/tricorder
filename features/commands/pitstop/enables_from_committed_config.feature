@@ -38,7 +38,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix Markdown (tikibase)
@@ -62,7 +62,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix Markdown (tikibase)

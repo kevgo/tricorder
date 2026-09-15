@@ -49,6 +49,9 @@ pub enum Command {
     /// Fix staged files before committing, never fails
     Precommit(RunArgs),
 
+    /// Run all tests in parallel
+    Test(RunArgs),
+
     /// Update third-party tools
     #[command(name = "update:tools")]
     UpdateTools,
@@ -81,7 +84,7 @@ pub trait ShowExt {
 impl ShowExt for conc::Show {
     fn display_metadata(self) -> bool {
         match self {
-            Self::All | Self::Verbose => true,
+            Self::Output | Self::Verbose => true,
             Self::Failed | Self::Names => false,
         }
     }
@@ -92,13 +95,13 @@ fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
     PossibleValuesParser::new([
         PossibleValue::new("failed").help("only output of failed commands"),
         PossibleValue::new("names").help("command names and output of failed commands"),
-        PossibleValue::new("all").help("command names and output of all commands"),
+        PossibleValue::new("output").help("command names and output of all commands"),
         PossibleValue::new("verbose").help("command lines and output of all commands"),
     ])
     .map(|s| match s.to_ascii_lowercase().as_str() {
-        "all" => conc::Show::All,
         "failed" => conc::Show::Failed,
         "names" => conc::Show::Names,
+        "output" => conc::Show::Output,
         "verbose" => conc::Show::Verbose,
         _ => unreachable!("PossibleValuesParser prevents this"),
     })

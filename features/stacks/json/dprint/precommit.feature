@@ -29,7 +29,7 @@ Feature: precommit JSON with dprint
       { "key": "value" }
       """
     And I ran "git add main.json"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix JSON (dprint)
@@ -47,7 +47,7 @@ Feature: precommit JSON with dprint
       {  "key"  :  "other"  }
       """
     And I ran "git add main.json other.json"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix JSON (dprint)
@@ -68,7 +68,7 @@ Feature: precommit JSON with dprint
       { "key":
       """
     And I ran "git add main.json"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix JSON (dprint)

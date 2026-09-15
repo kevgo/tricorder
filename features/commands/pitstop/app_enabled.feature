@@ -24,7 +24,7 @@ Feature: "tricorder pitstop" skips disabled applications
         }
       }
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it does not print
       """
       Taplo
@@ -47,7 +47,7 @@ Feature: "tricorder pitstop" skips disabled applications
         }
       }
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it does not print
       """
       delete empty folders

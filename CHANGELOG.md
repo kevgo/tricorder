@@ -8,6 +8,7 @@
 - app: dprint for JSON, JSONC, and YML (when `dprint.json` is present)
 - custom stack tools now print `{operation} {stack} ({name})`, matching built-in tools
 - `fix-unsafe` now prints tools as `unsafe-fix <stack> (<name>)`
+- new `test` command runs the tasks defined in the config `tests` key in parallel
 
 ## 0.1.0
 

@@ -22,7 +22,7 @@ Feature: pitstop on a feature branch
       """
       #     Bar
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -56,7 +56,7 @@ Feature: pitstop on a feature branch
       missing header
       """
     And I ran "git checkout -b feature"
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders

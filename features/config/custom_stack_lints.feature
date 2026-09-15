@@ -26,7 +26,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Python (ruff)
@@ -57,7 +57,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Python (my lint)
@@ -86,7 +86,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it does not print any of these lines
       """
       lint Python (ruff)
@@ -108,7 +108,7 @@ Feature: stack-specific lints
         }
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it does not print any of these lines
       """
       my lint

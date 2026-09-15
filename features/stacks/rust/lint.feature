@@ -11,7 +11,7 @@ Feature: lint Rust
       """
 
   Scenario: no custom linters defined
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """
@@ -39,7 +39,7 @@ Feature: lint Rust
         }
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Rust (my custom linter)

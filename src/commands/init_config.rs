@@ -23,6 +23,12 @@ pub const DEFAULT_JSON: &str = r#"{
     { "command": "tools/fix_2.sh" }
   ],
 
+  // Define the functional tests.
+  "tests": [
+    { "command": "tools/test_1.sh", "name": "my test 1" },
+    { "command": "tools/test_2.sh", "name": "my test 2" },
+  ],
+
   // configure the supported software stacks
   "stacks": {
     "css": {},
@@ -241,6 +247,16 @@ mod tests {
                     },
                 ]),
                 ignore_files: Some(vec![S("vendor/"), S("**/*.min.css")]),
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("my test 1")),
+                        command: S("tools/test_1.sh"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("my test 2")),
+                        command: S("tools/test_2.sh"),
+                    },
+                ]),
                 applications: Some(ApplicationSection {
                     actionlint: Some(ApplicationNoFile {
                         enabled: Some(true),

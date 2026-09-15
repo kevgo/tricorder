@@ -22,7 +22,7 @@ Feature: "tricorder lint" skips disabled applications
         }
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it does not print
       """
       Taplo
