@@ -4,6 +4,7 @@ Feature: all command
     Given a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
+      dprint 0.57.4
       """
 
   Scenario: all categories run
