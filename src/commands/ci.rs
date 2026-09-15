@@ -1,20 +1,20 @@
 use super::pitstop::run_tasks;
-use crate::cli::input::RunArgs;
+use crate::cli::input::CiArgs;
 use crate::config::Config;
 use crate::domain::{Result, UserError};
 use crate::git::Repo;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn ci(args: RunArgs) -> Result<ExitCode> {
+pub fn ci(args: CiArgs) -> Result<ExitCode> {
     let repo = Repo::load();
     let before_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let stacks = stacks::discover_all(&ignores);
-    let args_show = args.with_default_show(conc::Show::Output);
-    let tests = super::test::determine_tests(&config);
+    let args_show = args.run.with_default_show(conc::Show::Output);
+    let tests = super::test::determine_tests(&config, &args.test)?;
     let exit_code = run_tasks(&args_show, &config, &stacks, repo.as_ref(), tests)?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
