@@ -1,4 +1,4 @@
-use super::pitstop::run_fix_then_lint;
+use super::pitstop::run_tasks;
 use crate::cli::input::RunArgs;
 use crate::config::Config;
 use crate::domain::{Result, UserError};
@@ -15,7 +15,7 @@ pub fn ci(args: RunArgs) -> Result<ExitCode> {
     let stacks = stacks::discover_all(&ignores);
     let args_show = args.with_default_show(conc::Show::Output);
     let tests = super::test::determine_tests(&config);
-    let exit_code = run_fix_then_lint(&args_show, &config, &stacks, repo.as_ref(), tests)?;
+    let exit_code = run_tasks(&args_show, &config, &stacks, repo.as_ref(), tests)?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }

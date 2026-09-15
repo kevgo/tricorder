@@ -19,13 +19,13 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_fix_then_lint(args, &config, &stacks, repo.as_ref(), Vec::new())
+    run_tasks(args, &config, &stacks, repo.as_ref(), Vec::new())
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
 ///
 /// `extra_runnables` run in parallel with the lints, the same way global lints do.
-pub(crate) fn run_fix_then_lint(
+pub(crate) fn run_tasks(
     args: &RunArgs,
     config: &Config,
     stacks: &DetectedStacks,
