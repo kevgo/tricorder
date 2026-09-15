@@ -76,7 +76,7 @@ Feature: precommit SQL
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
     And I ran "git add migration.<FILE EXTENSION>"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints to STDERR
       """
       1 other

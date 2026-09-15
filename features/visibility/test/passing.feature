@@ -11,8 +11,8 @@ Feature: test command with passing tests
       }
       """
 
-  Scenario: --show=all
-    When executing "tricorder test --show=all"
+  Scenario: --show=output
+    When executing "tricorder test --show=output"
     Then it prints to STDERR
       """
       running 2 tools

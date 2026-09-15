@@ -21,7 +21,7 @@ Feature: lint GitHub Actions workflow files
           steps:
             - uses: actions/checkout@v6
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints only these lines in any order
       """
       lint Git diff markers (git diff HEAD --check)
@@ -40,7 +40,7 @@ Feature: lint GitHub Actions workflow files
       """
       key: "
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints only these lines in any order
       """
       lint Git diff markers (git diff HEAD --check)

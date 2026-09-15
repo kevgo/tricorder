@@ -30,7 +30,7 @@ Feature: pitstop Dockerfile with dprint
       """
       FROM     debian
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix Dockerfile (dprint)

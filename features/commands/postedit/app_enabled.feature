@@ -22,7 +22,7 @@ Feature: "tricorder postedit" skips disabled applications
         }
       }
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it does not print
       """
       Taplo

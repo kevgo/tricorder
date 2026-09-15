@@ -31,7 +31,7 @@ Feature: pitstop YML with dprint
       """
       key:     other
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix YML (dprint)
@@ -51,7 +51,7 @@ Feature: pitstop YML with dprint
       """
       key: "
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix YML (dprint)

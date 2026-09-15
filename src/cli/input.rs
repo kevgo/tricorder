@@ -95,13 +95,13 @@ fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
     PossibleValuesParser::new([
         PossibleValue::new("failed").help("only output of failed commands"),
         PossibleValue::new("names").help("command names and output of failed commands"),
-        PossibleValue::new("all").help("command names and output of all commands"),
+        PossibleValue::new("output").help("command names and output of all commands"),
         PossibleValue::new("verbose").help("command lines and output of all commands"),
     ])
     .map(|s| match s.to_ascii_lowercase().as_str() {
-        "all" => conc::Show::All,
         "failed" => conc::Show::Failed,
         "names" => conc::Show::Names,
+        "output" => conc::Show::All,
         "verbose" => conc::Show::Verbose,
         _ => unreachable!("PossibleValuesParser prevents this"),
     })

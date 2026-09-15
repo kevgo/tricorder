@@ -28,7 +28,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix Python (ruff)
@@ -59,7 +59,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix Python (my fix)
@@ -88,7 +88,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it does not print any of these lines
       """
       fix Python (ruff)
@@ -110,7 +110,7 @@ Feature: stack-specific fixes
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it does not print any of these lines
       """
       my fix

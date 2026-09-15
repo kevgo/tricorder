@@ -24,7 +24,7 @@ Feature: unsafe-fix Python
       """
 
   Scenario: fix-unsafe
-    When executing "tricorder fix-unsafe --show=all"
+    When executing "tricorder fix-unsafe --show=output"
     Then it prints the lines
       """
       unsafe-fix Python (ruff)
@@ -47,7 +47,7 @@ Feature: unsafe-fix Python
       """
 
   Scenario: fix
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       delete empty folders

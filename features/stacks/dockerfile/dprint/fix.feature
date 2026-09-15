@@ -27,7 +27,7 @@ Feature: fix Dockerfile with dprint
       """
       FROM alpine
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix Dockerfile (dprint)
@@ -44,7 +44,7 @@ Feature: fix Dockerfile with dprint
       """
       FROM     debian
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix Dockerfile (dprint)

@@ -16,7 +16,7 @@ Feature: fix TOML
       """
       key =     "other"
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)
@@ -38,7 +38,7 @@ Feature: fix TOML
       key = 1
       key = 2
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)

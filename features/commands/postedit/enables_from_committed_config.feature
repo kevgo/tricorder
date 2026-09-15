@@ -35,7 +35,7 @@ Feature: "tricorder postedit" enables linters whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it prints the lines
       """
       lint Markdown (tikibase)

@@ -13,7 +13,7 @@ Feature: pitstop Dockerfile with hadolint
       FROM alpine:3.20
       USER 65534
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       lint Dockerfile (hadolint)
@@ -27,7 +27,7 @@ Feature: pitstop Dockerfile with hadolint
       FROM alpine:3.20
       WORKDIR tmp
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       lint Dockerfile (hadolint)

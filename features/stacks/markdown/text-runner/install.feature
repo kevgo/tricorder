@@ -24,7 +24,7 @@ Feature: install Text-Runner
         "online": false
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/nodejs/node/releases/latest) ... ok

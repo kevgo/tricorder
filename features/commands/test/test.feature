@@ -18,7 +18,7 @@ Feature: custom tests
       #!/usr/bin/env bash
       echo "custom test is running"
       """
-    When executing "tricorder test --show=all"
+    When executing "tricorder test --show=output"
     Then it prints the block
       """
       tests/one.sh
@@ -46,7 +46,7 @@ Feature: custom tests
       echo "custom test failed"
       exit 4
       """
-    When executing "tricorder test --show=all"
+    When executing "tricorder test --show=output"
     Then it prints the block
       """
       tests/fail.sh
@@ -63,7 +63,7 @@ Feature: custom tests
         ]
       }
       """
-    When executing "tricorder test --show=all"
+    When executing "tricorder test --show=output"
     Then it prints the block
       """
       echo unnamed
@@ -72,7 +72,7 @@ Feature: custom tests
     And the exit code is 0
 
   Scenario: missing tests succeeds
-    When executing "tricorder test --show=all"
+    When executing "tricorder test --show=output"
     Then it prints to STDERR
       """
       running 0 tools

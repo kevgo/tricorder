@@ -25,7 +25,7 @@ Feature: custom fixes
         ]
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       delete empty folders
@@ -52,7 +52,7 @@ Feature: custom fixes
       echo "custom lint failed"
       exit 4
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lints/fail.sh

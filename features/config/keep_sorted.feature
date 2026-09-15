@@ -26,7 +26,7 @@ Feature: keep-sorted support
       """
 
   Scenario: keep-sorted is disabled by default
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it does not print
       """
       keep-sorted
@@ -45,7 +45,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)
@@ -78,7 +78,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       keep-sorted
@@ -104,7 +104,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       keep-sorted

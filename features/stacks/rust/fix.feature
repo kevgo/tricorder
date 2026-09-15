@@ -13,7 +13,7 @@ Feature: fix Rust
       """
 
   Scenario: no custom fixes defined
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints
       """
       delete empty folders
@@ -44,7 +44,7 @@ Feature: fix Rust
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       delete empty folders

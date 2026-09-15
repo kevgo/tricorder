@@ -13,7 +13,7 @@ Feature: pitstop JSON
       """
       {"key":"value"}
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the lines
       """
       fix JSON (Prettier)
@@ -32,7 +32,7 @@ Feature: pitstop JSON
       "key":"value"
       }
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix JSON (Prettier)

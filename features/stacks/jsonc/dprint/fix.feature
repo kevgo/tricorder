@@ -27,7 +27,7 @@ Feature: fix JSONC with dprint
       """
       { "key": "value" } // comment
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)
@@ -44,7 +44,7 @@ Feature: fix JSONC with dprint
       """
       {  "key"  :  "other"  } // comment
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix JSONC (dprint)
@@ -64,7 +64,7 @@ Feature: fix JSONC with dprint
       """
       { "key":
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)

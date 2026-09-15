@@ -11,8 +11,8 @@ and formatters concurrently for the fastest results.
 
 ## Demo
 
-Running `tricorder lint --show=all` on the Tricorder codebase finishes in about
-500 ms and prints:
+Running `tricorder lint --show=output` on the Tricorder codebase finishes in
+about 500 ms and prints:
 
 ```sh
 114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other

@@ -17,7 +17,7 @@ Feature: install Gherkin Lint
       """
       {}
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Cucumber (gherkin-lint)

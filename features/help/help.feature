@@ -115,7 +115,7 @@ Feature: Displaying help
                 Possible values:
                 - failed:  only output of failed commands
                 - names:   command names and output of failed commands
-                - all:     command names and output of all commands
+                - output:  command names and output of all commands
                 - verbose: command lines and output of all commands
 
         -h, --help
