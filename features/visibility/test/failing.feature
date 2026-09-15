@@ -17,8 +17,8 @@ Feature: test command with a failing test
       exit 4
       """
 
-  Scenario: --show=all
-    When executing "tricorder test --show=all"
+  Scenario: --show=output
+    When executing "tricorder test --show=output"
     Then it prints to STDERR
       """
       running 2 tools

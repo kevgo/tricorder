@@ -14,7 +14,7 @@ Feature: unsafe-fix TOML
       """
 
   Scenario: fix-unsafe
-    When executing "tricorder fix-unsafe --show=all"
+    When executing "tricorder fix-unsafe --show=output"
     Then it prints the lines
       """
       unsafe-fix TOML (Taplo)
@@ -28,7 +28,7 @@ Feature: unsafe-fix TOML
       """
 
   Scenario: fix
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)

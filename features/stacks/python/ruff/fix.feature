@@ -16,7 +16,7 @@ Feature: fix Python
       """
       print("Hello, other!")
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints
       """
       delete empty folders
@@ -38,7 +38,7 @@ Feature: fix Python
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints
       """
       delete empty folders
@@ -66,7 +66,7 @@ Feature: fix Python
       """
       print("
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints
       """
       delete empty folders

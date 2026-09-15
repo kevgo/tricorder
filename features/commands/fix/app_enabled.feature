@@ -24,7 +24,7 @@ Feature: "tricorder fix" skips disabled applications
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       delete empty folders
@@ -47,7 +47,7 @@ Feature: "tricorder fix" skips disabled applications
         }
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it does not print
       """
       delete empty folders

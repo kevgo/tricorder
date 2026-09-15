@@ -12,7 +12,7 @@ Feature: fix TypeScript
       """
       console.log("hello");
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       TypeScript (Biome)
@@ -29,7 +29,7 @@ Feature: fix TypeScript
       """
       console.log(  "other"  );
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)
@@ -49,7 +49,7 @@ Feature: fix TypeScript
       """
       console.log("
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)

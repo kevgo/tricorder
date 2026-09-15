@@ -30,7 +30,7 @@ Feature: lint a Tikibase
 
       also check out [One](one.md)
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Markdown (tikibase)
@@ -50,7 +50,7 @@ Feature: lint a Tikibase
       """
       # Two
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Markdown (tikibase)
@@ -65,7 +65,7 @@ Feature: lint a Tikibase
       """
       text
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Markdown (tikibase)

@@ -37,7 +37,7 @@ Feature: disable an application's lint operation
       """
 
   Scenario: lint skips the application
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       lint Markdown (rumdl)

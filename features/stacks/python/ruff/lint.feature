@@ -16,7 +16,7 @@ Feature: lint Python
       """
       print("Hello, other!")
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints
       """
       lint Python (ruff)
@@ -35,7 +35,7 @@ Feature: lint Python
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then the exit code is 0
     And file "main.py" is unchanged
     And file "other.py" is unchanged
@@ -49,7 +49,7 @@ Feature: lint Python
       """
       print("
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then the exit code is 1
     And file "main.py" is unchanged
     And file "other.py" is unchanged

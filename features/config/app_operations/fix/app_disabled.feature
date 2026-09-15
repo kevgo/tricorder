@@ -37,7 +37,7 @@ Feature: disable an application's fix operation
       """
 
   Scenario: fix skips the application
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix Markdown (rumdl)

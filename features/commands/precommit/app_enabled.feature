@@ -26,7 +26,7 @@ Feature: "tricorder precommit" skips disabled applications
       }
       """
     And I ran "git add config.toml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it does not print
       """
       Taplo
@@ -50,7 +50,7 @@ Feature: "tricorder precommit" skips disabled applications
       }
       """
     And I ran "git add config.toml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it does not print
       """
       delete empty folders

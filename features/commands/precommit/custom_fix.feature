@@ -44,7 +44,7 @@ Feature: stack-scoped custom fixes
       print("world")
       """
     And I ran "git add main.py"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix Python (my python fix)
@@ -58,7 +58,7 @@ Feature: stack-scoped custom fixes
       # New one
       """
     And I ran "git add one.md"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it does not print
       """
       my python fix

@@ -37,7 +37,7 @@ Feature: lint documentation with Text-Runner
         action.log("Hello world!")
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Markdown (rumdl)
@@ -60,7 +60,7 @@ Feature: lint documentation with Text-Runner
         throw new Error("Boom!");
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       test Markdown (Text-Runner)
@@ -74,7 +74,7 @@ Feature: lint documentation with Text-Runner
       """
       <a type="missing"></a>
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       test Markdown (Text-Runner)

@@ -25,7 +25,7 @@ Feature: install dprint for JSON
       """
       {  "key"  :  "value"  }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/dprint/dprint/releases/latest) ... ok

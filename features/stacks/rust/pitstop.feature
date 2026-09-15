@@ -13,7 +13,7 @@ Feature: pitstop Rust
       """
 
   Scenario: no custom tools defined
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders
@@ -52,7 +52,7 @@ Feature: pitstop Rust
         }
       }
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints the block
       """
       fix Rust (my custom fix)

@@ -13,7 +13,7 @@ Feature: precommit Rust
     And I ran "git add main.rs"
 
   Scenario: no custom fixes defined
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints
       """
       delete empty folders
@@ -43,7 +43,7 @@ Feature: precommit Rust
         }
       }
       """
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix Rust (my custom fix)

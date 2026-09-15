@@ -10,7 +10,7 @@ Feature: "tricorder postedit" lints all files outside a Git repository
       """
       text
       """
-    When executing "tricorder postedit --show=all"
+    When executing "tricorder postedit --show=output"
     Then it prints to STDERR
       """
       1 Markdown, 1 other

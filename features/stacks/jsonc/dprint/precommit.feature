@@ -29,7 +29,7 @@ Feature: precommit JSONC with dprint
       { "key": "value" } // comment
       """
     And I ran "git add main.jsonc"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)
@@ -47,7 +47,7 @@ Feature: precommit JSONC with dprint
       {  "key"  :  "other"  } // comment
       """
     And I ran "git add main.jsonc other.jsonc"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix JSONC (dprint)
@@ -68,7 +68,7 @@ Feature: precommit JSONC with dprint
       { "key":
       """
     And I ran "git add main.jsonc"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)

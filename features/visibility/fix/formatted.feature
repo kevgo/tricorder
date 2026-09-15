@@ -22,8 +22,8 @@ Feature: fix multiple good stacks
       console.log("hello");
       """
 
-  Scenario: --show=all
-    When executing "tricorder fix --show=all"
+  Scenario: --show=output
+    When executing "tricorder fix --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other

@@ -13,7 +13,7 @@ Feature: lint Dockerfile
       FROM alpine:3.20
       USER 65534
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Dockerfile (hadolint)
@@ -32,7 +32,7 @@ Feature: lint Dockerfile
       FROM alpine:3.20
       WORKDIR other
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Dockerfile (hadolint)

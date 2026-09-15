@@ -8,7 +8,7 @@ Feature: install all CSS tools
         color:    red;
       }
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok

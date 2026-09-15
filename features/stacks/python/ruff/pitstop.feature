@@ -12,7 +12,7 @@ Feature: pitstop Python
       """
       print   ("Hello, world!")
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders
@@ -35,7 +35,7 @@ Feature: pitstop Python
       def greet():
         a   =   1
       """
-    When executing "tricorder pitstop --show=all"
+    When executing "tricorder pitstop --show=output"
     Then it prints
       """
       delete empty folders

@@ -19,7 +19,7 @@ Feature: config file format
         ],
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       hello
@@ -36,7 +36,7 @@ Feature: config file format
         ]
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       from jsonc
@@ -61,7 +61,7 @@ Feature: config file format
         ]
       }
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the block
       """
       from json

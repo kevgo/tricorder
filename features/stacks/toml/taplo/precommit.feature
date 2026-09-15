@@ -14,7 +14,7 @@ Feature: precommit TOML
       key = "value"
       """
     And I ran "git add main.toml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix TOML (Taplo)
@@ -32,7 +32,7 @@ Feature: precommit TOML
       key =     "other"
       """
     And I ran "git add main.toml other.toml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)
@@ -53,7 +53,7 @@ Feature: precommit TOML
       key = "
       """
     And I ran "git add main.toml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)

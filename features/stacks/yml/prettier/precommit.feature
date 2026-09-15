@@ -15,7 +15,7 @@ Feature: precommit YML
       key: value
       """
     And I ran "git add main.yml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix YML (Prettier)
@@ -33,7 +33,7 @@ Feature: precommit YML
       key:     other
       """
     And I ran "git add main.yml other.yml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)
@@ -54,7 +54,7 @@ Feature: precommit YML
       key: "
       """
     And I ran "git add main.yml"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)

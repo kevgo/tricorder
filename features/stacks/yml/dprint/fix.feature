@@ -27,7 +27,7 @@ Feature: fix YML with dprint
       """
       key: value
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix YML (dprint)
@@ -44,7 +44,7 @@ Feature: fix YML with dprint
       """
       key:     other
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the lines
       """
       fix YML (dprint)
@@ -64,7 +64,7 @@ Feature: fix YML with dprint
       """
       key: "
       """
-    When executing "tricorder fix --show=all"
+    When executing "tricorder fix --show=output"
     Then it prints the block
       """
       fix YML (dprint)

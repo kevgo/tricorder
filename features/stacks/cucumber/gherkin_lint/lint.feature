@@ -60,7 +60,7 @@ Feature: lint Cucumber
         Scenario: one
           Given a step
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints
       """
       lint Cucumber (gherkin-lint)
@@ -76,7 +76,7 @@ Feature: lint Cucumber
         Scenario: one
                   Given a step
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Cucumber (gherkin-lint)
@@ -90,7 +90,7 @@ Feature: lint Cucumber
       """
       Feat
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints the lines
       """
       lint Cucumber (gherkin-lint)

@@ -18,7 +18,7 @@ Feature: GitHub Actions workflow files not in a Git repository
           steps:
             - uses: actions/checkout@v6
       """
-    When executing "tricorder lint --show=all"
+    When executing "tricorder lint --show=output"
     Then it prints
       """
       GitHub Actions (actionlint)

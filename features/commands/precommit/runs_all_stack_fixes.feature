@@ -32,7 +32,7 @@ Feature: "tricorder precommit" runs all fixes for the changed files
       text
       """
     And I ran "git add one.md"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix Markdown (tikibase)

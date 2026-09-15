@@ -29,7 +29,7 @@ Feature: precommit Dockerfile with dprint
       FROM alpine
       """
     And I ran "git add Dockerfile"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the block
       """
       fix Dockerfile (dprint)
@@ -47,7 +47,7 @@ Feature: precommit Dockerfile with dprint
       FROM     debian
       """
     And I ran "git add Dockerfile subdir/Dockerfile"
-    When executing "tricorder precommit --show=all"
+    When executing "tricorder precommit --show=output"
     Then it prints the lines
       """
       fix Dockerfile (dprint)
