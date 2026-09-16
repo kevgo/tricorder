@@ -24,13 +24,13 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&all_stacks);
     }
 
-    // step 3: discover all runnables
+    // step 3: discover the lints to run
     let lints = determine_lints(&config, &all_stacks, repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", lints.len());
     }
 
-    // step 4: run all lints
+    // step 4: run the lints
     if lints.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }

@@ -23,15 +23,15 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&all_stacks);
     }
 
-    // step 3: discover all runnables
-    let runnables = determine_fixes(&config, &all_stacks)?;
+    // step 3: discover the fixes to run
+    let fixes = determine_fixes(&config, &all_stacks)?;
     if show.display_metadata() {
-        eprintln!("running {} tools", runnables.len());
+        eprintln!("running {} tools", fixes.len());
     }
     let Runnables {
         global,
         stack_specific,
-    } = runnables;
+    } = fixes;
 
     // step 4: run the global fixes
     let exit_code = conc::run(conc::RunArgs {

@@ -32,24 +32,24 @@ fn run(args: &RunArgs) -> Result<()> {
     if staged.is_empty() {
         return Ok(());
     }
-    let staged_stacks = stacks::from_staged(&staged, &ignores);
+    let stacks = stacks::from_staged(&staged, &ignores);
     if show.display_metadata() {
-        print_metadata(&staged_stacks);
+        print_metadata(&stacks);
     }
 
     // step 3: fingerprint the staged files before running the fixes
     let staged_files = staged.all();
     let before = fingerprint::scan_files(&staged_files);
 
-    // step 4: discover all runnables
-    let runnables = determine_precommit_fixes(&config, &staged_stacks)?;
+    // step 4: discover the fixes to run
+    let fixes = determine_precommit_fixes(&config, &stacks)?;
     if show.display_metadata() {
-        eprintln!("running {} tools", runnables.len());
+        eprintln!("running {} tools", fixes.len());
     }
     let Runnables {
         global,
         stack_specific,
-    } = runnables;
+    } = fixes;
 
     // step 5: run the global fixes
     let _exit_code = conc::run(conc::RunArgs {
