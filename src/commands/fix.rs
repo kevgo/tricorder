@@ -23,7 +23,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&all_stacks);
     }
 
-    // step 3: discover all runnables
+    // step 3: discover all fixes to run
     let fixes = determine_fixes(&config, &all_stacks)?;
     if show.display_metadata() {
         eprintln!("running {} tools", fixes.len());

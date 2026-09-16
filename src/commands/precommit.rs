@@ -41,7 +41,7 @@ fn run(args: &RunArgs) -> Result<()> {
     let staged_files = staged.all();
     let before = fingerprint::scan_files(&staged_files);
 
-    // step 4: discover all runnables
+    // step 4: discover all fixes to run
     let fixes = determine_precommit_fixes(&config, &stacks)?;
     if show.display_metadata() {
         eprintln!("running {} tools", fixes.len());

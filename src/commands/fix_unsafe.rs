@@ -20,7 +20,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 3: discover the unsafe fixes
+    // step 3: discover the unsafe fixes to run
     let unsafe_fixes = determine_unsafe_fixes(&stacks, &config)?;
     if show.display_metadata() {
         eprintln!("running {} tools", unsafe_fixes.len());
