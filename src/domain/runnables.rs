@@ -20,6 +20,22 @@ impl Runnables {
         }
         result
     }
+
+    /// provides a new Runnables object that is the combination of the two given Runnables
+    pub fn combine(self, other: Runnables) -> Runnables {
+        let Runnables {
+            global: self_global,
+            stack_specific: self_stack_specific,
+        } = self;
+        let Runnables {
+            global: other_global,
+            stack_specific: other_stack_specific,
+        } = other;
+        Runnables {
+            global: self_global.combine(other_global),
+            stack_specific: self_stack_specific.combine(other_stack_specific),
+        }
+    }
 }
 
 #[cfg(test)]
