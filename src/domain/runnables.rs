@@ -9,6 +9,11 @@ pub struct Runnables {
 
 impl Runnables {
     #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.global.is_empty() && self.stack_specific.is_empty()
+    }
+
+    #[must_use]
     pub fn len(&self) -> usize {
         let mut result = self.global.len();
         for x in &self.stack_specific {
