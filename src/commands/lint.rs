@@ -24,17 +24,17 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     }
 
     // step 3: discover all runnables
-    let runnables = determine_lints(&config, &all_stacks, repo.as_ref())?;
+    let lints = determine_lints(&config, &all_stacks, repo.as_ref())?;
     if show.display_metadata() {
-        eprintln!("running {} tools", runnables.len());
+        eprintln!("running {} tools", lints.len());
     }
 
     // step 4: run all lints
-    if runnables.is_empty() {
+    if lints.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables,
+        runnables: lints,
         error_on_output,
         show,
         stderr_to_stdout,
