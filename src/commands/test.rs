@@ -7,15 +7,15 @@ use std::process::ExitCode;
 pub fn test(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.show.unwrap_or(conc::Show::Names);
-    let runnables = determine_tests(&config, &[])?;
+    let tests = determine_tests(&config, &[])?;
     if show.display_metadata() {
-        eprintln!("running {} tools", runnables.len());
+        eprintln!("running {} tools", tests.len());
     }
-    if runnables.is_empty() {
+    if tests.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables,
+        runnables: tests,
         error_on_output: false,
         show,
         stderr_to_stdout: true,

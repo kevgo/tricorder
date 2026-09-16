@@ -41,17 +41,17 @@ pub(crate) fn run_tasks(
     }
 
     // step 1: discover the runnables
-    let fix_runnables = fix::determine_fixes(config, stacks)?;
+    let fixes = fix::determine_fixes(config, stacks)?;
     let mut lints = lint::determine_lints(config, stacks, repo)?;
     lints.extend(tests);
-    let runnable_count = fix_runnables.len() + lints.len();
+    let tool_count = fixes.len() + lints.len();
     if show.display_metadata() {
-        eprintln!("running {runnable_count} tools");
+        eprintln!("running {tool_count} tools");
     }
     let Runnables {
         global: global_fixes,
         stack_specific: stack_specific_fixes,
-    } = fix_runnables;
+    } = fixes;
 
     // step 2: run the global fixes
     let exit_code = conc::run(conc::RunArgs {
