@@ -9,6 +9,7 @@ pub struct Runnables {
 
 impl Runnables {
     #[must_use]
+    #[allow(clippy::len_without_is_empty)] // Runnables are never empty
     pub fn len(&self) -> usize {
         let mut result = self.global.len();
         for x in &self.stack_specific {
