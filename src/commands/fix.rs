@@ -142,7 +142,7 @@ pub struct Runnables {
     pub global: conc::Runnable,
 
     /// fixes that affect stack-specific files
-    pub stack_specific: Vec<conc::Runnable>,
+    pub stack_specific: AHashMap<StackType, conc::Runnable>,
 }
 
 impl Runnables {

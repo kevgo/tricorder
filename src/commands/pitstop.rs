@@ -3,9 +3,11 @@ use crate::cli::output::print_metadata;
 use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
+use crate::domain::StackType;
 use crate::domain::{DetectedStacks, Result};
 use crate::git::Repo;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -49,7 +51,7 @@ pub(crate) fn run_fix_then_lint(
         stack_specific: stack_specific_fixes,
     } = fixes;
 
-    // step 2: run the global fixes
+    // step 2: run the global fixes by themselves first
     let exit_code = conc::run(conc::RunArgs {
         runnables: vec![global_fixes],
         error_on_output,
@@ -60,7 +62,14 @@ pub(crate) fn run_fix_then_lint(
         return Ok(exit_code);
     }
 
-    // step 3: run the stack-specific fixes
+    // step 3: run concurrent sequences of stack-specific fixes and lints
+    let runnables: AHashMap<StackType, conc::Runnable> = AHashMap::new();
+    for fix in stack_specific_fixes {
+        runnables.insert(stack_type, stack_specific_fix);
+    }
+    for (stack_type, lint) in lints {
+        runnables.insert(stack_type, lint);
+    }
     let exit_code = conc::run(conc::RunArgs {
         runnables: stack_specific_fixes,
         error_on_output,
