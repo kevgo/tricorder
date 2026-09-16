@@ -26,7 +26,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
         eprintln!("running {} tools", unsafe_fixes.len());
     }
 
-    // step 4: run the unsafe fixes
+    // step 4: run the fixes
     let exit_code = conc::run(conc::RunArgs {
         runnables: unsafe_fixes,
         error_on_output,

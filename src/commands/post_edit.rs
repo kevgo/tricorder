@@ -26,7 +26,7 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 3: discover all lints to run
+    // step 3: discover the lints to run
     let lints = lint::determine_lints(&config, &stacks, git_repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", lints.len());

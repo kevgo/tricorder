@@ -29,7 +29,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         eprintln!("running {} tools", lints.len());
     }
 
-    // step 4: run all lints
+    // step 4: run the lints
     if lints.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
