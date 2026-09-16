@@ -4,7 +4,7 @@ use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Application, Config, Operation, ToolDefinition};
-use crate::domain::{DetectedStacks, Result, StackType};
+use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
@@ -134,25 +134,6 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         global: conc::Runnable::Sequence(global),
         stack_specific,
     })
-}
-
-#[derive(Debug)]
-pub struct Runnables {
-    /// fixes that affect all files
-    pub global: conc::Runnable,
-
-    /// fixes that affect stack-specific files
-    pub stack_specific: Vec<conc::Runnable>,
-}
-
-impl Runnables {
-    pub fn len(&self) -> usize {
-        let mut result = self.global.len();
-        for x in &self.stack_specific {
-            result += x.len();
-        }
-        result
-    }
 }
 
 /// adds the custom fixes defined in the config file to the global fix collection
