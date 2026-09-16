@@ -11,8 +11,11 @@ pub struct Runnables {
 }
 
 impl Runnables {
+    pub fn is_empty(&self) -> bool {
+        self.global.is_empty() && self.stack_specific.is_empty()
+    }
+
     #[must_use]
-    #[allow(clippy::len_without_is_empty)] // Runnables are never empty because they always have at least the global fixes
     pub fn len(&self) -> usize {
         let mut result = self.global.len();
         for (_, runnable) in &self.stack_specific {
