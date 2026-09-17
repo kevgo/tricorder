@@ -51,16 +51,18 @@ fn run(args: &RunArgs) -> Result<()> {
     } = fixes;
 
     // step 5: run the global fixes
-    let _exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global],
-        error_on_output,
-        stderr_to_stdout,
-        show,
-    });
+    if let Some(global) = global {
+        let _exit_code = conc::run(conc::RunArgs {
+            sequences: vec![global],
+            error_on_output,
+            stderr_to_stdout,
+            show,
+        });
+    }
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        runnables: stack_runnables(stack_specific),
+        sequences: stack_runnables(stack_specific),
         error_on_output,
         show,
         stderr_to_stdout,

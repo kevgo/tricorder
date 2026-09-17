@@ -33,7 +33,7 @@ pub(crate) fn run_tasks(
     config: &Config,
     stacks: &DetectedStacks,
     repo: Option<&Repo>,
-    tests: Vec<conc::Runnable>,
+    tests: Vec<conc::Sequence>,
 ) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
@@ -61,14 +61,16 @@ pub(crate) fn run_tasks(
     } = lints;
 
     // step 2: run the global fixes
-    let exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global_fixes],
-        error_on_output,
-        stderr_to_stdout,
-        show,
-    });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
+    if let Some(global_fixes) = global_fixes {
+        let exit_code = conc::run(conc::RunArgs {
+            sequences: vec![global_fixes],
+            error_on_output,
+            stderr_to_stdout,
+            show,
+        });
+        if exit_code != ExitCode::SUCCESS {
+            return Ok(exit_code);
+        }
     }
 
     // step 3: run stack-specific fix+lint sequences concurrently with global lints and tests
@@ -76,7 +78,7 @@ pub(crate) fn run_tasks(
     runnables.extend(global_lints.into_iter().map(conc::Runnable::Single));
     runnables.extend(tests);
     let exit_code = conc::run(conc::RunArgs {
-        runnables,
+        sequences: stack_specific_fixes,
         error_on_output,
         show,
         stderr_to_stdout,

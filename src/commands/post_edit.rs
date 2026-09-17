@@ -37,7 +37,7 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables: lints.into_runnables(),
+        sequences: lints.into_runnables(),
         error_on_output,
         show,
         stderr_to_stdout,

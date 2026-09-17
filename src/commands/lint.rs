@@ -35,7 +35,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables: lints.into_runnables(),
+        sequences: lints.into_runnables(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -91,7 +91,7 @@ pub fn determine_lints(
     // determine the runnables for the custom lints
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
-            global.push(conc::Executable {
+            result.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
             });
