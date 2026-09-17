@@ -4,7 +4,7 @@ use crate::apps::keep_sorted;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Application, Config, Operation, ToolDefinition};
-use crate::domain::{DetectedStacks, Result, StackType};
+use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
