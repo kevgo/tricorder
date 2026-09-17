@@ -28,15 +28,15 @@ impl Lint for Checkstyle {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Option<conc::Runnable>> {
+    ) -> Result<Option<conc::Sequence>> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",
             );
             return Ok(None);
         }
-        Ok(Some(conc::Runnable::Single(conc::shell_executable(
-            format!("{BINARY} {CONFIG_ARG} ."),
-        ))))
+        Ok(Some(conc::Sequence::one(conc::shell_executable(format!(
+            "{BINARY} {CONFIG_ARG} ."
+        )))))
     }
 }
