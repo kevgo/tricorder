@@ -27,7 +27,7 @@ impl Lint for Taplo {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>> {
+    ) -> Result<Option<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
@@ -42,7 +42,7 @@ impl Lint for Taplo {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.map(conc::Sequence::one))
     }
 }
 

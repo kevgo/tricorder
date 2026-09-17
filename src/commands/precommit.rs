@@ -51,16 +51,18 @@ fn run(args: &RunArgs) -> Result<()> {
     } = fixes;
 
     // step 5: run the global fixes
-    let _exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global],
-        error_on_output,
-        stderr_to_stdout,
-        show,
-    });
+    if let Some(global) = global {
+        let _exit_code = conc::run(conc::RunArgs {
+            sequences: vec![global],
+            error_on_output,
+            stderr_to_stdout,
+            show,
+        });
+    }
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        sequences: stack_specific,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -149,13 +151,20 @@ pub fn determine_precommit_fixes(
 
     // step 6: convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    for (_stack_type, mut stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
+            let first = stack_executables.remove(0);
+            stack_specific.push(conc::Sequence::many(first, stack_executables));
         }
     }
+    let global = if global.is_empty() {
+        None
+    } else {
+        let first = global.remove(0);
+        Some(conc::Sequence::many(first, global))
+    };
     Ok(Runnables {
-        global: conc::Runnable::Sequence(global),
+        global,
         stack_specific,
     })
 }

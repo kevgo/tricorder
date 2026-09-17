@@ -4,7 +4,7 @@ use ahash::AHashMap;
 #[derive(Debug)]
 pub struct Runnables {
     /// fixes that affect all files
-    pub global: conc::Runnable,
+    pub global: Option<conc::Sequence>,
 
     /// fixes that affect stack-specific files
     pub stack_specific: AHashMap<StackType, conc::Runnable>,
@@ -88,18 +88,12 @@ mod tests {
 
         #[test]
         fn stack_specific() {
-            let give = Runnables {
-                global: conc::Runnable::Sequence(vec![]),
-                stack_specific: AHashMap::from([
-                    (
-                        StackType::Rust,
-                        conc::Runnable::Sequence(vec![executable()]),
-                    ),
-                    (
-                        StackType::Markdown,
-                        conc::Runnable::Sequence(vec![executable(), executable()]),
-                    ),
-                ]),
+            let runnables = Runnables {
+                global: None,
+                stack_specific: vec![
+                    conc::Sequence::one(executable()),
+                    conc::Sequence::many(executable(), vec![executable()]),
+                ],
             };
             let have = give.len();
             let want = 3;
@@ -108,12 +102,9 @@ mod tests {
 
         #[test]
         fn all_fields_set() {
-            let give = Runnables {
-                global: conc::Runnable::Sequence(vec![executable(), executable()]),
-                stack_specific: AHashMap::from([(
-                    StackType::Rust,
-                    conc::Runnable::Sequence(vec![executable()]),
-                )]),
+            let runnables = Runnables {
+                global: Some(conc::Sequence::many(executable(), vec![executable()])),
+                stack_specific: vec![conc::Sequence::one(executable())],
             };
             let have = give.len();
             let want = 3;

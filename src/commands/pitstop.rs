@@ -50,14 +50,16 @@ pub(crate) fn run_fix_then_lint(
     } = fixes;
 
     // step 2: run the global fixes by themselves first
-    let exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global_fixes],
-        error_on_output,
-        stderr_to_stdout,
-        show,
-    });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
+    if let Some(global_fixes) = global_fixes {
+        let exit_code = conc::run(conc::RunArgs {
+            sequences: vec![global_fixes],
+            error_on_output,
+            stderr_to_stdout,
+            show,
+        });
+        if exit_code != ExitCode::SUCCESS {
+            return Ok(exit_code);
+        }
     }
 
     // step 3: run concurrent sequences of stack-specific fixes and lints
@@ -69,7 +71,7 @@ pub(crate) fn run_fix_then_lint(
         runnables.insert(stack_type, lint);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific_fixes,
+        sequences: stack_specific_fixes,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -80,7 +82,7 @@ pub(crate) fn run_fix_then_lint(
 
     // step 4: run the lints
     let exit_code = conc::run(conc::RunArgs {
-        runnables: lints,
+        sequences: lints,
         error_on_output,
         show,
         stderr_to_stdout,

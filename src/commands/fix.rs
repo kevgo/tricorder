@@ -34,19 +34,21 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     } = fixes;
 
     // step 4: run the global fixes
-    let exit_code = conc::run(conc::RunArgs {
-        runnables: vec![global],
-        error_on_output,
-        stderr_to_stdout,
-        show,
-    });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
+    if let Some(global) = global {
+        let exit_code = conc::run(conc::RunArgs {
+            sequences: vec![global],
+            error_on_output,
+            stderr_to_stdout,
+            show,
+        });
+        if exit_code != ExitCode::SUCCESS {
+            return Ok(exit_code);
+        }
     }
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: stack_specific,
+        sequences: stack_specific,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -125,13 +127,20 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
 
     // convert to runnables and return
     let mut stack_specific = Vec::new();
-    for (stack_type, stack_executables) in stacks_executables {
+    for (stack_type, mut stack_executables) in stacks_executables {
         if !stack_executables.is_empty() {
-            stack_specific.push(conc::Runnable::Sequence(stack_executables));
+            let first = stack_executables.remove(0);
+            stack_specific.push(conc::Sequence::many(first, stack_executables));
         }
     }
+    let global = if global.is_empty() {
+        None
+    } else {
+        let first = global.remove(0);
+        Some(conc::Sequence::many(first, global))
+    };
     Ok(Runnables {
-        global: conc::Runnable::Sequence(global),
+        global,
         stack_specific,
     })
 }
