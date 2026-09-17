@@ -1,9 +1,8 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::commands::fix::Runnables;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, Result};
+use crate::domain::{DetectedStacks, Result, Runnables};
 use crate::git::Repo;
 use crate::stacks;
 use std::process::ExitCode;
