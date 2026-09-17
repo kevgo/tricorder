@@ -57,6 +57,7 @@ pub enum Command {
     UpdateTools,
 }
 
+// TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
 #[derive(clap::Args)]
 pub struct CiArgs {
     #[command(flatten)]
