@@ -55,10 +55,9 @@ pub fn determine_unsafe_fixes(
     }
     let mut result = Vec::new();
     for (_stack_type, mut stack_executables) in stacks_executables {
-        if !stack_executables.is_empty()
-            && let executable = stack_executables.remove(0)
-        {
-            result.push(conc::Sequence::many(executable, stack_executables));
+        if !stack_executables.is_empty() {
+            let first = stack_executables.remove(0);
+            result.push(conc::Sequence::many(first, stack_executables));
         }
     }
     Ok(result)

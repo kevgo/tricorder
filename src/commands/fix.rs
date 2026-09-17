@@ -128,9 +128,8 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     // convert to runnables and return
     let mut stack_specific = Vec::new();
     for (_stack_type, mut stack_executables) in stacks_executables {
-        if !stack_executables.is_empty()
-            && let first = stack_executables.remove(0)
-        {
+        if !stack_executables.is_empty() {
+            let first = stack_executables.remove(0);
             stack_specific.push(conc::Sequence::many(first, stack_executables));
         }
     }
