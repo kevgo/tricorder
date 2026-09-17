@@ -7,37 +7,21 @@ pub struct Runnables {
     pub global: Option<conc::Sequence>,
 
     /// fixes that affect stack-specific files
-    pub stack_specific: AHashMap<StackType, conc::Runnable>,
+    pub stack_specific: AHashMap<StackType, conc::Sequence>,
 }
 
 impl Runnables {
     pub fn is_empty(&self) -> bool {
-        self.global.is_empty() && self.stack_specific.is_empty()
+        self.global.is_none() && self.stack_specific.is_empty()
     }
 
     #[must_use]
     pub fn len(&self) -> usize {
-        let mut result = self.global.len();
+        let mut result = self.global.as_ref().map_or(0, conc::Sequence::len);
         for (_, runnable) in &self.stack_specific {
             result += runnable.len();
         }
         result
-    }
-
-    /// provides a new Runnables object that is the combination of the two given Runnables
-    pub fn combine(self, other: Runnables) -> Runnables {
-        let Runnables {
-            global: self_global,
-            stack_specific: self_stack_specific,
-        } = self;
-        let Runnables {
-            global: other_global,
-            stack_specific: other_stack_specific,
-        } = other;
-        Runnables {
-            global: self_global.combine(other_global),
-            stack_specific: self_stack_specific.combine(other_stack_specific),
-        }
     }
 }
 
@@ -49,14 +33,15 @@ mod tests {
     }
 
     mod len {
-        use super::super::{Runnables, StackType};
+        use super::super::Runnables;
         use super::executable;
+        use crate::domain::StackType;
         use ahash::AHashMap;
 
         #[test]
         fn empty() {
             let give = Runnables {
-                global: conc::Runnable::Sequence(vec![]),
+                global: None,
                 stack_specific: AHashMap::new(),
             };
             let have = give.len();
@@ -67,7 +52,7 @@ mod tests {
         #[test]
         fn single_global() {
             let give = Runnables {
-                global: conc::Runnable::Single(executable()),
+                global: Some(conc::Sequence::one(executable())),
                 stack_specific: AHashMap::new(),
             };
             let have = give.len();
@@ -78,7 +63,7 @@ mod tests {
         #[test]
         fn multiple_globals() {
             let give = Runnables {
-                global: conc::Runnable::Sequence(vec![executable(), executable()]),
+                global: Some(conc::Sequence::many(executable(), vec![executable()])),
                 stack_specific: AHashMap::new(),
             };
             let have = give.len();
@@ -88,12 +73,15 @@ mod tests {
 
         #[test]
         fn stack_specific() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: None,
-                stack_specific: vec![
-                    conc::Sequence::one(executable()),
-                    conc::Sequence::many(executable(), vec![executable()]),
-                ],
+                stack_specific: AHashMap::from([
+                    (StackType::Rust, conc::Sequence::one(executable())),
+                    (
+                        StackType::Markdown,
+                        conc::Sequence::many(executable(), vec![executable()]),
+                    ),
+                ]),
             };
             let have = give.len();
             let want = 3;
@@ -102,9 +90,12 @@ mod tests {
 
         #[test]
         fn all_fields_set() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: Some(conc::Sequence::many(executable(), vec![executable()])),
-                stack_specific: vec![conc::Sequence::one(executable())],
+                stack_specific: AHashMap::from([(
+                    StackType::Rust,
+                    conc::Sequence::one(executable()),
+                )]),
             };
             let have = give.len();
             let want = 3;

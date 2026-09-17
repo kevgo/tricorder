@@ -1,8 +1,9 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
+use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, Result, Runnables};
+use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
 use crate::stacks;
 use ahash::AHashMap;
@@ -62,27 +63,21 @@ pub(crate) fn run_fix_then_lint(
         }
     }
 
-    // step 3: run concurrent sequences of stack-specific fixes and lints
-    let runnables: AHashMap<StackType, conc::Runnable> = AHashMap::new();
-    for fix in stack_specific_fixes {
-        runnables.insert(stack_type, stack_specific_fix);
+    // step 3: run concurrent sequences of stack-specific fixes and lints side by side with the global lints
+    let mut stack_sequences: AHashMap<StackType, conc::Sequence> = AHashMap::new();
+    for (stack_type, stack_specific_fix) in stack_specific_fixes {
+        stack_sequences.insert(stack_type, stack_specific_fix);
     }
-    for (stack_type, lint) in lints {
-        runnables.insert(stack_type, lint);
+    let Lints {
+        global: global_lints,
+        stack_specific: stack_specific_lints,
+    } = lints;
+    for (stack_type, lint) in stack_specific_lints {
+        stack_sequences.insert(stack_type, lint);
     }
+    let lint_sequences = stack_sequences.into_values().chain(global_lints).collect();
     let exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific_fixes,
-        error_on_output,
-        show,
-        stderr_to_stdout,
-    });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
-    }
-
-    // step 4: run the lints
-    let exit_code = conc::run(conc::RunArgs {
-        sequences: lints,
+        sequences: lint_sequences,
         error_on_output,
         show,
         stderr_to_stdout,
