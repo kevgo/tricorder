@@ -26,7 +26,7 @@ impl Lint for Hadolint {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>> {
+    ) -> Result<Option<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
@@ -38,6 +38,6 @@ impl Lint for Hadolint {
             args: files.into_strings(),
             version: None,
         })?;
-        Ok(executable.map(conc::Runnable::Single))
+        Ok(executable.map(conc::Sequence::one))
     }
 }

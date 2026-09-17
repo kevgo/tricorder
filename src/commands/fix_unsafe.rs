@@ -28,7 +28,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
 
     // step 4: run the fixes
     let exit_code = conc::run(conc::RunArgs {
-        runnables: unsafe_fixes,
+        sequences: unsafe_fixes,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -39,7 +39,7 @@ pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
 pub fn determine_unsafe_fixes(
     stacks: &DetectedStacks,
     config: &Config,
-) -> Result<Vec<conc::Runnable>> {
+) -> Result<Vec<conc::Sequence>> {
     let mut stacks_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for stack in stacks {
         let stack_executables = stacks_executables
@@ -54,9 +54,11 @@ pub fn determine_unsafe_fixes(
         }
     }
     let mut result = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
-        if !stack_executables.is_empty() {
-            result.push(conc::Runnable::Sequence(stack_executables));
+    for (_stack_type, mut stack_executables) in stacks_executables {
+        if !stack_executables.is_empty()
+            && let executable = stack_executables.remove(0)
+        {
+            result.push(conc::Sequence::many(executable, stack_executables));
         }
     }
     Ok(result)

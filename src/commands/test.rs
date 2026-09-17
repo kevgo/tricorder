@@ -15,7 +15,7 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables: tests,
+        sequences: tests,
         error_on_output: false,
         show,
         stderr_to_stdout: true,
@@ -23,7 +23,7 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
     Ok(exit_code)
 }
 
-pub(crate) fn determine_tests(config: &Config, names: &[String]) -> Result<Vec<conc::Runnable>> {
+pub(crate) fn determine_tests(config: &Config, names: &[String]) -> Result<Vec<conc::Sequence>> {
     select_tests(config.tests.as_deref().unwrap_or_default(), names)
         .map(|tests| tests.into_iter().map(to_runnable).collect())
 }
@@ -57,8 +57,8 @@ fn test_name(test: &ToolDefinition) -> &str {
     test.name.as_deref().unwrap_or(&test.command)
 }
 
-fn to_runnable(test: &ToolDefinition) -> conc::Runnable {
-    conc::Runnable::Single(conc::Executable {
+fn to_runnable(test: &ToolDefinition) -> conc::Sequence {
+    conc::Sequence::one(conc::Executable {
         name: test_name(test).to_string(),
         command: conc::shell_command(&test.command),
     })

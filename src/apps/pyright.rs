@@ -30,7 +30,7 @@ impl Lint for Pyright {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>> {
+    ) -> Result<Option<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
@@ -50,6 +50,6 @@ impl Lint for Pyright {
         let Some(executable) = executable else {
             return Ok(None);
         };
-        Ok(Some(conc::Runnable::Single(executable)))
+        Ok(Some(conc::Sequence::one(executable)))
     }
 }

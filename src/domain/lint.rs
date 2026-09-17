@@ -12,5 +12,5 @@ pub trait Lint: Tool {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Runnable>>;
+    ) -> Result<Option<conc::Sequence>>;
 }
