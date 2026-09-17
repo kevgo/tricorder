@@ -34,7 +34,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        runnables: lints,
+        sequences: lints,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -46,7 +46,7 @@ pub fn determine_lints(
     config: &Config,
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
-) -> Result<Vec<conc::Runnable>> {
+) -> Result<Vec<conc::Sequence>> {
     let mut result = Vec::new();
 
     // determine the lints for the stacks
@@ -58,7 +58,7 @@ pub fn determine_lints(
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
             for override_lint in overrides {
                 let executable = override_lint.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Runnable::Single(executable));
+                result.push(conc::Sequence::one(executable));
             }
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -73,7 +73,7 @@ pub fn determine_lints(
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
             for addition in additions {
                 let executable = addition.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Runnable::Single(executable));
+                result.push(conc::Sequence::one(executable));
             }
         }
     }
@@ -81,7 +81,7 @@ pub fn determine_lints(
     // determine the runnables for the custom lints
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
-            result.push(conc::Runnable::Single(conc::Executable {
+            result.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
             }));
@@ -93,7 +93,7 @@ pub fn determine_lints(
         && let Some(repo) = git_repo
     {
         let executable = git_diff_check::lint_command(repo);
-        result.push(conc::Runnable::Single(executable));
+        result.push(conc::Sequence::one(executable));
     }
 
     Ok(result)

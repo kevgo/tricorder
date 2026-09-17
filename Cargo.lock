@@ -328,9 +328,9 @@ dependencies = [
 
 [[package]]
 name = "concurrent_shell_commands"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "349dff3bfe6f16432f9f854683b4dc75b2d86806208aab63a77d396ce96ff81d"
+checksum = "4a98f14579cf5d55a66d2456db63a41a971d418ab8cf1ecdb002d98b60c7c2d3"
 dependencies = [
  "colored 3.1.1",
  "shlex",
