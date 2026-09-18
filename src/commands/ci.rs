@@ -1,6 +1,7 @@
 use super::pitstop::run_tasks;
 use crate::cli::input::CiArgs;
 use crate::config::Config;
+use crate::config::to_sequences;
 use crate::domain::{Result, UserError};
 use crate::git::Repo;
 use crate::stacks;
@@ -14,8 +15,9 @@ pub fn ci(args: CiArgs) -> Result<ExitCode> {
     let ignores = config.ignores()?;
     let stacks = stacks::discover_all(&ignores);
     let args_show = args.run.with_default_show(conc::Show::Output);
-    let tests = super::test::determine_tests(&config, &args.test)?;
-    let exit_code = run_tasks(&args_show, &config, &stacks, repo.as_ref(), tests)?;
+    let tests = config.select_tests(&args.test)?;
+    let test_sequences = to_sequences(tests);
+    let exit_code = run_tasks(&args_show, &config, &stacks, repo.as_ref(), test_sequences)?;
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }

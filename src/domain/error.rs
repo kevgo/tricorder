@@ -152,11 +152,11 @@ impl UserError {
             }
             UserError::Rta { err } => err.print(),
             UserError::UnknownTest { names, available } => {
-                println!("unknown test: {}", names.join(", "));
+                println!("unknown test: {}", names.join("+"));
                 if available.is_empty() {
                     println!("no tests are defined in the config file");
                 } else {
-                    println!("available tests: {}", available.join(", "));
+                    println!("available tests: {}", available.join("+"));
                 }
             }
         }

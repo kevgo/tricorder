@@ -21,7 +21,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_tasks(args, &config, &stacks, repo.as_ref(), Vec::new())
+    run_tasks(args, &config, &stacks, repo.as_ref(), vec![])
 }
 
 /// runs global fixes, then stack-specific fix+lint sequences concurrently with global lints and tests
@@ -49,6 +49,8 @@ pub(crate) fn run_tasks(
     lints.extend(tests);
     let tool_count = fixes.len() + lints.len() + tests.len();
     if show.display_metadata() {
+        // TODO: print "running XXX tasks" instead of "running XXX tools"
+        // we might run the same tool multiple times
         eprintln!("running {tool_count} tools");
     }
     let Runnables {
