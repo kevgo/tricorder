@@ -70,12 +70,7 @@ pub fn determine_lints(
                     && default_lint.enabled_when().enabled_on_disk()
                     && let Some(runnable) = default_lint.lint_commands(detected_stack, config)?
                 {
-                    match runnable {
-                        conc::Runnable::Single(executable) => stack_executables.push(executable),
-                        conc::Runnable::Sequence(executables) => {
-                            stack_executables.extend(executables);
-                        }
-                    }
+                    stack_executables.extend(runnable.into_executables());
                 }
             }
         }
@@ -94,7 +89,7 @@ pub fn determine_lints(
             result.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
-            });
+            }));
         }
     }
 
