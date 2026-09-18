@@ -1472,12 +1472,12 @@ mod tests {
             };
             let have = config.select_tests(&[S("cuke"), S("unit")]).unwrap();
             let want1 = ToolDefinition {
-                name: Some(S("unit")),
-                command: S("echo unit"),
-            };
-            let want2 = ToolDefinition {
                 name: Some(S("cuke")),
                 command: S("echo cuke"),
+            };
+            let want2 = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
             };
             let want = vec![&want1, &want2];
             pretty::assert_eq!(have, want);
