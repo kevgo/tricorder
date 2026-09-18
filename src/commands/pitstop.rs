@@ -23,7 +23,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
 ///
-/// `extra_runnables` run in parallel with the lints, the same way global lints do.
+/// `tests` run in parallel with the lints, the same way global lints do.
 pub(crate) fn run_tasks(
     args: &RunArgs,
     config: &Config,
@@ -45,6 +45,8 @@ pub(crate) fn run_tasks(
     lints.extend(tests);
     let tool_count = fixes.len() + lints.len();
     if show.display_metadata() {
+        // TODO: print "running XXX tasks" instead of "running XXX tools"
+        // we might run the same tool multiple times
         eprintln!("running {tool_count} tools");
     }
     let Runnables {
