@@ -1457,15 +1457,12 @@ mod tests {
                 name: Some(S("cuke")),
                 command: S("echo cuke"),
             };
+            let slow_test = ToolDefinition {
+                name: Some(S("slow")),
+                command: S("echo slow"),
+            };
             let config = Config {
-                tests: Some(vec![
-                    unit_test.clone(),
-                    cuke_test.clone(),
-                    ToolDefinition {
-                        name: Some(S("slow")),
-                        command: S("echo slow"),
-                    },
-                ]),
+                tests: Some(vec![unit_test.clone(), cuke_test.clone(), slow_test]),
                 ..Default::default()
             };
             let have = config.select_tests(&[S("cuke"), S("unit")]).unwrap();
