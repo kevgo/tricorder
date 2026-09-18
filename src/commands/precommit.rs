@@ -62,7 +62,7 @@ fn run(args: &RunArgs) -> Result<()> {
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific,
+        sequences: stack_specific.into_values().collect(),
         error_on_output,
         show,
         stderr_to_stdout,

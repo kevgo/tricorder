@@ -44,7 +44,7 @@ pub(crate) fn run_tasks(
     // step 1: discover the runnables
     let fixes = fix::determine_fixes(config, stacks)?;
     let mut lints = lint::determine_lints(config, stacks, repo)?;
-    lints.extend(tests);
+    lints.global.extend(tests);
     let tool_count = fixes.len() + lints.len();
     if show.display_metadata() {
         // TODO: print "running XXX tasks" instead of "running XXX tools"
