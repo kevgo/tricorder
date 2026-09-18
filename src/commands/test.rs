@@ -1,5 +1,5 @@
 use crate::cli::input::{RunArgs, ShowExt};
-use crate::config::Config;
+use crate::config::{Config, ToolDefinition};
 use crate::domain::Result;
 use std::process::ExitCode;
 
@@ -7,7 +7,7 @@ use std::process::ExitCode;
 pub fn test(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.show.unwrap_or(conc::Show::Names);
-    let tests = determine_tests(&config, &[])?;
+    let tests = config.select_tests(&[])?;
     if show.display_metadata() {
         eprintln!("running {} tools", tests.len());
     }
@@ -15,7 +15,7 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        sequences: tests,
+        sequences: to_sequences(tests),
         error_on_output: false,
         show,
         stderr_to_stdout: true,
@@ -24,10 +24,9 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
 }
 
 /// provides the configured tests with the given names as parallel `conc::Sequences`
-pub(crate) fn determine_tests(config: &Config, names: &[String]) -> Result<Vec<conc::Sequence>> {
-    Ok(config
-        .select_tests(names)?
+pub(crate) fn to_sequences(tools: Vec<&ToolDefinition>) -> Vec<conc::Sequence> {
+    tools
         .into_iter()
         .map(super::super::config::ToolDefinition::to_sequence)
-        .collect())
+        .collect()
 }
