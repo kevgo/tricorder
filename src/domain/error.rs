@@ -156,7 +156,7 @@ impl UserError {
                 if available.is_empty() {
                     println!("no tests are defined in the config file");
                 } else {
-                    println!("available tests: {}", available.join("+"));
+                    println!("available tests: {}", available.join(", "));
                 }
             }
         }
