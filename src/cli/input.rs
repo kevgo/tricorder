@@ -15,8 +15,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    /// Check all lints and fixes on CI
-    Ci(RunArgs),
+    /// Runs all fixes, lints, and tests on CI
+    Ci(CiArgs),
 
     /// Embed into claude-compatible coding agents
     #[command(name = "init:claude")]
@@ -55,6 +55,17 @@ pub enum Command {
     /// Update third-party tools
     #[command(name = "update:tools")]
     UpdateTools,
+}
+
+// TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
+#[derive(clap::Args)]
+pub struct CiArgs {
+    #[command(flatten)]
+    pub run: RunArgs,
+
+    /// names of tests to run, joined with +
+    #[arg(long, value_delimiter = '+', value_name = "NAME")]
+    pub test: Vec<String>,
 }
 
 #[derive(clap::Args)]
@@ -126,5 +137,35 @@ pub fn parse() -> Result<Option<Command>> {
                 msg: err.to_string(),
             }),
         },
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{CiArgs, Cli, Command};
+    use clap::Parser;
+
+    fn parse_ci(args: &[&str]) -> CiArgs {
+        let mut argv = vec!["tricorder", "ci"];
+        argv.extend(args);
+        let Command::Ci(ci) = Cli::try_parse_from(argv).unwrap().command.unwrap() else {
+            panic!("expected the ci command");
+        };
+        ci
+    }
+
+    #[test]
+    fn ci_test_flag_splits_on_plus() {
+        pretty::assert_eq!(parse_ci(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn ci_test_flag_accepts_a_single_name() {
+        pretty::assert_eq!(parse_ci(&["--test=unit"]).test, vec!["unit"]);
+    }
+
+    #[test]
+    fn ci_without_test_flag_runs_all_tests() {
+        pretty::assert_eq!(parse_ci(&[]).test, Vec::<String>::new());
     }
 }

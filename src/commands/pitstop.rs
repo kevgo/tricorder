@@ -20,15 +20,18 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_fix_then_lint(args, &config, &stacks, repo.as_ref())
+    run_tasks(args, &config, &stacks, repo.as_ref(), vec![])
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
-pub(crate) fn run_fix_then_lint(
+///
+/// `tests` run in parallel with the lints, the same way global lints do.
+pub(crate) fn run_tasks(
     args: &RunArgs,
     config: &Config,
     stacks: &DetectedStacks,
     repo: Option<&Repo>,
+    tests: Vec<conc::Sequence>,
 ) -> Result<ExitCode> {
     let show = args.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
@@ -40,9 +43,12 @@ pub(crate) fn run_fix_then_lint(
 
     // step 1: discover the runnables
     let fixes = fix::determine_fixes(config, stacks)?;
-    let lints = lint::determine_lints(config, stacks, repo)?;
+    let mut lints = lint::determine_lints(config, stacks, repo)?;
+    lints.extend(tests);
     let tool_count = fixes.len() + lints.len();
     if show.display_metadata() {
+        // TODO: print "running XXX tasks" instead of "running XXX tools"
+        // we might run the same tool multiple times
         eprintln!("running {tool_count} tools");
     }
     let Runnables {
