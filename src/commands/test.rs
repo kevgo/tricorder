@@ -1,38 +1,26 @@
 use crate::cli::input::{RunArgs, ShowExt};
-use crate::config::{Config, ToolDefinition};
+use crate::config::Config;
+use crate::config::to_sequences;
 use crate::domain::Result;
 use std::process::ExitCode;
 
+// TODO: support the --tests arg here and in all other commands that run tests
 pub fn test(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.show.unwrap_or(conc::Show::Names);
-    let tests = determine_tests(&config);
+    let tests = config.select_tests(&[])?;
     if show.display_metadata() {
         eprintln!("running {} tools", tests.len());
     }
     if tests.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
+    let test_sequences = to_sequences(tests);
     let exit_code = conc::run(conc::RunArgs {
-        sequences: tests,
+        sequences: test_sequences,
         error_on_output: false,
         show,
         stderr_to_stdout: true,
     });
     Ok(exit_code)
-}
-
-fn determine_tests(config: &Config) -> Vec<conc::Sequence> {
-    let Some(tests) = &config.tests else {
-        return Vec::new();
-    };
-    tests
-        .iter()
-        .map(|ToolDefinition { name, command }| {
-            conc::Sequence::one(conc::Executable {
-                name: name.clone().unwrap_or_else(|| command.clone()),
-                command: conc::shell_command(command),
-            })
-        })
-        .collect()
 }

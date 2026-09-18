@@ -1,5 +1,6 @@
 use crate::domain::{Ignores, Result, StackType, Tool, UserError};
 use ahash::AHashMap;
+use itertools::Itertools;
 use jsonc_parser::ParseOptions;
 use schemars::JsonSchema;
 use serde::Deserialize;
@@ -142,6 +143,32 @@ impl Config {
     pub fn keep_sorted(&self) -> Option<&ApplicationWithFile> {
         self.applications.as_ref()?.keep_sorted.as_ref()
     }
+
+    /// provides the tests with the given names, or all if no names are given
+    pub fn select_tests(&self, requested: &[String]) -> Result<Vec<&ToolDefinition>> {
+        let all_tests = self.tests.as_deref().unwrap_or_default();
+        if requested.is_empty() {
+            return Ok(all_tests.iter().collect());
+        }
+        let mut result = Vec::with_capacity(requested.len());
+        let mut unknown = Vec::new();
+        for name in requested.iter().unique() {
+            match all_tests.iter().find(|test| test.name_or_command() == name) {
+                Some(test) => result.push(test),
+                None => unknown.push(name.to_owned()),
+            }
+        }
+        if !unknown.is_empty() {
+            return Err(UserError::UnknownTest {
+                names: unknown,
+                available: all_tests
+                    .iter()
+                    .map(|test| test.name_or_command().to_string())
+                    .collect(),
+            });
+        }
+        Ok(result)
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -155,6 +182,11 @@ pub struct ToolDefinition {
 }
 
 impl ToolDefinition {
+    /// provides the name of the tool, or the command if the tool has no name
+    fn name_or_command(&self) -> &str {
+        self.name.as_deref().unwrap_or(&self.command)
+    }
+
     /// Converts this tool into an executable whose printed name matches built-in tools:
     /// `{operation} {stack} ({name})`.
     #[must_use]
@@ -165,6 +197,19 @@ impl ToolDefinition {
             command: conc::shell_command(&self.command),
         }
     }
+
+    #[must_use]
+    pub fn to_sequence(&self) -> conc::Sequence {
+        conc::Sequence::one(conc::Executable {
+            name: self.name_or_command().to_string(),
+            command: conc::shell_command(&self.command),
+        })
+    }
+}
+
+/// provides the configured tests with the given names as parallel `conc::Sequences`
+pub(crate) fn to_sequences(tools: Vec<&ToolDefinition>) -> Vec<conc::Sequence> {
+    tools.into_iter().map(ToolDefinition::to_sequence).collect()
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -1375,6 +1420,121 @@ mod tests {
             assert!(fix.matches_self(Path::new("app.toml"), false));
             assert!(!fix.matches_self(Path::new("lint.toml"), false));
             assert!(!fix.matches_self(Path::new("other.toml"), false));
+        }
+    }
+
+    mod select_tests {
+        use crate::config::{Config, ToolDefinition};
+        use crate::domain::UserError;
+        use big_s::S;
+
+        #[test]
+        fn no_names_given() {
+            let unit_test = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
+            };
+            let cuke_test = ToolDefinition {
+                name: Some(S("cuke")),
+                command: S("echo cuke"),
+            };
+            let config = Config {
+                tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[]).unwrap();
+            let want = vec![&unit_test, &cuke_test];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn names_given() {
+            let unit_test = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
+            };
+            let cuke_test = ToolDefinition {
+                name: Some(S("cuke")),
+                command: S("echo cuke"),
+            };
+            let slow_test = ToolDefinition {
+                name: Some(S("slow")),
+                command: S("echo slow"),
+            };
+            let config = Config {
+                tests: Some(vec![unit_test.clone(), cuke_test.clone(), slow_test]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("cuke"), S("unit")]).unwrap();
+            let want = vec![&cuke_test, &unit_test];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn duplicate_names_given() {
+            let unit_test = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
+            };
+            let config = Config {
+                tests: Some(vec![unit_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("unit"), S("unit")]).unwrap();
+            let want = vec![&unit_test];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unnamed_tests() {
+            let unit_test = ToolDefinition {
+                name: None,
+                command: S("actionlint"),
+            };
+            let config = Config {
+                tests: Some(vec![unit_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("actionlint")]).unwrap();
+            let want = vec![&unit_test];
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unknown_name() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                ]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("unit"), S("missing")]).unwrap_err();
+            let want = UserError::UnknownTest {
+                names: vec![S("missing")],
+                available: vec![S("unit"), S("cuke")],
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unknown_name_with_no_configured_tests() {
+            let config = Config {
+                tests: None,
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("unit")]).unwrap_err();
+            let want = UserError::UnknownTest {
+                names: vec![S("unit")],
+                available: vec![],
+            };
+            pretty::assert_eq!(have, want);
         }
     }
 }
