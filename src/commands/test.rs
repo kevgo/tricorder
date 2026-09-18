@@ -1,5 +1,6 @@
 use crate::cli::input::{RunArgs, ShowExt};
-use crate::config::{Config, ToolDefinition};
+use crate::config::Config;
+use crate::config::to_sequences;
 use crate::domain::Result;
 use std::process::ExitCode;
 
@@ -14,19 +15,12 @@ pub fn test(args: &RunArgs) -> Result<ExitCode> {
     if tests.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
+    let test_sequences = to_sequences(tests);
     let exit_code = conc::run(conc::RunArgs {
-        sequences: to_sequences(tests),
+        sequences: test_sequences,
         error_on_output: false,
         show,
         stderr_to_stdout: true,
     });
     Ok(exit_code)
-}
-
-/// provides the configured tests with the given names as parallel `conc::Sequences`
-pub(crate) fn to_sequences(tools: Vec<&ToolDefinition>) -> Vec<conc::Sequence> {
-    tools
-        .into_iter()
-        .map(super::super::config::ToolDefinition::to_sequence)
-        .collect()
 }

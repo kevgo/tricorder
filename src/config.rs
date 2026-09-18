@@ -153,7 +153,10 @@ impl Config {
         let mut result = Vec::with_capacity(requested.len());
         let mut unknown = Vec::new();
         for name in requested.iter().unique() {
-            match configured_tests.iter().find(|test| test_name(test) == name) {
+            match configured_tests
+                .iter()
+                .find(|test| test.name_or_command() == name)
+            {
                 Some(test) => result.push(test),
                 None => unknown.push(name.to_owned()),
             }
@@ -163,8 +166,7 @@ impl Config {
                 names: unknown,
                 available: configured_tests
                     .iter()
-                    .map(test_name)
-                    .map(ToOwned::to_owned)
+                    .map(|test| test.name_or_command().to_string())
                     .collect(),
             });
         }
@@ -183,6 +185,10 @@ pub struct ToolDefinition {
 }
 
 impl ToolDefinition {
+    fn name_or_command(&self) -> &str {
+        self.name.as_deref().unwrap_or(&self.command)
+    }
+
     /// Converts this tool into an executable whose printed name matches built-in tools:
     /// `{operation} {stack} ({name})`.
     #[must_use]
@@ -197,10 +203,15 @@ impl ToolDefinition {
     #[must_use]
     pub fn to_sequence(&self) -> conc::Sequence {
         conc::Sequence::one(conc::Executable {
-            name: test_name(self).to_string(),
+            name: self.name_or_command().to_string(),
             command: conc::shell_command(&self.command),
         })
     }
+}
+
+/// provides the configured tests with the given names as parallel `conc::Sequences`
+pub(crate) fn to_sequences(tools: Vec<&ToolDefinition>) -> Vec<conc::Sequence> {
+    tools.into_iter().map(ToolDefinition::to_sequence).collect()
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -439,10 +450,6 @@ impl Application for ApplicationWithFileOperation {
     fn ignore_files(&self) -> &[String] {
         self.ignore_files.as_deref().unwrap_or_default()
     }
-}
-
-fn test_name(test: &ToolDefinition) -> &str {
-    test.name.as_deref().unwrap_or(&test.command)
 }
 
 #[cfg(test)]
