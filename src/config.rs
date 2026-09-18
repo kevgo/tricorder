@@ -1470,37 +1470,31 @@ mod tests {
 
         #[test]
         fn duplicate_names_given() {
-            let config = Config {
-                tests: Some(vec![ToolDefinition {
-                    name: Some(S("unit")),
-                    command: S("echo unit"),
-                }]),
-                ..Default::default()
-            };
-            let have = config.select_tests(&[S("unit"), S("unit")]).unwrap();
-            let tooldef1 = ToolDefinition {
+            let unit_test = ToolDefinition {
                 name: Some(S("unit")),
                 command: S("echo unit"),
             };
-            let want = vec![&tooldef1];
+            let config = Config {
+                tests: Some(vec![unit_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("unit"), S("unit")]).unwrap();
+            let want = vec![&unit_test];
             pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn unnamed_tests() {
-            let config = Config {
-                tests: Some(vec![ToolDefinition {
-                    name: None,
-                    command: S("echo unit"),
-                }]),
-                ..Default::default()
-            };
-            let have = config.select_tests(&[S("echo unit")]).unwrap();
-            let want1 = ToolDefinition {
+            let unit_test = ToolDefinition {
                 name: None,
                 command: S("echo unit"),
             };
-            let want = vec![&want1];
+            let config = Config {
+                tests: Some(vec![unit_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[S("echo unit")]).unwrap();
+            let want = vec![&unit_test];
             pretty::assert_eq!(have, want);
         }
 
