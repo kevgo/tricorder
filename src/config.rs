@@ -1425,44 +1425,37 @@ mod tests {
 
         #[test]
         fn no_names_given() {
-            let config = Config {
-                tests: Some(vec![
-                    ToolDefinition {
-                        name: Some(S("unit")),
-                        command: S("echo unit"),
-                    },
-                    ToolDefinition {
-                        name: Some(S("cuke")),
-                        command: S("echo cuke"),
-                    },
-                ]),
-                ..Default::default()
-            };
-            let have = config.select_tests(&[]).unwrap();
-            let want1 = ToolDefinition {
+            let unit_test = ToolDefinition {
                 name: Some(S("unit")),
                 command: S("echo unit"),
             };
-            let want2 = ToolDefinition {
+            let cuke_test = ToolDefinition {
                 name: Some(S("cuke")),
                 command: S("echo cuke"),
             };
-            let want = vec![&want1, &want2];
+            let config = Config {
+                tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                ..Default::default()
+            };
+            let have = config.select_tests(&[]).unwrap();
+            let want = vec![&unit_test, &cuke_test];
             pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn names_given() {
+            let unit_test = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
+            };
+            let cuke_test = ToolDefinition {
+                name: Some(S("cuke")),
+                command: S("echo cuke"),
+            };
             let config = Config {
                 tests: Some(vec![
-                    ToolDefinition {
-                        name: Some(S("unit")),
-                        command: S("echo unit"),
-                    },
-                    ToolDefinition {
-                        name: Some(S("cuke")),
-                        command: S("echo cuke"),
-                    },
+                    unit_test.clone(),
+                    cuke_test.clone(),
                     ToolDefinition {
                         name: Some(S("slow")),
                         command: S("echo slow"),
@@ -1471,15 +1464,7 @@ mod tests {
                 ..Default::default()
             };
             let have = config.select_tests(&[S("cuke"), S("unit")]).unwrap();
-            let want1 = ToolDefinition {
-                name: Some(S("cuke")),
-                command: S("echo cuke"),
-            };
-            let want2 = ToolDefinition {
-                name: Some(S("unit")),
-                command: S("echo unit"),
-            };
-            let want = vec![&want1, &want2];
+            let want = vec![&cuke_test, &unit_test];
             pretty::assert_eq!(have, want);
         }
 
