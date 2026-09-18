@@ -146,17 +146,14 @@ impl Config {
 
     /// provides the tests with the given names, or all if no names are given
     pub fn select_tests(&self, requested: &[String]) -> Result<Vec<&ToolDefinition>> {
-        let configured_tests = self.tests.as_deref().unwrap_or_default();
+        let all_tests = self.tests.as_deref().unwrap_or_default();
         if requested.is_empty() {
-            return Ok(configured_tests.iter().collect());
+            return Ok(all_tests.iter().collect());
         }
         let mut result = Vec::with_capacity(requested.len());
         let mut unknown = Vec::new();
         for name in requested.iter().unique() {
-            match configured_tests
-                .iter()
-                .find(|test| test.name_or_command() == name)
-            {
+            match all_tests.iter().find(|test| test.name_or_command() == name) {
                 Some(test) => result.push(test),
                 None => unknown.push(name.to_owned()),
             }
@@ -164,7 +161,7 @@ impl Config {
         if !unknown.is_empty() {
             return Err(UserError::UnknownTest {
                 names: unknown,
-                available: configured_tests
+                available: all_tests
                     .iter()
                     .map(|test| test.name_or_command().to_string())
                     .collect(),
