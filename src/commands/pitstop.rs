@@ -18,7 +18,7 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_tasks(args, &config, &stacks, repo.as_ref(), Vec::new())
+    run_tasks(args, &config, &stacks, repo.as_ref(), vec![])
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks
