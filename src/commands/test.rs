@@ -4,6 +4,7 @@ use crate::domain::{Result, UserError};
 use itertools::Itertools;
 use std::process::ExitCode;
 
+// TODO: support the --tests arg
 pub fn test(args: &RunArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.show.unwrap_or(conc::Show::Names);
