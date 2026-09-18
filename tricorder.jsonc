@@ -72,12 +72,16 @@
   },
   "tests": [
     {
-      "name": "unit tests",
+      "name": "unit",
       "command": "make unit"
     },
     {
-      "name": "E2E tests",
+      "name": "E2E",
       "command": "make cuke"
+    },
+    {
+      "name": "E2Eslow",
+      "command": "make cuke-slow"
     }
   ]
 }
