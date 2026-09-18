@@ -33,6 +33,9 @@ Feature: custom fixes
       global fix 1 running
       my global fix 2
       global fix 2 running
+      """
+    And it prints the lines
+      """
       fix JSON (Prettier)
       """
     And the exit code is 0
