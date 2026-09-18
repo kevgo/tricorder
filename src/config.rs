@@ -144,7 +144,7 @@ impl Config {
         self.applications.as_ref()?.keep_sorted.as_ref()
     }
 
-    /// provides the requested tests, or all if none are requested
+    /// provides the tests with the given names, or all if no names are given
     pub fn select_tests(&self, requested: &[String]) -> Result<Vec<&ToolDefinition>> {
         let configured_tests = self.tests.as_deref().unwrap_or_default();
         if requested.is_empty() {
@@ -185,6 +185,7 @@ pub struct ToolDefinition {
 }
 
 impl ToolDefinition {
+    /// provides the name of the tool, or the command if the tool has no name
     fn name_or_command(&self) -> &str {
         self.name.as_deref().unwrap_or(&self.command)
     }
