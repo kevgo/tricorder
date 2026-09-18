@@ -1489,13 +1489,13 @@ mod tests {
         fn unnamed_tests() {
             let unit_test = ToolDefinition {
                 name: None,
-                command: S("echo unit"),
+                command: S("actionlint"),
             };
             let config = Config {
                 tests: Some(vec![unit_test.clone()]),
                 ..Default::default()
             };
-            let have = config.select_tests(&[S("echo unit")]).unwrap();
+            let have = config.select_tests(&[S("actionlint")]).unwrap();
             let want = vec![&unit_test];
             pretty::assert_eq!(have, want);
         }
