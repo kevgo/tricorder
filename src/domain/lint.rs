@@ -12,5 +12,5 @@ pub trait Lint: Tool {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>>;
+    ) -> Result<Option<conc::Executable>>;
 }
