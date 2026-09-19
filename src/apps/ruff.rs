@@ -28,7 +28,7 @@ impl Lint for Ruff {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Option<conc::Sequence>> {
+    ) -> Result<Vec<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {

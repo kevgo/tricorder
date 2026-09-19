@@ -26,11 +26,7 @@ impl Display for Pyright {
 }
 
 impl Lint for Pyright {
-    fn lint_commands(
-        &self,
-        stack: &DetectedStack,
-        config: &Config,
-    ) -> Result<Option<conc::Sequence>> {
+    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
