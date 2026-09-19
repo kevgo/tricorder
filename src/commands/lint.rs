@@ -60,16 +60,15 @@ pub fn determine_lints(
             stack_executables.extend(
                 overrides
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         } else {
             for default_lint in detected_stack.stack.lints() {
                 if config.operation_enabled(default_lint.as_ref(), Operation::Lint)
                     && default_lint.enabled_when().enabled_on_disk()
-                    && let sequences = default_lint.lint_commands(detected_stack, config)?
+                    && let executables = default_lint.lint_commands(detected_stack, config)?
                 {
-                    stack_executables.extend(sequences);
+                    stack_executables.extend(executables.into_iter().map(conc::Sequence::one));
                 }
             }
         }
@@ -77,8 +76,7 @@ pub fn determine_lints(
             stack_executables.extend(
                 additions
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         }
     }

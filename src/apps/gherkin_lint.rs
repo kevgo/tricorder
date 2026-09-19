@@ -26,7 +26,11 @@ impl Display for GherkinLint {
 }
 
 impl Lint for GherkinLint {
-    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
@@ -38,6 +42,6 @@ impl Lint for GherkinLint {
             args: files.into_strings(),
             version: None,
         })?;
-        Ok(executable.into_iter().map(conc::Sequence::one).collect())
+        Ok(executable.into_iter().collect())
     }
 }
