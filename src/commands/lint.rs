@@ -110,27 +110,31 @@ pub struct Lints {
 
 impl Lints {
     pub fn len(&self) -> usize {
-        let global_len = self
-            .global
-            .iter()
-            .fold(0, |acc, sequence| acc + sequence.len());
-        let stack_specific_len = self
-            .stack_specific
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        let global_len = global.iter().fold(0, |acc, sequence| acc + sequence.len());
+        let stack_specific_len = stack_specific
             .iter()
             .fold(0, |acc, (_, sequence)| acc + sequence.len());
         global_len + stack_specific_len
     }
 
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    pub fn into_sequences(self) -> Vec<conc::Sequence> {
         let Lints {
             global,
             stack_specific,
         } = self;
-        let mut result = Vec::with_capacity(global.len() + stack_specific.len());
+        global.is_empty() && stack_specific.is_empty()
+    }
+
+    pub fn into_sequences(self) -> Vec<conc::Sequence> {
+        let mut result = Vec::with_capacity(self.len());
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
         result.extend(global);
         result.extend(stack_specific.into_values());
         result

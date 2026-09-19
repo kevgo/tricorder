@@ -1,6 +1,5 @@
 Feature: "tricorder postedit" enables linters whose config is already committed
 
-  @this
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
     And a committed file "run-that-app" with content
