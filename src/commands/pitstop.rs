@@ -70,20 +70,27 @@ pub(crate) fn run_tasks(
     }
 
     // step 3: run concurrent sequences of stack-specific fixes and lints side by side with the global lints
-    let mut stack_sequences: AHashMap<StackType, conc::Sequence> = AHashMap::new();
+    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for (stack_type, stack_specific_fix) in stack_specific_fixes {
-        stack_sequences.insert(stack_type, stack_specific_fix);
+        let entry = stack_executables.entry(stack_type).or_default();
+        entry.extend(stack_specific_fix);
     }
     let Lints {
         global: global_lints,
         stack_specific: stack_specific_lints,
     } = lints;
     for (stack_type, lint) in stack_specific_lints {
-        stack_sequences.insert(stack_type, lint);
+        stack_executables.insert(stack_type, lint);
     }
-    let lint_sequences = stack_sequences.into_values().chain(global_lints).collect();
+    let mut stack_sequences: Vec<conc::Sequence> = Vec::new();
+    for (_stack_type, executables) in stack_executables {
+        if let Some(sequence) = conc::Sequence::from_vec(executables) {
+            stack_sequences.push(sequence);
+        }
+    }
+    stack_sequences.extend(global_lints);
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lint_sequences,
+        sequences: stack_sequences,
         error_on_output,
         show,
         stderr_to_stdout,
