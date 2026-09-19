@@ -34,7 +34,6 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
     if lints.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-
     let exit_code = conc::run(conc::RunArgs {
         sequences: lints.into_sequences(),
         error_on_output,
