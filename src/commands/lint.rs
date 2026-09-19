@@ -36,7 +36,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lints,
+        sequences: lints.into_sequences(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -48,10 +48,9 @@ pub fn determine_lints(
     config: &Config,
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
-) -> Result<Vec<conc::Sequence>> {
-    let mut result = Vec::new();
-
+) -> Result<Lints> {
     // determine the lints for the stacks
+    let mut stack_specific = AHashMap::new();
     for detected_stack in detected_stacks {
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
@@ -60,7 +59,7 @@ pub fn determine_lints(
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
             for override_lint in overrides {
                 let executable = override_lint.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Sequence::one(executable));
+                stack_specific.insert(stack_type, conc::Sequence::one(executable));
             }
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -68,22 +67,23 @@ pub fn determine_lints(
                     && default_lint.enabled_when().enabled_on_disk()
                     && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
                 {
-                    result.push(executable);
+                    stack_specific.insert(stack_type, executable);
                 }
             }
         }
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
             for addition in additions {
                 let executable = addition.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Sequence::one(executable));
+                stack_specific.insert(stack_type, conc::Sequence::one(executable));
             }
         }
     }
 
-    // determine the runnables for the custom lints
+    // determine the global lints
+    let mut global = Vec::new();
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
-            result.push(conc::Sequence::one(conc::Executable {
+            global.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
             }));
@@ -95,10 +95,13 @@ pub fn determine_lints(
         && let Some(repo) = git_repo
     {
         let executable = git_diff_check::lint_command(repo);
-        result.push(conc::Sequence::one(executable));
+        global.push(conc::Sequence::one(executable));
     }
 
-    Ok(result)
+    Ok(Lints {
+        global,
+        stack_specific,
+    })
 }
 
 pub struct Lints {
@@ -124,8 +127,13 @@ impl Lints {
     }
 
     pub fn into_sequences(self) -> Vec<conc::Sequence> {
-        let mut result = self.global;
-        result.extend(self.stack_specific.into_values());
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        let mut result = Vec::with_capacity(global.len() + stack_specific.len());
+        result.extend(global);
+        result.extend(stack_specific.into_values());
         result
     }
 }
