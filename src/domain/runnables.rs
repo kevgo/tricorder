@@ -19,8 +19,8 @@ impl Runnables {
     #[must_use]
     pub fn len(&self) -> usize {
         let mut result = self.global.as_ref().map_or(0, conc::Sequence::len);
-        for (_, runnable) in &self.stack_specific {
-            result += runnable.len();
+        for (_, sequence) in &self.stack_specific {
+            result += sequence.len();
         }
         result
     }
