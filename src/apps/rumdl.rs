@@ -29,15 +29,11 @@ impl Display for Rumdl {
 }
 
 impl Lint for Rumdl {
-    fn lint_commands(
-        &self,
-        stack: &DetectedStack,
-        config: &Config,
-    ) -> Result<Vec<conc::Sequence>> {
+    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(None);
+            return Ok(vec![]);
         }
         let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
@@ -48,7 +44,7 @@ impl Lint for Rumdl {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }
 

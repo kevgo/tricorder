@@ -52,6 +52,6 @@ impl Lint for GolangciLint {
             args: vec![S("run")],
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }

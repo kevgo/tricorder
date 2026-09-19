@@ -26,7 +26,7 @@ impl Lint for Hadolint {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(None);
+            return Ok(vec![]);
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -34,6 +34,6 @@ impl Lint for Hadolint {
             args: files.into_strings(),
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }

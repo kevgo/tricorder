@@ -38,6 +38,6 @@ impl Lint for TextRunner {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }

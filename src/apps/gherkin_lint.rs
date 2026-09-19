@@ -26,15 +26,11 @@ impl Display for GherkinLint {
 }
 
 impl Lint for GherkinLint {
-    fn lint_commands(
-        &self,
-        stack: &DetectedStack,
-        config: &Config,
-    ) -> Result<Vec<conc::Sequence>> {
+    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(None);
+            return Ok(vec![]);
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -42,6 +38,6 @@ impl Lint for GherkinLint {
             args: files.into_strings(),
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }
