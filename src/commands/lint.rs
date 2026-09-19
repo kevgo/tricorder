@@ -64,9 +64,9 @@ pub fn determine_lints(
             for default_lint in detected_stack.stack.lints() {
                 if config.operation_enabled(default_lint.as_ref(), Operation::Lint)
                     && default_lint.enabled_when().enabled_on_disk()
-                    && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
+                    && let Some(sequence) = default_lint.lint_commands(detected_stack, config)?
                 {
-                    result.push(executable);
+                    result.push(sequence);
                 }
             }
         }
