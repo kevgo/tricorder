@@ -148,10 +148,10 @@ pub fn determine_precommit_fixes(
     }
 
     // step 6: convert to runnables and return
-    let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    let mut stack_specific: AHashMap<StackType, conc::Sequence> = AHashMap::new();
+    for (stack_type, stack_executables) in stacks_executables {
         if let Some(stack_sequences) = conc::Sequence::from_vec(stack_executables) {
-            stack_specific.push(stack_sequences);
+            stack_specific.insert(stack_type, stack_sequences);
         }
     }
     let global = if global.is_empty() {
