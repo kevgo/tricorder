@@ -74,7 +74,7 @@ Feature: lint a Tikibase
       lint Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
       """
-    And it does not print any of these lines
+    And it prints the block
       """
       lint Markdown (tikibase)
       """
