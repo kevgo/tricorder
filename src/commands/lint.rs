@@ -126,14 +126,11 @@ impl Lints {
     }
 
     pub fn into_sequences(self) -> Vec<conc::Sequence> {
+        let mut result = Vec::with_capacity(self.len());
         let Lints {
             global,
             stack_specific,
         } = self;
-        let stack_lints_count = stack_specific
-            .iter()
-            .fold(0, |acc, (_, sequence)| acc + sequence.len());
-        let mut result = Vec::with_capacity(global.len() + stack_lints_count);
         result.extend(global);
         result.extend(stack_specific.into_values());
         result
