@@ -76,9 +76,7 @@ fn run(args: &RunArgs) -> Result<()> {
 }
 
 /// determines the fixes to run in the precommit command
-///
-/// The `staged_stacks` argument are the stacks that are currently staged in the git repository,
-/// not all stacks that exist in the workspace.
+/// based on the given staged stacks
 pub fn determine_precommit_fixes(
     config: &Config,
     staged_stacks: &DetectedStacks,
@@ -157,11 +155,9 @@ pub fn determine_precommit_fixes(
             stack_specific.push(conc::Sequence::many(first, stack_executables));
         }
     }
-    let global = if global.is_empty() {
-        None
-    } else {
-        let first = global.remove(0);
-        Some(conc::Sequence::many(first, global))
+    let global = match global.is_empty() {
+        true => None,
+        false => conc::Sequence::from_vec(global),
     };
     Ok(Runnables {
         global,
