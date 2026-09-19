@@ -3,9 +3,10 @@ use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, Operation, ToolDefinition};
-use crate::domain::{DetectedStacks, Result};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
@@ -34,7 +35,7 @@ pub fn lint(args: &RunArgs) -> Result<ExitCode> {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lints,
+        sequences: lints.into_sequences(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -46,21 +47,20 @@ pub fn determine_lints(
     config: &Config,
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
-) -> Result<Vec<conc::Sequence>> {
-    let mut result: Vec<conc::Sequence> = Vec::new();
-
+) -> Result<Lints> {
     // determine the lints for the stacks
+    let mut stack_specific: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for detected_stack in detected_stacks {
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
+        let stack_executables = stack_specific.entry(stack_type).or_default();
         // schedule either the override lints or the default lints
         let stack_lints = stack_config.and_then(|sc| sc.lint.as_ref());
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
-            result.extend(
+            stack_executables.extend(
                 overrides
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -68,24 +68,24 @@ pub fn determine_lints(
                     && default_lint.enabled_when().enabled_on_disk()
                     && let executables = default_lint.lint_commands(detected_stack, config)?
                 {
-                    result.extend(executables.into_iter().map(conc::Sequence::one));
+                    stack_executables.extend(executables);
                 }
             }
         }
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
-            result.extend(
+            stack_executables.extend(
                 additions
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         }
     }
 
-    // determine the runnables for the global lints
+    // determine the global lints
+    let mut global = Vec::new();
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
-            result.push(conc::Sequence::one(conc::Executable {
+            global.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
             }));
@@ -97,8 +97,53 @@ pub fn determine_lints(
         && let Some(repo) = git_repo
     {
         let executable = git_diff_check::lint_command(repo);
-        result.push(conc::Sequence::one(executable));
+        global.push(conc::Sequence::one(executable));
     }
 
-    Ok(result)
+    Ok(Lints {
+        global,
+        stack_specific,
+    })
+}
+
+pub struct Lints {
+    pub global: Vec<conc::Sequence>,
+    pub stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
+}
+
+impl Lints {
+    pub fn len(&self) -> usize {
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        let global_len = global.iter().fold(0, |acc, sequence| acc + sequence.len());
+        let stack_specific_len = stack_specific
+            .values()
+            .fold(0, |acc, executables| acc + executables.len());
+        global_len + stack_specific_len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        global.is_empty() && stack_specific.values().all(Vec::is_empty)
+    }
+
+    pub fn into_sequences(self) -> Vec<conc::Sequence> {
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        let mut result = global;
+        result.extend(
+            stack_specific
+                .into_values()
+                .flatten()
+                .map(conc::Sequence::one),
+        );
+        result
+    }
 }
