@@ -30,7 +30,7 @@ impl Lint for Tikibase {
         &self,
         stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Option<conc::Sequence>> {
+    ) -> Result<Vec<conc::Sequence>> {
         let mut args = Vec::with_capacity(stack.files.len() + 1);
         args.push(S("check"));
         let executable = get_rta_command(&GetRTACmdArgs {
@@ -39,7 +39,7 @@ impl Lint for Tikibase {
             args,
             version: None,
         })?;
-        Ok(executable.map(conc::Sequence::one))
+        Ok(executable.into_iter().map(conc::Sequence::one).collect())
     }
 }
 
