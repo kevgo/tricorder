@@ -30,7 +30,7 @@ impl Lint for TextRunner {
         &self,
         stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Sequence>> {
+    ) -> Result<Option<conc::Executable>> {
         let args = vec![S("run")];
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("test {} ({self})", stack.stack),
@@ -38,6 +38,6 @@ impl Lint for TextRunner {
             args,
             version: None,
         })?;
-        Ok(executable.into_iter().map(conc::Sequence::one).collect())
+        Ok(executable)
     }
 }

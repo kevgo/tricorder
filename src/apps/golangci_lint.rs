@@ -45,13 +45,13 @@ impl Lint for GolangciLint {
         &self,
         stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Sequence>> {
+    ) -> Result<Option<conc::Executable>> {
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::GolangCiLint {},
             args: vec![S("run")],
             version: None,
         })?;
-        Ok(executable.into_iter().map(conc::Sequence::one).collect())
+        Ok(executable)
     }
 }
