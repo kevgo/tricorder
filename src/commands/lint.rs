@@ -48,9 +48,8 @@ pub fn determine_lints(
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
 ) -> Result<Lints> {
-    let mut stack_specific = AHashMap::new();
-
     // determine the lints for the stacks
+    let mut stack_specific = AHashMap::new();
     for detected_stack in detected_stacks {
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
@@ -127,8 +126,13 @@ impl Lints {
     }
 
     pub fn into_sequences(self) -> Vec<conc::Sequence> {
-        let mut result = self.global;
-        result.extend(self.stack_specific.into_values());
+        let Lints {
+            global,
+            stack_specific,
+        } = self;
+        let mut result = Vec::with_capacity(global.len() + stack_specific.len());
+        result.extend(global);
+        result.extend(stack_specific.into_values());
         result
     }
 }
