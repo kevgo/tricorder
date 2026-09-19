@@ -26,18 +26,18 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
         print_metadata(&stacks);
     }
 
-    // step 3: discover the lints to run
+    // step 3: discover all runnables
     let lints = lint::determine_lints(&config, &stacks, git_repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", lints.len());
     }
 
-    // step 4: run the lints
+    // step 4: run all lints
     if lints.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lints,
+        sequences: lints.into_runnables(),
         error_on_output,
         show,
         stderr_to_stdout,

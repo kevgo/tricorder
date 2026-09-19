@@ -1,10 +1,13 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
+use crate::commands::fix::Runnables;
+use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, Result, Runnables};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git::Repo;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -21,9 +24,10 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
     run_tasks(args, &config, &stacks, repo.as_ref(), vec![])
 }
 
-/// runs global fixes, then stack-specific fixes, then lints on the given stacks
+/// runs global fixes, then stack-specific fix+lint sequences concurrently with global lints and tests
 ///
-/// `tests` run in parallel with the lints, the same way global lints do.
+/// When a stack's fixes finish, that stack's lints start immediately, even if other stacks are still fixing.
+/// `tests` run in parallel with those sequences, the same way global lints do.
 pub(crate) fn run_tasks(
     args: &RunArgs,
     config: &Config,
@@ -43,7 +47,7 @@ pub(crate) fn run_tasks(
     let fixes = fix::determine_fixes(config, stacks)?;
     let mut lints = lint::determine_lints(config, stacks, repo)?;
     lints.extend(tests);
-    let tool_count = fixes.len() + lints.len();
+    let tool_count = fixes.len() + lints.len() + tests.len();
     if show.display_metadata() {
         // TODO: print "running XXX tasks" instead of "running XXX tools"
         // we might run the same tool multiple times
@@ -53,6 +57,10 @@ pub(crate) fn run_tasks(
         global: global_fixes,
         stack_specific: stack_specific_fixes,
     } = fixes;
+    let Lints {
+        global: global_lints,
+        stack_specific: stack_specific_lints,
+    } = lints;
 
     // step 2: run the global fixes
     if let Some(global_fixes) = global_fixes {
@@ -67,27 +75,101 @@ pub(crate) fn run_tasks(
         }
     }
 
-    // step 3: run the stack-specific fixes
-    // TODO: don't wait until all these fixes are finished before running the lints,
-    // instead, when a fix for a stack finishes, run the lints for that stack.
-    // Tricorder should create a `runnables` here consisting of conc::Sequence for the stacks
-    // consisting of fixes + lints, and concurrently the global lints and tests.
+    // step 3: run stack-specific fix+lint sequences concurrently with global lints and tests
+    let mut runnables = stack_sequences(stack_specific_fixes, stack_specific_lints);
+    runnables.extend(global_lints.into_iter().map(conc::Runnable::Single));
+    runnables.extend(tests);
     let exit_code = conc::run(conc::RunArgs {
         sequences: stack_specific_fixes,
         error_on_output,
         show,
         stderr_to_stdout,
     });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
+    Ok(exit_code)
+}
+
+/// one sequence per stack: that stack's fixes, then that stack's lints
+fn stack_sequences(
+    mut stack_fixes: AHashMap<StackType, Vec<conc::Executable>>,
+    stack_lints: AHashMap<StackType, Vec<conc::Executable>>,
+) -> Vec<conc::Runnable> {
+    for (stack_type, lints) in stack_lints {
+        stack_fixes.entry(stack_type).or_default().extend(lints);
+    }
+    stack_fixes
+        .into_values()
+        .filter(|executables| !executables.is_empty())
+        .map(conc::Runnable::Sequence)
+        .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::stack_sequences;
+    use crate::domain::StackType;
+    use ahash::AHashMap;
+    use big_s::S;
+    use std::process::Command;
+
+    fn executable(name: &str) -> conc::Executable {
+        conc::Executable {
+            name: name.to_string(),
+            command: Command::new("true"),
+        }
     }
 
-    // step 4: run the lints
-    let exit_code = conc::run(conc::RunArgs {
-        sequences: lints,
-        error_on_output,
-        show,
-        stderr_to_stdout,
-    });
-    Ok(exit_code)
+    fn sequence_names(runnables: Vec<conc::Runnable>) -> Vec<Vec<String>> {
+        let mut names: Vec<Vec<String>> = runnables
+            .into_iter()
+            .map(|runnable| match runnable {
+                conc::Runnable::Sequence(executables) => executables
+                    .into_iter()
+                    .map(|executable| executable.name)
+                    .collect(),
+                conc::Runnable::Single(executable) => vec![executable.name],
+            })
+            .collect();
+        names.sort();
+        names
+    }
+
+    #[test]
+    fn pairs_stack_lints_after_that_stack_s_fixes() {
+        let mut stack_fixes = AHashMap::new();
+        stack_fixes.insert(
+            StackType::Python,
+            vec![executable("fix Python"), executable("format Python")],
+        );
+        stack_fixes.insert(StackType::Css, vec![executable("fix CSS")]);
+        let mut stack_lints = AHashMap::new();
+        stack_lints.insert(StackType::Python, vec![executable("lint Python")]);
+        stack_lints.insert(StackType::Css, vec![executable("lint CSS")]);
+        pretty::assert_eq!(
+            sequence_names(stack_sequences(stack_fixes, stack_lints)),
+            vec![
+                vec![S("fix CSS"), S("lint CSS")],
+                vec![S("fix Python"), S("format Python"), S("lint Python")],
+            ]
+        );
+    }
+
+    #[test]
+    fn keeps_lint_only_and_fix_only_stacks() {
+        let mut stack_fixes = AHashMap::new();
+        stack_fixes.insert(StackType::Rust, vec![executable("fix Rust")]);
+        let mut stack_lints = AHashMap::new();
+        stack_lints.insert(StackType::Markdown, vec![executable("lint Markdown")]);
+        pretty::assert_eq!(
+            sequence_names(stack_sequences(stack_fixes, stack_lints)),
+            vec![vec![S("fix Rust")], vec![S("lint Markdown")]]
+        );
+    }
+
+    #[test]
+    fn empty_maps_yield_no_runnables() {
+        pretty::assert_eq!(
+            sequence_names(stack_sequences(AHashMap::new(), AHashMap::new())),
+            Vec::<Vec<String>>::new()
+        );
+    }
 }

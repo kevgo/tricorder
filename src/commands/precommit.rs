@@ -2,7 +2,7 @@ use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::{delete_empty_folders, keep_sorted};
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::commands::fix::add_custom_fixes;
+use crate::commands::fix::{Runnables, add_custom_fixes, stack_runnables};
 use crate::config::{Application, Config, Operation};
 use crate::domain::{DetectedStacks, Result, Runnables, StackType, UserError, fingerprint};
 use crate::git;
@@ -62,7 +62,7 @@ fn run(args: &RunArgs) -> Result<()> {
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific,
+        sequences: stack_runnables(stack_specific),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -162,7 +162,7 @@ pub fn determine_precommit_fixes(
         conc::Sequence::from_vec(global)
     };
     Ok(Runnables {
-        global,
-        stack_specific,
+        global: conc::Sequence::from_vec(global),
+        stack_specific: stacks_executables,
     })
 }

@@ -48,7 +48,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific,
+        sequences: stack_runnables(stack_specific),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -141,6 +141,35 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
         global,
         stack_specific,
     })
+}
+
+#[derive(Debug)]
+pub struct Runnables {
+    /// fixes that affect all files
+    pub global: conc::Runnable,
+
+    /// fixes that affect stack-specific files, keyed by stack type
+    pub stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
+}
+
+impl Runnables {
+    pub fn len(&self) -> usize {
+        let mut result = self.global.len();
+        for executables in self.stack_specific.values() {
+            result += executables.len();
+        }
+        result
+    }
+}
+
+/// stack-specific executables as concurrent sequences, one sequence per stack
+pub(crate) fn stack_runnables(
+    stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
+) -> Vec<conc::Runnable> {
+    stack_specific
+        .into_values()
+        .map(conc::Runnable::Sequence)
+        .collect()
 }
 
 /// adds the custom fixes defined in the config file to the global fix collection
