@@ -130,7 +130,10 @@ impl Lints {
             global,
             stack_specific,
         } = self;
-        let mut result = Vec::with_capacity(global.len() + stack_specific.len());
+        let stack_lints_count = stack_specific
+            .iter()
+            .fold(0, |acc, (_, sequence)| acc + sequence.len());
+        let mut result = Vec::with_capacity(global.len() + stack_lints_count);
         result.extend(global);
         result.extend(stack_specific.into_values());
         result
