@@ -28,15 +28,15 @@ impl Lint for Checkstyle {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>> {
+    ) -> Result<Option<conc::Executable>> {
         if which::which(BINARY).is_err() {
             eprintln!(
                 "checkstyle not found on PATH - skipping. Install with: brew install checkstyle",
             );
-            return Ok(vec![]);
+            return Ok(None);
         }
-        Ok(vec![conc::shell_executable(format!(
+        Ok(Some(conc::shell_executable(format!(
             "{BINARY} {CONFIG_ARG} ."
-        ))])
+        ))))
     }
 }
