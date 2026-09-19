@@ -138,11 +138,12 @@ impl Lints {
             stack_specific,
         } = self;
         let mut result = global;
-        for executables in stack_specific.into_values() {
-            if let Some(sequence) = conc::Sequence::from_vec(executables) {
-                result.push(sequence);
-            }
-        }
+        result.extend(
+            stack_specific
+                .into_values()
+                .flatten()
+                .map(conc::Sequence::one),
+        );
         result
     }
 }
