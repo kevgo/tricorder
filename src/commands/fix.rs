@@ -135,8 +135,7 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     let global = if global.is_empty() {
         None
     } else {
-        let first = global.remove(0);
-        Some(conc::Sequence::many(first, global))
+        conc::Sequence::from_vec(global)
     };
     Ok(Runnables {
         global,
