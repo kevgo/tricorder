@@ -71,12 +71,13 @@ Feature: lint a Tikibase
     When executing "tricorder lint --show=output"
     Then it prints the block
       """
+      lint Markdown (tikibase)
+      main.md:1  no title section
+      """
+    And it prints the block
+      """
       lint Markdown (rumdl)
       main.md:1:1: [MD041] First line in file should be a level 1 heading
-      """
-    And it does not print any of these lines
-      """
-      lint Markdown (tikibase)
       """
     And the exit code is 1
     And all files are unchanged
