@@ -1,9 +1,11 @@
+use ahash::AHashMap;
+
 use crate::apps::git_diff_check;
 use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, Operation, ToolDefinition};
-use crate::domain::{DetectedStacks, Result};
+use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git;
 use crate::stacks;
 use std::process::ExitCode;
@@ -97,4 +99,33 @@ pub fn determine_lints(
     }
 
     Ok(result)
+}
+
+pub struct Lints {
+    pub global: Vec<conc::Sequence>,
+    pub stack_specific: AHashMap<StackType, conc::Sequence>,
+}
+
+impl Lints {
+    pub fn len(&self) -> usize {
+        let global_len = self
+            .global
+            .iter()
+            .fold(0, |acc, sequence| acc + sequence.len());
+        let stack_specific_len = self
+            .stack_specific
+            .iter()
+            .fold(0, |acc, (_, sequence)| acc + sequence.len());
+        global_len + stack_specific_len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn into_sequences(self) -> Vec<conc::Sequence> {
+        let mut result = self.global;
+        result.extend(self.stack_specific.into_values());
+        result
+    }
 }
