@@ -83,13 +83,11 @@ pub(crate) fn run_tasks(
         let entry = stack_executables.entry(stack_type).or_default();
         entry.extend(lint);
     }
-    let mut stack_sequences: Vec<conc::Sequence> = Vec::new();
-    for (_stack_type, executables) in stack_executables {
-        if let Some(sequence) = conc::Sequence::from_vec(executables) {
-            stack_sequences.push(sequence);
-        }
-    }
-    stack_sequences.extend(global_lints);
+    let stack_sequences: Vec<conc::Sequence> = stack_executables
+        .into_values()
+        .filter_map(conc::Sequence::from_vec)
+        .chain(global_lints)
+        .collect();
     let exit_code = conc::run(conc::RunArgs {
         sequences: stack_sequences,
         error_on_output,
