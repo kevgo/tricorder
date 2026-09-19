@@ -60,8 +60,7 @@ pub fn determine_lints(
             stack_executables.extend(
                 overrides
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -77,8 +76,7 @@ pub fn determine_lints(
             stack_executables.extend(
                 additions
                     .iter()
-                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
-                    .map(conc::Sequence::one),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type)),
             );
         }
     }
