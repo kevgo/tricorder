@@ -47,7 +47,7 @@ pub fn determine_lints(
     detected_stacks: &DetectedStacks,
     git_repo: Option<&git::Repo>,
 ) -> Result<Vec<conc::Sequence>> {
-    let mut result = Vec::new();
+    let mut result: Vec<conc::Sequence> = Vec::new();
 
     // determine the lints for the stacks
     for detected_stack in detected_stacks {
@@ -56,10 +56,12 @@ pub fn determine_lints(
         // schedule either the override lints or the default lints
         let stack_lints = stack_config.and_then(|sc| sc.lint.as_ref());
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
-            for override_lint in overrides {
-                let executable = override_lint.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Sequence::one(executable));
-            }
+            result.extend(
+                overrides
+                    .iter()
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
+                    .map(conc::Sequence::one),
+            );
         } else {
             for default_lint in detected_stack.stack.lints() {
                 if config.operation_enabled(default_lint.as_ref(), Operation::Lint)
@@ -71,14 +73,16 @@ pub fn determine_lints(
             }
         }
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
-            for addition in additions {
-                let executable = addition.to_executable(Operation::Lint, stack_type);
-                result.push(conc::Sequence::one(executable));
-            }
+            result.extend(
+                additions
+                    .iter()
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
+                    .map(conc::Sequence::one),
+            );
         }
     }
 
-    // determine the runnables for the custom lints
+    // determine the runnables for the global lints
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
             result.push(conc::Sequence::one(conc::Executable {
