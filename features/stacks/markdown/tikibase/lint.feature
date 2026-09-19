@@ -31,10 +31,13 @@ Feature: lint a Tikibase
       also check out [One](one.md)
       """
     When executing "tricorder lint --show=output"
-    Then it prints the lines
+    Then it prints the block
+      """
+      lint Markdown (tikibase)
+      """
+    And it prints the block
       """
       lint Markdown (rumdl)
-      lint Markdown (tikibase)
       """
     And the exit code is 0
     And all files are unchanged
