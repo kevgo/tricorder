@@ -30,11 +30,11 @@ impl Lint for Pyright {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>> {
+    ) -> Result<Option<conc::Executable>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(vec![]);
+            return Ok(None);
         }
         let mut args = Vec::with_capacity(files.len() + 3);
         args.push(S("run"));
@@ -48,8 +48,8 @@ impl Lint for Pyright {
             version: None,
         })?;
         let Some(executable) = executable else {
-            return Ok(vec![]);
+            return Ok(None);
         };
-        Ok(vec![executable])
+        Ok(Some(executable))
     }
 }

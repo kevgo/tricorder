@@ -30,13 +30,13 @@ impl Lint for Actionlint {
         &self,
         _stack: &DetectedStack,
         _config: &Config,
-    ) -> Result<Vec<conc::Executable>> {
+    ) -> Result<Option<conc::Executable>> {
         let executable = get_rta_command(&GetRTACmdArgs {
             name: S("GitHub Actions (actionlint)"),
             app: &rta::applications::ActionLint {},
             args: vec![],
             version: None,
         })?;
-        Ok(executable.into_iter().collect())
+        Ok(executable)
     }
 }

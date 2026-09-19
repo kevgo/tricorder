@@ -30,11 +30,11 @@ impl Lint for GherkinLint {
         &self,
         stack: &DetectedStack,
         config: &Config,
-    ) -> Result<Vec<conc::Executable>> {
+    ) -> Result<Option<conc::Executable>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(vec![]);
+            return Ok(None);
         }
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
@@ -42,6 +42,6 @@ impl Lint for GherkinLint {
             args: files.into_strings(),
             version: None,
         })?;
-        Ok(executable.into_iter().collect())
+        Ok(executable)
     }
 }
