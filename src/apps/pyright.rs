@@ -26,7 +26,11 @@ impl Display for Pyright {
 }
 
 impl Lint for Pyright {
-    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
+    fn lint_commands(
+        &self,
+        stack: &DetectedStack,
+        config: &Config,
+    ) -> Result<Vec<conc::Executable>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
@@ -46,6 +50,6 @@ impl Lint for Pyright {
         let Some(executable) = executable else {
             return Ok(vec![]);
         };
-        Ok(vec![conc::Sequence::one(executable)])
+        Ok(vec![executable])
     }
 }
