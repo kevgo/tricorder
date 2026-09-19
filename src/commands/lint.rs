@@ -68,7 +68,7 @@ pub fn determine_lints(
                     && default_lint.enabled_when().enabled_on_disk()
                     && let executables = default_lint.lint_commands(detected_stack, config)?
                 {
-                    stack_executables.extend(executables.into_iter().map(conc::Sequence::one));
+                    stack_executables.extend(executables);
                 }
             }
         }
