@@ -11,6 +11,7 @@ pub struct Runnables {
 }
 
 impl Runnables {
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.global.is_none() && self.stack_specific.is_empty()
     }
