@@ -80,7 +80,10 @@ pub(crate) fn run_tasks(
         stack_specific: stack_specific_lints,
     } = lints;
     for (stack_type, lint) in stack_specific_lints {
-        stack_executables.insert(stack_type, lint);
+        stack_executables
+            .entry(stack_type)
+            .or_default()
+            .extend(lint);
     }
     let mut stack_sequences: Vec<conc::Sequence> = Vec::new();
     for (_stack_type, executables) in stack_executables {
