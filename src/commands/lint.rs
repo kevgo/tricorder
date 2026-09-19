@@ -83,8 +83,8 @@ pub fn determine_lints(
         }
     }
 
-    // determine the global lints
-    let mut global = Vec::new();
+    // determine the runnables for the custom lints
+    let mut global: Vec<conc::Sequence> = vec![];
     if let Some(custom_lints) = &config.global_lints {
         for ToolDefinition { name, command } in custom_lints {
             global.push(conc::Sequence::one(conc::Executable {

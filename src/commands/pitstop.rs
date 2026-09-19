@@ -1,10 +1,12 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
+use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, Result, Runnables};
+use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -54,7 +56,7 @@ pub(crate) fn run_tasks(
         stack_specific: stack_specific_fixes,
     } = fixes;
 
-    // step 2: run the global fixes
+    // step 2: run the global fixes by themselves first
     if let Some(global_fixes) = global_fixes {
         let exit_code = conc::run(conc::RunArgs {
             sequences: vec![global_fixes],
@@ -67,24 +69,21 @@ pub(crate) fn run_tasks(
         }
     }
 
-    // step 3: run the stack-specific fixes
-    // TODO: don't wait until all these fixes are finished before running the lints,
-    // instead, when a fix for a stack finishes, run the lints for that stack.
-    // Tricorder should create a `runnables` here consisting of conc::Sequence for the stacks
-    // consisting of fixes + lints, and concurrently the global lints and tests.
-    let exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific_fixes,
-        error_on_output,
-        show,
-        stderr_to_stdout,
-    });
-    if exit_code != ExitCode::SUCCESS {
-        return Ok(exit_code);
+    // step 3: run concurrent sequences of stack-specific fixes and lints side by side with the global lints
+    let mut stack_sequences: AHashMap<StackType, conc::Sequence> = AHashMap::new();
+    for (stack_type, stack_specific_fix) in stack_specific_fixes {
+        stack_sequences.insert(stack_type, stack_specific_fix);
     }
-
-    // step 4: run the lints
+    let Lints {
+        global: global_lints,
+        stack_specific: stack_specific_lints,
+    } = lints;
+    for (stack_type, lint) in stack_specific_lints {
+        stack_sequences.insert(stack_type, lint);
+    }
+    let lint_sequences = stack_sequences.into_values().chain(global_lints).collect();
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lints.into_sequences(),
+        sequences: lint_sequences,
         error_on_output,
         show,
         stderr_to_stdout,

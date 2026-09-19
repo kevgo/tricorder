@@ -62,7 +62,7 @@ fn run(args: &RunArgs) -> Result<()> {
 
     // step 6: run the stack-specific fixes
     let _exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific,
+        sequences: stack_specific.into_values().collect(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -76,9 +76,7 @@ fn run(args: &RunArgs) -> Result<()> {
 }
 
 /// determines the fixes to run in the precommit command
-///
-/// The `staged_stacks` argument are the stacks that are currently staged in the git repository,
-/// not all stacks that exist in the workspace.
+/// based on the given staged stacks
 pub fn determine_precommit_fixes(
     config: &Config,
     staged_stacks: &DetectedStacks,
@@ -150,10 +148,10 @@ pub fn determine_precommit_fixes(
     }
 
     // step 6: convert to runnables and return
-    let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    let mut stack_specific: AHashMap<StackType, conc::Sequence> = AHashMap::new();
+    for (stack_type, stack_executables) in stacks_executables {
         if let Some(stack_sequences) = conc::Sequence::from_vec(stack_executables) {
-            stack_specific.push(stack_sequences);
+            stack_specific.insert(stack_type, stack_sequences);
         }
     }
     let global = if global.is_empty() {
