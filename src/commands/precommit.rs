@@ -149,9 +149,20 @@ pub fn determine_precommit_fixes(
         }
     }
 
-    stacks_executables.retain(|_, executables| !executables.is_empty());
+    // step 6: convert to runnables and return
+    let mut stack_specific = Vec::new();
+    for (_stack_type, stack_executables) in stacks_executables {
+        if let Some(stack_sequences) = conc::Sequence::from_vec(stack_executables) {
+            stack_specific.push(stack_sequences);
+        }
+    }
+    let global = if global.is_empty() {
+        None
+    } else {
+        conc::Sequence::from_vec(global)
+    };
     Ok(Runnables {
-        global: conc::Runnable::Sequence(global),
+        global: conc::Sequence::from_vec(global),
         stack_specific: stacks_executables,
     })
 }
