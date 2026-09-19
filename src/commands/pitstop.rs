@@ -83,7 +83,7 @@ pub(crate) fn run_tasks(
         let entry = stack_executables.entry(stack_type).or_default();
         entry.extend(stack_type_lints);
     }
-    let stack_sequences: Vec<conc::Sequence> = stack_executables
+    let stack_sequences = stack_executables
         .into_values()
         .filter_map(conc::Sequence::from_vec)
         .chain(global_lints)
