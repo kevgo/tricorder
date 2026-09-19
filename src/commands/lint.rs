@@ -1,5 +1,3 @@
-use ahash::AHashMap;
-
 use crate::apps::git_diff_check;
 use crate::apps::git_diff_check::GitDiffCheck;
 use crate::cli::input::{RunArgs, ShowExt};
@@ -8,6 +6,7 @@ use crate::config::{Config, Operation, ToolDefinition};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn lint(args: &RunArgs) -> Result<ExitCode> {
