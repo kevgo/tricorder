@@ -94,15 +94,14 @@ Feature: lint Python with Pyright
       print("
       """
     When executing "tricorder lint --show=output"
-    Then it prints the block
-      """
-      lint Python (ruff)
-      invalid-syntax: unexpected EOF while parsing
-      """
-    And it prints the lines
+    Then it prints the lines
       """
       type-check Python (Pyright)
       5 errors, 0 warnings, 0 informations
+      """
+    And it does not print any of these lines
+      """
+      lint Python (ruff)
       """
     And the exit code is 1
     And file "main.py" is unchanged

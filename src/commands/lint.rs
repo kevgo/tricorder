@@ -49,32 +49,35 @@ pub fn determine_lints(
     git_repo: Option<&git::Repo>,
 ) -> Result<Lints> {
     // determine the lints for the stacks
-    let mut stack_specific = AHashMap::new();
+    let mut stack_specific: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for detected_stack in detected_stacks {
         let stack_type = detected_stack.stack.stack_type();
         let stack_config = config.stack_config(stack_type);
+        let stack_executables = stack_specific.entry(stack_type).or_default();
         // schedule either the override lints or the default lints
         let stack_lints = stack_config.and_then(|sc| sc.lint.as_ref());
         if let Some(overrides) = stack_lints.and_then(|lint| lint.replace.as_ref()) {
-            for override_lint in overrides {
-                let executable = override_lint.to_executable(Operation::Lint, stack_type);
-                stack_specific.insert(stack_type, conc::Sequence::one(executable));
-            }
+            stack_executables.extend(
+                overrides
+                    .iter()
+                    .map(|override_lint| override_lint.to_executable(Operation::Lint, stack_type)),
+            );
         } else {
             for default_lint in detected_stack.stack.lints() {
                 if config.operation_enabled(default_lint.as_ref(), Operation::Lint)
                     && default_lint.enabled_when().enabled_on_disk()
-                    && let Some(executable) = default_lint.lint_commands(detected_stack, config)?
+                    && let Some(sequence) = default_lint.lint_commands(detected_stack, config)?
                 {
-                    stack_specific.insert(stack_type, executable);
+                    stack_executables.extend(sequence);
                 }
             }
         }
         if let Some(additions) = stack_lints.and_then(|lint| lint.add.as_ref()) {
-            for addition in additions {
-                let executable = addition.to_executable(Operation::Lint, stack_type);
-                stack_specific.insert(stack_type, conc::Sequence::one(executable));
-            }
+            stack_executables.extend(
+                additions
+                    .iter()
+                    .map(|addition| addition.to_executable(Operation::Lint, stack_type)),
+            );
         }
     }
 
@@ -105,7 +108,7 @@ pub fn determine_lints(
 
 pub struct Lints {
     pub global: Vec<conc::Sequence>,
-    pub stack_specific: AHashMap<StackType, conc::Sequence>,
+    pub stack_specific: AHashMap<StackType, Vec<conc::Executable>>,
 }
 
 impl Lints {
@@ -116,8 +119,8 @@ impl Lints {
         } = self;
         let global_len = global.iter().fold(0, |acc, sequence| acc + sequence.len());
         let stack_specific_len = stack_specific
-            .iter()
-            .fold(0, |acc, (_, sequence)| acc + sequence.len());
+            .values()
+            .fold(0, |acc, executables| acc + executables.len());
         global_len + stack_specific_len
     }
 
@@ -126,17 +129,20 @@ impl Lints {
             global,
             stack_specific,
         } = self;
-        global.is_empty() && stack_specific.is_empty()
+        global.is_empty() && stack_specific.values().all(Vec::is_empty)
     }
 
     pub fn into_sequences(self) -> Vec<conc::Sequence> {
-        let mut result = Vec::with_capacity(self.len());
         let Lints {
             global,
             stack_specific,
         } = self;
-        result.extend(global);
-        result.extend(stack_specific.into_values());
+        let mut result = global;
+        for executables in stack_specific.into_values() {
+            if let Some(sequence) = conc::Sequence::from_vec(executables) {
+                result.push(sequence);
+            }
+        }
         result
     }
 }
