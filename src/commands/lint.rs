@@ -60,7 +60,8 @@ pub fn determine_lints(
             stack_executables.extend(
                 overrides
                     .iter()
-                    .map(|override_lint| override_lint.to_executable(Operation::Lint, stack_type)),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
+                    .map(conc::Sequence::one),
             );
         } else {
             for default_lint in detected_stack.stack.lints() {
@@ -76,7 +77,8 @@ pub fn determine_lints(
             stack_executables.extend(
                 additions
                     .iter()
-                    .map(|addition| addition.to_executable(Operation::Lint, stack_type)),
+                    .map(|tool| tool.to_executable(Operation::Lint, stack_type))
+                    .map(conc::Sequence::one),
             );
         }
     }
@@ -88,7 +90,7 @@ pub fn determine_lints(
             global.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
                 command: conc::shell_command(command),
-            });
+            }));
         }
     }
 
