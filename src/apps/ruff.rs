@@ -24,15 +24,11 @@ impl Display for Ruff {
 }
 
 impl Lint for Ruff {
-    fn lint_commands(
-        &self,
-        stack: &DetectedStack,
-        config: &Config,
-    ) -> Result<Option<conc::Sequence>> {
+    fn lint_commands(&self, stack: &DetectedStack, config: &Config) -> Result<Vec<conc::Sequence>> {
         let ignores = config.ignores_for(self, Operation::Lint)?;
         let files = stack.files.remove(&ignores);
         if files.is_empty() {
-            return Ok(None);
+            return Ok(vec![]);
         }
         let mut args = Vec::with_capacity(files.len() + 1);
         args.push(S("check"));
@@ -44,9 +40,9 @@ impl Lint for Ruff {
             version: None,
         })?;
         let Some(executable) = executable else {
-            return Ok(None);
+            return Ok(vec![]);
         };
-        Ok(Some(conc::Sequence::one(executable)))
+        Ok(vec![conc::Sequence::one(executable)])
     }
 }
 
