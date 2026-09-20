@@ -109,6 +109,5 @@ pub(crate) fn run_tasks(
         show,
         stderr_to_stdout,
     });
-
     Ok(exit_code)
 }
