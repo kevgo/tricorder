@@ -1,10 +1,12 @@
 use crate::cli::input::{RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
+use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
 use crate::config::Config;
-use crate::domain::{DetectedStacks, Result, Runnables};
+use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
 use crate::stacks;
+use ahash::AHashMap;
 use std::process::ExitCode;
 
 pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
@@ -54,7 +56,7 @@ pub(crate) fn run_tasks(
         stack_specific: stack_specific_fixes,
     } = fixes;
 
-    // step 2: run the global fixes
+    // step 2: run the global fixes by themselves first
     if let Some(global_fixes) = global_fixes {
         let exit_code = conc::run(conc::RunArgs {
             sequences: vec![global_fixes],
@@ -67,13 +69,26 @@ pub(crate) fn run_tasks(
         }
     }
 
-    // step 3: run the stack-specific fixes
-    // TODO: don't wait until all these fixes are finished before running the lints,
-    // instead, when a fix for a stack finishes, run the lints for that stack.
-    // Tricorder should create a `runnables` here consisting of conc::Sequence for the stacks
-    // consisting of fixes + lints, and concurrently the global lints and tests.
+    // step 3: run concurrent sequences of stack-specific fixes and lints
+    let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
+    for (stack_type, stack_specific_fixes) in stack_specific_fixes {
+        let entry = stack_executables.entry(stack_type).or_default();
+        entry.extend(stack_specific_fixes);
+    }
+    let Lints {
+        global: global_lints,
+        stack_specific: stack_specific_lints,
+    } = lints;
+    for (stack_type, stack_type_lints) in stack_specific_lints {
+        let entry = stack_executables.entry(stack_type).or_default();
+        entry.extend(stack_type_lints);
+    }
+    let stack_sequences = stack_executables
+        .into_values()
+        .filter_map(conc::Sequence::from_vec)
+        .collect();
     let exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific_fixes,
+        sequences: stack_sequences,
         error_on_output,
         show,
         stderr_to_stdout,
@@ -82,9 +97,14 @@ pub(crate) fn run_tasks(
         return Ok(exit_code);
     }
 
-    // step 4: run the lints
+    // step 4: run the global lints
+    //
+    // We need to run them after the stack-specific fixes because
+    // some of them, like the global git-diff-check linter,
+    // error on whitespace problems and therefore
+    // depend on the formatting having been run.
     let exit_code = conc::run(conc::RunArgs {
-        sequences: lints.into_sequences(),
+        sequences: global_lints,
         error_on_output,
         show,
         stderr_to_stdout,

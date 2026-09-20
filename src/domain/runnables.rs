@@ -1,19 +1,26 @@
+use crate::domain::StackType;
+use ahash::AHashMap;
+
 #[derive(Debug)]
 pub struct Runnables {
     /// fixes that affect all files
     pub global: Option<conc::Sequence>,
 
     /// fixes that affect stack-specific files
-    pub stack_specific: Vec<conc::Sequence>,
+    pub stack_specific: AHashMap<StackType, conc::Sequence>,
 }
 
 impl Runnables {
     #[must_use]
-    #[allow(clippy::len_without_is_empty)] // Runnables are never empty
+    pub fn is_empty(&self) -> bool {
+        self.global.is_none() && self.stack_specific.is_empty()
+    }
+
+    #[must_use]
     pub fn len(&self) -> usize {
         let mut result = self.global.as_ref().map_or(0, conc::Sequence::len);
-        for x in &self.stack_specific {
-            result += x.len();
+        for (_, sequence) in &self.stack_specific {
+            result += sequence.len();
         }
         result
     }
@@ -21,61 +28,79 @@ impl Runnables {
 
 #[cfg(test)]
 mod tests {
-    use super::Runnables;
 
     fn executable() -> conc::Executable {
         conc::shell_executable("true")
     }
 
     mod len {
-        use super::{Runnables, executable};
+        use super::super::Runnables;
+        use super::executable;
+        use crate::domain::StackType;
+        use ahash::AHashMap;
 
         #[test]
         fn empty() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: None,
-                stack_specific: vec![],
+                stack_specific: AHashMap::new(),
             };
-            pretty::assert_eq!(runnables.len(), 0);
+            let have = give.len();
+            let want = 0;
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn single_global() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: Some(conc::Sequence::one(executable())),
-                stack_specific: vec![],
+                stack_specific: AHashMap::new(),
             };
-            pretty::assert_eq!(runnables.len(), 1);
+            let have = give.len();
+            let want = 1;
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn multiple_globals() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: Some(conc::Sequence::many(executable(), vec![executable()])),
-                stack_specific: vec![],
+                stack_specific: AHashMap::new(),
             };
-            pretty::assert_eq!(runnables.len(), 2);
+            let have = give.len();
+            let want = 2;
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn stack_specific() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: None,
-                stack_specific: vec![
-                    conc::Sequence::one(executable()),
-                    conc::Sequence::many(executable(), vec![executable()]),
-                ],
+                stack_specific: AHashMap::from([
+                    (StackType::Rust, conc::Sequence::one(executable())),
+                    (
+                        StackType::Markdown,
+                        conc::Sequence::many(executable(), vec![executable()]),
+                    ),
+                ]),
             };
-            pretty::assert_eq!(runnables.len(), 3);
+            let have = give.len();
+            let want = 3;
+            pretty::assert_eq!(have, want);
         }
 
         #[test]
         fn all_fields_set() {
-            let runnables = Runnables {
+            let give = Runnables {
                 global: Some(conc::Sequence::many(executable(), vec![executable()])),
-                stack_specific: vec![conc::Sequence::one(executable())],
+                stack_specific: AHashMap::from([(
+                    StackType::Rust,
+                    conc::Sequence::one(executable()),
+                )]),
             };
-            pretty::assert_eq!(runnables.len(), 3);
+            let have = give.len();
+            let want = 3;
+            pretty::assert_eq!(have, want);
         }
     }
 }

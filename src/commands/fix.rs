@@ -48,7 +48,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
 
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
-        sequences: stack_specific,
+        sequences: stack_specific.into_values().collect(),
         error_on_output,
         show,
         stderr_to_stdout,
@@ -126,10 +126,10 @@ pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Res
     }
 
     // convert to runnables and return
-    let mut stack_specific = Vec::new();
-    for (_stack_type, stack_executables) in stacks_executables {
+    let mut stack_specific = AHashMap::new();
+    for (stack_type, stack_executables) in stacks_executables {
         if let Some(stack_sequence) = conc::Sequence::from_vec(stack_executables) {
-            stack_specific.push(stack_sequence);
+            stack_specific.insert(stack_type, stack_sequence);
         }
     }
     let global = if global.is_empty() {
