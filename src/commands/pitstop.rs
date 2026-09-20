@@ -98,6 +98,11 @@ pub(crate) fn run_tasks(
     }
 
     // step 4: run the global lints
+    //
+    // We need to run them after the stack-specific fixes because
+    // some of them, like the global git-diff-check linter,
+    // error on whitespace problems and therefore
+    // depend on the formatting having been run.
     let exit_code = conc::run(conc::RunArgs {
         sequences: global_lints,
         error_on_output,
