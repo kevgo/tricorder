@@ -69,7 +69,7 @@ pub(crate) fn run_tasks(
         }
     }
 
-    // step 3: run concurrent sequences of stack-specific fixes and lints side by side with the global lints
+    // step 3: run concurrent sequences of stack-specific fixes and lints
     let mut stack_executables: AHashMap<StackType, Vec<conc::Executable>> = AHashMap::new();
     for (stack_type, stack_specific_fixes) in stack_specific_fixes {
         let entry = stack_executables.entry(stack_type).or_default();
@@ -86,7 +86,6 @@ pub(crate) fn run_tasks(
     let stack_sequences = stack_executables
         .into_values()
         .filter_map(conc::Sequence::from_vec)
-        .chain(global_lints)
         .collect();
     let exit_code = conc::run(conc::RunArgs {
         sequences: stack_sequences,
@@ -94,5 +93,17 @@ pub(crate) fn run_tasks(
         show,
         stderr_to_stdout,
     });
+    if exit_code != ExitCode::SUCCESS {
+        return Ok(exit_code);
+    }
+
+    // step 4: run the global lints
+    let exit_code = conc::run(conc::RunArgs {
+        sequences: global_lints,
+        error_on_output,
+        show,
+        stderr_to_stdout,
+    });
+
     Ok(exit_code)
 }
