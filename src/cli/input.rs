@@ -57,8 +57,7 @@ pub enum Command {
     UpdateTools,
 }
 
-// TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
-// Used by `ci` and `pitstop` so both expose the same `--test` flag.
+// `RunArgs` with a `--test` flag
 #[derive(clap::Args)]
 pub struct RunArgsWithTest {
     #[command(flatten)]
