@@ -6,8 +6,11 @@ mod lint;
 mod pitstop;
 mod post_edit;
 mod precommit;
+mod scope;
 mod test;
 mod update_tools;
+
+pub(crate) use scope::discover_stacks;
 
 pub use ci::ci;
 pub use fix::fix;

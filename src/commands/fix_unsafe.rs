@@ -1,21 +1,24 @@
-use crate::cli::input::{RunArgs, ShowExt};
+use super::discover_stacks;
+use crate::cli::input::{RunArgsWithScope, Scope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, Operation};
 use crate::domain::{DetectedStacks, Result, StackType};
-use crate::stacks;
+use crate::git::Repo;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix_unsafe(args: &RunArgs) -> Result<ExitCode> {
+pub fn fix_unsafe(args: &RunArgsWithScope) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let error_on_output = false;
     let stderr_to_stdout = true;
-    let show = args.show.unwrap_or(conc::Show::Names);
+    let show = args.run.show.unwrap_or(conc::Show::Names);
 
     // step 2: discover the stacks
-    let stacks = stacks::discover_all(&ignores);
+    let repo = Repo::load();
+    let scope = args.scope.unwrap_or(Scope::All);
+    let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&stacks);
     }
