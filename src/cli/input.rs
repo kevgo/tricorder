@@ -41,7 +41,7 @@ pub enum Command {
     Lint(RunArgs),
 
     /// Fix and lint files changed on the current branch
-    Pitstop(RunArgs),
+    Pitstop(CiArgs),
 
     /// Lint uncommitted changes
     Postedit(RunArgs),
@@ -58,6 +58,7 @@ pub enum Command {
 }
 
 // TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
+// Used by `ci` and `pitstop` so both expose the same `--test` flag.
 #[derive(clap::Args)]
 pub struct CiArgs {
     #[command(flatten)]
@@ -146,12 +147,27 @@ mod tests {
     use clap::Parser;
 
     fn parse_ci(args: &[&str]) -> CiArgs {
-        let mut argv = vec!["tricorder", "ci"];
+        parse_with_test_flag("ci", args, |command| match command {
+            Command::Ci(ci) => ci,
+            _ => panic!("expected the ci command"),
+        })
+    }
+
+    fn parse_pitstop(args: &[&str]) -> CiArgs {
+        parse_with_test_flag("pitstop", args, |command| match command {
+            Command::Pitstop(pitstop) => pitstop,
+            _ => panic!("expected the pitstop command"),
+        })
+    }
+
+    fn parse_with_test_flag(
+        command: &str,
+        args: &[&str],
+        extract: impl FnOnce(Command) -> CiArgs,
+    ) -> CiArgs {
+        let mut argv = vec!["tricorder", command];
         argv.extend(args);
-        let Command::Ci(ci) = Cli::try_parse_from(argv).unwrap().command.unwrap() else {
-            panic!("expected the ci command");
-        };
-        ci
+        extract(Cli::try_parse_from(argv).unwrap().command.unwrap())
     }
 
     #[test]
@@ -167,5 +183,23 @@ mod tests {
     #[test]
     fn ci_without_test_flag_runs_all_tests() {
         pretty::assert_eq!(parse_ci(&[]).test, Vec::<String>::new());
+    }
+
+    #[test]
+    fn pitstop_test_flag_splits_on_plus() {
+        pretty::assert_eq!(
+            parse_pitstop(&["--test=unit+cuke"]).test,
+            vec!["unit", "cuke"]
+        );
+    }
+
+    #[test]
+    fn pitstop_test_flag_accepts_a_single_name() {
+        pretty::assert_eq!(parse_pitstop(&["--test=unit"]).test, vec!["unit"]);
+    }
+
+    #[test]
+    fn pitstop_without_test_flag_selects_no_tests() {
+        pretty::assert_eq!(parse_pitstop(&[]).test, Vec::<String>::new());
     }
 }
