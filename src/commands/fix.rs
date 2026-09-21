@@ -1,19 +1,24 @@
 use crate::apps::delete_empty_folders;
 use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
-use crate::cli::input::{RunArgs, ShowExt};
+use crate::cli::input::{FixArgs, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::config::{Application, Config, Operation, ToolDefinition};
+use crate::config::{Application, Config, Operation, ToolDefinition, to_sequences};
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+pub fn fix(args: &FixArgs) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
+    let tests = if args.test.is_empty() {
+        Vec::new()
+    } else {
+        to_sequences(config.select_tests(&args.test)?)
+    };
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Names);
+    let show = args.run.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
@@ -26,7 +31,7 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 3: discover the fixes to run
     let fixes = determine_fixes(&config, &all_stacks)?;
     if show.display_metadata() {
-        eprintln!("running {} tools", fixes.len());
+        eprintln!("running {} tools", fixes.len() + tests.len());
     }
     let Runnables {
         global,
@@ -49,6 +54,20 @@ pub fn fix(args: &RunArgs) -> Result<ExitCode> {
     // step 5: run the stack-specific fixes
     let exit_code = conc::run(conc::RunArgs {
         sequences: stack_specific.into_values().collect(),
+        error_on_output,
+        show,
+        stderr_to_stdout,
+    });
+    if exit_code != ExitCode::SUCCESS {
+        return Ok(exit_code);
+    }
+    if tests.is_empty() {
+        return Ok(exit_code);
+    }
+
+    // step 6: run the selected tests
+    let exit_code = conc::run(conc::RunArgs {
+        sequences: tests,
         error_on_output,
         show,
         stderr_to_stdout,

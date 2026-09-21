@@ -134,6 +134,13 @@ This command applies all safe automated fixes to the codebase.
 Fixes for different file types are processed concurrently,
 multiple fixes for the same file type run sequentially.
 
+The `--test` flag makes it also run some of the tests defined in
+`tricorder.jsonc`, pass their names joined with `+`:
+
+```sh
+tricorder fix --test=unit+cuke
+```
+
 ### `tricorder fix-unsafe`
 
 This command applies more aggressive automatic fixes

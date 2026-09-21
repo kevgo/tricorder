@@ -31,7 +31,7 @@ pub enum Command {
     InitGithook(InitArgs),
 
     /// Apply safe code quality fixes
-    Fix(RunArgs),
+    Fix(FixArgs),
 
     /// Apply advanced fixes that might change behavior
     FixUnsafe(RunArgs),
@@ -57,16 +57,18 @@ pub enum Command {
     UpdateTools,
 }
 
-// TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
+// TODO: once all commands can run tests, merge CiArgs/FixArgs into RunArgs.
 #[derive(clap::Args)]
 pub struct CiArgs {
     #[command(flatten)]
     pub run: RunArgs,
 
     /// names of tests to run, joined with +
-    #[arg(long, value_delimiter = '+', value_name = "NAME")]
+    #[arg(long, alias = "tests", value_delimiter = '+', value_name = "NAME")]
     pub test: Vec<String>,
 }
+
+pub type FixArgs = CiArgs;
 
 #[derive(clap::Args)]
 pub struct RunArgs {
@@ -142,7 +144,7 @@ pub fn parse() -> Result<Option<Command>> {
 
 #[cfg(test)]
 mod tests {
-    use super::{CiArgs, Cli, Command};
+    use super::{CiArgs, Cli, Command, FixArgs};
     use clap::Parser;
 
     fn parse_ci(args: &[&str]) -> CiArgs {
@@ -152,6 +154,15 @@ mod tests {
             panic!("expected the ci command");
         };
         ci
+    }
+
+    fn parse_fix(args: &[&str]) -> FixArgs {
+        let mut argv = vec!["tricorder", "fix"];
+        argv.extend(args);
+        let Command::Fix(fix) = Cli::try_parse_from(argv).unwrap().command.unwrap() else {
+            panic!("expected the fix command");
+        };
+        fix
     }
 
     #[test]
@@ -167,5 +178,30 @@ mod tests {
     #[test]
     fn ci_without_test_flag_runs_all_tests() {
         pretty::assert_eq!(parse_ci(&[]).test, Vec::<String>::new());
+    }
+
+    #[test]
+    fn ci_tests_alias_splits_on_plus() {
+        pretty::assert_eq!(parse_ci(&["--tests=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn fix_test_flag_splits_on_plus() {
+        pretty::assert_eq!(parse_fix(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn fix_test_flag_accepts_a_single_name() {
+        pretty::assert_eq!(parse_fix(&["--test=unit"]).test, vec!["unit"]);
+    }
+
+    #[test]
+    fn fix_tests_alias_splits_on_plus() {
+        pretty::assert_eq!(parse_fix(&["--tests=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn fix_without_test_flag_runs_no_tests() {
+        pretty::assert_eq!(parse_fix(&[]).test, Vec::<String>::new());
     }
 }
