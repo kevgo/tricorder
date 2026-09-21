@@ -1,6 +1,6 @@
 Feature: full applies fixes and succeeds
 
-  Background:
+  Scenario: formats unformatted files and exits 0
     Given a Git repository
     And a committed file "run-that-app" with content
       """
@@ -11,8 +11,6 @@ Feature: full applies fixes and succeeds
       """
       print(  "hello"  )
       """
-
-  Scenario: formats unformatted files and exits 0
     When executing "trident full --show=output"
     Then it prints the block
       """

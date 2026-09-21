@@ -1,15 +1,13 @@
 Feature: full processes all files in the workspace
 
-  Background:
+  Scenario: processes files from main, this branch, and uncommitted changes
     Given a Git repository
     And a committed file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
       rumdl 0.2.14
       """
-
-  Scenario: processes files from main, this branch, and uncommitted changes
-    Given a committed file "on-main.md" with content
+    And a committed file "on-main.md" with content
       """
       #     Main
       """
