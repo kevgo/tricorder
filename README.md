@@ -147,6 +147,12 @@ All linters run in parallel.
 
 This command runs all tests defined in `trident.jsonc` in parallel.
 
+To run only some tests, pass their names joined with `+`:
+
+```sh
+trident test --test=unit+cuke
+```
+
 ## Supported stacks
 
 | Stack      | Linter                                                                          |

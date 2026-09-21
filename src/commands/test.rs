@@ -1,14 +1,13 @@
-use crate::cli::input::{RunArgs, ShowExt};
+use crate::cli::input::{RunArgsWithTest, ShowExt};
 use crate::config::Config;
 use crate::config::to_sequences;
 use crate::domain::Result;
 use std::process::ExitCode;
 
-// TODO: support the --tests arg here and in all other commands that run tests
-pub fn test(args: &RunArgs) -> Result<ExitCode> {
+pub fn test(args: &RunArgsWithTest) -> Result<ExitCode> {
     let config = Config::load()?;
-    let show = args.show.unwrap_or(conc::Show::Names);
-    let tests = config.select_tests(&[])?;
+    let show = args.run.show.unwrap_or(conc::Show::Names);
+    let tests = config.select_tests(&args.test)?;
     if show.display_metadata() {
         eprintln!("running {} tools", tests.len());
     }

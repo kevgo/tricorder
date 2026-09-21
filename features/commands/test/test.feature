@@ -79,3 +79,53 @@ Feature: custom tests
       """
     And it prints nothing to STDOUT
     And the exit code is 0
+
+  Scenario: --test selects named tests
+    Given a file "trident.json" with content
+      """
+      {
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" },
+          { "name": "slow", "command": "echo slow" }
+        ]
+      }
+      """
+    When executing "trident test --test=unit+cuke --show=output"
+    Then it prints to STDERR
+      """
+      running 2 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it prints the block
+      """
+      cuke
+      cuke
+      """
+    And it does not print
+      """
+      slow
+      """
+    And the exit code is 0
+
+  Scenario: unknown test name
+    Given a file "trident.json" with content
+      """
+      {
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ]
+      }
+      """
+    When executing "trident test --test=unit+missing"
+    Then it prints
+      """
+      unknown test: missing
+      available tests: unit, cuke
+      """
+    And the exit code is 1
