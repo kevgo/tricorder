@@ -9,24 +9,24 @@ mod tests {
 
     #[test]
     fn leaves_plain_paths_unchanged() {
-        let give = "/home/kevlar/tricorder";
-        let want = "/home/kevlar/tricorder";
+        let give = "/home/kevlar/trident";
+        let want = "/home/kevlar/trident";
         let have = escape(give);
         assert_eq!(have, want);
     }
 
     #[test]
     fn escapes_backslashes() {
-        let give = r"C:\Tools\tricorder";
-        let want = r"C:\\Tools\\tricorder";
+        let give = r"C:\Tools\trident";
+        let want = r"C:\\Tools\\trident";
         let have = escape(give);
         assert_eq!(have, want);
     }
 
     #[test]
     fn escapes_double_quotes() {
-        let give = r#"/opt/"weird"/tricorder"#;
-        let want = r#"/opt/\"weird\"/tricorder"#;
+        let give = r#"/opt/"weird"/trident"#;
+        let want = r#"/opt/\"weird\"/trident"#;
         let have = escape(give);
         assert_eq!(have, want);
     }

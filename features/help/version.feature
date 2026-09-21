@@ -1,10 +1,10 @@
 Feature: Displaying the version
 
   Scenario Outline: help command
-    When executing "tricorder <ARG>"
+    When executing "trident <ARG>"
     Then it prints
       """
-      tricorder 0.1.0
+      trident 0.1.0
       """
     And the exit code is 0
 

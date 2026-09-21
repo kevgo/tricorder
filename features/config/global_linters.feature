@@ -8,7 +8,7 @@ Feature: custom lints
       """
 
   Scenario: custom lint passes
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "global-lints": [
@@ -25,7 +25,7 @@ Feature: custom lints
       #!/usr/bin/env bash
       echo "custom lint is running"
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lints/one.sh
@@ -34,12 +34,12 @@ Feature: custom lints
     And it prints the block
       """
       list all files
-      . ./lints ./lints/one.sh ./run-that-app ./tricorder.json
+      . ./lints ./lints/one.sh ./run-that-app ./trident.json
       """
     And the exit code is 0
 
   Scenario: custom lint fails
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "global-lints": [
@@ -53,7 +53,7 @@ Feature: custom lints
       echo "custom lint failed"
       exit 4
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lints/fail.sh

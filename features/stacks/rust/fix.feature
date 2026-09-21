@@ -13,7 +13,7 @@ Feature: fix Rust
       """
 
   Scenario: no custom fixes defined
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints
       """
       delete empty folders
@@ -27,7 +27,7 @@ Feature: fix Rust
     And file "main.rs" is unchanged
 
   Scenario: rust-specific fixes
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -44,7 +44,7 @@ Feature: fix Rust
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       delete empty folders

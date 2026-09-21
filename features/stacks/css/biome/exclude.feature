@@ -8,7 +8,7 @@ Feature: ignore a CSS file
       node 26.4.0
       prettier 3.7.0
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "ignore-files": ["bad.css"]
@@ -28,7 +28,7 @@ Feature: ignore a CSS file
         col
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint CSS (Biome)
@@ -50,7 +50,7 @@ Feature: ignore a CSS file
         color : green ;
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)

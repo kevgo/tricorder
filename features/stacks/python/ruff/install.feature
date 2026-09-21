@@ -17,7 +17,7 @@ Feature: install all Python tools
         "typeCheckingMode": "strict"
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/astral-sh/ruff/releases/latest) ... ok

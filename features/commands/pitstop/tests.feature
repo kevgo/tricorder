@@ -8,7 +8,7 @@ Feature: pitstop --test runs selected tests
       """
 
   Scenario: without --test, configured tests do not run
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -21,7 +21,7 @@ Feature: pitstop --test runs selected tests
         ]
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines to STDERR
       """
       1 JSON, 1 other
@@ -38,7 +38,7 @@ Feature: pitstop --test runs selected tests
     And the exit code is 0
 
   Scenario: --test selects named tests
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -52,7 +52,7 @@ Feature: pitstop --test runs selected tests
         ]
       }
       """
-    When executing "tricorder pitstop --test=unit+cuke --show=output"
+    When executing "trident pitstop --test=unit+cuke --show=output"
     Then it prints the lines to STDERR
       """
       1 JSON, 1 other
@@ -75,7 +75,7 @@ Feature: pitstop --test runs selected tests
     And the exit code is 0
 
   Scenario: test fails
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -93,7 +93,7 @@ Feature: pitstop --test runs selected tests
       echo "custom test failed"
       exit 4
       """
-    When executing "tricorder pitstop --test=failing --show=output"
+    When executing "trident pitstop --test=failing --show=output"
     Then it prints the block
       """
       failing
@@ -102,7 +102,7 @@ Feature: pitstop --test runs selected tests
     And the exit code is 4
 
   Scenario: unknown test name
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "tests": [
@@ -111,7 +111,7 @@ Feature: pitstop --test runs selected tests
         ]
       }
       """
-    When executing "tricorder pitstop --test=unit+missing"
+    When executing "trident pitstop --test=unit+missing"
     Then it prints
       """
       unknown test: missing

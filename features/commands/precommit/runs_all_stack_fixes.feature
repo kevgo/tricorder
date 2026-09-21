@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" runs all fixes for the changed files
+Feature: "trident precommit" runs all fixes for the changed files
 
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
@@ -32,7 +32,7 @@ Feature: "tricorder precommit" runs all fixes for the changed files
       text
       """
     And I ran "git add one.md"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix Markdown (tikibase)

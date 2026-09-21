@@ -16,12 +16,12 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 use test_helpers::snapshots;
-use world::TricorderWorld;
+use world::TridentWorld;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let had_failures = Arc::new(AtomicBool::new(false));
-    TricorderWorld::cucumber()
+    TridentWorld::cucumber()
         .before(|feature, _rule, _scenario, world| {
             world.feature_path.clone_from(&feature.path);
             Box::pin(async {})

@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::world::TricorderWorld;
+use crate::world::TridentWorld;
 use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::then;
@@ -10,7 +10,7 @@ use tokio::fs;
 use tokio::process::Command;
 
 #[then("all files are unchanged")]
-async fn all_files_unchanged(world: &mut TricorderWorld) {
+async fn all_files_unchanged(world: &mut TridentWorld) {
     for original in &world.original_files {
         let filepath = world.dir.join(&original.name);
         let have = fs::read_to_string(filepath).await.unwrap_or_else(|err| {
@@ -30,14 +30,14 @@ async fn all_files_unchanged(world: &mut TricorderWorld) {
 }
 
 #[then(expr = "file {string} does not exist")]
-async fn file_does_not_exist(world: &mut TricorderWorld, filename: String) {
+async fn file_does_not_exist(world: &mut TridentWorld, filename: String) {
     let filepath = world.dir.join(&filename);
     let exists = fs::try_exists(filepath).await.unwrap();
     assert!(!exists);
 }
 
 #[then(expr = "file {string} is unchanged")]
-async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
+async fn file_is_unchanged(world: &mut TridentWorld, filename: String) {
     let original = world
         .original_files
         .iter()
@@ -61,7 +61,7 @@ async fn file_is_unchanged(world: &mut TricorderWorld, filename: String) {
 
 #[then(expr = "file {string} now has an additional line matching")]
 async fn file_has_additional_line_matching(
-    world: &mut TricorderWorld,
+    world: &mut TridentWorld,
     step: &Step,
     filename: String,
 ) {
@@ -74,7 +74,7 @@ async fn file_has_additional_line_matching(
 }
 
 #[then(expr = "file {string} now has content")]
-async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+async fn file_has_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str();
     let want = want.replace("\\t", "\t");
     let filepath = world.dir.join(&filename);
@@ -83,7 +83,7 @@ async fn file_has_content(world: &mut TricorderWorld, step: &Step, filename: Str
 }
 
 #[then(expr = "file {string} now matches these lines")]
-async fn file_matches_lines(world: &mut TricorderWorld, step: &Step, filename: String) {
+async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: String) {
     let want = step.docstring.as_ref().unwrap().as_str().trim().lines();
     let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
@@ -105,7 +105,7 @@ async fn file_matches_lines(world: &mut TricorderWorld, step: &Step, filename: S
 }
 
 #[then(expr = "file {string} is executable")]
-async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
+async fn file_is_executable(world: &mut TridentWorld, filename: String) {
     let filepath = world.dir.join(&filename);
     let metadata = fs::metadata(&filepath).await.unwrap();
     #[cfg(unix)]
@@ -117,7 +117,7 @@ async fn file_is_executable(world: &mut TricorderWorld, filename: String) {
 }
 
 #[then("it does not print")]
-fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
+fn it_does_not_print(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no output");
     let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
@@ -133,7 +133,7 @@ fn it_does_not_print(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it does not print any of these lines")]
-fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
+fn it_does_not_print_the_lines(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
@@ -143,7 +143,7 @@ fn it_does_not_print_the_lines(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints")]
-fn it_prints(world: &mut TricorderWorld, step: &Step) {
+fn it_prints(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
@@ -152,7 +152,7 @@ fn it_prints(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints nothing to STDOUT")]
-fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
+fn it_prints_nothing_to_stdout(world: &mut TridentWorld) {
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
     let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
@@ -160,7 +160,7 @@ fn it_prints_nothing_to_stdout(world: &mut TricorderWorld) {
 }
 
 #[then("it prints nothing to STDERR")]
-fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
+fn it_prints_nothing_to_stderr(world: &mut TridentWorld) {
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
     let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
@@ -168,7 +168,7 @@ fn it_prints_nothing_to_stderr(world: &mut TricorderWorld) {
 }
 
 #[then("it prints to STDERR")]
-fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_to_stderr(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
@@ -177,7 +177,7 @@ fn it_prints_to_stderr(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints the block")]
-fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_block(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
@@ -189,7 +189,7 @@ fn it_prints_the_block(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints the block matching")]
-fn it_prints_the_block_matching(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_block_matching(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
@@ -201,7 +201,7 @@ fn it_prints_the_block_matching(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints the lines")]
-fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_lines(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stdout);
@@ -229,7 +229,7 @@ fn it_prints_the_lines(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints the lines to STDERR")]
-fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
+fn it_prints_the_lines_to_stderr(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
     let stripped = strip_ansi_escapes::strip(&output.stderr);
@@ -243,7 +243,7 @@ fn it_prints_the_lines_to_stderr(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then("it prints only these lines in any order")]
-fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
+fn prints_lines_any_order(world: &mut TridentWorld, step: &Step) {
     let mut want = step.docstring.as_ref().unwrap()[1..]
         .lines()
         .collect::<Vec<&str>>();
@@ -260,33 +260,33 @@ fn prints_lines_any_order(world: &mut TricorderWorld, step: &Step) {
 }
 
 #[then(expr = "the exit code is {int}")]
-fn exit_code(world: &mut TricorderWorld, want: i32) {
+fn exit_code(world: &mut TridentWorld, want: i32) {
     assert_eq!(world.exit_code(), want);
 }
 
 #[then(expr = "the staged changes are")]
-async fn the_staged_changes_are(world: &mut TricorderWorld, step: &Step) {
+async fn the_staged_changes_are(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let have = staged_changes(&world.dir).await;
     assert_eq!(have.trim(), want.trim());
 }
 
 #[then(expr = "the unstaged changes are")]
-async fn the_unstaged_changes_are(world: &mut TricorderWorld, step: &Step) {
+async fn the_unstaged_changes_are(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let have = unstaged_changes(&world.dir).await;
     assert_eq!(have.trim(), want.trim());
 }
 
 #[then(expr = "there are no staged changes")]
-async fn there_are_no_staged_changes(world: &mut TricorderWorld) {
+async fn there_are_no_staged_changes(world: &mut TridentWorld) {
     let want = "";
     let have = staged_changes(&world.dir).await;
     assert_eq!(have.trim(), want.trim());
 }
 
 #[then(expr = "there are no unstaged changes")]
-async fn there_are_no_unstaged_changes(world: &mut TricorderWorld) {
+async fn there_are_no_unstaged_changes(world: &mut TridentWorld) {
     let want = "";
     let have = unstaged_changes(&world.dir).await;
     assert_eq!(have.trim(), want.trim());

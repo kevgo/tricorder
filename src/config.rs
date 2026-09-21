@@ -8,19 +8,19 @@ use std::fmt::Display;
 use std::fs;
 use std::path::Path;
 
-/// name of the config file written by `tricorder init:config`
-pub const FILENAME: &str = "tricorder.jsonc";
+/// name of the config file written by `trident init:config`
+pub const FILENAME: &str = "trident.jsonc";
 
-/// config filenames recognized by Tricorder, in load order
-pub const CONFIG_FILENAMES: [&str; 2] = ["tricorder.json", FILENAME];
+/// config filenames recognized by Trident, in load order
+pub const CONFIG_FILENAMES: [&str; 2] = ["trident.json", FILENAME];
 
-/// VS Code / JSON language-server schema URL for `tricorder.json`
+/// VS Code / JSON language-server schema URL for `trident.json`
 pub const SCHEMA_URL: &str =
-    "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json";
+    "https://github.com/kevgo/trident/raw/refs/heads/main/docs/schema.json";
 
 #[derive(Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
-#[schemars(title = "Tricorder configuration")]
+#[schemars(title = "Trident configuration")]
 pub struct Config {
     /// JSON Schema URL for editor support
     #[serde(rename = "$schema")]
@@ -290,10 +290,10 @@ pub struct ApplicationSection {
     pub tikibase: Option<ApplicationNoFile>,
 }
 
-/// a Tricorder operation that applications can be configured for
+/// a Trident operation that applications can be configured for
 ///
-/// Operations are more basic primitives than Tricorder commands.
-/// All Tricorder commands execute variations of these three basic operations on various files.
+/// Operations are more basic primitives than Trident commands.
+/// All Trident commands execute variations of these three basic operations on various files.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Operation {
     Lint,
@@ -565,7 +565,7 @@ mod tests {
         fn comments() {
             let give = r#"
 {
-  // files Tricorder should skip
+  // files Trident should skip
   "ignore-files": ["a.css", "b/"]
 }
 "#;

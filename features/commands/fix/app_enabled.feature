@@ -1,4 +1,4 @@
-Feature: "tricorder fix" skips disabled applications
+Feature: "trident fix" skips disabled applications
 
   Background:
     Given a file "run-that-app" with content
@@ -14,7 +14,7 @@ Feature: "tricorder fix" skips disabled applications
       """
 
   Scenario: skips a disabled application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -24,7 +24,7 @@ Feature: "tricorder fix" skips disabled applications
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       delete empty folders
@@ -37,7 +37,7 @@ Feature: "tricorder fix" skips disabled applications
     And the exit code is 0
 
   Scenario: skips a disabled global application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -47,7 +47,7 @@ Feature: "tricorder fix" skips disabled applications
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it does not print
       """
       delete empty folders

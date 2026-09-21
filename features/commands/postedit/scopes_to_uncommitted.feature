@@ -1,4 +1,4 @@
-Feature: "tricorder postedit" lints only uncommitted files
+Feature: "trident postedit" lints only uncommitted files
 
   Background:
     Given a Git repository
@@ -13,7 +13,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=output"
+    When executing "trident postedit --show=output"
     Then it prints to STDERR
       """
       running 1 tools
@@ -45,7 +45,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=output"
+    When executing "trident postedit --show=output"
     Then it prints to STDERR
       """
       2 Markdown
@@ -74,7 +74,7 @@ Feature: "tricorder postedit" lints only uncommitted files
       """
       missing header
       """
-    When executing "tricorder postedit --show=output"
+    When executing "trident postedit --show=output"
     Then it prints to STDERR
       """
       1 Markdown

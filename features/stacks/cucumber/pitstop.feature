@@ -68,7 +68,7 @@ Feature: pitstop Cucumber
         Scenario:   bar2
           Given   another step
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
@@ -97,7 +97,7 @@ Feature: pitstop Cucumber
 
           Given a step
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)

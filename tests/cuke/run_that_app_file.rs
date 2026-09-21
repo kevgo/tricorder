@@ -1,4 +1,4 @@
-use crate::world::TricorderWorld;
+use crate::world::TridentWorld;
 use cucumber::gherkin::Scenario;
 use std::io::ErrorKind;
 
@@ -20,7 +20,7 @@ pub fn is_asserted_by(scenario: &Scenario) -> bool {
 }
 
 /// fails if file "run-that-app" changed without being verified by the scenario
-pub async fn verify_unchanged(world: &TricorderWorld) -> Result<(), String> {
+pub async fn verify_unchanged(world: &TridentWorld) -> Result<(), String> {
     let old = world.original_file_content(FILENAME);
     let new = match world.current_file_content(FILENAME).await {
         Ok(content) => Some(content),

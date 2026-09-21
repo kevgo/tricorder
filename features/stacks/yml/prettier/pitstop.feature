@@ -15,7 +15,7 @@ Feature: pitstop YML
       """
       key:     other
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)
@@ -42,7 +42,7 @@ Feature: pitstop YML
       key:     value
       key:     other
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)

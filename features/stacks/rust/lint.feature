@@ -11,7 +11,7 @@ Feature: lint Rust
       """
 
   Scenario: no custom linters defined
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And it prints to STDERR
       """
@@ -22,7 +22,7 @@ Feature: lint Rust
     And file "main.rs" is unchanged
 
   Scenario: rust-specific linters
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -39,7 +39,7 @@ Feature: lint Rust
         }
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Rust (my custom linter)

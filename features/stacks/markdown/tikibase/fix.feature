@@ -32,7 +32,7 @@ Feature: fix Markdown with Tikibase
 
       also check out [One](one.md)
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Markdown (tikibase)
@@ -53,7 +53,7 @@ Feature: fix Markdown with Tikibase
       """
       # Two
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Markdown (tikibase)
@@ -78,7 +78,7 @@ Feature: fix Markdown with Tikibase
 
       [e]()
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix Markdown (tikibase)

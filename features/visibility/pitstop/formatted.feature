@@ -23,7 +23,7 @@ Feature: pitstop multiple good stacks
       """
 
   Scenario: --show=output
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -63,7 +63,7 @@ Feature: pitstop multiple good stacks
     And all files are unchanged
 
   Scenario: --show=verbose
-    When executing "tricorder pitstop --show=verbose"
+    When executing "trident pitstop --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -106,7 +106,7 @@ Feature: pitstop multiple good stacks
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder pitstop --show=names"
+    When executing "trident pitstop --show=names"
     Then it prints only these lines in any order
       """
       delete empty folders
@@ -121,6 +121,6 @@ Feature: pitstop multiple good stacks
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder pitstop --show=failed"
+    When executing "trident pitstop --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged

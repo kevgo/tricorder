@@ -10,7 +10,7 @@ Feature: custom fixes
       """
 
   Scenario: custom fixes run in the order defined
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "global-fixes": [
@@ -25,7 +25,7 @@ Feature: custom fixes
         ]
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       delete empty folders
@@ -44,7 +44,7 @@ Feature: custom fixes
     And the exit code is 0
 
   Scenario: custom lint fails
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "global-lints": [
@@ -58,7 +58,7 @@ Feature: custom fixes
       echo "custom lint failed"
       exit 4
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lints/fail.sh

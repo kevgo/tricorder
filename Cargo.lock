@@ -2089,7 +2089,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tricorder"
+name = "trident"
 version = "0.1.0"
 dependencies = [
  "ahash",

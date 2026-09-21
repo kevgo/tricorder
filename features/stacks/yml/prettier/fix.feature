@@ -13,7 +13,7 @@ Feature: fix YML
       """
       key: value
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix YML (Prettier)
@@ -30,7 +30,7 @@ Feature: fix YML
       """
       key:     other
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)
@@ -50,7 +50,7 @@ Feature: fix YML
       """
       key: "
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix YML (Prettier)

@@ -7,7 +7,7 @@ Feature: pitstop for a codebase without any code
       """
 
   Scenario: --show=output
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints
       """
       delete empty folders
@@ -20,7 +20,7 @@ Feature: pitstop for a codebase without any code
     And the exit code is 0
 
   Scenario: --show=names
-    When executing "tricorder pitstop --show=names"
+    When executing "trident pitstop --show=names"
     Then it prints
       """
       delete empty folders
@@ -29,7 +29,7 @@ Feature: pitstop for a codebase without any code
     And the exit code is 0
 
   Scenario: --show=failed
-    When executing "tricorder pitstop --show=failed"
+    When executing "trident pitstop --show=failed"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0

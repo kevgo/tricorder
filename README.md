@@ -1,18 +1,18 @@
-# Tricorder
+# Trident
 
 Type checking and linting are absolutely critical for AI engineering.
 AI hallucinates non-existing APIs, dead code, and mismatching formatting styles.
 Strict automated guardrails are the only things keeping your codebase from
 turning into an untamable, hallucinated mess.
 
-Tricorder solves this problem for you.
+Trident solves this problem for you.
 It runs all applicable type checkers, linters,
 and formatters concurrently for the fastest results.
 
 ## Demo
 
-Running `tricorder lint --show=output` on the Tricorder codebase finishes in
-about 500 ms and prints:
+Running `trident lint --show=output` on the Trident codebase finishes in about
+500 ms and prints:
 
 ```sh
 114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
@@ -26,8 +26,7 @@ lint Cucumber (gherkin-lint)
 cargo clippy
 ```
 
-Tricorder has classified 203 files
-and executed 5 tools concurrently to lint them.
+Trident has classified 203 files and executed 5 tools concurrently to lint them.
 In this example:
 
 - [Taplo](https://github.com/tamasfe/taplo) for the 3 TOML files
@@ -40,9 +39,9 @@ In this example:
   to detect unresolved merge conflict markers
 
 These third-party linters don't need to be installed on the machine,
-Tricorder downloads them if needed.
+Trident downloads them if needed.
 
-Tricorder is optimized for speed.
+Trident is optimized for speed.
 It favors modern linters and formatters that execute quickly,
 runs them concurrently, and passes each tool the exact files to process,
 so that the tools don't need to scan the codebase again to discover files to
@@ -50,25 +49,25 @@ process.
 
 ## Usage
 
-Tricorder provides special commands
+Trident provides special commands
 for specific phases of the software development workflow:
 
-### `tricorder pitstop`
+### `trident pitstop`
 
 This command provides efficient support for interactive development.
 It first applies all safe automatic fixes to all files changed on the current
 branch, then reports any remaining code problems that require manual or AI
 attention.
 
-### `tricorder postedit`
+### `trident postedit`
 
-This command is the equivalent of `tricorder pitstop` for AI agents.
+This command is the equivalent of `trident pitstop` for AI agents.
 Each time your agent generates code, it checks it for problems.
 This command does not format files because coding agents cache file contents
 and can get tripped up by unexpected file changes.
 The changes get formatted when being committed.
 
-### `tricorder precommit`
+### `trident precommit`
 
 This command runs inside the Git precommit hook and formats the staged changes
 while they are getting committed.
@@ -78,33 +77,33 @@ even if there are formatting problems.
 This command re-stages files that got formatted.
 Re-staging operates on the entire file.
 If you want to commit only part of a modified file,
-run `tricorder pitstop` or `tricorder fix` to format everything
+run `trident pitstop` or `trident fix` to format everything
 before partially staging your changes.
-That way, Tricorder precommit won't introduce additional formatting changes
+That way, Trident precommit won't introduce additional formatting changes
 and won't need to re-stage the file.
 
-### `tricorder ci`
+### `trident ci`
 
 This command runs inside your CI pipeline.
 It ensures all code passes all checks, i.e. it fails if either:
 
 - a linter reports an unresolved issue
 - some code is unformatted, i.e. a formatter would modify a file
-- a test defined in `tricorder.jsonc` fails
+- a test defined in `trident.jsonc` fails
 
 To run only some of those tests, pass their names joined with `+`:
 
 ```sh
-tricorder ci --test=unit+cuke
+trident ci --test=unit+cuke
 ```
 
-### `tricorder init:claude`
+### `trident init:claude`
 
-This command integrates Tricorder into coding agents harnesses
+This command integrates Trident into coding agents harnesses
 that follow Claude Code configuration, such as Claude Code, Codex, Code Puppy,
 or Wibey.
 
-Once configured, the agent runs `tricorder postedit` after it makes changes.
+Once configured, the agent runs `trident postedit` after it makes changes.
 This command lints only the uncommitted files,
 i.e. changes that the agent just made.
 
@@ -113,40 +112,40 @@ This helps the AI-generated generate cleaner code and fix possible bugs faster.
 It works particularly well with custom AI-generated linters
 that enforce invariants specific to your domain.
 
-### `tricorder init:config`
+### `trident init:config`
 
-Creates a scaffold of the Tricorder config file containing the default settings.
+Creates a scaffold of the Trident config file containing the default settings.
 
-### `tricorder init:githook`
+### `trident init:githook`
 
 This command installs a
 [Git pre-commit hook](https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks)
-that runs `tricorder precommit` before every commit.
+that runs `trident precommit` before every commit.
 
-### `tricorder update:tools`
+### `trident update:tools`
 
 This command updates the versions of third-party tools
-that Tricorder uses to the latest available versions.
+that Trident uses to the latest available versions.
 
-### `tricorder fix`
+### `trident fix`
 
 This command applies all safe automated fixes to the codebase.
 Fixes for different file types are processed concurrently,
 multiple fixes for the same file type run sequentially.
 
-### `tricorder fix-unsafe`
+### `trident fix-unsafe`
 
 This command applies more aggressive automatic fixes
 that might change program behavior and should be verified.
 
-### `tricorder lint`
+### `trident lint`
 
 This command runs all linters that apply to the files in the codebase.
 All linters run in parallel.
 
-### `tricorder test`
+### `trident test`
 
-This command runs all tests defined in `tricorder.jsonc` in parallel.
+This command runs all tests defined in `trident.jsonc` in parallel.
 
 ## Supported stacks
 
@@ -168,51 +167,51 @@ This command runs all tests defined in `tricorder.jsonc` in parallel.
 
 ## Q & A
 
-> Does Tricorder lock me into its tooling choices?
+> Does Trident lock me into its tooling choices?
 
-No. You can override which tools run in the Tricorder config file.
+No. You can override which tools run in the Trident config file.
 
-> I want to add a linter or formatter to Tricorder.
+> I want to add a linter or formatter to Trident.
 
 Send a pull request or open an issue!
 
 ## Installation
 
-The installer script downloads the Tricorder executable into the current
+The installer script downloads the Trident executable into the current
 directory.
-To install Tricorder into a particular directory,
+To install Trident into a particular directory,
 run the installer from that directory.
 
 ### Linux and macOS
 
 ```sh
-curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh
+curl https://raw.githubusercontent.com/kevgo/trident/main/download.sh | sh
 ```
 
 To download a specific version and/or save under a specific filename:
 
 ```sh
-curl https://raw.githubusercontent.com/kevgo/tricorder/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
+curl https://raw.githubusercontent.com/kevgo/trident/main/download.sh | sh -S -- [--version <version>] [--name <filename>]
 ```
 
 ### Windows PowerShell
 
 ```powershell
-Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/tricorder/main/download.ps1" -UseBasicParsing).Content
+Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kevgo/trident/main/download.ps1" -UseBasicParsing).Content
 ```
 
 ### Compile from source
 
 ```sh
-cargo install --git https://github.com/kevgo/tricorder
+cargo install --git https://github.com/kevgo/trident
 ```
 
 ## Configuration
 
-You can configure Tricorder and define custom linters
-and formatters in **tricorder.json** or **tricorder.jsonc**.
+You can configure Trident and define custom linters
+and formatters in **trident.json** or **trident.jsonc**.
 Comments and trailing commas are allowed in either file.
-If both exist, **tricorder.json** takes precedence.
+If both exist, **trident.json** takes precedence.
 
 <!-- DEFAULT-CONFIG-START -->
 
@@ -220,9 +219,9 @@ If both exist, **tricorder.json** takes precedence.
 {
   // link to the JSON schema for this file,
   // for auto-complete in VSCode and compatible editors
-  "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+  "$schema": "https://github.com/kevgo/trident/raw/refs/heads/main/docs/schema.json",
 
-  // These files are invisible to Tricorder.
+  // These files are invisible to Trident.
   "ignore-files": ["vendor/", "**/*.min.css"],
 
   // These tools always run.

@@ -11,7 +11,7 @@ Feature: install all JSON tools
       """
       {"key":"value"}
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix JSON (Prettier)

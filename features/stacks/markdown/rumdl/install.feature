@@ -12,7 +12,7 @@ Feature: install Rumdl
       """
       #     Hello
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -20,7 +20,7 @@ Feature: install Rumdl
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/rvben/rumdl/releases/latest) ... ok

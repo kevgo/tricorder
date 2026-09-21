@@ -15,7 +15,7 @@ Feature: fix Cucumber
         Scenario: bar
           Given a step
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
@@ -39,7 +39,7 @@ Feature: fix Cucumber
         Scenario:   bar2
           Given   another step
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)
@@ -67,7 +67,7 @@ Feature: fix Cucumber
       """
       Feat
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Cucumber (Ghokin)

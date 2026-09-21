@@ -37,10 +37,10 @@ names = [
   "Multi-Tool",
   "Q & A",
   "Rigor",
-  "Tricorder",
+  "Trident",
   "Upkeep",
-  "tricorder.json",
-  "tricorder.jsonc",
+  "trident.json",
+  "trident.jsonc",
   # keep-sorted end
 ]
 code-blocks = false

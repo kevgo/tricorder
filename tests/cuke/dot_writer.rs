@@ -7,7 +7,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-use crate::world::TricorderWorld;
+use crate::world::TridentWorld;
 
 const RED: &str = "\x1b[31m";
 const GREEN: &str = "\x1b[32m";
@@ -52,7 +52,7 @@ impl DotWriter {
         feature_name: &str,
         feature_path: Option<&std::path::Path>,
         scenario_name: &str,
-        ev: event::Scenario<TricorderWorld>,
+        ev: event::Scenario<TridentWorld>,
     ) {
         match ev {
             event::Scenario::Started => {
@@ -128,12 +128,12 @@ impl DotWriter {
 
 impl writer::NonTransforming for DotWriter {}
 
-impl cucumber::Writer<TricorderWorld> for DotWriter {
+impl cucumber::Writer<TridentWorld> for DotWriter {
     type Cli = cucumber::cli::Empty;
 
     fn handle_event(
         &mut self,
-        event: cucumber::parser::Result<Event<event::Cucumber<TricorderWorld>>>,
+        event: cucumber::parser::Result<Event<event::Cucumber<TridentWorld>>>,
         _cli: &Self::Cli,
     ) -> impl Future<Output = ()> {
         match event {

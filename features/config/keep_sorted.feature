@@ -26,7 +26,7 @@ Feature: keep-sorted support
       """
 
   Scenario: keep-sorted is disabled by default
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it does not print
       """
       keep-sorted
@@ -35,7 +35,7 @@ Feature: keep-sorted support
     And file "unsorted_2.toml" is unchanged
 
   Scenario: keep-sorted sorts marker-bearing files when enabled
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -45,7 +45,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)
@@ -67,7 +67,7 @@ Feature: keep-sorted support
     And the exit code is 0
 
   Scenario: does not sort globally ignored files
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "ignore-files": ["unsorted_1.toml"],
@@ -78,7 +78,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       keep-sorted
@@ -93,7 +93,7 @@ Feature: keep-sorted support
       """
 
   Scenario: does not sort files that should not be sorted
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -104,7 +104,7 @@ Feature: keep-sorted support
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       keep-sorted

@@ -1,4 +1,4 @@
-Feature: "tricorder pitstop" skips disabled applications
+Feature: "trident pitstop" skips disabled applications
 
   Background:
     Given a file "run-that-app" with content
@@ -14,7 +14,7 @@ Feature: "tricorder pitstop" skips disabled applications
       """
 
   Scenario: skips a disabled application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -24,7 +24,7 @@ Feature: "tricorder pitstop" skips disabled applications
         }
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it does not print
       """
       Taplo
@@ -37,7 +37,7 @@ Feature: "tricorder pitstop" skips disabled applications
     And the exit code is 0
 
   Scenario: skips a disabled global application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -47,7 +47,7 @@ Feature: "tricorder pitstop" skips disabled applications
         }
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it does not print
       """
       delete empty folders

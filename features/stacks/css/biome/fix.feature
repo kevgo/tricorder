@@ -14,7 +14,7 @@ Feature: fix CSS
       \tcolor: red;
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)
@@ -35,7 +35,7 @@ Feature: fix CSS
         color : blue ;
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)
@@ -61,7 +61,7 @@ Feature: fix CSS
         col
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)

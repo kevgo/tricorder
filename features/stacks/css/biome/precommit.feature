@@ -16,7 +16,7 @@ Feature: precommit CSS
       }
       """
     And I ran "git add main.css"
-    When executing "tricorder precommit --show=failed"
+    When executing "trident precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.css" is unchanged
@@ -35,7 +35,7 @@ Feature: precommit CSS
       }
       """
     And I ran "git add main.css other.css"
-    When executing "tricorder precommit --show=failed"
+    When executing "trident precommit --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.css" now has content
@@ -59,7 +59,7 @@ Feature: precommit CSS
       }
       """
     And I ran "git add main.css"
-    When executing "tricorder precommit"
+    When executing "trident precommit"
     Then it prints the block
       """
       Found 2 errors.

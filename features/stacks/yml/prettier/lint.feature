@@ -13,7 +13,7 @@ Feature: lint YML
       """
       key: value
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
@@ -23,7 +23,7 @@ Feature: lint YML
       """
       key:     value
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged
@@ -33,7 +33,7 @@ Feature: lint YML
       """
       key: "
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "main.yml" is unchanged

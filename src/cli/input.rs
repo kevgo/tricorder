@@ -22,7 +22,7 @@ pub enum Command {
     #[command(name = "init:claude")]
     InitClaude(InitArgs),
 
-    /// Create the Tricorder configuration file
+    /// Create the Trident configuration file
     #[command(name = "init:config")]
     InitConfig(InitArgs),
 
@@ -165,7 +165,7 @@ mod tests {
         args: &[&str],
         extract: impl FnOnce(Command) -> CiArgs,
     ) -> CiArgs {
-        let mut argv = vec!["tricorder", command];
+        let mut argv = vec!["trident", command];
         argv.extend(args);
         extract(Cli::try_parse_from(argv).unwrap().command.unwrap())
     }

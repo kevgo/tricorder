@@ -24,7 +24,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
       """
 
   Scenario: --show=output
-    When executing "tricorder ci --show=output"
+    When executing "trident ci --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -81,7 +81,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
     And the exit code is 0
 
   Scenario: --show=verbose
-    When executing "tricorder ci --show=verbose"
+    When executing "trident ci --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -146,7 +146,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
     And the exit code is 0
 
   Scenario: --show=names
-    When executing "tricorder ci --show=names"
+    When executing "trident ci --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -181,7 +181,7 @@ Feature: CI doesn't care about uncommitted files that are unformatted
     And the exit code is 0
 
   Scenario: --show=failed
-    When executing "tricorder ci --show=failed"
+    When executing "trident ci --show=failed"
     Then it prints nothing to STDOUT
     And file "main.css" now has content
       """

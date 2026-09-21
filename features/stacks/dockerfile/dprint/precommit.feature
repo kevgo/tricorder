@@ -13,12 +13,12 @@ Feature: precommit Dockerfile with dprint
         "plugins": ["https://plugins.dprint.dev/dockerfile-0.4.1.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -29,7 +29,7 @@ Feature: precommit Dockerfile with dprint
       FROM alpine
       """
     And I ran "git add Dockerfile"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix Dockerfile (dprint)
@@ -47,7 +47,7 @@ Feature: precommit Dockerfile with dprint
       FROM     debian
       """
     And I ran "git add Dockerfile subdir/Dockerfile"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix Dockerfile (dprint)

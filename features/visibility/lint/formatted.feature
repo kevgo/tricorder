@@ -23,7 +23,7 @@ Feature: lint multiple stacks
       """
 
   Scenario: --show=output
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -45,7 +45,7 @@ Feature: lint multiple stacks
     And all files are unchanged
 
   Scenario: --show=verbose
-    When executing "tricorder lint --show=verbose"
+    When executing "trident lint --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -68,7 +68,7 @@ Feature: lint multiple stacks
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder lint --show=names"
+    When executing "trident lint --show=names"
     Then it prints only these lines in any order
       """
       lint TypeScript (Biome)
@@ -79,6 +79,6 @@ Feature: lint multiple stacks
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder lint --show=failed"
+    When executing "trident lint --show=failed"
     Then it prints nothing to STDOUT
     And all files are unchanged

@@ -16,7 +16,7 @@ Feature: fix SQL
       """
       select id, name from two
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix SQL (sqlfmt)
@@ -35,7 +35,7 @@ Feature: fix SQL
       """
       SELECT            id, name FROM two
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix SQL (sqlfmt)
@@ -63,7 +63,7 @@ Feature: fix SQL
       """
       SELECT FROM "
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix SQL (sqlfmt)
@@ -83,7 +83,7 @@ Feature: fix SQL
       """
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints to STDERR
       """
       2 other

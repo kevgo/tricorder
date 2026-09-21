@@ -23,7 +23,7 @@ Feature: pitstop multiple unformatted stacks
       """
 
   Scenario: --show=output
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -79,7 +79,7 @@ Feature: pitstop multiple unformatted stacks
       """
 
   Scenario: --show=verbose
-    When executing "tricorder pitstop --show=verbose"
+    When executing "trident pitstop --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -143,7 +143,7 @@ Feature: pitstop multiple unformatted stacks
       """
 
   Scenario: --show=names
-    When executing "tricorder pitstop --show=names"
+    When executing "trident pitstop --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -176,7 +176,7 @@ Feature: pitstop multiple unformatted stacks
       """
 
   Scenario: --show=failed
-    When executing "tricorder pitstop --show=failed"
+    When executing "trident pitstop --show=failed"
     Then it prints nothing to STDOUT
     And file "main.css" now has content
       """

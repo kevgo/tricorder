@@ -4,12 +4,12 @@ set -e
 print_welcome() {
 	version=$1
 	name=$2
-	echo "Installing tricorder $version as $name ..."
+	echo "Installing trident $version as $name ..."
 }
 
-VERSION="0.37.3"               # the default version of tricorder to download
-DEST_FILENAME="tricorder"            # the default name of the downloaded file
-TMP_DIR=./tricorder_install # the temporary directory to download the archive to
+VERSION="0.37.3"               # the default version of trident to download
+DEST_FILENAME="trident"            # the default name of the downloaded file
+TMP_DIR=./trident_install # the temporary directory to download the archive to
 
 main() {
 	# parse the arguments
@@ -43,14 +43,14 @@ main() {
 		err "Unsupported CPU architecture, please install from source."
 	fi
 	DOWNLOAD_URL="$(download_url "$OS" "$CPU")"
-	SRC_FILE=$(executable_filename "tricorder" "$OS")
+	SRC_FILE=$(executable_filename "trident" "$OS")
 	DEST_FILE=$(executable_filename "$DEST_FILENAME" "$OS")
 
 	check_already_installed "$DEST_FILE"
 	download_and_extract "$DOWNLOAD_URL" "$OS" "$SRC_FILE" "$DEST_FILE"
 
 	echo
-	echo "Successfully installed tricorder $VERSION for $OS/$CPU."
+	echo "Successfully installed trident $VERSION for $OS/$CPU."
 }
 
 download_and_extract() {
@@ -61,8 +61,8 @@ download_and_extract() {
 	create_folder "$TMP_DIR"
 	if [ "$OS" = "windows" ]; then
 		need_cmd unzip
-		curl -Lo "$TMP_DIR/tricorder.zip" "$URL"
-		(cd $TMP_DIR && unzip tricorder.zip "$SRC_FILENAME")
+		curl -Lo "$TMP_DIR/trident.zip" "$URL"
+		(cd $TMP_DIR && unzip trident.zip "$SRC_FILENAME")
 	else
 		need_cmd tar
 		curl -L "$URL" | tar xz --directory "$TMP_DIR"
@@ -76,7 +76,7 @@ download_url() {
 	OS=$1
 	CPU=$2
 	EXT=$(archive_ext "$OS")
-	echo "https://github.com/kevgo/tricorder/releases/download/v${VERSION}/tricorder_${OS}_${CPU}.${EXT}"
+	echo "https://github.com/kevgo/trident/releases/download/v${VERSION}/trident_${OS}_${CPU}.${EXT}"
 }
 
 # provides the name of the operating system in the format used in the release archive filenames
@@ -128,7 +128,7 @@ check_already_installed() {
 	if [ -f "$DEST_PATH" ]; then
 		INSTALLED_VERSION=$($DEST_PATH -V)
 		if [ "$INSTALLED_VERSION" = "$VERSION" ]; then
-			echo "You already have tricorder $VERSION installed."
+			echo "You already have trident $VERSION installed."
 			exit 0
 		fi
 	fi

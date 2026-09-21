@@ -12,12 +12,12 @@ Feature: fix JSON with dprint
         "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -27,7 +27,7 @@ Feature: fix JSON with dprint
       """
       { "key": "value" }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix JSON (dprint)
@@ -44,7 +44,7 @@ Feature: fix JSON with dprint
       """
       {  "key"  :  "other"  }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix JSON (dprint)
@@ -64,7 +64,7 @@ Feature: fix JSON with dprint
       """
       { "key":
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix JSON (dprint)

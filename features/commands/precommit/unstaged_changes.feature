@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" does not format files with unstaged changes
+Feature: "trident precommit" does not format files with unstaged changes
 
   Scenario: precommit an unstaged file
     Given a Git repository
@@ -17,7 +17,7 @@ Feature: "tricorder precommit" does not format files with unstaged changes
       """
       line   1
       """
-    When executing "tricorder precommit"
+    When executing "trident precommit"
     Then it prints nothing to STDOUT
     And there are no staged changes
     And the unstaged changes are

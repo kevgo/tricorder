@@ -12,12 +12,12 @@ Feature: fix Dockerfile with dprint
         "plugins": ["https://plugins.dprint.dev/dockerfile-0.4.1.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -27,7 +27,7 @@ Feature: fix Dockerfile with dprint
       """
       FROM alpine
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix Dockerfile (dprint)
@@ -44,7 +44,7 @@ Feature: fix Dockerfile with dprint
       """
       FROM     debian
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Dockerfile (dprint)

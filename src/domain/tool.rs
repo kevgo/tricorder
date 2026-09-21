@@ -3,7 +3,7 @@ use crate::domain::StackType;
 use std::fmt::Display;
 use std::path::Path;
 
-/// a tool (lint or fix) that Tricorder can run
+/// a tool (lint or fix) that Trident can run
 pub trait Tool: Display {
     /// provides the application-specific section in the config file
     fn config_section<'a>(&self, apps: &'a ApplicationSection) -> Option<&'a dyn Application>;

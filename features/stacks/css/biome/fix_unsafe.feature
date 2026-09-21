@@ -28,7 +28,7 @@ Feature: unsafe-fix CSS
       """
 
   Scenario: fix-unsafe
-    When executing "tricorder fix-unsafe --show=output"
+    When executing "trident fix-unsafe --show=output"
     Then it prints the lines
       """
       unsafe-fix CSS (Biome)
@@ -42,7 +42,7 @@ Feature: unsafe-fix CSS
       """
 
   Scenario: fix
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)

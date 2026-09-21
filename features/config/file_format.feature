@@ -7,7 +7,7 @@ Feature: config file format
       """
 
   Scenario: comments and trailing commas are accepted
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         // a comment
@@ -19,7 +19,7 @@ Feature: config file format
         ],
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       hello
@@ -27,8 +27,8 @@ Feature: config file format
       """
     And the exit code is 0
 
-  Scenario: tricorder.jsonc is used when tricorder.json is absent
-    Given a file "tricorder.jsonc" with content
+  Scenario: trident.jsonc is used when trident.json is absent
+    Given a file "trident.jsonc" with content
       """
       {
         "global-lints": [
@@ -36,7 +36,7 @@ Feature: config file format
         ]
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       from jsonc
@@ -44,8 +44,8 @@ Feature: config file format
       """
     And the exit code is 0
 
-  Scenario: tricorder.json takes precedence over tricorder.jsonc
-    Given a file "tricorder.json" with content
+  Scenario: trident.json takes precedence over trident.jsonc
+    Given a file "trident.json" with content
       """
       {
         "global-lints": [
@@ -53,7 +53,7 @@ Feature: config file format
         ]
       }
       """
-    And a file "tricorder.jsonc" with content
+    And a file "trident.jsonc" with content
       """
       {
         "global-lints": [
@@ -61,7 +61,7 @@ Feature: config file format
         ]
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       from json
@@ -74,15 +74,15 @@ Feature: config file format
     And the exit code is 0
 
   Scenario: unknown keys are rejected
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "unknown-key": true
       }
       """
-    When executing "tricorder lint"
+    When executing "trident lint"
     Then it prints the block
       """
-      config file (tricorder.json): unknown field `unknown-key`
+      config file (trident.json): unknown field `unknown-key`
       """
     And the exit code is 1

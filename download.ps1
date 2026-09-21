@@ -7,10 +7,10 @@ $ErrorActionPreference = "Stop"
 Set-Variable -Name "version" -Value $Version
 
 function Welcome() {
-  Write-Output "TRICORDER DOWNLOAD SCRIPT"
+  Write-Output "TRIDENT DOWNLOAD SCRIPT"
   Write-Output ""
   Write-Output "This script is under development. Please report issues at"
-  Write-Output "https://github.com/kevgo/tricorder/issues"
+  Write-Output "https://github.com/kevgo/trident/issues"
   Write-Output ""
 }
 
@@ -37,7 +37,7 @@ function Receive-Archive {
     [Parameter(Mandatory = $true)]
     [string]$cpuArchitecture
   )
-  $url = "https://github.com/kevgo/tricorder/releases/download/v${version}/tricorder_windows_${cpuArchitecture}.zip"
+  $url = "https://github.com/kevgo/trident/releases/download/v${version}/trident_windows_${cpuArchitecture}.zip"
   $archiveName = [System.IO.Path]::GetFileName($url)
   $tempDir = [System.IO.Path]::GetTempPath()
   $zipPath = Join-Path $tempDir $archiveName
@@ -52,9 +52,9 @@ function Expand-Archive {
   )
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $zip = [System.IO.Compression.ZipFile]::OpenRead($archivePath)
-  $zipEntry = $zip.Entries | Where-Object { $_.Name -eq "tricorder.exe" }
+  $zipEntry = $zip.Entries | Where-Object { $_.Name -eq "trident.exe" }
   $currentDirectory = Get-Location
-  $targetPath = Join-Path $currentDirectory "tricorder.exe"
+  $targetPath = Join-Path $currentDirectory "trident.exe"
   [System.IO.Compression.ZipFileExtensions]::ExtractToFile($zipEntry, $targetPath, $true)
   $zip.Dispose()
 }

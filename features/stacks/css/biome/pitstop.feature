@@ -14,7 +14,7 @@ Feature: pitstop CSS
         color : red ;
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)
@@ -35,7 +35,7 @@ Feature: pitstop CSS
         colr: blue;
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix CSS (Biome)

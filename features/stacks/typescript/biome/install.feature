@@ -6,7 +6,7 @@ Feature: install all TypeScript tools
       """
       console.log(  "hello"  );
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/biomejs/biome/releases/latest) ... ok

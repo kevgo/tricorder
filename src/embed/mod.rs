@@ -1,4 +1,4 @@
-//! functionality around embedding Tricorder into external ools
+//! functionality around embedding Trident into external ools
 
 pub mod agents;
 pub mod git;
@@ -7,13 +7,13 @@ use crate::domain::{Result, UserError};
 use std::env;
 use std::path::PathBuf;
 
-/// Placeholder for the path to the Tricorder executable in templates for files that the embed module creates.
-const TRICORDER_PLACEHOLDER: &str = "{{TRICORDER}}";
+/// Placeholder for the path to the Trident executable in templates for files that the embed module creates.
+const TRIDENT_PLACEHOLDER: &str = "{{TRIDENT}}";
 
-/// provides the absolute path to the Tricorder executable on the current machine
-fn absolute_path_to_tricorder_executable() -> Result<PathBuf> {
+/// provides the absolute path to the Trident executable on the current machine
+fn absolute_path_to_trident_executable() -> Result<PathBuf> {
     let argv0 = env::args_os().next().ok_or(UserError::ArgvIsEmpty)?;
-    which::which(&argv0).map_err(|err| UserError::CannotFindTricorderExecutable {
+    which::which(&argv0).map_err(|err| UserError::CannotFindTridentExecutable {
         path: argv0.into(),
         err: err.to_string(),
     })

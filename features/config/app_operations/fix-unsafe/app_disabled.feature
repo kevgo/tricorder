@@ -9,7 +9,7 @@ Feature: disable an application's fix-unsafe operation
       prettier 3.7.0
       taplo 0.10.0
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -39,7 +39,7 @@ Feature: disable an application's fix-unsafe operation
       """
 
   Scenario: fix-unsafe skips the application
-    When executing "tricorder fix-unsafe --show=output"
+    When executing "trident fix-unsafe --show=output"
     Then it prints the block
       """
       unsafe-fix CSS (Biome)
@@ -52,7 +52,7 @@ Feature: disable an application's fix-unsafe operation
     And the exit code is 0
 
   Scenario: lint still runs the application
-    When executing "tricorder lint --show=verbose"
+    When executing "trident lint --show=verbose"
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
@@ -66,7 +66,7 @@ Feature: disable an application's fix-unsafe operation
     And the exit code is 0
 
   Scenario: fix still runs the application
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints the block matching
       """
       fix TOML \(Taplo\)

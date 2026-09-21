@@ -12,7 +12,7 @@ Feature: lint Markdown
       """
       # Hello
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint Markdown (rumdl)
@@ -25,7 +25,7 @@ Feature: lint Markdown
       """
       #     Hello
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Markdown (rumdl)
@@ -39,7 +39,7 @@ Feature: lint Markdown
       """
       text
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint Markdown (rumdl)
@@ -53,7 +53,7 @@ Feature: lint Markdown
       """
       text
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint Markdown (rumdl)

@@ -24,7 +24,7 @@ Feature: CI if committed files are unformatted
       """
 
   Scenario: --show=output
-    When executing "tricorder ci --show=output"
+    When executing "trident ci --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -93,7 +93,7 @@ Feature: CI if committed files are unformatted
     And the exit code is 1
 
   Scenario: --show=verbose
-    When executing "tricorder ci --show=verbose"
+    When executing "trident ci --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -170,7 +170,7 @@ Feature: CI if committed files are unformatted
     And the exit code is 1
 
   Scenario: --show=names
-    When executing "tricorder ci --show=names"
+    When executing "trident ci --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -237,7 +237,7 @@ Feature: CI if committed files are unformatted
     And the exit code is 1
 
   Scenario: --show=failed
-    When executing "tricorder ci --show=failed"
+    When executing "trident ci --show=failed"
     Then it prints the block
       """
       code is not formatted

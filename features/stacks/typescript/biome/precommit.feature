@@ -14,7 +14,7 @@ Feature: precommit TypeScript
       console.log("hello");
       """
     And I ran "git add main.ts"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix TypeScript (Biome)
@@ -32,7 +32,7 @@ Feature: precommit TypeScript
       console.log(  "other"  );
       """
     And I ran "git add main.ts other.ts"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)
@@ -53,7 +53,7 @@ Feature: precommit TypeScript
       console.log("
       """
     And I ran "git add main.ts"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)

@@ -8,7 +8,7 @@ Feature: stack-specific lints
       """
 
   Scenario: "additional-lints" adds custom lints to the built-in ones for that stack
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -26,7 +26,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Python (ruff)
@@ -39,7 +39,7 @@ Feature: stack-specific lints
     And the exit code is 0
 
   Scenario: "replace-lints" replaces the built-in lints for that stack
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -57,7 +57,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Python (my lint)
@@ -70,7 +70,7 @@ Feature: stack-specific lints
     And the exit code is 0
 
   Scenario: disable a stack's lints
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -86,7 +86,7 @@ Feature: stack-specific lints
       """
       # some Python code
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it does not print any of these lines
       """
       lint Python (ruff)
@@ -94,7 +94,7 @@ Feature: stack-specific lints
     And the exit code is 0
 
   Scenario: runs only when files of that stack exist
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -108,7 +108,7 @@ Feature: stack-specific lints
         }
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it does not print any of these lines
       """
       my lint
