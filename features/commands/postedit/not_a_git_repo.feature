@@ -1,4 +1,4 @@
-Feature: "tricorder postedit" lints all files outside a Git repository
+Feature: "trident postedit" lints all files outside a Git repository
 
   Scenario: not a Git repository
     Given a file "run-that-app" with content
@@ -10,7 +10,7 @@ Feature: "tricorder postedit" lints all files outside a Git repository
       """
       text
       """
-    When executing "tricorder postedit --show=output"
+    When executing "trident postedit --show=output"
     Then it prints the lines to STDERR
       """
       1 Markdown, 1 other

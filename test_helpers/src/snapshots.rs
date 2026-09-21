@@ -22,7 +22,7 @@ static SNAPSHOT_EDITS: LazyLock<Mutex<Vec<SnapshotEdit>>> =
 
 /// indicates whether the test run should update the golden snapshots
 pub fn enabled() -> bool {
-    env::var("TRICORDER_UPDATE_SNAPSHOTS").is_ok_and(|value| !value.is_empty())
+    env::var("TRIDENT_UPDATE_SNAPSHOTS").is_ok_and(|value| !value.is_empty())
 }
 
 /// queues a snapshot update to be applied after the test run finishes
@@ -105,7 +105,7 @@ mod tests {
                 "      \"\"\"".to_string(),
                 "      setup content".to_string(),
                 "      \"\"\"".to_string(),
-                "    When executing \"tricorder\"".to_string(),
+                "    When executing \"trident\"".to_string(),
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
                 "      old line 1".to_string(),
@@ -125,7 +125,7 @@ mod tests {
                 "      \"\"\"".to_string(),
                 "      setup content".to_string(),
                 "      \"\"\"".to_string(),
-                "    When executing \"tricorder\"".to_string(),
+                "    When executing \"trident\"".to_string(),
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
                 "      new line 1".to_string(),
@@ -166,7 +166,7 @@ mod tests {
         fn can_remove_docstring() {
             let mut lines = vec![
                 "  Scenario: example".to_string(),
-                "    When executing \"tricorder\"".to_string(),
+                "    When executing \"trident\"".to_string(),
                 "    Then it prints".to_string(),
                 "      \"\"\"".to_string(),
                 "      old line 1".to_string(),
@@ -185,7 +185,7 @@ mod tests {
                 lines,
                 vec![
                     "  Scenario: example".to_string(),
-                    "    When executing \"tricorder\"".to_string(),
+                    "    When executing \"trident\"".to_string(),
                     "    Then it prints".to_string(),
                     "      \"\"\"".to_string(),
                     "      \"\"\"".to_string(),

@@ -14,7 +14,7 @@ Feature: lint CSS
       \tcolor: red;
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint CSS (Biome)
@@ -29,7 +29,7 @@ Feature: lint CSS
         color : red ;
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint CSS (Biome)
@@ -44,7 +44,7 @@ Feature: lint CSS
         col
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint CSS (Biome)

@@ -26,22 +26,22 @@ jobs:
     strategy:
       matrix:
         include:
-          - filename: tricorder_linux_arm_64
+          - filename: trident_linux_arm_64
             target: aarch64-unknown-linux-gnu
             os: ubuntu-22.04
-          - filename: tricorder_linux_intel_64
+          - filename: trident_linux_intel_64
             target: x86_64-unknown-linux-gnu
             os: ubuntu-22.04
-          - filename: tricorder_macos_arm_64
+          - filename: trident_macos_arm_64
             target: aarch64-apple-darwin
             os: macos-latest
-          - filename: tricorder_macos_intel_64
+          - filename: trident_macos_intel_64
             target: x86_64-apple-darwin
             os: macos-latest
-          - filename: tricorder_windows_intel_64
+          - filename: trident_windows_intel_64
             target: x86_64-pc-windows-msvc
             os: windows-latest
-          - filename: tricorder_windows_arm_64
+          - filename: trident_windows_arm_64
             target: aarch64-pc-windows-msvc
             os: windows-latest
     runs-on: ${{ matrix.os }}
@@ -53,7 +53,7 @@ jobs:
           archive: ${{ matrix.filename }}
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
           # Note that glob pattern is not supported yet.
-          bin: tricorder
+          bin: trident
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
           # (required) GitHub token for uploading assets to GitHub Releases.

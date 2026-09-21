@@ -12,7 +12,7 @@ Feature: lint TOML
       """
       key = "value"
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint TOML (Taplo)
@@ -25,7 +25,7 @@ Feature: lint TOML
       """
       key =     "value"
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint TOML (Taplo)
@@ -42,7 +42,7 @@ Feature: lint TOML
       """
       other = "
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint TOML (Taplo)

@@ -1,4 +1,4 @@
-Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the current branch
+Feature: "trident pitstop" keep-sorted only rewrites files changed on the current branch
 
   Background:
     Given a Git repository
@@ -9,7 +9,7 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
       ripgrep 15.2.0
       taplo 0.10.0
       """
-    And a committed file "tricorder.json" with content
+    And a committed file "trident.json" with content
       """
       {
         "applications": {
@@ -36,7 +36,7 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
       a = 2
       # keep-sorted end
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)
@@ -66,7 +66,7 @@ Feature: "tricorder pitstop" keep-sorted only rewrites files changed on the curr
       a = 4
       # keep-sorted end
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       sort TOML (keep-sorted)

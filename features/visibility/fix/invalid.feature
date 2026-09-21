@@ -21,7 +21,7 @@ Feature: fix multiple stacks with invalid code
       """
 
   Scenario: --show=output
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -43,7 +43,7 @@ Feature: fix multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=verbose
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -65,7 +65,7 @@ Feature: fix multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=names
-    When executing "tricorder fix --show=names"
+    When executing "trident fix --show=names"
     Then it prints nothing to STDERR
     And it prints the lines
       """
@@ -100,7 +100,7 @@ Feature: fix multiple stacks with invalid code
     And all files are unchanged
 
   Scenario: --show=failed
-    When executing "tricorder fix --show=failed"
+    When executing "trident fix --show=failed"
     Then it prints nothing to STDERR
     And it does not print any of these lines
       """

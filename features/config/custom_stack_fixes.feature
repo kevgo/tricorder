@@ -10,7 +10,7 @@ Feature: stack-specific fixes
       """
 
   Scenario: "additional-fixes" adds custom fixes to the built-in ones for that stack
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -28,7 +28,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix Python (ruff)
@@ -41,7 +41,7 @@ Feature: stack-specific fixes
     And the exit code is 0
 
   Scenario: "replace-fixes" replaces the built-in fixes for that stack
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -59,7 +59,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix Python (my fix)
@@ -72,7 +72,7 @@ Feature: stack-specific fixes
     And the exit code is 0
 
   Scenario: disable a stack's fixes
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -88,7 +88,7 @@ Feature: stack-specific fixes
       """
       # some Python code
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it does not print any of these lines
       """
       fix Python (ruff)
@@ -96,7 +96,7 @@ Feature: stack-specific fixes
     And the exit code is 0
 
   Scenario: runs only when files of that stack exist
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -110,7 +110,7 @@ Feature: stack-specific fixes
         }
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it does not print any of these lines
       """
       my fix

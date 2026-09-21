@@ -16,7 +16,7 @@ Feature: lint SQL
       """
       select id, name from two
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -27,7 +27,7 @@ Feature: lint SQL
       """
       SELECT            id, name FROM one
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -41,7 +41,7 @@ Feature: lint SQL
       """
       SELECT FROM "
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints nothing to STDOUT
     And the exit code is 0
     And file "one.sql" is unchanged
@@ -52,7 +52,7 @@ Feature: lint SQL
       """
       CREATE TABLE orders (id INT, total DECIMAL(10,2));
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints to STDERR
       """
       2 other

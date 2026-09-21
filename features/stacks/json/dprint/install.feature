@@ -12,12 +12,12 @@ Feature: install dprint for JSON
         "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -25,7 +25,7 @@ Feature: install dprint for JSON
       """
       {  "key"  :  "value"  }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/dprint/dprint/releases/latest) ... ok

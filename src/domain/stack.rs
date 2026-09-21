@@ -2,7 +2,7 @@ use crate::domain::{Fix, Lint, StackType};
 use std::fmt::Display;
 use std::path::Path;
 
-/// a language stack that Tricorder supports
+/// a language stack that Trident supports
 pub trait Stack {
     fn stack_type(&self) -> StackType;
 

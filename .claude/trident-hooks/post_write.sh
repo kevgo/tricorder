@@ -4,6 +4,6 @@
 # Safe to edit.
 # Re-run "trident init:claude --force" to reset.
 
-TRIDENT="{{TRIDENT}}"
+TRIDENT="target/debug/trident"
 [ -x "$TRIDENT" ] || exit 0
 "$TRIDENT" postedit

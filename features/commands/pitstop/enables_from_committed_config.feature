@@ -1,4 +1,4 @@
-Feature: "tricorder pitstop" enables fixes whose config is already committed
+Feature: "trident pitstop" enables fixes whose config is already committed
 
   Background:
     Given a Git repository
@@ -38,7 +38,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       fix Markdown (tikibase)
@@ -62,7 +62,7 @@ Feature: "tricorder pitstop" enables fixes whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       fix Markdown (tikibase)

@@ -8,7 +8,7 @@ Feature: exclude a file from being fixed by a specific app only
       prettier 3.7.0
       taplo 0.10.0
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -36,7 +36,7 @@ Feature: exclude a file from being fixed by a specific app only
       """
 
   Scenario: fix ignores the file
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints the block matching
       """
       fix TOML \(Taplo\)
@@ -54,7 +54,7 @@ Feature: exclude a file from being fixed by a specific app only
     And the exit code is 0
 
   Scenario: lint still lints the file
-    When executing "tricorder lint --show=verbose"
+    When executing "trident lint --show=verbose"
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
@@ -63,7 +63,7 @@ Feature: exclude a file from being fixed by a specific app only
     And the exit code is 0
 
   Scenario: fix-unsafe still formats the file
-    When executing "tricorder fix-unsafe --show=verbose"
+    When executing "trident fix-unsafe --show=verbose"
     Then it prints the block matching
       """
       unsafe-fix TOML \(Taplo\)

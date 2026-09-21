@@ -13,7 +13,7 @@ Feature: fix JSON
       """
       { "key": "value" }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix JSON (Prettier)
@@ -26,7 +26,7 @@ Feature: fix JSON
       """
       {"key":"value"}
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix JSON (Prettier)
@@ -42,7 +42,7 @@ Feature: fix JSON
       """
       { "key":
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix JSON (Prettier)

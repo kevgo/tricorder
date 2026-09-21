@@ -32,7 +32,7 @@ pub use typescript::Typescript;
 pub use unknown::Unknown;
 pub use yml::Yml;
 
-/// provides all stacks that Tricorder supports
+/// provides all stacks that Trident supports
 #[must_use]
 pub fn all() -> Vec<Box<dyn Stack>> {
     vec![

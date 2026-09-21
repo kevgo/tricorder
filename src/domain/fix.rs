@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::domain::{DetectedStack, Result, Tool};
 
-/// a fix that Tricorder can run
+/// a fix that Trident can run
 pub trait Fix: Tool {
     /// Provides the shell command to make this tool fix the given `PopulatedStack`.
     /// The fix can look at the files in `all_stacks` to determine if it should run.

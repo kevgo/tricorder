@@ -1,6 +1,6 @@
 use crate::cli::input::InitArgs;
 use crate::domain::{Result, UserError};
-use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_to_tricorder_executable, print_skipped};
+use crate::embed::{TRIDENT_PLACEHOLDER, absolute_path_to_trident_executable, print_skipped};
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{FileMode, create_file};
 use crate::shellscripts;
@@ -10,7 +10,7 @@ use std::process::ExitCode;
 const GIT_PRE_COMMIT_PATH: &str = ".git/hooks/pre-commit";
 const PRE_COMMIT_SH: &str = include_str!("pre_commit.sh");
 
-/// installs the Git pre-commit hook to run tricorder as part of every commit
+/// installs the Git pre-commit hook to run trident as part of every commit
 pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
     let git_folder = Path::new(".git");
     if !git_folder.exists() {
@@ -24,9 +24,9 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
         print_skipped("Git pre-commit hook", &existing_files);
         return Ok(ExitCode::FAILURE);
     }
-    let tricorder_path = absolute_path_to_tricorder_executable()?;
-    let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
-    let content = PRE_COMMIT_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
+    let trident_path = absolute_path_to_trident_executable()?;
+    let trident_shell_path = &shellscripts::escape(&trident_path.to_string_lossy());
+    let content = PRE_COMMIT_SH.replace(TRIDENT_PLACEHOLDER, trident_shell_path);
     create_file(GIT_PRE_COMMIT_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)
@@ -34,5 +34,5 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
 
 fn print_next_steps() {
     println!();
-    println!("From now on, Tricorder automatically formats all code that gets committed.");
+    println!("From now on, Trident automatically formats all code that gets committed.");
 }

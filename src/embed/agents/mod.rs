@@ -1,4 +1,4 @@
-//! functionality around embedding Tricorder into AI agents
+//! functionality around embedding Trident into AI agents
 
 mod claude;
 

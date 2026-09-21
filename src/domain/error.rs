@@ -18,7 +18,7 @@ pub enum UserError {
     CannotDetermineCurrentDirectory {
         err: String,
     },
-    CannotFindTricorderExecutable {
+    CannotFindTridentExecutable {
         path: PathBuf,
         err: String,
     },
@@ -96,7 +96,7 @@ impl UserError {
             UserError::CannotDetermineCurrentDirectory { err } => {
                 println!("cannot determine the current directory: {err}");
             }
-            UserError::CannotFindTricorderExecutable { path, err } => {
+            UserError::CannotFindTridentExecutable { path, err } => {
                 println!("cannot locate the {} executable: {err}", path.display());
             }
             UserError::CannotReadFileMetadata { path, err } => {
@@ -108,7 +108,7 @@ impl UserError {
             UserError::CannotWriteFile { path, err } => {
                 println!("cannot write file: {path}: {err}");
             }
-            UserError::ArgvIsEmpty => println!("cannot determine tricorder path: argv is empty"),
+            UserError::ArgvIsEmpty => println!("cannot determine trident path: argv is empty"),
             UserError::CannotRunRipgrep { msg } => println!("cannot run ripgrep: {msg}"),
             UserError::CiUnformatted { diff } => {
                 println!("code is not formatted\n");

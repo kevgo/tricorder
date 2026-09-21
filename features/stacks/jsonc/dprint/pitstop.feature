@@ -12,12 +12,12 @@ Feature: pitstop JSONC with dprint
         "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -31,7 +31,7 @@ Feature: pitstop JSONC with dprint
       """
       {  "key"  :  "other"  } // comment
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix JSONC (dprint)
@@ -51,7 +51,7 @@ Feature: pitstop JSONC with dprint
       """
       { "key":
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)

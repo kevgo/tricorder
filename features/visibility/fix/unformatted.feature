@@ -23,7 +23,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=output
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -63,7 +63,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=verbose
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -107,7 +107,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=names
-    When executing "tricorder fix --show=names"
+    When executing "trident fix --show=names"
     Then it does not print
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other
@@ -137,7 +137,7 @@ Feature: fix multiple stacks
       """
 
   Scenario: --show=failed
-    When executing "tricorder fix --show=failed"
+    When executing "trident fix --show=failed"
     Then it prints nothing to STDOUT
     And file "main.css" now has content
       """

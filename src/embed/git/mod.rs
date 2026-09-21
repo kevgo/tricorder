@@ -1,4 +1,4 @@
-//! functionality around embedding Tricorder into Git
+//! functionality around embedding Trident into Git
 
 mod pre_commit;
 

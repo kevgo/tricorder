@@ -9,7 +9,7 @@ Feature: disable an application's lint operation
       rumdl 0.2.14
       taplo 0.10.0
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -37,7 +37,7 @@ Feature: disable an application's lint operation
       """
 
   Scenario: lint skips the application
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Markdown (rumdl)
@@ -49,7 +49,7 @@ Feature: disable an application's lint operation
     And the exit code is 0
 
   Scenario: fix still runs the application
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints the block matching
       """
       fix TOML \(Taplo\)
@@ -63,7 +63,7 @@ Feature: disable an application's lint operation
     And the exit code is 0
 
   Scenario: fix-unsafe still runs the application
-    When executing "tricorder fix-unsafe --show=verbose"
+    When executing "trident fix-unsafe --show=verbose"
     Then it prints the block matching
       """
       unsafe-fix TOML \(Taplo\)

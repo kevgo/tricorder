@@ -24,7 +24,7 @@ Feature: lint Python with Pyright
       """
       print("Hello, other!")
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Python (ruff)
@@ -48,7 +48,7 @@ Feature: lint Python with Pyright
       """
       print   ("Hello, other!")
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Python (ruff)
@@ -74,7 +74,7 @@ Feature: lint Python with Pyright
       b: int = "text"
       print(b)
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       type-check Python (Pyright)
@@ -93,7 +93,7 @@ Feature: lint Python with Pyright
       """
       print("
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint Python (ruff)

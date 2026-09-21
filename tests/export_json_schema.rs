@@ -1,7 +1,7 @@
 use schemars::schema_for;
 use std::fs;
 use std::path::Path;
-use tricorder::config::Config;
+use trident::config::Config;
 
 #[test]
 fn export_json_schema() {

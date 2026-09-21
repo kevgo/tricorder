@@ -1,30 +1,30 @@
 Feature: Displaying help
 
   Scenario: no command given
-    When executing "tricorder"
+    When executing "trident"
     Then it prints
       """
-      error: 'tricorder' requires a subcommand but one was not provided
+      error: 'trident' requires a subcommand but one was not provided
         [subcommands: ci, init:claude, init:config, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, postedit, precommit, test, update:tools, help]
 
-      Usage: tricorder <COMMAND>
+      Usage: trident <COMMAND>
 
       For more information, try '--help'.
       """
     And the exit code is 1
 
   Scenario: help command
-    When executing "tricorder help"
+    When executing "trident help"
     Then it prints
       """
       The all-in-one DevEx tool.
 
-      Usage: tricorder <COMMAND>
+      Usage: trident <COMMAND>
 
       Commands:
         ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
-        init:config   Create the Tricorder configuration file
+        init:config   Create the Trident configuration file
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
@@ -43,17 +43,17 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: --help flag
-    When executing "tricorder --help"
+    When executing "trident --help"
     Then it prints
       """
       The all-in-one DevEx tool.
 
-      Usage: tricorder <COMMAND>
+      Usage: trident <COMMAND>
 
       Commands:
         ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
-        init:config   Create the Tricorder configuration file
+        init:config   Create the Trident configuration file
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
@@ -72,17 +72,17 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: -h flag
-    When executing "tricorder -h"
+    When executing "trident -h"
     Then it prints
       """
       The all-in-one DevEx tool.
 
-      Usage: tricorder <COMMAND>
+      Usage: trident <COMMAND>
 
       Commands:
         ci            Runs all fixes, lints, and tests on CI
         init:claude   Embed into claude-compatible coding agents
-        init:config   Create the Tricorder configuration file
+        init:config   Create the Trident configuration file
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
@@ -101,12 +101,12 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: help for a subcommand
-    When executing "tricorder help lint"
+    When executing "trident help lint"
     Then it prints
       """
       Find code quality issues
 
-      Usage: tricorder lint [OPTIONS]
+      Usage: trident lint [OPTIONS]
 
       Options:
             --show <SHOW>
@@ -124,12 +124,12 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: help for the ci command
-    When executing "tricorder help ci"
+    When executing "trident help ci"
     Then it prints
       """
       Runs all fixes, lints, and tests on CI
 
-      Usage: tricorder ci [OPTIONS]
+      Usage: trident ci [OPTIONS]
 
       Options:
             --show <SHOW>
@@ -150,12 +150,12 @@ Feature: Displaying help
     And the exit code is 0
 
   Scenario: help for the pitstop command
-    When executing "tricorder help pitstop"
+    When executing "trident help pitstop"
     Then it prints
       """
       Fix and lint files changed on the current branch
 
-      Usage: tricorder pitstop [OPTIONS]
+      Usage: trident pitstop [OPTIONS]
 
       Options:
             --show <SHOW>

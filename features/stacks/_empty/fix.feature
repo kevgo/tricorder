@@ -7,7 +7,7 @@ Feature: formatting a codebase without any code
       """
 
   Scenario: --show=output
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints
       """
       delete empty folders
@@ -20,7 +20,7 @@ Feature: formatting a codebase without any code
     And the exit code is 0
 
   Scenario: --show=names
-    When executing "tricorder fix --show=names"
+    When executing "trident fix --show=names"
     Then it prints
       """
       delete empty folders
@@ -28,6 +28,6 @@ Feature: formatting a codebase without any code
     And the exit code is 0
 
   Scenario: --show=failed
-    When executing "tricorder fix --show=failed"
+    When executing "trident fix --show=failed"
     Then it prints nothing to STDOUT
     And the exit code is 0

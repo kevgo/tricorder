@@ -24,7 +24,7 @@ Feature: fix Go
       	fmt.Println("Hello, world!")
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Go (gofumpt)
@@ -49,7 +49,7 @@ Feature: fix Go
       	fmt.Println(    "Hello, other!")
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix Go (gofumpt)
@@ -90,7 +90,7 @@ Feature: fix Go
       	fmt.Println("
       }
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix Go (gofumpt)

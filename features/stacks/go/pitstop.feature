@@ -22,7 +22,7 @@ Feature: pitstop Go
       fmt.Println("Hello")
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Go (gofumpt)
@@ -59,7 +59,7 @@ Feature: pitstop Go
       fmt.Printf(    "Other")
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Go (gofumpt)

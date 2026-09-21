@@ -6,7 +6,7 @@ use tokio::fs;
 
 #[derive(Debug, World)]
 #[world(init = Self::new)]
-pub struct TricorderWorld {
+pub struct TridentWorld {
     /// need to hold on to this to keep the tempdir alive
     _tempdir: tempfile::TempDir,
 
@@ -18,14 +18,14 @@ pub struct TricorderWorld {
 
     pub original_files: Vec<ExistingFile>,
 
-    /// the result of running Tricorder
+    /// the result of running Trident
     pub output: Option<Output>,
 
     /// path to the .feature file of the currently running scenario
     pub feature_path: Option<PathBuf>,
 }
 
-impl TricorderWorld {
+impl TridentWorld {
     pub fn new() -> Self {
         let tempdir = tempfile::tempdir().unwrap();
         let random = rand::random_range(0..u64::MAX).to_string();

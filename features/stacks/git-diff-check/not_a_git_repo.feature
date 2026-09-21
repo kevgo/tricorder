@@ -1,4 +1,4 @@
-Feature: "tricorder lint" does not run "git diff --check" if not a Git repository
+Feature: "trident lint" does not run "git diff --check" if not a Git repository
 
   Scenario: Git not installed
     Given a file "run-that-app" with content
@@ -14,7 +14,7 @@ Feature: "tricorder lint" does not run "git diff --check" if not a Git repositor
       Goodbye
       >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:main.txt
       """
-    When executing "tricorder lint"
+    When executing "trident lint"
     Then it prints nothing to STDOUT
     And it prints nothing to STDERR
     And the exit code is 0

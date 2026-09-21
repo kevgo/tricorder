@@ -13,7 +13,7 @@ Feature: pitstop Rust
       """
 
   Scenario: no custom tools defined
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints
       """
       delete empty folders
@@ -27,7 +27,7 @@ Feature: pitstop Rust
     And file "main.rs" is unchanged
 
   Scenario: custom linters and fixes defined
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -52,7 +52,7 @@ Feature: pitstop Rust
         }
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       fix Rust (my custom fix)

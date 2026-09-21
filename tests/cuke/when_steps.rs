@@ -1,11 +1,11 @@
 use crate::jitter::jitter;
-use crate::world::TricorderWorld;
+use crate::world::TridentWorld;
 use cucumber::when;
 use std::time::Duration;
 use tokio::process::Command;
 
 #[when(expr = "inspect the workspace")]
-async fn inspect_workspace(world: &mut TricorderWorld) {
+async fn inspect_workspace(world: &mut TridentWorld) {
     // print visibly to the user even though this runs inside Cucumber
     // repeating a few times to break out of the cucumber formatter that deletes the current line
     println!("workspace: {}", world.dir.display());
@@ -16,12 +16,12 @@ async fn inspect_workspace(world: &mut TricorderWorld) {
 }
 
 #[when(expr = "executing {string}")]
-async fn executing(world: &mut TricorderWorld, command: String) {
+async fn executing(world: &mut TridentWorld, command: String) {
     jitter().await;
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
-    assert!(executable == "tricorder", "can only execute 'tricorder'");
-    let mut absolute_path = world.cwd.join("target/release/tricorder");
+    assert!(executable == "trident", "can only execute 'trident'");
+    let mut absolute_path = world.cwd.join("target/release/trident");
     if std::env::consts::OS == "windows" {
         absolute_path.set_extension("exe");
     }

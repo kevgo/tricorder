@@ -12,7 +12,7 @@ Feature: fix TOML
       """
       key = "value"
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the block
       """
       fix TOML (Taplo)
@@ -29,7 +29,7 @@ Feature: fix TOML
       """
       key =     "other"
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)
@@ -49,7 +49,7 @@ Feature: fix TOML
       """
       key = "
       """
-    When executing "tricorder fix --show=output"
+    When executing "trident fix --show=output"
     Then it prints the lines
       """
       fix TOML (Taplo)

@@ -1,13 +1,13 @@
 use crate::cli::input::InitArgs;
 use crate::domain::Result;
-use crate::embed::{TRICORDER_PLACEHOLDER, absolute_path_to_tricorder_executable, print_skipped};
+use crate::embed::{TRIDENT_PLACEHOLDER, absolute_path_to_trident_executable, print_skipped};
 use crate::filesystem::any_file_exists;
 use crate::filesystem::{FileMode, create_file};
 use crate::shellscripts;
 use std::process::ExitCode;
 
 const SETTINGS_PATH: &str = ".claude/settings.json";
-const POST_WRITE_PATH: &str = ".claude/tricorder-hooks/post_write.sh";
+const POST_WRITE_PATH: &str = ".claude/trident-hooks/post_write.sh";
 const SETTINGS_JSON: &str = include_str!("settings.json");
 const POST_WRITE_SH: &str = include_str!("post_write.sh");
 
@@ -19,14 +19,14 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
         return Ok(ExitCode::FAILURE);
     }
     create_file(SETTINGS_PATH, SETTINGS_JSON, FileMode::NotExecutable)?;
-    let mut tricorder_path = absolute_path_to_tricorder_executable()?;
+    let mut trident_path = absolute_path_to_trident_executable()?;
     if let Ok(cwd) = std::env::current_dir()
-        && let Ok(rel_path) = tricorder_path.strip_prefix(&cwd)
+        && let Ok(rel_path) = trident_path.strip_prefix(&cwd)
     {
-        tricorder_path = rel_path.to_path_buf();
+        trident_path = rel_path.to_path_buf();
     }
-    let tricorder_shell_path = &shellscripts::escape(&tricorder_path.to_string_lossy());
-    let content = POST_WRITE_SH.replace(TRICORDER_PLACEHOLDER, tricorder_shell_path);
+    let trident_shell_path = &shellscripts::escape(&trident_path.to_string_lossy());
+    let content = POST_WRITE_SH.replace(TRIDENT_PLACEHOLDER, trident_shell_path);
     create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
     print_next_steps();
     Ok(ExitCode::SUCCESS)

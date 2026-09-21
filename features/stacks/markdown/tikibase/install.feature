@@ -6,7 +6,7 @@ Feature: install Tikibase
       """
       delete-empty-folders 0.0.2
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -21,7 +21,7 @@ Feature: install Tikibase
       {
         "ignore": [
           "run-that-app",
-          "tricorder.json"
+          "trident.json"
         ],
         "bidiLinks": false
       }
@@ -36,7 +36,7 @@ Feature: install Tikibase
       # Two
       [one](one.md)
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines to STDERR
       """
       Talking to GitHub API (https://api.github.com/repos/kevgo/tikibase/releases/latest) ... ok

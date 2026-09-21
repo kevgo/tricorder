@@ -12,7 +12,7 @@ Feature: lint TypeScript
       """
       console.log("hello");
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint TypeScript (Biome)
@@ -29,7 +29,7 @@ Feature: lint TypeScript
       """
       console.log(  "other"  );
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the block
       """
       lint TypeScript (Biome)
@@ -43,7 +43,7 @@ Feature: lint TypeScript
       """
       console.log("
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints the lines
       """
       lint TypeScript (Biome)

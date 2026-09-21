@@ -13,12 +13,12 @@ Feature: precommit JSONC with dprint
         "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -29,7 +29,7 @@ Feature: precommit JSONC with dprint
       { "key": "value" } // comment
       """
     And I ran "git add main.jsonc"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)
@@ -47,7 +47,7 @@ Feature: precommit JSONC with dprint
       {  "key"  :  "other"  } // comment
       """
     And I ran "git add main.jsonc other.jsonc"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix JSONC (dprint)
@@ -68,7 +68,7 @@ Feature: precommit JSONC with dprint
       { "key":
       """
     And I ran "git add main.jsonc"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix JSONC (dprint)

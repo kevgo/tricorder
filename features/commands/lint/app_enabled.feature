@@ -1,4 +1,4 @@
-Feature: "tricorder lint" skips disabled applications
+Feature: "trident lint" skips disabled applications
 
   Scenario: skips a disabled application
     Given a file "run-that-app" with content
@@ -12,7 +12,7 @@ Feature: "tricorder lint" skips disabled applications
       """
       key =     "value"
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
@@ -22,7 +22,7 @@ Feature: "tricorder lint" skips disabled applications
         }
       }
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it does not print
       """
       Taplo

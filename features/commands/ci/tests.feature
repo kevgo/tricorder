@@ -8,7 +8,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
       """
 
   Scenario:
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -25,7 +25,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
       """
       print("hello")
       """
-    When executing "tricorder ci --show=output"
+    When executing "trident ci --show=output"
     Then it prints the lines to STDERR
       """
       1 JSON, 1 Python, 1 other
@@ -49,7 +49,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
     And the exit code is 0
 
   Scenario: test fails
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -67,7 +67,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
       echo "custom test failed"
       exit 4
       """
-    When executing "tricorder ci --show=output"
+    When executing "trident ci --show=output"
     Then it prints the block
       """
       failing test
@@ -76,7 +76,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
     And the exit code is 4
 
   Scenario: --test selects named tests
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -90,7 +90,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
         ]
       }
       """
-    When executing "tricorder ci --test=unit+cuke --show=output"
+    When executing "trident ci --test=unit+cuke --show=output"
     Then it prints the lines to STDERR
       """
       1 JSON, 1 other
@@ -113,7 +113,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
     And the exit code is 0
 
   Scenario: unknown test name
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "tests": [
@@ -122,7 +122,7 @@ Feature: CI runs all fixes, formatters, lints, and tests
         ]
       }
       """
-    When executing "tricorder ci --test=unit+missing"
+    When executing "trident ci --test=unit+missing"
     Then it prints
       """
       unknown test: missing

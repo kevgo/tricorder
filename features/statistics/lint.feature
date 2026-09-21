@@ -20,7 +20,7 @@ Feature: display statistics about the codebase
       """
       console.log("hello");
       """
-    When executing "tricorder lint --show=output"
+    When executing "trident lint --show=output"
     Then it prints to STDERR
       """
       1 CSS, 1 Python, 1 TypeScript, 1 other

@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" formats and stages files with partially staged changes
+Feature: "trident precommit" formats and stages files with partially staged changes
 
   Scenario: precommit partially staged changes
     Given a Git repository
@@ -28,7 +28,7 @@ Feature: "tricorder precommit" formats and stages files with partially staged ch
 
       line   2 new
       """
-    When executing "tricorder precommit"
+    When executing "trident precommit"
     Then the staged changes are
       """
       diff --git a/file.md b/file.md

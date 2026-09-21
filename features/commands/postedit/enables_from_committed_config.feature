@@ -1,4 +1,4 @@
-Feature: "tricorder postedit" enables linters whose config is already committed
+Feature: "trident postedit" enables linters whose config is already committed
 
   Scenario: runs Tikibase even though its config file is not changed
     Given a Git repository
@@ -35,7 +35,7 @@ Feature: "tricorder postedit" enables linters whose config is already committed
 
       also check out [Two](two.md)
       """
-    When executing "tricorder postedit --show=output"
+    When executing "trident postedit --show=output"
     Then it prints the block
       """
       lint Markdown (tikibase)

@@ -16,7 +16,7 @@ Feature: pitstop TypeScript
       """
       console.log(  "other"  );
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)
@@ -38,7 +38,7 @@ Feature: pitstop TypeScript
         let a = 1;
       }
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix TypeScript (Biome)

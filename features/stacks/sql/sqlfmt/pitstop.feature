@@ -16,7 +16,7 @@ Feature: pitstop SQL
       """
       SELECT            id, name FROM two
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the block
       """
       fix SQL (sqlfmt)
@@ -40,7 +40,7 @@ Feature: pitstop SQL
       """
       SELECT INTO
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       delete empty folders

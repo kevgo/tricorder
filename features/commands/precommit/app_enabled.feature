@@ -1,4 +1,4 @@
-Feature: "tricorder precommit" skips disabled applications
+Feature: "trident precommit" skips disabled applications
 
   Background:
     Given a Git repository
@@ -15,7 +15,7 @@ Feature: "tricorder precommit" skips disabled applications
       """
 
   Scenario: skips a disabled application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -26,7 +26,7 @@ Feature: "tricorder precommit" skips disabled applications
       }
       """
     And I ran "git add config.toml"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it does not print
       """
       Taplo
@@ -39,7 +39,7 @@ Feature: "tricorder precommit" skips disabled applications
     And the exit code is 0
 
   Scenario: skips a disabled global application
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -50,7 +50,7 @@ Feature: "tricorder precommit" skips disabled applications
       }
       """
     And I ran "git add config.toml"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it does not print
       """
       delete empty folders

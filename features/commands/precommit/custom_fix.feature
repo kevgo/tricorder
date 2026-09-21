@@ -8,7 +8,7 @@ Feature: stack-scoped custom fixes
       ruff 0.15.16
       rumdl 0.2.14
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "stacks": {
@@ -44,7 +44,7 @@ Feature: stack-scoped custom fixes
       print("world")
       """
     And I ran "git add main.py"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix Python (my python fix)
@@ -58,7 +58,7 @@ Feature: stack-scoped custom fixes
       # New one
       """
     And I ran "git add one.md"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it does not print
       """
       my python fix

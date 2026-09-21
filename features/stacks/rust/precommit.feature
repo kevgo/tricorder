@@ -13,7 +13,7 @@ Feature: precommit Rust
     And I ran "git add main.rs"
 
   Scenario: no custom fixes defined
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints
       """
       delete empty folders
@@ -26,7 +26,7 @@ Feature: precommit Rust
     And the exit code is 0
 
   Scenario: a custom fix is defined
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "stacks": {
@@ -43,7 +43,7 @@ Feature: precommit Rust
         }
       }
       """
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix Rust (my custom fix)

@@ -19,7 +19,7 @@ Feature: ignore files for an application
       """
 
   Scenario: lint honors application-level ignored files
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -29,7 +29,7 @@ Feature: ignore files for an application
         }
       }
       """
-    When executing "tricorder lint --show=verbose"
+    When executing "trident lint --show=verbose"
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
@@ -42,7 +42,7 @@ Feature: ignore files for an application
     And the exit code is 0
 
   Scenario: fix honors application-level ignored files
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "applications": {
@@ -56,7 +56,7 @@ Feature: ignore files for an application
       """
       key =     "value"
       """
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints the block matching
       """
       fix TOML \(Taplo\)
@@ -74,13 +74,13 @@ Feature: ignore files for an application
     And the exit code is 0
 
   Scenario: lint honors globally ignored files
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "ignore-files": ["Cargo.toml"]
       }
       """
-    When executing "tricorder lint --show=verbose"
+    When executing "trident lint --show=verbose"
     Then it prints the block matching
       """
       lint TOML \(Taplo\)
@@ -93,13 +93,13 @@ Feature: ignore files for an application
     And the exit code is 0
 
   Scenario: fix honors globally ignored files
-    Given a file "tricorder.json" with content
+    Given a file "trident.json" with content
       """
       {
         "ignore-files": ["Cargo.toml"]
       }
       """
-    When executing "tricorder fix --show=verbose"
+    When executing "trident fix --show=verbose"
     Then it prints the block matching
       """
       fix TOML \(Taplo\)

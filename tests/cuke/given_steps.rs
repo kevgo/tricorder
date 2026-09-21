@@ -1,12 +1,12 @@
 use crate::jitter::jitter;
-use crate::world::{ExistingFile, TricorderWorld};
+use crate::world::{ExistingFile, TridentWorld};
 use cucumber::gherkin::Step;
 use cucumber::given;
 use tokio::fs;
 use tokio::process::Command;
 
 #[given(expr = "a committed file {string} with content")]
-async fn a_committed_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+async fn a_committed_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     a_file_with_content(world, step, filename.clone()).await;
     Command::new("git")
         .arg("add")
@@ -29,7 +29,7 @@ async fn a_committed_file_with_content(world: &mut TricorderWorld, step: &Step, 
 }
 
 #[given(expr = "a file {string} with content")]
-async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: String) {
+async fn a_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap();
     let content = content.replace("\\t", "\t");
     let content = content[1..].to_string();
@@ -50,7 +50,7 @@ async fn a_file_with_content(world: &mut TricorderWorld, step: &Step, filename: 
 }
 
 #[given(expr = "I change file {string} to")]
-async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: String) {
+async fn i_change_file_to(world: &mut TridentWorld, step: &Step, filename: String) {
     let filepath = world.dir.join(&filename);
     assert!(
         filepath.exists(),
@@ -61,7 +61,7 @@ async fn i_change_file_to(world: &mut TricorderWorld, step: &Step, filename: Str
 }
 
 #[given(expr = "a Git repository")]
-async fn a_git_repository(world: &mut TricorderWorld) {
+async fn a_git_repository(world: &mut TridentWorld) {
     jitter().await;
     Command::new("git")
         .arg("init")
@@ -84,11 +84,7 @@ async fn a_git_repository(world: &mut TricorderWorld) {
 }
 
 #[given(expr = "an executable file {string} with content")]
-async fn an_executable_file_with_content(
-    world: &mut TricorderWorld,
-    step: &Step,
-    filename: String,
-) {
+async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap()[1..].to_string();
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
@@ -114,7 +110,7 @@ async fn an_executable_file_with_content(
 }
 
 #[given(expr = "I ran {string}")]
-async fn i_ran(world: &mut TricorderWorld, command: String) {
+async fn i_ran(world: &mut TridentWorld, command: String) {
     let mut args = command.split_ascii_whitespace();
     let executable = args.next().expect("executable is required");
     let mut absolute_path = if executable == "tools/rta" {

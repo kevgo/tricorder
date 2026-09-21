@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::domain::{DetectedStack, Result, Tool};
 
-/// a lint that Tricorder can run
+/// a lint that Trident can run
 pub trait Lint: Tool {
     /// Provides the shell command to run this lint for the given `PopulatedStack`.
     /// The lint can look at the files in `all_stacks` to determine if it should run.

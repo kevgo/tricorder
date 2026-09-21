@@ -1,21 +1,21 @@
-Feature: "tricorder init:config" writes the default config file
+Feature: "trident init:config" writes the default config file
 
-  Scenario: write tricorder.jsonc into an empty project
-    When executing "tricorder init:config"
+  Scenario: write trident.jsonc into an empty project
+    When executing "trident init:config"
     Then it prints
       """
-      created tricorder.jsonc
+      created trident.jsonc
       """
     And it prints nothing to STDERR
     And the exit code is 0
-    And file "tricorder.jsonc" now has content
+    And file "trident.jsonc" now has content
       """
       {
         // link to the JSON schema for this file,
         // for auto-complete in VSCode and compatible editors
-        "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+        "$schema": "https://github.com/kevgo/trident/raw/refs/heads/main/docs/schema.json",
 
-        // These files are invisible to Tricorder.
+        // These files are invisible to Trident.
         "ignore-files": ["vendor/", "**/*.min.css"],
 
         // These tools always run.
@@ -145,7 +145,7 @@ Feature: "tricorder init:config" writes the default config file
       """
       existing
       """
-    When executing "tricorder init:config"
+    When executing "trident init:config"
     Then it prints
       """
       config file <FILENAME> already exists
@@ -155,16 +155,16 @@ Feature: "tricorder init:config" writes the default config file
     And file "<FILENAME>" is unchanged
 
     Examples:
-      | FILENAME        |
-      | tricorder.json  |
-      | tricorder.jsonc |
+      | FILENAME      |
+      | trident.json  |
+      | trident.jsonc |
 
   Scenario Outline: force overwrites an existing config file
     Given a file "<FILENAME>" with content
       """
       existing
       """
-    When executing "tricorder init:config <FLAG>"
+    When executing "trident init:config <FLAG>"
     Then it prints
       """
       created <FILENAME>
@@ -176,9 +176,9 @@ Feature: "tricorder init:config" writes the default config file
       {
         // link to the JSON schema for this file,
         // for auto-complete in VSCode and compatible editors
-        "$schema": "https://github.com/kevgo/tricorder/raw/refs/heads/main/docs/schema.json",
+        "$schema": "https://github.com/kevgo/trident/raw/refs/heads/main/docs/schema.json",
 
-        // These files are invisible to Tricorder.
+        // These files are invisible to Trident.
         "ignore-files": ["vendor/", "**/*.min.css"],
 
         // These tools always run.
@@ -304,8 +304,8 @@ Feature: "tricorder init:config" writes the default config file
       """
 
     Examples:
-      | FILENAME        | FLAG    |
-      | tricorder.json  | --force |
-      | tricorder.json  | -f      |
-      | tricorder.jsonc | --force |
-      | tricorder.jsonc | -f      |
+      | FILENAME      | FLAG    |
+      | trident.json  | --force |
+      | trident.json  | -f      |
+      | trident.jsonc | --force |
+      | trident.jsonc | -f      |

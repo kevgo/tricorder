@@ -13,12 +13,12 @@ Feature: precommit YML with dprint
         "plugins": ["https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm"]
       }
       """
-    And a file "tricorder.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
           "prettier": { "enabled": false },
-          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "tricorder.json"] }
+          "dprint": { "enabled": true, "ignore-files": ["dprint.json", "trident.json"] }
         }
       }
       """
@@ -29,7 +29,7 @@ Feature: precommit YML with dprint
       key: value
       """
     And I ran "git add main.yml"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix YML (dprint)
@@ -47,7 +47,7 @@ Feature: precommit YML with dprint
       key:     other
       """
     And I ran "git add main.yml other.yml"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the lines
       """
       fix YML (dprint)
@@ -68,7 +68,7 @@ Feature: precommit YML with dprint
       key: "
       """
     And I ran "git add main.yml"
-    When executing "tricorder precommit --show=output"
+    When executing "trident precommit --show=output"
     Then it prints the block
       """
       fix YML (dprint)

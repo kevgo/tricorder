@@ -6,8 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/tricorder-hooks/post_write.sh",
-            "statusMessage": "Tricorder: running linters...",
+            "command": ".claude/trident-hooks/post_write.sh",
+            "statusMessage": "Trident: running linters...",
             "timeout": 120
           }
         ]

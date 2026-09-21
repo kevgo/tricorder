@@ -12,7 +12,7 @@ Feature: pitstop Markdown
       """
       #     Hello
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -29,7 +29,7 @@ Feature: pitstop Markdown
       """
       #     Hello
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
@@ -50,7 +50,7 @@ Feature: pitstop Markdown
 
       two
       """
-    When executing "tricorder pitstop --show=output"
+    When executing "trident pitstop --show=output"
     Then it prints the lines
       """
       fix Markdown (rumdl)
