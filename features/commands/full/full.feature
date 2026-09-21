@@ -1,6 +1,6 @@
 Feature: full runs all fixes, lints, and tests
 
-  Background:
+  Scenario: runs all fixes, lints, and tests on all files
     Given a file "run-that-app" with content
       """
       delete-empty-folders 0.0.2
@@ -13,9 +13,7 @@ Feature: full runs all fixes, lints, and tests
         "plugins": ["https://plugins.dprint.dev/json-0.23.0.wasm"]
       }
       """
-
-  Scenario:
-    Given a file "trident.json" with content
+    And a file "trident.json" with content
       """
       {
         "applications": {
