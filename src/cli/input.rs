@@ -50,7 +50,7 @@ pub enum Command {
     Precommit(RunArgs),
 
     /// Run all tests in parallel
-    Test(RunArgs),
+    Test(RunArgsWithTest),
 
     /// Update third-party tools
     #[command(name = "update:tools")]
@@ -159,6 +159,13 @@ mod tests {
         })
     }
 
+    fn parse_test(args: &[&str]) -> RunArgsWithTest {
+        parse_with_test_flag("test", args, |command| match command {
+            Command::Test(test) => test,
+            _ => panic!("expected the test command"),
+        })
+    }
+
     fn parse_with_test_flag(
         command: &str,
         args: &[&str],
@@ -200,5 +207,20 @@ mod tests {
     #[test]
     fn pitstop_without_test_flag_selects_no_tests() {
         pretty::assert_eq!(parse_pitstop(&[]).test, Vec::<String>::new());
+    }
+
+    #[test]
+    fn test_test_flag_splits_on_plus() {
+        pretty::assert_eq!(parse_test(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn test_test_flag_accepts_a_single_name() {
+        pretty::assert_eq!(parse_test(&["--test=unit"]).test, vec!["unit"]);
+    }
+
+    #[test]
+    fn test_without_test_flag_runs_all_tests() {
+        pretty::assert_eq!(parse_test(&[]).test, Vec::<String>::new());
     }
 }

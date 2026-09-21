@@ -10,6 +10,8 @@
 - the `ci` command now runs those same tests in parallel with lints
 - `ci --test` runs a subset of the configured tests, e.g. `trident ci --test=unit+cuke`
 - `pitstop --test` runs a subset of the configured tests, e.g. `trident pitstop --test=unit+cuke`
+- `test --test` runs a subset of the configured tests, e.g. `trident test --test=unit+cuke`
+- renamed to Trident
 
 ## 0.1.0
 
