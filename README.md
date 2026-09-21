@@ -64,7 +64,7 @@ attention.
 This command runs all available tools: all safe fixes, all lints, and all tests,
 on all files.
 
-To run only some of those tests, pass their names joined with `+`:
+To run only some tests, pass their names joined with `+`:
 
 ```sh
 trident full --test=unit+cuke
