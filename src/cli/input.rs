@@ -16,7 +16,7 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// Runs all fixes, lints, and tests on CI
-    Ci(CiArgs),
+    Ci(RunArgsWithTest),
 
     /// Embed into claude-compatible coding agents
     #[command(name = "init:claude")]
@@ -41,7 +41,7 @@ pub enum Command {
     Lint(RunArgs),
 
     /// Fix and lint files changed on the current branch
-    Pitstop(CiArgs),
+    Pitstop(RunArgsWithTest),
 
     /// Lint uncommitted changes
     Postedit(RunArgs),
@@ -57,10 +57,9 @@ pub enum Command {
     UpdateTools,
 }
 
-// TODO: once all commands can run tests, this might no longer be needed and we can use RunArgs instead of CiArgs.
-// Used by `ci` and `pitstop` so both expose the same `--test` flag.
+// `RunArgs` with a `--test` flag
 #[derive(clap::Args)]
-pub struct CiArgs {
+pub struct RunArgsWithTest {
     #[command(flatten)]
     pub run: RunArgs,
 
@@ -143,17 +142,17 @@ pub fn parse() -> Result<Option<Command>> {
 
 #[cfg(test)]
 mod tests {
-    use super::{CiArgs, Cli, Command};
+    use super::{Cli, Command, RunArgsWithTest};
     use clap::Parser;
 
-    fn parse_ci(args: &[&str]) -> CiArgs {
+    fn parse_ci(args: &[&str]) -> RunArgsWithTest {
         parse_with_test_flag("ci", args, |command| match command {
             Command::Ci(ci) => ci,
             _ => panic!("expected the ci command"),
         })
     }
 
-    fn parse_pitstop(args: &[&str]) -> CiArgs {
+    fn parse_pitstop(args: &[&str]) -> RunArgsWithTest {
         parse_with_test_flag("pitstop", args, |command| match command {
             Command::Pitstop(pitstop) => pitstop,
             _ => panic!("expected the pitstop command"),
@@ -163,8 +162,8 @@ mod tests {
     fn parse_with_test_flag(
         command: &str,
         args: &[&str],
-        extract: impl FnOnce(Command) -> CiArgs,
-    ) -> CiArgs {
+        extract: impl FnOnce(Command) -> RunArgsWithTest,
+    ) -> RunArgsWithTest {
         let mut argv = vec!["trident", command];
         argv.extend(args);
         extract(Cli::try_parse_from(argv).unwrap().command.unwrap())

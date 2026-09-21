@@ -1,5 +1,5 @@
 use super::pitstop::run_tasks;
-use crate::cli::input::CiArgs;
+use crate::cli::input::RunArgsWithTest;
 use crate::config::Config;
 use crate::config::to_sequences;
 use crate::domain::{Result, UserError};
@@ -7,7 +7,7 @@ use crate::git::Repo;
 use crate::stacks;
 use std::process::ExitCode;
 
-pub fn ci(args: CiArgs) -> Result<ExitCode> {
+pub fn ci(args: RunArgsWithTest) -> Result<ExitCode> {
     let repo = Repo::load();
     let before_diff = repo.as_ref().and_then(|repo| repo.diff().ok());
 

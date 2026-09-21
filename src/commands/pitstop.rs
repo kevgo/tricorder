@@ -1,4 +1,4 @@
-use crate::cli::input::{CiArgs, RunArgs, ShowExt};
+use crate::cli::input::{RunArgs, RunArgsWithTest, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
@@ -10,7 +10,7 @@ use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn pitstop(args: &CiArgs) -> Result<ExitCode> {
+pub fn pitstop(args: &RunArgsWithTest) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let repo = Repo::load();
