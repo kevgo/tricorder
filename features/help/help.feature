@@ -5,7 +5,7 @@ Feature: Displaying help
     Then it prints
       """
       error: 'trident' requires a subcommand but one was not provided
-        [subcommands: ci, init:claude, init:config, init:githook, fix, fix-unsafe, lint, postgenerate, pitstop, postedit, precommit, test, update:tools, help]
+        [subcommands: ci, init:claude, init:config, init:githook, fix, fix-unsafe, full, lint, postgenerate, pitstop, postedit, precommit, test, update:tools, help]
 
       Usage: trident <COMMAND>
 
@@ -28,6 +28,7 @@ Feature: Displaying help
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
+        full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
@@ -57,6 +58,7 @@ Feature: Displaying help
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
+        full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
@@ -86,6 +88,7 @@ Feature: Displaying help
         init:githook  Install the Git pre-commit hook
         fix           Apply safe code quality fixes
         fix-unsafe    Apply advanced fixes that might change behavior
+        full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
         pitstop       Fix and lint files changed on the current branch
         postedit      Lint uncommitted changes
@@ -130,6 +133,32 @@ Feature: Displaying help
       Runs all fixes, lints, and tests on CI
 
       Usage: trident ci [OPTIONS]
+
+      Options:
+            --show <SHOW>
+                how much output to display
+
+                Possible values:
+                - failed:  only output of failed commands
+                - names:   command names and output of failed commands
+                - output:  command names and output of all commands
+                - verbose: command lines and output of all commands
+
+            --test <NAME>
+                names of tests to run, joined with +
+
+        -h, --help
+                Print help (see a summary with '-h')
+      """
+    And the exit code is 0
+
+  Scenario: help for the full command
+    When executing "trident help full"
+    Then it prints
+      """
+      Run all lints, fixes, and tests on all files
+
+      Usage: trident full [OPTIONS]
 
       Options:
             --show <SHOW>

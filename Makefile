@@ -67,6 +67,9 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 ps: build unit $(TRIDENT)  # pitstop, quick checkup during active development
 	$(TRIDENT) pitstop
 
+full: build ${TRIDENT}  # run all lints, fixes, and tests on all files
+	$(TRIDENT) full
+
 psc: ps cuke  # complete pitstop, runs all fixes, lints, and tests
 
 test: build ${TRIDENT}  ## runs all tests

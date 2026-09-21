@@ -1,0 +1,54 @@
+Feature: full processes all files in the workspace
+
+  Background:
+    Given a Git repository
+    And a committed file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      rumdl 0.2.14
+      """
+
+  Scenario: processes files from main, this branch, and uncommitted changes
+    Given a committed file "on-main.md" with content
+      """
+      #     Main
+      """
+    And I ran "git checkout -b feature"
+    And a committed file "on-branch.md" with content
+      """
+      #     Foo
+      """
+    And a file "untracked.md" with content
+      """
+      #     Bar
+      """
+    When executing "trident full --show=output"
+    Then it prints the lines
+      """
+      fix Markdown (rumdl)
+      """
+    And it prints the block
+      """
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it prints the block
+      """
+      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it prints the block
+      """
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "on-main.md" now has content
+      """
+      # Main
+      """
+    And file "on-branch.md" now has content
+      """
+      # Foo
+      """
+    And file "untracked.md" now has content
+      """
+      # Bar
+      """
+    And the exit code is 0
