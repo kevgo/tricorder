@@ -148,3 +148,29 @@ Feature: Displaying help
                 Print help (see a summary with '-h')
       """
     And the exit code is 0
+
+  Scenario: help for the pitstop command
+    When executing "tricorder help pitstop"
+    Then it prints
+      """
+      Fix and lint files changed on the current branch
+
+      Usage: tricorder pitstop [OPTIONS]
+
+      Options:
+            --show <SHOW>
+                how much output to display
+
+                Possible values:
+                - failed:  only output of failed commands
+                - names:   command names and output of failed commands
+                - output:  command names and output of all commands
+                - verbose: command lines and output of all commands
+
+            --test <NAME>
+                names of tests to run, joined with +
+
+        -h, --help
+                Print help (see a summary with '-h')
+      """
+    And the exit code is 0

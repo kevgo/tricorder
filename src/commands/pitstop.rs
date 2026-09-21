@@ -1,15 +1,16 @@
-use crate::cli::input::{RunArgs, ShowExt};
+use crate::cli::input::{CiArgs, RunArgs, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::lint::Lints;
 use crate::commands::{fix, lint};
 use crate::config::Config;
+use crate::config::to_sequences;
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
 use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
+pub fn pitstop(args: &CiArgs) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let repo = Repo::load();
@@ -20,7 +21,12 @@ pub fn pitstop(args: &RunArgs) -> Result<ExitCode> {
         }
         None => stacks::discover_all(&ignores),
     };
-    run_tasks(args, &config, &stacks, repo.as_ref(), vec![])
+    let tests = if args.test.is_empty() {
+        Vec::new()
+    } else {
+        to_sequences(config.select_tests(&args.test)?)
+    };
+    run_tasks(&args.run, &config, &stacks, repo.as_ref(), tests)
 }
 
 /// runs global fixes, then stack-specific fixes, then lints on the given stacks

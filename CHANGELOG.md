@@ -9,6 +9,7 @@
 - new `test` command runs the tasks defined in the config `tests` key in parallel
 - the `ci` command now runs those same tests in parallel with lints
 - `ci --test` runs a subset of the configured tests, e.g. `tricorder ci --test=unit+cuke`
+- `pitstop --test` runs a subset of the configured tests, e.g. `tricorder pitstop --test=unit+cuke`
 
 ## 0.1.0
 
