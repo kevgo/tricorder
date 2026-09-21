@@ -167,41 +167,43 @@ mod tests {
 
     #[test]
     fn ci_test_flag_splits_on_plus() {
-        pretty::assert_eq!(parse_ci(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+        let have = parse_ci(&["--test=unit+cuke"]).test;
+        let want = vec!["unit", "cuke"];
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn ci_test_flag_accepts_a_single_name() {
-        pretty::assert_eq!(parse_ci(&["--test=unit"]).test, vec!["unit"]);
+        let have = parse_ci(&["--test=unit"]).test;
+        let want = vec!["unit"];
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn ci_without_test_flag_runs_all_tests() {
-        pretty::assert_eq!(parse_ci(&[]).test, Vec::<String>::new());
-    }
-
-    #[test]
-    fn ci_tests_alias_splits_on_plus() {
-        pretty::assert_eq!(parse_ci(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+        let have = parse_ci(&[]).test;
+        let want = Vec::<String>::new();
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn fix_test_flag_splits_on_plus() {
-        pretty::assert_eq!(parse_fix(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+        let have = parse_ci(&["--test=unit+cuke"]).test;
+        let want = vec!["unit", "cuke"];
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn fix_test_flag_accepts_a_single_name() {
-        pretty::assert_eq!(parse_fix(&["--test=unit"]).test, vec!["unit"]);
-    }
-
-    #[test]
-    fn fix_tests_alias_splits_on_plus() {
-        pretty::assert_eq!(parse_fix(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+        let have = parse_fix(&["--test=unit"]).test;
+        let want = vec!["unit"];
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
     fn fix_without_test_flag_runs_no_tests() {
-        pretty::assert_eq!(parse_fix(&[]).test, Vec::<String>::new());
+        let have = parse_fix(&[]).test;
+        let want = Vec::<String>::new();
+        pretty::assert_eq!(have, want);
     }
 }
