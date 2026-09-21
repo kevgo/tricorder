@@ -52,7 +52,7 @@ pub fn fix(args: &FixArgs) -> Result<ExitCode> {
     }
 
     // step 5: run the stack-specific fixes
-    let exit_code = conc::run(conc::RunArgs {
+    let mut exit_code = conc::run(conc::RunArgs {
         sequences: stack_specific.into_values().collect(),
         error_on_output,
         show,
@@ -61,18 +61,19 @@ pub fn fix(args: &FixArgs) -> Result<ExitCode> {
     if exit_code != ExitCode::SUCCESS {
         return Ok(exit_code);
     }
-    if tests.is_empty() {
-        return Ok(exit_code);
+    if !tests.is_empty() {
+        // step 6: run the selected tests
+        exit_code = conc::run(conc::RunArgs {
+            sequences: tests,
+            error_on_output,
+            show,
+            stderr_to_stdout,
+        });
+        if exit_code != ExitCode::SUCCESS {
+            return Ok(exit_code);
+        }
     }
-
-    // step 6: run the selected tests
-    let exit_code = conc::run(conc::RunArgs {
-        sequences: tests,
-        error_on_output,
-        show,
-        stderr_to_stdout,
-    });
-    Ok(exit_code)
+    Ok(ExitCode::SUCCESS)
 }
 
 pub fn determine_fixes(config: &Config, detected_stacks: &DetectedStacks) -> Result<Runnables> {
