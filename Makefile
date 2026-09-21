@@ -4,7 +4,7 @@ RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
 RIPGREP      = $(RTA) ripgrep
-TRIDENT    = target/debug/trident
+TRIDENT      = target/debug/trident
 
 build:  # builds the project in debug mode
 	cargo build
