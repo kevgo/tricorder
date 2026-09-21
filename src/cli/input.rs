@@ -64,7 +64,7 @@ pub struct CiArgs {
     pub run: RunArgs,
 
     /// names of tests to run, joined with +
-    #[arg(long, alias = "tests", value_delimiter = '+', value_name = "NAME")]
+    #[arg(long, value_delimiter = '+', value_name = "NAME")]
     pub test: Vec<String>,
 }
 
@@ -182,7 +182,7 @@ mod tests {
 
     #[test]
     fn ci_tests_alias_splits_on_plus() {
-        pretty::assert_eq!(parse_ci(&["--tests=unit+cuke"]).test, vec!["unit", "cuke"]);
+        pretty::assert_eq!(parse_ci(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
     }
 
     #[test]
@@ -197,7 +197,7 @@ mod tests {
 
     #[test]
     fn fix_tests_alias_splits_on_plus() {
-        pretty::assert_eq!(parse_fix(&["--tests=unit+cuke"]).test, vec!["unit", "cuke"]);
+        pretty::assert_eq!(parse_fix(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
     }
 
     #[test]

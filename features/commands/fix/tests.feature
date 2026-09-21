@@ -1,4 +1,4 @@
-Feature: fix --test/--tests runs selected tests after applying fixes
+Feature: fix --test runs selected tests after applying fixes
 
   Background:
     Given a file "run-that-app" with content
@@ -37,7 +37,7 @@ Feature: fix --test/--tests runs selected tests after applying fixes
       """
     And the exit code is 0
 
-  Scenario: --tests selects named tests
+  Scenario: --test selects named tests
     Given a file "tricorder.json" with content
       """
       {
@@ -52,7 +52,7 @@ Feature: fix --test/--tests runs selected tests after applying fixes
         ]
       }
       """
-    When executing "tricorder fix --tests=unit+cuke --show=output"
+    When executing "tricorder fix --test=unit+cuke --show=output"
     Then it prints the lines to STDERR
       """
       1 JSON, 1 other
