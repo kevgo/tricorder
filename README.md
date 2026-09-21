@@ -59,6 +59,17 @@ It first applies all safe automatic fixes to all files changed on the current
 branch, then reports any remaining code problems that require manual or AI
 attention.
 
+### `trident full`
+
+This command runs all available tools: all safe fixes, all lints, and all tests,
+on all files.
+
+To run only some tests, pass their names joined with `+`:
+
+```sh
+trident full --test=unit+cuke
+```
+
 ### `trident postedit`
 
 This command is the equivalent of `trident pitstop` for AI agents.
