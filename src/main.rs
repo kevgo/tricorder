@@ -19,6 +19,7 @@ fn inner() -> trident::domain::Result<ExitCode> {
         Command::Ci(args) => trident::commands::ci(args),
         Command::Fix(args) => trident::commands::fix(&args),
         Command::FixUnsafe(args) => trident::commands::fix_unsafe(&args),
+        Command::Full(args) => trident::commands::full(&args),
         Command::InitClaude(args) => trident::embed::agents::claude(&args),
         Command::InitConfig(args) => trident::commands::init_config(&args),
         Command::InitGithook(args) => trident::embed::git::pre_commit(&args),

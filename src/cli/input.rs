@@ -36,6 +36,9 @@ pub enum Command {
     /// Apply advanced fixes that might change behavior
     FixUnsafe(RunArgsWithScope),
 
+    /// Run all lints, fixes, and tests on all files
+    Full(RunArgsWithTest),
+
     /// Find code quality issues
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgs),
@@ -205,6 +208,7 @@ mod tests {
         }
     }
 
+<<<<<<< HEAD
     fn parse_fix(args: &[&str]) -> RunArgsWithScope {
         match parse_command("fix", args) {
             Command::Fix(fix) => fix,
@@ -221,6 +225,17 @@ mod tests {
 
     fn parse_pitstop(args: &[&str]) -> RunArgsWithTestAndScope {
         match parse_command("pitstop", args) {
+=======
+    fn parse_full(args: &[&str]) -> RunArgsWithTest {
+        parse_with_test_flag("full", args, |command| match command {
+            Command::Full(full) => full,
+            _ => panic!("expected the full command"),
+        })
+    }
+
+    fn parse_pitstop(args: &[&str]) -> RunArgsWithTest {
+        parse_with_test_flag("pitstop", args, |command| match command {
+>>>>>>> main
             Command::Pitstop(pitstop) => pitstop,
             _ => panic!("expected the pitstop command"),
         }
@@ -261,6 +276,21 @@ mod tests {
     #[test]
     fn ci_without_test_flag_runs_all_tests() {
         pretty::assert_eq!(parse_ci(&[]).test, Vec::<String>::new());
+    }
+
+    #[test]
+    fn full_test_flag_splits_on_plus() {
+        pretty::assert_eq!(parse_full(&["--test=unit+cuke"]).test, vec!["unit", "cuke"]);
+    }
+
+    #[test]
+    fn full_test_flag_accepts_a_single_name() {
+        pretty::assert_eq!(parse_full(&["--test=unit"]).test, vec!["unit"]);
+    }
+
+    #[test]
+    fn full_without_test_flag_runs_all_tests() {
+        pretty::assert_eq!(parse_full(&[]).test, Vec::<String>::new());
     }
 
     #[test]
