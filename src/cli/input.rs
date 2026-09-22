@@ -196,6 +196,7 @@ mod tests {
     use super::{Cli, Command, RunArgsWithScope, RunArgsWithTest, RunArgsWithTestAndScope, Scope};
     use clap::Parser;
     use clap::error::ErrorKind;
+    use maplit::hashmap;
 
     fn parse_ci(args: &[&str]) -> RunArgsWithTestAndScope {
         match parse_command("ci", args) {
@@ -297,12 +298,12 @@ mod tests {
 
     #[test]
     fn scope_flag_values() {
-        let tests = [
-            ("uncommitted", Scope::Uncommitted),
-            ("branch", Scope::Branch),
-            ("all", Scope::All),
-            ("BRANCH", Scope::Branch),
-        ];
+        let tests = hashmap! {
+            "uncommitted" => Scope::Uncommitted,
+            "branch" => Scope::Branch,
+            "all" => Scope::All,
+            "BRANCH" => Scope::Branch,
+        };
         for (value, want) in tests {
             let flag = format!("--scope={value}");
             pretty::assert_eq!(parse_ci(&[&flag]).scope.scope, Some(want));
