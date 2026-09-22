@@ -63,6 +63,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       """
       # Untracked
       """
+    And file "on-main.md" is unchanged
     And the exit code is 0
 
   Scenario: working tree is clean and the branch has changes
