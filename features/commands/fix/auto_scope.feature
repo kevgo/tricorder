@@ -120,6 +120,10 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       """
       committed-on-branch.md
       """
+    And it does not print
+      """
+      on-main.md
+      """
     And file "untracked.md" now has content
       """
       # Untracked
