@@ -12,6 +12,90 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       #     Main
       """
 
+  Scenario: on main branch, no uncommitted files
+    When executing "trident fix --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "on-main.md" now has content
+      """
+      # Main
+      """
+    And the exit code is 0
+
+  Scenario: on main branch with uncommitted files
+    And a file "untracked.md" with content
+      """
+      #     Untracked
+      """
+    When executing "trident fix --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      running 2 tools
+      """
+    And it prints the block
+      """
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "untracked.md" now has content
+      """
+      # Untracked
+      """
+    And file "on-main.md" is unchanged
+    And the exit code is 0
+
+  Scenario: on feature branch, no uncommitted files, branch has no changes
+    Given I ran "git checkout -b feature"
+    When executing "trident fix --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "on-main.md" now has content
+      """
+      # Main
+      """
+    And the exit code is 0
+
+  Scenario: on feature branch, no uncommitted files, branch has changes
+    Given I ran "git checkout -b feature"
+    And a committed file "committed-on-branch.md" with content
+      """
+      #     Branch
+      """
+    When executing "trident fix --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      running 2 tools
+      """
+    And it prints the block
+      """
+      committed-on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it does not print
+      """
+      on-main.md
+      """
+    And file "committed-on-branch.md" now has content
+      """
+      # Branch
+      """
+    And file "on-main.md" is unchanged
+    And the exit code is 0
+
   Scenario: on feature branch with uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
@@ -42,70 +126,4 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       """
     And file "committed-on-branch.md" is unchanged
     And file "on-main.md" is unchanged
-    And the exit code is 0
-
-  Scenario: on main branch with uncommitted files
-    And a file "untracked.md" with content
-      """
-      #     Untracked
-      """
-    When executing "trident fix --show=output"
-    Then it prints to STDERR
-      """
-      1 Markdown
-      running 2 tools
-      """
-    And it prints the block
-      """
-      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
-      """
-    And file "untracked.md" now has content
-      """
-      # Untracked
-      """
-    And file "on-main.md" is unchanged
-    And the exit code is 0
-
-  Scenario: on feature branch, no uncommitted files, branch has changes
-    Given I ran "git checkout -b feature"
-    And a committed file "committed-on-branch.md" with content
-      """
-      #     Branch
-      """
-    When executing "trident fix --show=output"
-    Then it prints to STDERR
-      """
-      1 Markdown
-      running 2 tools
-      """
-    And it prints the block
-      """
-      committed-on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
-      """
-    And it does not print
-      """
-      on-main.md
-      """
-    And file "committed-on-branch.md" now has content
-      """
-      # Branch
-      """
-    And file "on-main.md" is unchanged
-    And the exit code is 0
-
-  Scenario: on main branch, no uncommitted files
-    When executing "trident fix --show=output"
-    Then it prints to STDERR
-      """
-      1 Markdown, 1 other
-      running 2 tools
-      """
-    And it prints the block
-      """
-      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
-      """
-    And file "on-main.md" now has content
-      """
-      # Main
-      """
     And the exit code is 0
