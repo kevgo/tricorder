@@ -59,13 +59,7 @@ It first applies all safe automatic fixes to all files changed on the current
 branch, then reports any remaining code problems that require manual or AI
 attention.
 
-To process a different set of files, pass `--scope`:
-
-```sh
-trident pitstop --scope=uncommitted
-trident pitstop --scope=branch
-trident pitstop --scope=all
-```
+To process a different set of files, pass `--scope`.
 
 ### `trident postedit`
 
