@@ -20,8 +20,7 @@ pub fn fix(args: &RunArgsWithScope) -> Result<ExitCode> {
 
     // step 2: discover the stacks
     let repo = Repo::load();
-    // TODO: change the default scope to branch
-    let scope = args.scope.unwrap_or(Scope::All);
+    let scope = args.scope.unwrap_or(Scope::Branch);
     let all_stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&all_stacks);
