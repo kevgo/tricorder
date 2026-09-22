@@ -1,4 +1,4 @@
-Feature: "trident lint" chooses a default --scope from the Git workspace
+Feature: "trident lint" chooses the smallest "--scope" based on the workspace state
 
   Background:
     Given a Git repository

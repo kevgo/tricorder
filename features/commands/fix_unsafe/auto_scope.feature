@@ -1,4 +1,4 @@
-Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
+Feature: "trident fix-unsafe" chooses the smallest "--scope" based on the workspace state
 
   Background:
     Given a Git repository
@@ -108,6 +108,10 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
     And it prints the lines
       """
       Found 1 error (1 fixed, 0 remaining).
+      """
+    And it does not print
+      """
+      on-main.py
       """
     And file "committed-on-branch.py" now has content
       """
