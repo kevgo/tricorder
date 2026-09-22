@@ -208,7 +208,6 @@ mod tests {
         }
     }
 
-<<<<<<< HEAD
     fn parse_fix(args: &[&str]) -> RunArgsWithScope {
         match parse_command("fix", args) {
             Command::Fix(fix) => fix,
@@ -225,7 +224,11 @@ mod tests {
 
     fn parse_pitstop(args: &[&str]) -> RunArgsWithTestAndScope {
         match parse_command("pitstop", args) {
-=======
+            Command::Pitstop(pitstop) => pitstop,
+            _ => panic!("expected the pitstop command"),
+        }
+    }
+
     fn parse_full(args: &[&str]) -> RunArgsWithTest {
         parse_with_test_flag("full", args, |command| match command {
             Command::Full(full) => full,
@@ -233,19 +236,19 @@ mod tests {
         })
     }
 
-    fn parse_pitstop(args: &[&str]) -> RunArgsWithTest {
-        parse_with_test_flag("pitstop", args, |command| match command {
->>>>>>> main
-            Command::Pitstop(pitstop) => pitstop,
-            _ => panic!("expected the pitstop command"),
-        }
-    }
-
     fn parse_test(args: &[&str]) -> RunArgsWithTest {
         match parse_command("test", args) {
             Command::Test(test) => test,
             _ => panic!("expected the test command"),
         }
+    }
+
+    fn parse_with_test_flag(
+        command: &str,
+        args: &[&str],
+        extract: impl FnOnce(Command) -> RunArgsWithTest,
+    ) -> RunArgsWithTest {
+        extract(parse_command(command, args))
     }
 
     fn parse_command(command: &str, args: &[&str]) -> Command {
