@@ -1,7 +1,7 @@
 use crate::domain::{Result, UserError};
 use clap::builder::{PossibleValue, PossibleValuesParser, TypedValueParser};
 use clap::error::ErrorKind;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_PKG_NAME"))]
@@ -58,7 +58,7 @@ pub enum Command {
 }
 
 /// which files a command should process
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
 pub enum Scope {
     /// uncommitted files
     Uncommitted,
@@ -72,7 +72,7 @@ pub enum Scope {
 #[derive(clap::Args)]
 pub struct ScopeArg {
     /// files to apply the operation to
-    #[arg(long, ignore_case = true, value_parser = scope_parser())]
+    #[arg(long, ignore_case = true)]
     pub scope: Option<Scope>,
 }
 
@@ -165,20 +165,6 @@ fn show_parser() -> impl TypedValueParser<Value = conc::Show> {
         "names" => conc::Show::Names,
         "output" => conc::Show::Output,
         "verbose" => conc::Show::Verbose,
-        _ => unreachable!("PossibleValuesParser prevents this"),
-    })
-}
-
-fn scope_parser() -> impl TypedValueParser<Value = Scope> {
-    PossibleValuesParser::new([
-        PossibleValue::new("uncommitted").help("uncommitted files"),
-        PossibleValue::new("branch").help("files changed on the current branch"),
-        PossibleValue::new("all").help("all files in the current directory"),
-    ])
-    .map(|s| match s.to_ascii_lowercase().as_str() {
-        "uncommitted" => Scope::Uncommitted,
-        "branch" => Scope::Branch,
-        "all" => Scope::All,
         _ => unreachable!("PossibleValuesParser prevents this"),
     })
 }
