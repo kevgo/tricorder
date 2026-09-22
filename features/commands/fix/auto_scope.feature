@@ -44,6 +44,27 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
     And file "on-main.md" is unchanged
     And the exit code is 0
 
+  Scenario: on main branch with uncommitted files
+    And a file "untracked.md" with content
+      """
+      #     Untracked
+      """
+    When executing "trident fix --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      running 2 tools
+      """
+    And it prints the block
+      """
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "untracked.md" now has content
+      """
+      # Untracked
+      """
+    And the exit code is 0
+
   Scenario: working tree is clean and the branch has changes
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
