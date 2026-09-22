@@ -8,7 +8,7 @@ Feature: pitstop on a feature branch
       rumdl 0.2.14
       """
 
-  Scenario: processes only changes committed to the branch and uncommitted changes
+  Scenario: processes only uncommitted changes when they exist
     Given a committed file "on-main.md" with content
       """
       missing header
@@ -29,11 +29,38 @@ Feature: pitstop on a feature branch
       """
     And it prints the block
       """
-      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
-      """
-    And it prints the block
-      """
       untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it does not print
+      """
+      on-branch.md
+      """
+    And it does not print
+      """
+      on-main.md
+      """
+    And file "on-main.md" is unchanged
+    And file "on-branch.md" is unchanged
+    And file "untracked.md" now has content
+      """
+      # Bar
+      """
+    And the exit code is 0
+
+  Scenario: processes branch changes when the working tree is clean
+    Given a committed file "on-main.md" with content
+      """
+      missing header
+      """
+    And I ran "git checkout -b feature"
+    And a committed file "on-branch.md" with content
+      """
+      #     Foo
+      """
+    When executing "trident pitstop --show=output"
+    Then it prints the block
+      """
+      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
     And it does not print
       """
@@ -44,31 +71,21 @@ Feature: pitstop on a feature branch
       """
       # Foo
       """
-    And file "untracked.md" now has content
-      """
-      # Bar
-      """
     And the exit code is 0
 
   Scenario: branch contains no changes
     Given a committed file "on-main.md" with content
       """
-      missing header
+      #     Main
       """
     And I ran "git checkout -b feature"
     When executing "trident pitstop --show=output"
-    Then it prints
+    Then it prints the block
       """
-      delete empty folders
-      lint Git diff markers (git diff HEAD --check)
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And it does not print
+    And file "on-main.md" now has content
       """
-      Markdown
+      # Main
       """
-    And it does not print
-      """
-      on-main.md
-      """
-    And file "on-main.md" is unchanged
     And the exit code is 0

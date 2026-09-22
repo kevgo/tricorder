@@ -56,21 +56,15 @@ Feature: pitstop on the main branch
   Scenario: no uncommitted changes
     Given a committed file "committed.md" with content
       """
-      missing header
+      #     Committed
       """
     When executing "trident pitstop --show=output"
-    Then it prints
+    Then it prints the block
       """
-      delete empty folders
-      lint Git diff markers (git diff HEAD --check)
+      committed.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And it does not print
+    And file "committed.md" now has content
       """
-      Markdown
+      # Committed
       """
-    And it does not print
-      """
-      committed.md
-      """
-    And file "committed.md" is unchanged
     And the exit code is 0

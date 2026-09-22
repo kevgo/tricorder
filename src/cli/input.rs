@@ -43,7 +43,7 @@ pub enum Command {
     #[command(visible_alias = "postgenerate")]
     Lint(RunArgsWithScope),
 
-    /// Fix and lint files changed on the current branch
+    /// Fix and lint the current work
     Pitstop(RunArgsWithTestAndScope),
 
     /// Lint uncommitted changes
