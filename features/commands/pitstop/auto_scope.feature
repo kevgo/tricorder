@@ -44,6 +44,10 @@ Feature: "trident pitstop" chooses the smallest "--scope" based on the workspace
       """
       untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
+    And it does not print
+      """
+      on-main.md
+      """
     And file "untracked.md" now has content
       """
       # Untracked
