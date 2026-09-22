@@ -1,25 +1,26 @@
+use super::discover_stacks;
 use crate::apps::git_diff_check;
 use crate::apps::git_diff_check::GitDiffCheck;
-use crate::cli::input::{RunArgs, ShowExt};
+use crate::cli::input::{RunArgsWithScope, Scope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Config, Operation, ToolDefinition};
 use crate::domain::{DetectedStacks, Result, StackType};
 use crate::git;
-use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn lint(args: &RunArgs) -> Result<ExitCode> {
+pub fn lint(args: &RunArgsWithScope) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Names);
+    let show = args.run.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
     let repo = git::Repo::load();
 
     // step 2: discover the stacks
-    let all_stacks = stacks::discover_all(&ignores);
+    let scope = args.scope.unwrap_or(Scope::Branch);
+    let all_stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&all_stacks);
     }

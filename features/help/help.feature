@@ -121,6 +121,14 @@ Feature: Displaying help
                 - output:  command names and output of all commands
                 - verbose: command lines and output of all commands
 
+            --scope <SCOPE>
+                files to apply the operation to
+
+                Possible values:
+                - uncommitted: uncommitted files
+                - branch:      files changed on the current branch
+                - all:         all files in the current directory
+
         -h, --help
                 Print help (see a summary with '-h')
       """
