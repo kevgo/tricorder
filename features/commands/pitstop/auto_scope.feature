@@ -12,7 +12,7 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
       #     Main
       """
 
-  Scenario: uncommitted files exist
+  Scenario: on feature branch with uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
@@ -48,7 +48,7 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
     And file "on-main.md" is unchanged
     And the exit code is 0
 
-  Scenario: working tree is clean and the branch has changes
+  Scenario: on feature branch, no uncommitted files, branch has changes
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
@@ -75,7 +75,7 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
     And file "on-main.md" is unchanged
     And the exit code is 0
 
-  Scenario: working tree is clean and the branch has no changes
+  Scenario: on main branch, no uncommitted files
     When executing "trident pitstop --show=output"
     Then it prints to STDERR
       """
