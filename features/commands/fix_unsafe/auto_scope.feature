@@ -145,6 +145,14 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
       unsafe-fix Python (ruff)
       Found 1 error (1 fixed, 0 remaining).
       """
+    And it does not print
+      """
+      committed-on-branch.py
+      """
+    And it does not print
+      """
+      on-main.py
+      """
     And file "untracked.py" now has content
       """
       def add_to_list(item, items=None):

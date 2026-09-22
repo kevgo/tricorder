@@ -120,6 +120,10 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
       """
       committed-on-branch.md
       """
+    And it does not print
+      """
+      on-main.md
+      """
     And file "untracked.md" now has content
       """
       # Untracked

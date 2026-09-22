@@ -106,5 +106,9 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
       """
       committed-on-branch.md
       """
+    And it does not print
+      """
+      on-main.md
+      """
     And all files are unchanged
     And the exit code is 1
