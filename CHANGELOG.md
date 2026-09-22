@@ -1,6 +1,7 @@
 # Trident changelog
 
-- `ci`, `fix`, `fix-unsafe`, and `pitstop` accept `--scope=uncommitted|branch|all` to select which files they process
+- `ci`, `fix`, `fix-unsafe`, `lint`, and `pitstop` accept `--scope=uncommitted|branch|all` to select which files they process
+- `lint` now processes files changed on the current branch by default
 - app: hadolint for Dockerfile
 - stack: Dockerfile, linted by hadolint, formatted by dprint (when `dprint.json` is present)
 - app: dprint for JSON, JSONC, YML, and Dockerfile (when `dprint.json` is present)

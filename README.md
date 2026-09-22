@@ -11,8 +11,8 @@ and formatters concurrently for the fastest results.
 
 ## Demo
 
-Running `trident lint --show=output` on the Trident codebase finishes in about
-500 ms and prints:
+Running `trident lint --scope=all --show=output` on the Trident codebase
+finishes in about 500 ms and prints:
 
 ```sh
 114 Cucumber, 3 JSON, 1 JSONC, 4 Markdown, 115 Rust, 2 TOML, 3 YML, 8 other
@@ -153,7 +153,7 @@ that might change program behavior and should be verified.
 
 ### `trident lint`
 
-This command runs all linters that apply to the files in the codebase.
+This command runs all linters that apply to files changed on the current branch.
 All linters run in parallel.
 
 ### `trident test`
@@ -168,15 +168,15 @@ trident test --test=unit+cuke
 
 ### `--scope`
 
-`ci`, `fix`, `fix-unsafe`,
+`ci`, `fix`, `fix-unsafe`, `lint`,
 and `pitstop` accept `--scope` to choose which files they process:
 
 - `uncommitted`: only uncommitted files (staged, unstaged, and untracked)
 - `branch`: only files changed on the current branch
 - `all`: all files in the current directory
 
-`ci`, `fix`, and `fix-unsafe` default to `all`.
-`pitstop` defaults to `branch`.
+`ci` and `fix-unsafe` default to `all`.
+`fix`, `lint`, and `pitstop` default to `branch`.
 
 ## Supported stacks
 

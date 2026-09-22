@@ -41,7 +41,7 @@ pub enum Command {
 
     /// Find code quality issues
     #[command(visible_alias = "postgenerate")]
-    Lint(RunArgs),
+    Lint(RunArgsWithScope),
 
     /// Fix and lint files changed on the current branch
     Pitstop(RunArgsWithTestAndScope),
@@ -222,6 +222,13 @@ mod tests {
         }
     }
 
+    fn parse_lint(args: &[&str]) -> RunArgsWithScope {
+        match parse_command("lint", args) {
+            Command::Lint(lint) => lint,
+            _ => panic!("expected the lint command"),
+        }
+    }
+
     fn parse_pitstop(args: &[&str]) -> RunArgsWithTestAndScope {
         match parse_command("pitstop", args) {
             Command::Pitstop(pitstop) => pitstop,
@@ -342,6 +349,7 @@ mod tests {
             pretty::assert_eq!(parse_ci(&[&flag]).scope.scope, Some(want));
             pretty::assert_eq!(parse_fix(&[&flag]).scope.scope, Some(want));
             pretty::assert_eq!(parse_fix_unsafe(&[&flag]).scope.scope, Some(want));
+            pretty::assert_eq!(parse_lint(&[&flag]).scope.scope, Some(want));
             pretty::assert_eq!(parse_pitstop(&[&flag]).scope.scope, Some(want));
         }
     }
@@ -351,6 +359,7 @@ mod tests {
         pretty::assert_eq!(parse_ci(&[]).scope.scope, None);
         pretty::assert_eq!(parse_fix(&[]).scope.scope, None);
         pretty::assert_eq!(parse_fix_unsafe(&[]).scope.scope, None);
+        pretty::assert_eq!(parse_lint(&[]).scope.scope, None);
         pretty::assert_eq!(parse_pitstop(&[]).scope.scope, None);
     }
 
