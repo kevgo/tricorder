@@ -34,9 +34,14 @@ Feature: "trident ci --scope" selects which files to process
       """
     And it does not print
       """
-      committed.md
+      on-branch.md
+      """
+    And it does not print
+      """
+      on-main.md
       """
     And file "committed-on-branch.md" is unchanged
+    And file "on-main.md" is unchanged
     And file "untracked.md" now has content
       """
       # Untracked
