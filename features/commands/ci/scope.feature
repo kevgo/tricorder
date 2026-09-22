@@ -80,3 +80,49 @@ Feature: "trident ci --scope" selects which files to process
       # Untracked
       """
     And the exit code is 1
+
+  Scenario: --scope=all processes all files
+    Given a committed file "on-main.md" with content
+      """
+      #     Main
+      """
+    And I ran "git checkout -b feature"
+    And a committed file "on-branch.md" with content
+      """
+      #     Branch
+      """
+    And a file "untracked.md" with content
+      """
+      #     Untracked
+      """
+    When executing "trident ci --scope=all --show=output"
+    Then it prints the lines to STDERR
+      """
+      3 Markdown, 1 other
+      running 4 tools
+      """
+    And it prints the block
+      """
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it prints the block
+      """
+      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And it prints the block
+      """
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "on-main.md" now has content
+      """
+      # Main
+      """
+    And file "on-branch.md" now has content
+      """
+      # Branch
+      """
+    And file "untracked.md" now has content
+      """
+      # Untracked
+      """
+    And the exit code is 1
