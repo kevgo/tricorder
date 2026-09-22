@@ -12,7 +12,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       #     Main
       """
 
-  Scenario: uncommitted files exist
+  Scenario: on feature branch with uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
