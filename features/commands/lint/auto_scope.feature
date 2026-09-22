@@ -41,6 +41,10 @@ Feature: "trident lint" chooses the smallest "--scope" based on the workspace st
       """
       untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
       """
+    And it does not print
+      """
+      on-main.md
+      """
     And all files are unchanged
     And the exit code is 1
 
