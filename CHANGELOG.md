@@ -1,5 +1,6 @@
 # Trident changelog
 
+- `commands.<name>.test` sets the tests that command runs when you omit `--test`, e.g. `"commands": { "pitstop": { "test": ["unit"] } }`
 - `ci`, `fix`, `fix-unsafe`, `lint`, and `pitstop` accept `--scope=uncommitted|branch|all` to select which files they process
 - `lint` now processes files changed on the current branch by default
 - app: hadolint for Dockerfile

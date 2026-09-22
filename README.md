@@ -61,6 +61,19 @@ attention.
 
 To process a different set of files, pass `--scope`.
 
+To always run some tests as well, list them under `commands.pitstop.test`.
+`trident pitstop --test` overrides that list.
+
+```jsonc
+{
+  "commands": {
+    "pitstop": {
+      "test": ["unit"]
+    }
+  }
+}
+```
+
 ### `trident full`
 
 This command runs all available tools: all safe fixes, all lints, and all tests,
@@ -71,6 +84,8 @@ To run only some tests, pass their names joined with `+`:
 ```sh
 trident full --test=unit+cuke
 ```
+
+To change the default tests, set `commands.full.test`.
 
 ### `trident postedit`
 
@@ -109,6 +124,8 @@ To run only some of those tests, pass their names joined with `+`:
 ```sh
 trident ci --test=unit+cuke
 ```
+
+To change the default tests, set `commands.ci.test`.
 
 ### `trident init:claude`
 
@@ -165,6 +182,8 @@ To run only some tests, pass their names joined with `+`:
 ```sh
 trident test --test=unit+cuke
 ```
+
+To change the default tests, set `commands.test.test`.
 
 ### `--scope`
 

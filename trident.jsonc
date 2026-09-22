@@ -80,5 +80,10 @@
       "name": "E2Eslow",
       "command": "make cuke-slow"
     }
-  ]
+  ],
+  "commands": {
+    "pitstop": {
+      "test": ["unit"]
+    }
+  }
 }

@@ -7,7 +7,8 @@ use std::process::ExitCode;
 pub fn test(args: &RunArgsWithTest) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.run.show.unwrap_or(conc::Show::Names);
-    let tests = config.select_tests(&args.test)?;
+    let requested = config.tests_for(&args.test, |commands| commands.test.as_ref());
+    let tests = config.select_requested_tests(requested)?;
     if show.display_metadata() {
         eprintln!("running {} tools", tests.len());
     }

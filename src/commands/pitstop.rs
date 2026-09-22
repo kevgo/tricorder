@@ -15,10 +15,13 @@ pub fn pitstop(args: &RunArgsWithTestAndScope) -> Result<ExitCode> {
     let repo = Repo::load();
     let scope = args.scope.unwrap_or(Scope::Branch);
     let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
-    let tests = if args.test.is_empty() {
+    let requested = config
+        .tests_for(&args.test, |commands| commands.pitstop.as_ref())
+        .unwrap_or(&[]);
+    let tests = if requested.is_empty() {
         Vec::new()
     } else {
-        to_sequences(config.select_tests(&args.test)?)
+        to_sequences(config.select_tests(requested)?)
     };
     run_tasks(&args.run, &config, &stacks, repo.as_ref(), tests)
 }

@@ -51,6 +51,9 @@ pub struct Config {
 
     /// define the functional tests
     pub tests: Option<Vec<ToolDefinition>>,
+
+    /// default tests each command runs when `--test` is omitted
+    pub commands: Option<CommandsSection>,
 }
 
 impl Config {
@@ -169,6 +172,39 @@ impl Config {
         }
         Ok(result)
     }
+
+    /// names of tests to run: CLI `--test` overrides `commands.<command>.test`
+    ///
+    /// `None` means the command should use its built-in default.
+    /// `Some([])` means run no tests.
+    #[must_use]
+    pub fn tests_for<'a>(
+        &'a self,
+        cli: &'a [String],
+        command: impl FnOnce(&CommandsSection) -> Option<&CommandConfig>,
+    ) -> Option<&'a [String]> {
+        if !cli.is_empty() {
+            return Some(cli);
+        }
+        self.commands
+            .as_ref()
+            .and_then(command)
+            .and_then(|config| config.test.as_deref())
+    }
+
+    /// tests to run when the command's built-in default is all tests
+    ///
+    /// `None` selects every configured test. `Some([])` selects none.
+    pub fn select_requested_tests(
+        &self,
+        requested: Option<&[String]>,
+    ) -> Result<Vec<&ToolDefinition>> {
+        match requested {
+            None => self.select_tests(&[]),
+            Some([]) => Ok(Vec::new()),
+            Some(names) => self.select_tests(names),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -205,6 +241,31 @@ impl ToolDefinition {
             command: conc::shell_command(&self.command),
         })
     }
+}
+
+/// default tests and other settings for a Trident command
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CommandConfig {
+    /// names of tests this command runs by default
+    pub test: Option<Vec<String>>,
+}
+
+/// settings for individual Trident commands
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CommandsSection {
+    /// default tests for `trident ci`
+    pub ci: Option<CommandConfig>,
+
+    /// default tests for `trident full`
+    pub full: Option<CommandConfig>,
+
+    /// default tests for `trident pitstop`
+    pub pitstop: Option<CommandConfig>,
+
+    /// default tests for `trident test`
+    pub test: Option<CommandConfig>,
 }
 
 /// provides the configured tests with the given names as parallel `conc::Sequences`
@@ -455,7 +516,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, StackConfig, ToolDefinition};
+        use crate::config::{CommandConfig, CommandsSection, Config, StackConfig, ToolDefinition};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -510,6 +571,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -526,6 +588,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             assert_eq!(have, want);
         }
@@ -541,6 +604,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             assert_eq!(have, want);
         }
@@ -557,6 +621,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -578,6 +643,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -598,6 +664,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -645,6 +712,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -683,6 +751,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -721,6 +790,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -752,6 +822,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -768,6 +839,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -800,8 +872,53 @@ mod tests {
                         command: S("make cuke"),
                     },
                 ]),
+                commands: None,
             };
             pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn commands() {
+            let give = r#"
+{
+  "commands": {
+    "pitstop": {
+      "test": ["unit"],
+    }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            let want = Config {
+                schema: None,
+                global_fixes: None,
+                global_lints: None,
+                ignore_files: None,
+                applications: None,
+                stacks: None,
+                tests: None,
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
+                    }),
+                    ..Default::default()
+                }),
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unknown_command() {
+            let give = r#"{ "commands": { "lint": { "test": ["unit"] } } }"#;
+            let have = Config::parse(give, "test.json").unwrap_err();
+            let UserError::ConfigCannotParse { filename, err } = have else {
+                panic!("expected ConfigCannotParse, got {have:?}");
+            };
+            assert_eq!(filename, "test.json");
+            assert!(
+                err.contains("unknown field `lint`"),
+                "error should mention the unknown field, got: {err}"
+            );
         }
 
         #[test]
@@ -1535,6 +1652,101 @@ mod tests {
                 available: vec![],
             };
             pretty::assert_eq!(have, want);
+        }
+    }
+
+    mod tests_for {
+        use crate::config::{CommandConfig, CommandsSection, Config};
+        use big_s::S;
+
+        fn pitstop_config(names: &[&str]) -> Config {
+            Config {
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(names.iter().map(|name| (*name).to_string()).collect()),
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }
+        }
+
+        #[test]
+        fn cli_overrides_config() {
+            let config = pitstop_config(&["unit"]);
+            let cli = vec![S("cuke")];
+            let have = config.tests_for(&cli, |commands| commands.pitstop.as_ref());
+            pretty::assert_eq!(have, Some(cli.as_slice()));
+        }
+
+        #[test]
+        fn empty_cli_uses_config() {
+            let config = pitstop_config(&["unit"]);
+            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
+            pretty::assert_eq!(have.unwrap(), ["unit"]);
+        }
+
+        #[test]
+        fn empty_cli_and_missing_config_is_none() {
+            let config = Config::default();
+            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
+            assert_eq!(have, None);
+        }
+
+        #[test]
+        fn empty_config_array_is_some_empty() {
+            let config = pitstop_config(&[]);
+            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
+            pretty::assert_eq!(have, Some(&[] as &[String]));
+        }
+
+        #[test]
+        fn other_command_is_not_used() {
+            let config = pitstop_config(&["unit"]);
+            let have = config.tests_for(&[], |commands| commands.ci.as_ref());
+            assert_eq!(have, None);
+        }
+    }
+
+    mod select_requested_tests {
+        use crate::config::{Config, ToolDefinition};
+        use big_s::S;
+
+        fn config_with_tests() -> (Config, ToolDefinition, ToolDefinition) {
+            let unit_test = ToolDefinition {
+                name: Some(S("unit")),
+                command: S("echo unit"),
+            };
+            let cuke_test = ToolDefinition {
+                name: Some(S("cuke")),
+                command: S("echo cuke"),
+            };
+            let config = Config {
+                tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                ..Default::default()
+            };
+            (config, unit_test, cuke_test)
+        }
+
+        #[test]
+        fn none_selects_all() {
+            let (config, unit_test, cuke_test) = config_with_tests();
+            let have = config.select_requested_tests(None).unwrap();
+            pretty::assert_eq!(have, vec![&unit_test, &cuke_test]);
+        }
+
+        #[test]
+        fn empty_selects_none() {
+            let (config, _, _) = config_with_tests();
+            let have = config.select_requested_tests(Some(&[])).unwrap();
+            assert!(have.is_empty());
+        }
+
+        #[test]
+        fn names_select_those_tests() {
+            let (config, unit_test, _) = config_with_tests();
+            let have = config.select_requested_tests(Some(&[S("unit")])).unwrap();
+            pretty::assert_eq!(have, vec![&unit_test]);
         }
     }
 }

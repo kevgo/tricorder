@@ -16,7 +16,8 @@ pub fn ci(args: RunArgsWithTestAndScope) -> Result<ExitCode> {
     let scope = args.scope.unwrap_or(Scope::All);
     let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     let args_show = args.run.with_default_show(conc::Show::Output);
-    let tests = config.select_tests(&args.test)?;
+    let requested = config.tests_for(&args.test, |commands| commands.ci.as_ref());
+    let tests = config.select_requested_tests(requested)?;
     let test_sequences = to_sequences(tests);
     let exit_code = run_tasks(&args_show, &config, &stacks, repo.as_ref(), test_sequences)?;
     if exit_code != ExitCode::SUCCESS {

@@ -66,3 +66,44 @@ Feature: full runs all fixes, lints, and tests
       print("hello")
       """
     And the exit code is 0
+
+  Scenario: commands.full.test runs those tests by default
+    Given a file "run-that-app" with content
+      """
+      delete-empty-folders 0.0.2
+      ruff 0.15.16
+      """
+    And a file "trident.json" with content
+      """
+      {
+        "applications": {
+          "dprint": { "enabled": false },
+          "prettier": { "enabled": false }
+        },
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ],
+        "commands": {
+          "full": {
+            "test": ["unit"]
+          }
+        }
+      }
+      """
+    When executing "trident full --show=output"
+    Then it prints the lines to STDERR
+      """
+      1 JSON, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it does not print
+      """
+      cuke
+      """
+    And the exit code is 0
