@@ -1,9 +1,9 @@
-use crate::cli::input::{RunArgs, ShowExt};
+use super::{discover_stacks, lint};
+use crate::cli::input::{RunArgs, Scope, ShowExt};
 use crate::cli::output::print_metadata;
-use crate::commands::lint;
 use crate::config::Config;
 use crate::domain::Result;
-use crate::{git, stacks};
+use crate::git;
 use std::process::ExitCode;
 
 pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
@@ -16,12 +16,7 @@ pub fn post_edit(args: &RunArgs) -> Result<ExitCode> {
     let stderr_to_stdout = true;
 
     // step 2: discover the files and their stacks
-    let stacks = if let Some(repo) = &git_repo {
-        let uncommitted_files = repo.uncommitted()?;
-        stacks::from_files(&uncommitted_files, &ignores)
-    } else {
-        stacks::discover_all(&ignores)
-    };
+    let stacks = discover_stacks(Scope::Uncommitted, git_repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&stacks);
     }

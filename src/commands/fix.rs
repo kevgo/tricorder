@@ -1,24 +1,28 @@
+use super::discover_stacks;
 use crate::apps::delete_empty_folders;
 use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
-use crate::cli::input::{RunArgs, ShowExt};
+use crate::cli::input::{RunArgsWithScope, Scope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Application, Config, Operation, ToolDefinition};
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
-use crate::stacks;
+use crate::git::Repo;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn fix(args: &RunArgs) -> Result<ExitCode> {
+pub fn fix(args: &RunArgsWithScope) -> Result<ExitCode> {
     // step 1: load the config
     let config = Config::load()?;
     let ignores = config.ignores()?;
-    let show = args.show.unwrap_or(conc::Show::Names);
+    let show = args.run.show.unwrap_or(conc::Show::Names);
     let error_on_output = false;
     let stderr_to_stdout = true;
 
     // step 2: discover the stacks
-    let all_stacks = stacks::discover_all(&ignores);
+    let repo = Repo::load();
+    // TODO: change the default scope to branch
+    let scope = args.scope.unwrap_or(Scope::All);
+    let all_stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&all_stacks);
     }

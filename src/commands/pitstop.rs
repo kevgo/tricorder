@@ -1,26 +1,20 @@
-use crate::cli::input::{RunArgs, RunArgsWithTest, ShowExt};
+use crate::cli::input::{RunArgs, RunArgsWithTestAndScope, Scope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::lint::Lints;
-use crate::commands::{fix, lint};
+use crate::commands::{discover_stacks, fix, lint};
 use crate::config::Config;
 use crate::config::to_sequences;
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
-use crate::stacks;
 use ahash::AHashMap;
 use std::process::ExitCode;
 
-pub fn pitstop(args: &RunArgsWithTest) -> Result<ExitCode> {
+pub fn pitstop(args: &RunArgsWithTestAndScope) -> Result<ExitCode> {
     let config = Config::load()?;
     let ignores = config.ignores()?;
     let repo = Repo::load();
-    let stacks = match &repo {
-        Some(repo) => {
-            let changed_files = repo.branch_changed_files()?;
-            stacks::from_files(&changed_files, &ignores)
-        }
-        None => stacks::discover_all(&ignores),
-    };
+    let scope = args.scope.unwrap_or(Scope::Branch);
+    let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     let tests = if args.test.is_empty() {
         Vec::new()
     } else {

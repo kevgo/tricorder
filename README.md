@@ -59,6 +59,8 @@ It first applies all safe automatic fixes to all files changed on the current
 branch, then reports any remaining code problems that require manual or AI
 attention.
 
+To process a different set of files, pass `--scope`.
+
 ### `trident full`
 
 This command runs all available tools: all safe fixes, all lints, and all tests,
@@ -163,6 +165,18 @@ To run only some tests, pass their names joined with `+`:
 ```sh
 trident test --test=unit+cuke
 ```
+
+### `--scope`
+
+`ci`, `fix`, `fix-unsafe`,
+and `pitstop` accept `--scope` to choose which files they process:
+
+- `uncommitted`: only uncommitted files (staged, unstaged, and untracked)
+- `branch`: only files changed on the current branch
+- `all`: all files in the current directory
+
+`ci`, `fix`, and `fix-unsafe` default to `all`.
+`pitstop` defaults to `branch`.
 
 ## Supported stacks
 

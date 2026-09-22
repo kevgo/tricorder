@@ -1,7 +1,7 @@
 use crate::domain::{Result, UserError};
 use clap::builder::{PossibleValue, PossibleValuesParser, TypedValueParser};
 use clap::error::ErrorKind;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_PKG_NAME"))]
@@ -16,7 +16,7 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     /// Runs all fixes, lints, and tests on CI
-    Ci(RunArgsWithTest),
+    Ci(RunArgsWithTestAndScope),
 
     /// Embed into claude-compatible coding agents
     #[command(name = "init:claude")]
@@ -31,10 +31,10 @@ pub enum Command {
     InitGithook(InitArgs),
 
     /// Apply safe code quality fixes
-    Fix(RunArgs),
+    Fix(RunArgsWithScope),
 
     /// Apply advanced fixes that might change behavior
-    FixUnsafe(RunArgs),
+    FixUnsafe(RunArgsWithScope),
 
     /// Run all lints, fixes, and tests on all files
     Full(RunArgsWithTest),
@@ -44,7 +44,7 @@ pub enum Command {
     Lint(RunArgs),
 
     /// Fix and lint files changed on the current branch
-    Pitstop(RunArgsWithTest),
+    Pitstop(RunArgsWithTestAndScope),
 
     /// Lint uncommitted changes
     Postedit(RunArgs),
@@ -60,11 +60,62 @@ pub enum Command {
     UpdateTools,
 }
 
+/// which files a command should process
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum Scope {
+    /// uncommitted files
+    Uncommitted,
+    /// files changed on the current branch
+    Branch,
+    /// all files in the current directory
+    All,
+}
+
+/// the `--scope` flag
+#[derive(clap::Args)]
+pub struct ScopeArg {
+    /// files to apply the operation to
+    #[arg(long, ignore_case = true)]
+    pub scope: Option<Scope>,
+}
+
+impl ScopeArg {
+    /// provides the given default when `--scope` was omitted
+    #[must_use]
+    pub fn unwrap_or(&self, default: Scope) -> Scope {
+        self.scope.unwrap_or(default)
+    }
+}
+
 // `RunArgs` with a `--test` flag
 #[derive(clap::Args)]
 pub struct RunArgsWithTest {
     #[command(flatten)]
     pub run: RunArgs,
+
+    /// names of tests to run, joined with +
+    #[arg(long, value_delimiter = '+', value_name = "NAME")]
+    pub test: Vec<String>,
+}
+
+// `RunArgs` with a `--scope` flag
+#[derive(clap::Args)]
+pub struct RunArgsWithScope {
+    #[command(flatten)]
+    pub run: RunArgs,
+
+    #[command(flatten)]
+    pub scope: ScopeArg,
+}
+
+// `RunArgs` with `--test` and `--scope` flags
+#[derive(clap::Args)]
+pub struct RunArgsWithTestAndScope {
+    #[command(flatten)]
+    pub run: RunArgs,
+
+    #[command(flatten)]
+    pub scope: ScopeArg,
 
     /// names of tests to run, joined with +
     #[arg(long, value_delimiter = '+', value_name = "NAME")]
@@ -145,14 +196,37 @@ pub fn parse() -> Result<Option<Command>> {
 
 #[cfg(test)]
 mod tests {
-    use super::{Cli, Command, RunArgsWithTest};
+    use super::{Cli, Command, RunArgsWithScope, RunArgsWithTest, RunArgsWithTestAndScope, Scope};
     use clap::Parser;
+    use clap::error::ErrorKind;
+    use maplit::hashmap;
 
-    fn parse_ci(args: &[&str]) -> RunArgsWithTest {
-        parse_with_test_flag("ci", args, |command| match command {
+    fn parse_ci(args: &[&str]) -> RunArgsWithTestAndScope {
+        match parse_command("ci", args) {
             Command::Ci(ci) => ci,
             _ => panic!("expected the ci command"),
-        })
+        }
+    }
+
+    fn parse_fix(args: &[&str]) -> RunArgsWithScope {
+        match parse_command("fix", args) {
+            Command::Fix(fix) => fix,
+            _ => panic!("expected the fix command"),
+        }
+    }
+
+    fn parse_fix_unsafe(args: &[&str]) -> RunArgsWithScope {
+        match parse_command("fix-unsafe", args) {
+            Command::FixUnsafe(fix_unsafe) => fix_unsafe,
+            _ => panic!("expected the fix-unsafe command"),
+        }
+    }
+
+    fn parse_pitstop(args: &[&str]) -> RunArgsWithTestAndScope {
+        match parse_command("pitstop", args) {
+            Command::Pitstop(pitstop) => pitstop,
+            _ => panic!("expected the pitstop command"),
+        }
     }
 
     fn parse_full(args: &[&str]) -> RunArgsWithTest {
@@ -162,18 +236,11 @@ mod tests {
         })
     }
 
-    fn parse_pitstop(args: &[&str]) -> RunArgsWithTest {
-        parse_with_test_flag("pitstop", args, |command| match command {
-            Command::Pitstop(pitstop) => pitstop,
-            _ => panic!("expected the pitstop command"),
-        })
-    }
-
     fn parse_test(args: &[&str]) -> RunArgsWithTest {
-        parse_with_test_flag("test", args, |command| match command {
+        match parse_command("test", args) {
             Command::Test(test) => test,
             _ => panic!("expected the test command"),
-        })
+        }
     }
 
     fn parse_with_test_flag(
@@ -181,9 +248,22 @@ mod tests {
         args: &[&str],
         extract: impl FnOnce(Command) -> RunArgsWithTest,
     ) -> RunArgsWithTest {
+        extract(parse_command(command, args))
+    }
+
+    fn parse_command(command: &str, args: &[&str]) -> Command {
         let mut argv = vec!["trident", command];
         argv.extend(args);
-        extract(Cli::try_parse_from(argv).unwrap().command.unwrap())
+        Cli::try_parse_from(argv).unwrap().command.unwrap()
+    }
+
+    fn parse_err(command: &str, args: &[&str]) -> clap::Error {
+        let mut argv = vec!["trident", command];
+        argv.extend(args);
+        match Cli::try_parse_from(argv) {
+            Ok(_) => panic!("expected CLI parse to fail"),
+            Err(err) => err,
+        }
     }
 
     #[test]
@@ -247,5 +327,36 @@ mod tests {
     #[test]
     fn test_without_test_flag_runs_all_tests() {
         pretty::assert_eq!(parse_test(&[]).test, Vec::<String>::new());
+    }
+
+    #[test]
+    fn scope_flag_values() {
+        let tests = hashmap! {
+            "uncommitted" => Scope::Uncommitted,
+            "branch" => Scope::Branch,
+            "all" => Scope::All,
+            "BRANCH" => Scope::Branch,
+        };
+        for (value, want) in tests {
+            let flag = format!("--scope={value}");
+            pretty::assert_eq!(parse_ci(&[&flag]).scope.scope, Some(want));
+            pretty::assert_eq!(parse_fix(&[&flag]).scope.scope, Some(want));
+            pretty::assert_eq!(parse_fix_unsafe(&[&flag]).scope.scope, Some(want));
+            pretty::assert_eq!(parse_pitstop(&[&flag]).scope.scope, Some(want));
+        }
+    }
+
+    #[test]
+    fn scope_flag_omitted() {
+        pretty::assert_eq!(parse_ci(&[]).scope.scope, None);
+        pretty::assert_eq!(parse_fix(&[]).scope.scope, None);
+        pretty::assert_eq!(parse_fix_unsafe(&[]).scope.scope, None);
+        pretty::assert_eq!(parse_pitstop(&[]).scope.scope, None);
+    }
+
+    #[test]
+    fn scope_flag_rejects_unknown_value() {
+        let err = parse_err("fix", &["--scope=staged"]);
+        pretty::assert_eq!(err.kind(), ErrorKind::InvalidValue);
     }
 }
