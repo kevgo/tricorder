@@ -29,7 +29,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       """
     And the exit code is 0
 
-  Scenario: on main branch with uncommitted files
+  Scenario: on main branch, has uncommitted files
     And a file "untracked.md" with content
       """
       #     Untracked
@@ -51,7 +51,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
     And file "on-main.md" is unchanged
     And the exit code is 0
 
-  Scenario: on feature branch, no uncommitted files, branch has no changes
+  Scenario: on feature branch, branch has no commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     When executing "trident fix --show=output"
     Then it prints to STDERR
@@ -69,7 +69,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
       """
     And the exit code is 0
 
-  Scenario: on feature branch, no uncommitted files, branch has changes
+  Scenario: on feature branch, branch has commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
@@ -96,7 +96,7 @@ Feature: "trident fix" chooses the smallest "--scope" based on the workspace sta
     And file "on-main.md" is unchanged
     And the exit code is 0
 
-  Scenario: on feature branch with uncommitted files
+  Scenario: on feature branch, branch has commits, has uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
