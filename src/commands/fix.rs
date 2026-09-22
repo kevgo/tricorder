@@ -21,13 +21,13 @@ pub fn fix(args: &RunArgsWithScope) -> Result<ExitCode> {
     // step 2: discover the stacks
     let repo = Repo::load();
     let scope = args.scope.unwrap_or(Scope::Branch);
-    let all_stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
+    let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
-        print_metadata(&all_stacks);
+        print_metadata(&stacks);
     }
 
     // step 3: discover the fixes to run
-    let fixes = determine_fixes(&config, &all_stacks)?;
+    let fixes = determine_fixes(&config, &stacks)?;
     if show.display_metadata() {
         eprintln!("running {} tools", fixes.len());
     }

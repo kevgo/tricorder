@@ -20,13 +20,13 @@ pub fn lint(args: &RunArgsWithScope) -> Result<ExitCode> {
 
     // step 2: discover the stacks
     let scope = args.scope.unwrap_or(Scope::Branch);
-    let all_stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
+    let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
-        print_metadata(&all_stacks);
+        print_metadata(&stacks);
     }
 
     // step 3: discover the lints to run
-    let lints = determine_lints(&config, &all_stacks, repo.as_ref())?;
+    let lints = determine_lints(&config, &stacks, repo.as_ref())?;
     if show.display_metadata() {
         eprintln!("running {} tools", lints.len());
     }
