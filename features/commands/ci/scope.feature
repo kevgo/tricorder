@@ -7,16 +7,21 @@ Feature: "trident ci --scope" selects which files to process
       delete-empty-folders 0.0.2
       rumdl 0.2.14
       """
-
-  Scenario: --scope=uncommitted processes only uncommitted files
-    Given a committed file "committed.md" with content
+    And a committed file "on-main.md" with content
       """
-      #     Committed
+      #     Main
+      """
+    And I ran "git checkout -b feature"
+    And a committed file "committed-on-branch.md" with content
+      """
+      #     Branch
       """
     And a file "untracked.md" with content
       """
       #     Untracked
       """
+
+  Scenario: --scope=uncommitted processes only uncommitted files
     When executing "trident ci --scope=uncommitted --show=output"
     Then it prints the lines to STDERR
       """
@@ -31,7 +36,7 @@ Feature: "trident ci --scope" selects which files to process
       """
       committed.md
       """
-    And file "committed.md" is unchanged
+    And file "committed-on-branch.md" is unchanged
     And file "untracked.md" now has content
       """
       # Untracked
@@ -39,19 +44,6 @@ Feature: "trident ci --scope" selects which files to process
     And the exit code is 0
 
   Scenario: --scope=branch processes files changed on the current branch
-    Given a committed file "on-main.md" with content
-      """
-      #     Main
-      """
-    And I ran "git checkout -b feature"
-    And a committed file "on-branch.md" with content
-      """
-      #     Branch
-      """
-    And a file "untracked.md" with content
-      """
-      #     Untracked
-      """
     When executing "trident ci --scope=branch --show=output"
     Then it prints the lines to STDERR
       """
@@ -60,7 +52,7 @@ Feature: "trident ci --scope" selects which files to process
       """
     And it prints the block
       """
-      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      committed-on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
     And it prints the block
       """
@@ -71,7 +63,7 @@ Feature: "trident ci --scope" selects which files to process
       on-main.md
       """
     And file "on-main.md" is unchanged
-    And file "on-branch.md" now has content
+    And file "committed-on-branch.md" now has content
       """
       # Branch
       """
@@ -82,19 +74,6 @@ Feature: "trident ci --scope" selects which files to process
     And the exit code is 1
 
   Scenario: --scope=all processes all files
-    Given a committed file "on-main.md" with content
-      """
-      #     Main
-      """
-    And I ran "git checkout -b feature"
-    And a committed file "on-branch.md" with content
-      """
-      #     Branch
-      """
-    And a file "untracked.md" with content
-      """
-      #     Untracked
-      """
     When executing "trident ci --scope=all --show=output"
     Then it prints the lines to STDERR
       """
@@ -107,7 +86,7 @@ Feature: "trident ci --scope" selects which files to process
       """
     And it prints the block
       """
-      on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      committed-on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
     And it prints the block
       """
@@ -117,7 +96,7 @@ Feature: "trident ci --scope" selects which files to process
       """
       # Main
       """
-    And file "on-branch.md" now has content
+    And file "committed-on-branch.md" now has content
       """
       # Branch
       """
