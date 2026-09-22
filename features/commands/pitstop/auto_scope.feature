@@ -12,40 +12,21 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
       #     Main
       """
 
-  Scenario: on feature branch with uncommitted files
-    Given I ran "git checkout -b feature"
-    And a committed file "committed-on-branch.md" with content
-      """
-      #     Branch
-      """
-    And a file "untracked.md" with content
-      """
-      #     Untracked
-      """
+  Scenario: on main branch, no uncommitted files
     When executing "trident pitstop --show=output"
     Then it prints to STDERR
       """
-      1 Markdown
+      1 Markdown, 1 other
       running 4 tools
       """
     And it prints the block
       """
-      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And it does not print
+    And file "on-main.md" now has content
       """
-      committed-on-branch.md
+      # Main
       """
-    And it does not print
-      """
-      on-main.md
-      """
-    And file "untracked.md" now has content
-      """
-      # Untracked
-      """
-    And file "committed-on-branch.md" is unchanged
-    And file "on-main.md" is unchanged
     And the exit code is 0
 
   Scenario: on main branch with uncommitted files
@@ -68,6 +49,24 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
       # Untracked
       """
     And file "on-main.md" is unchanged
+    And the exit code is 0
+
+  Scenario: on feature branch, no uncommitted files, branch has no changes
+    Given I ran "git checkout -b feature"
+    When executing "trident pitstop --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown, 1 other
+      running 4 tools
+      """
+    And it prints the block
+      """
+      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      """
+    And file "on-main.md" now has content
+      """
+      # Main
+      """
     And the exit code is 0
 
   Scenario: on feature branch, no uncommitted files, branch has changes
@@ -97,19 +96,34 @@ Feature: "trident pitstop" chooses a default --scope from the Git workspace
     And file "on-main.md" is unchanged
     And the exit code is 0
 
-  Scenario: on main branch, no uncommitted files
+  Scenario: on feature branch with uncommitted files
+    Given I ran "git checkout -b feature"
+    And a committed file "committed-on-branch.md" with content
+      """
+      #     Branch
+      """
+    And a file "untracked.md" with content
+      """
+      #     Untracked
+      """
     When executing "trident pitstop --show=output"
     Then it prints to STDERR
       """
-      1 Markdown, 1 other
+      1 Markdown
       running 4 tools
       """
     And it prints the block
       """
-      on-main.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [fixed]
       """
-    And file "on-main.md" now has content
+    And it does not print
       """
-      # Main
+      committed-on-branch.md
       """
+    And file "untracked.md" now has content
+      """
+      # Untracked
+      """
+    And file "committed-on-branch.md" is unchanged
+    And file "on-main.md" is unchanged
     And the exit code is 0
