@@ -63,6 +63,7 @@ To process a different set of files, pass `--scope`:
 
 ```sh
 trident pitstop --scope=uncommitted
+trident pitstop --scope=branch
 trident pitstop --scope=all
 ```
 
