@@ -56,6 +56,35 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
     And file "on-main.py" is unchanged
     And the exit code is 0
 
+  Scenario: on main branch with uncommitted files
+    And a file "untracked.py" with content
+      """
+      def add_to_list(item, items=[]):
+          items.append(item)
+          return items
+      """
+    When executing "trident fix-unsafe --show=output"
+    Then it prints to STDERR
+      """
+      1 Python
+      running 1 tools
+      """
+    And it prints the lines
+      """
+      unsafe-fix Python (ruff)
+      Found 1 error (1 fixed, 0 remaining).
+      """
+    And file "untracked.py" now has content
+      """
+      def add_to_list(item, items=None):
+          if items is None:
+              items = []
+          items.append(item)
+          return items
+      """
+    And file "on-main.py" is unchanged
+    And the exit code is 0
+
   Scenario: on feature branch, no uncommitted files, branch has changes
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.py" with content

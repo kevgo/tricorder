@@ -43,6 +43,24 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
     And all files are unchanged
     And the exit code is 1
 
+  Scenario: on main branch with uncommitted files
+    And a file "untracked.md" with content
+      """
+      #     Untracked
+      """
+    When executing "trident lint --show=output"
+    Then it prints to STDERR
+      """
+      1 Markdown
+      running 2 tools
+      """
+    And it prints the block
+      """
+      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
+      """
+    And all files are unchanged
+    And the exit code is 1
+
   Scenario: on feature branch, no uncommitted files, branch has changes
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
