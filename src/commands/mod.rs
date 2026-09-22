@@ -10,8 +10,6 @@ mod scope;
 mod test;
 mod update_tools;
 
-pub(crate) use scope::discover_stacks;
-
 pub use ci::ci;
 pub use fix::fix;
 pub use fix_unsafe::fix_unsafe;
@@ -20,5 +18,6 @@ pub use lint::lint;
 pub use pitstop::pitstop;
 pub use post_edit::post_edit;
 pub use precommit::precommit;
+pub(crate) use scope::discover_stacks;
 pub use test::test;
 pub use update_tools::update_tools;
