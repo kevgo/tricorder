@@ -26,7 +26,7 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
     And all files are unchanged
     And the exit code is 1
 
-  Scenario: on main branch with uncommitted files
+  Scenario: on main branch, has uncommitted files
     And a file "untracked.md" with content
       """
       #     Untracked
@@ -44,7 +44,7 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
     And all files are unchanged
     And the exit code is 1
 
-  Scenario: on feature branch, no uncommitted files, branch has no changes
+  Scenario: on feature branch, branch has no commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     When executing "trident lint --show=output"
     Then it prints to STDERR
@@ -59,7 +59,7 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
     And all files are unchanged
     And the exit code is 1
 
-  Scenario: on feature branch, no uncommitted files, branch has changes
+  Scenario: on feature branch, branch has commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """
@@ -82,7 +82,7 @@ Feature: "trident lint" chooses a default --scope from the Git workspace
     And all files are unchanged
     And the exit code is 1
 
-  Scenario: on feature branch with uncommitted files
+  Scenario: on feature branch, branch has commits, has uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.md" with content
       """

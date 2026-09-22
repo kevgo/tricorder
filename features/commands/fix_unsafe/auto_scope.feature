@@ -40,7 +40,7 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
       """
     And the exit code is 0
 
-  Scenario: on main branch with uncommitted files
+  Scenario: on main branch, has uncommitted files
     And a file "untracked.py" with content
       """
       def add_to_list(item, items=[]):
@@ -69,7 +69,7 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
     And file "on-main.py" is unchanged
     And the exit code is 0
 
-  Scenario: on feature branch, no uncommitted files, branch has no changes
+  Scenario: on feature branch, branch has no commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     When executing "trident fix-unsafe --show=output"
     Then it prints to STDERR
@@ -91,7 +91,7 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
       """
     And the exit code is 0
 
-  Scenario: on feature branch, no uncommitted files, branch has changes
+  Scenario: on feature branch, branch has commits, no uncommitted files,
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.py" with content
       """
@@ -120,7 +120,7 @@ Feature: "trident fix-unsafe" chooses a default --scope from the Git workspace
     And file "on-main.py" is unchanged
     And the exit code is 0
 
-  Scenario: on feature branch with uncommitted files
+  Scenario: on feature branch, branch has commits, has uncommitted files
     Given I ran "git checkout -b feature"
     And a committed file "committed-on-branch.py" with content
       """
