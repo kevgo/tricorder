@@ -84,6 +84,9 @@
   "commands": {
     "pitstop": {
       "test": ["unit tests"]
+    },
+    "full": {
+      "test": ["unit tests", "E2E tests"]
     }
   }
 }
