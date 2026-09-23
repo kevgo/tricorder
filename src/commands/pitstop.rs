@@ -2,8 +2,7 @@ use crate::cli::input::{RunArgs, RunArgsWithTestAndScope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::commands::lint::Lints;
 use crate::commands::{discover_stacks, fix, lint, resolve_scope};
-use crate::config::Config;
-use crate::config::to_sequences;
+use crate::config::{Config, DefaultTests, to_sequences};
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
 use crate::git::Repo;
 use ahash::AHashMap;
@@ -15,14 +14,11 @@ pub fn pitstop(args: &RunArgsWithTestAndScope) -> Result<ExitCode> {
     let repo = Repo::load();
     let scope = resolve_scope(&args.scope, repo.as_ref());
     let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
-    let requested = config
-        .tests_for(&args.test, |commands| commands.pitstop.as_ref())
-        .unwrap_or(&[]);
-    let tests = if requested.is_empty() {
-        Vec::new()
-    } else {
-        to_sequences(config.select_tests(requested)?)
-    };
+    let tests = to_sequences(config.tests_for(
+        &args.test,
+        |commands| commands.pitstop.as_ref(),
+        DefaultTests::None,
+    )?);
     run_tasks(&args.run, &config, &stacks, repo.as_ref(), tests)
 }
 

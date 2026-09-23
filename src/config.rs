@@ -173,34 +173,29 @@ impl Config {
         Ok(result)
     }
 
-    /// names of tests to run: CLI `--test` overrides `commands.<command>.test`
+    /// tests to run: CLI `--test` overrides `commands.<command>.test`,
+    /// which overrides the command's built-in `default`
     ///
-    /// `None` means the command should use its built-in default.
-    /// `Some([])` means run no tests.
-    #[must_use]
-    pub fn tests_for<'a>(
-        &'a self,
-        cli: &'a [String],
-        command: impl FnOnce(&CommandsSection) -> Option<&CommandConfig>,
-    ) -> Option<&'a [String]> {
-        if !cli.is_empty() {
-            return Some(cli);
-        }
-        self.commands
-            .as_ref()
-            .and_then(command)
-            .and_then(|config| config.test.as_deref())
-    }
-
-    /// tests to run when the command's built-in default is all tests
-    ///
-    /// `None` selects every configured test. `Some([])` selects none.
-    pub fn select_requested_tests(
+    /// An empty `commands.<command>.test` list selects no tests.
+    pub fn tests_for(
         &self,
-        requested: Option<&[String]>,
+        cli: &[String],
+        command: impl FnOnce(&CommandsSection) -> Option<&CommandConfig>,
+        default: DefaultTests,
     ) -> Result<Vec<&ToolDefinition>> {
+        let requested = if cli.is_empty() {
+            self.commands
+                .as_ref()
+                .and_then(command)
+                .and_then(|config| config.test.as_deref())
+        } else {
+            Some(cli)
+        };
         match requested {
-            None => self.select_tests(&[]),
+            None => match default {
+                DefaultTests::All => self.select_tests(&[]),
+                DefaultTests::None => Ok(Vec::new()),
+            },
             Some([]) => Ok(Vec::new()),
             Some(names) => self.select_tests(names),
         }
@@ -241,6 +236,15 @@ impl ToolDefinition {
             command: conc::shell_command(&self.command),
         })
     }
+}
+
+/// built-in tests a command runs when neither CLI nor config specifies any
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DefaultTests {
+    /// every test defined in the config
+    All,
+    /// no tests
+    None,
 }
 
 /// default tests and other settings for a Trident command
@@ -1656,97 +1660,101 @@ mod tests {
     }
 
     mod tests_for {
-        use crate::config::{CommandConfig, CommandsSection, Config};
+        use crate::config::{CommandConfig, CommandsSection, Config, DefaultTests, ToolDefinition};
         use big_s::S;
 
-        fn pitstop_config(names: &[&str]) -> Config {
-            Config {
-                commands: Some(CommandsSection {
-                    pitstop: Some(CommandConfig {
-                        test: Some(names.iter().map(|name| (*name).to_string()).collect()),
-                    }),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            }
+        fn unit_and_cuke() -> (ToolDefinition, ToolDefinition) {
+            (
+                ToolDefinition {
+                    name: Some(S("unit")),
+                    command: S("echo unit"),
+                },
+                ToolDefinition {
+                    name: Some(S("cuke")),
+                    command: S("echo cuke"),
+                },
+            )
         }
 
-        #[test]
-        fn cli_overrides_config() {
-            let config = pitstop_config(&["unit"]);
-            let cli = vec![S("cuke")];
-            let have = config.tests_for(&cli, |commands| commands.pitstop.as_ref());
-            pretty::assert_eq!(have, Some(cli.as_slice()));
-        }
-
-        #[test]
-        fn empty_cli_uses_config() {
-            let config = pitstop_config(&["unit"]);
-            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
-            pretty::assert_eq!(have.unwrap(), ["unit"]);
-        }
-
-        #[test]
-        fn empty_cli_and_missing_config_is_none() {
-            let config = Config::default();
-            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
-            assert_eq!(have, None);
-        }
-
-        #[test]
-        fn empty_config_array_is_some_empty() {
-            let config = pitstop_config(&[]);
-            let have = config.tests_for(&[], |commands| commands.pitstop.as_ref());
-            pretty::assert_eq!(have, Some(&[] as &[String]));
-        }
-
-        #[test]
-        fn other_command_is_not_used() {
-            let config = pitstop_config(&["unit"]);
-            let have = config.tests_for(&[], |commands| commands.ci.as_ref());
-            assert_eq!(have, None);
-        }
-    }
-
-    mod select_requested_tests {
-        use crate::config::{Config, ToolDefinition};
-        use big_s::S;
-
-        fn config_with_tests() -> (Config, ToolDefinition, ToolDefinition) {
-            let unit_test = ToolDefinition {
-                name: Some(S("unit")),
-                command: S("echo unit"),
-            };
-            let cuke_test = ToolDefinition {
-                name: Some(S("cuke")),
-                command: S("echo cuke"),
-            };
+        fn config_with_tests(
+            pitstop: Option<Vec<String>>,
+        ) -> (Config, ToolDefinition, ToolDefinition) {
+            let (unit_test, cuke_test) = unit_and_cuke();
             let config = Config {
                 tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                commands: pitstop.map(|names| CommandsSection {
+                    pitstop: Some(CommandConfig { test: Some(names) }),
+                    ..Default::default()
+                }),
                 ..Default::default()
             };
             (config, unit_test, cuke_test)
         }
 
         #[test]
-        fn none_selects_all() {
-            let (config, unit_test, cuke_test) = config_with_tests();
-            let have = config.select_requested_tests(None).unwrap();
+        fn cli_overrides_config() {
+            let (config, _, cuke_test) = config_with_tests(Some(vec![S("unit")]));
+            let have = config
+                .tests_for(
+                    &[S("cuke")],
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
+            pretty::assert_eq!(have, vec![&cuke_test]);
+        }
+
+        #[test]
+        fn empty_cli_uses_config() {
+            let (config, unit_test, _) = config_with_tests(Some(vec![S("unit")]));
+            let have = config
+                .tests_for(
+                    &[],
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
+            pretty::assert_eq!(have, vec![&unit_test]);
+        }
+
+        #[test]
+        fn missing_config_uses_default_all() {
+            let (config, unit_test, cuke_test) = config_with_tests(None);
+            let have = config
+                .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .unwrap();
             pretty::assert_eq!(have, vec![&unit_test, &cuke_test]);
         }
 
         #[test]
-        fn empty_selects_none() {
-            let (config, _, _) = config_with_tests();
-            let have = config.select_requested_tests(Some(&[])).unwrap();
+        fn missing_config_uses_default_none() {
+            let (config, _, _) = config_with_tests(None);
+            let have = config
+                .tests_for(
+                    &[],
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
             assert!(have.is_empty());
         }
 
         #[test]
-        fn names_select_those_tests() {
-            let (config, unit_test, _) = config_with_tests();
-            let have = config.select_requested_tests(Some(&[S("unit")])).unwrap();
-            pretty::assert_eq!(have, vec![&unit_test]);
+        fn empty_config_array_selects_none() {
+            let (config, _, _) = config_with_tests(Some(vec![]));
+            let have = config
+                .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .unwrap();
+            assert!(have.is_empty());
+        }
+
+        #[test]
+        fn other_command_uses_its_default() {
+            let (config, _, _) = config_with_tests(Some(vec![S("unit")]));
+            let have = config
+                .tests_for(&[], |commands| commands.ci.as_ref(), DefaultTests::None)
+                .unwrap();
+            assert!(have.is_empty());
         }
     }
 }

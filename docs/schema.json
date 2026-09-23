@@ -112,7 +112,7 @@
       }
     },
     "commands": {
-      "description": "default tests each command runs when `--test` is omitted",
+      "description": "configure the default behavior of the Trident commands",
       "anyOf": [
         {
           "$ref": "#/$defs/CommandsSection"
