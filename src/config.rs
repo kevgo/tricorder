@@ -1801,7 +1801,7 @@ mod tests {
         }
 
         #[test]
-        fn empty_config_array_selects_none() {
+        fn empty_config_array() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
