@@ -60,10 +60,10 @@ then reports any remaining code problems that require manual or AI attention.
 
 By default, it reviews the smallest scope you currently work on:
 
-- if uncommitted changes exist: reviews only those
-- no uncommitted changes but you are on a feature branch:
+- uncommitted changes exist: reviews only those
+- no uncommitted changes but you are on a feature branch with changes:
   reviews all changes made on that branch
-- no uncommitted changes and not on a feature branch: reviews the entire repo
+- otherwise: reviews the entire repo
 
 To process a different set of files, use `--scope`.
 
