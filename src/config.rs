@@ -1819,8 +1819,9 @@ mod tests {
                 }),
                 ..Default::default()
             };
+            let cli = &[];
             let have = config
-                .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .tests_for(cli, |commands| commands.pitstop.as_ref(), DefaultTests::All)
                 .unwrap();
             assert!(have.is_empty());
         }
