@@ -1739,7 +1739,7 @@ mod tests {
         }
 
         #[test]
-        fn missing_config_uses_default() {
+        fn missing_config_uses_default_all() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
@@ -1775,35 +1775,29 @@ mod tests {
 
         #[test]
         fn missing_config_uses_default_none() {
-            let (config, _, _) = {
-                let (unit_test, cuke_test) = (
-                    ToolDefinition {
-                        name: Some(S("unit")),
-                        command: S("echo unit"),
-                    },
+            let config = Config {
+                tests: Some(vec![
                     ToolDefinition {
                         name: Some(S("cuke")),
                         command: S("echo cuke"),
                     },
-                );
-                let config = Config {
-                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                    commands: None.map(|names| CommandsSection {
-                        pitstop: Some(CommandConfig { test: Some(names) }),
-                        ..Default::default()
-                    }),
-                    ..Default::default()
-                };
-                (config, unit_test, cuke_test)
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: None,
+                ..Default::default()
             };
+            let cli = &[];
             let have = config
                 .tests_for(
-                    &[],
+                    cli,
                     |commands| commands.pitstop.as_ref(),
                     DefaultTests::None,
                 )
                 .unwrap();
-            assert!(have.is_empty());
+            pretty::assert_eq!(have, Vec::<&ToolDefinition>::new());
         }
 
         #[test]
