@@ -1662,50 +1662,68 @@ mod tests {
         use crate::config::{CommandConfig, CommandsSection, Config, DefaultTests, ToolDefinition};
         use big_s::S;
 
-        fn unit_and_cuke() -> (ToolDefinition, ToolDefinition) {
-            (
-                ToolDefinition {
-                    name: Some(S("unit")),
-                    command: S("echo unit"),
-                },
-                ToolDefinition {
-                    name: Some(S("cuke")),
-                    command: S("echo cuke"),
-                },
-            )
-        }
-
-        fn config_with_tests(
-            pitstop: Option<Vec<String>>,
-        ) -> (Config, ToolDefinition, ToolDefinition) {
-            let (unit_test, cuke_test) = unit_and_cuke();
+        #[test]
+        fn cli_overrides_config() {
             let config = Config {
-                tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                commands: pitstop.map(|names| CommandsSection {
-                    pitstop: Some(CommandConfig { test: Some(names) }),
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
+                    }),
                     ..Default::default()
                 }),
                 ..Default::default()
             };
-            (config, unit_test, cuke_test)
-        }
-
-        #[test]
-        fn cli_overrides_config() {
-            let (config, _, cuke_test) = config_with_tests(Some(vec![S("unit")]));
+            let cli = &[S("cuke")];
             let have = config
                 .tests_for(
-                    &[S("cuke")],
+                    cli,
                     |commands| commands.pitstop.as_ref(),
                     DefaultTests::None,
                 )
                 .unwrap();
-            pretty::assert_eq!(have, vec![&cuke_test]);
+            pretty::assert_eq!(
+                have,
+                vec![&ToolDefinition {
+                    name: Some(S("cuke")),
+                    command: S("echo cuke"),
+                }]
+            );
         }
 
         #[test]
         fn empty_cli_uses_config() {
-            let (config, unit_test, _) = config_with_tests(Some(vec![S("unit")]));
+            let (config, unit_test, _) = {
+                let pitstop = Some(vec![S("unit")]);
+                let (unit_test, cuke_test) = (
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                );
+                let config = Config {
+                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                    commands: pitstop.map(|names| CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(names) }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                };
+                (config, unit_test, cuke_test)
+            };
             let have = config
                 .tests_for(
                     &[],
@@ -1718,7 +1736,27 @@ mod tests {
 
         #[test]
         fn missing_config_uses_default_all() {
-            let (config, unit_test, cuke_test) = config_with_tests(None);
+            let (config, unit_test, cuke_test) = {
+                let (unit_test, cuke_test) = (
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                );
+                let config = Config {
+                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                    commands: None.map(|names| CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(names) }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                };
+                (config, unit_test, cuke_test)
+            };
             let have = config
                 .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
                 .unwrap();
@@ -1727,7 +1765,27 @@ mod tests {
 
         #[test]
         fn missing_config_uses_default_none() {
-            let (config, _, _) = config_with_tests(None);
+            let (config, _, _) = {
+                let (unit_test, cuke_test) = (
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                );
+                let config = Config {
+                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                    commands: None.map(|names| CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(names) }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                };
+                (config, unit_test, cuke_test)
+            };
             let have = config
                 .tests_for(
                     &[],
@@ -1740,7 +1798,28 @@ mod tests {
 
         #[test]
         fn empty_config_array_selects_none() {
-            let (config, _, _) = config_with_tests(Some(vec![]));
+            let (config, _, _) = {
+                let pitstop = Some(vec![]);
+                let (unit_test, cuke_test) = (
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                );
+                let config = Config {
+                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                    commands: pitstop.map(|names| CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(names) }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                };
+                (config, unit_test, cuke_test)
+            };
             let have = config
                 .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
                 .unwrap();
@@ -1749,7 +1828,28 @@ mod tests {
 
         #[test]
         fn other_command_uses_its_default() {
-            let (config, _, _) = config_with_tests(Some(vec![S("unit")]));
+            let (config, _, _) = {
+                let pitstop = Some(vec![S("unit")]);
+                let (unit_test, cuke_test) = (
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                );
+                let config = Config {
+                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
+                    commands: pitstop.map(|names| CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(names) }),
+                        ..Default::default()
+                    }),
+                    ..Default::default()
+                };
+                (config, unit_test, cuke_test)
+            };
             let have = config
                 .tests_for(&[], |commands| commands.ci.as_ref(), DefaultTests::None)
                 .unwrap();
