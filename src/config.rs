@@ -52,7 +52,7 @@ pub struct Config {
     /// define the functional tests
     pub tests: Option<Vec<ToolDefinition>>,
 
-    /// default tests each command runs when `--test` is omitted
+    /// configure the default behavior of the Trident commands
     pub commands: Option<CommandsSection>,
 }
 
