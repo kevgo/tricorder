@@ -1739,7 +1739,7 @@ mod tests {
         }
 
         #[test]
-        fn missing_config_uses_default_all() {
+        fn missing_config_uses_default() {
             let (config, unit_test, cuke_test) = {
                 let (unit_test, cuke_test) = (
                     ToolDefinition {
