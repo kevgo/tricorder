@@ -82,6 +82,9 @@
     }
   ],
   "commands": {
+    "ci": {
+      "test": ["unit tests", "slow E2E tests"]
+    },
     "pitstop": {
       "test": ["unit tests"]
     },
