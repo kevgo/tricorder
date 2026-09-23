@@ -13,7 +13,7 @@ build-release:	# builds the project in release mode
 	cargo build --release
 
 ci: build ${TRIDENT}  # run the full CI pipeline
-	$(TRIDENT) ci --test=unit+E2Eslow
+	$(TRIDENT) ci
 
 contest: ${RTA}
 	$(CONTEST)
