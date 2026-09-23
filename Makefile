@@ -12,7 +12,7 @@ build:  # builds the project in debug mode
 build-release:	# builds the project in release mode
 	cargo build --release
 
-ci: build ${TRIDENT}  # run the full CI pipeline
+ci: build   # run the full CI pipeline
 	$(TRIDENT) ci
 
 contest: ${RTA}
@@ -44,7 +44,7 @@ demo:  # runs Trident in the "demo" folder
 install:  # installs Trident into the global path
 	cargo install --path . --locked
 
-fix: build ${RTA} ${TRIDENT}  # corrects all auto-fixable issues
+fix: build ${RTA}  # corrects all auto-fixable issues
 	$(TRIDENT) fix --show=names
 
 ghokin: ${RTA}  # format the Cucumber files
@@ -53,7 +53,7 @@ ghokin: ${RTA}  # format the Cucumber files
 help:  # prints all available targets
 	grep -h -E '^[a-zA-Z_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-lint: build ${RTA} ${TRIDENT}  # runs all linters
+lint: build ${RTA}  # runs all linters
 	$(TRIDENT) lint --show=names
 
 setup: setup-ci  # install development dependencies on this computer
@@ -64,15 +64,15 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
 
-ps: build $(TRIDENT)  # pitstop, quick checkup during active development
+ps: build  # pitstop, quick checkup during active development
 	$(TRIDENT) pitstop
 
-full: build ${TRIDENT}  # run all lints, fixes, and tests on all files
+full: build  # run all lints, fixes, and tests on all files
 	$(TRIDENT) full
 
 psc: ps cuke  # complete pitstop, runs all fixes, lints, and tests
 
-test: build ${TRIDENT}  ## runs all tests
+test: build  ## runs all tests
 	$(TRIDENT) test
 
 todo: ${RTA}  # lists all TODOs in the code
