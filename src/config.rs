@@ -246,14 +246,6 @@ pub enum DefaultTests {
     None,
 }
 
-/// default tests and other settings for a Trident command
-#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct CommandConfig {
-    /// names of tests this command runs by default
-    pub test: Option<Vec<String>>,
-}
-
 /// settings for individual Trident commands
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
 #[serde(deny_unknown_fields)]
@@ -269,6 +261,14 @@ pub struct CommandsSection {
 
     /// default tests for `trident test`
     pub test: Option<CommandConfig>,
+}
+
+/// default tests and other settings for a Trident command
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CommandConfig {
+    /// names of tests this command runs by default
+    pub test: Option<Vec<String>>,
 }
 
 /// provides the configured tests with the given names as parallel `conc::Sequences`
