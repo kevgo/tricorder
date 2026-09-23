@@ -173,10 +173,9 @@ impl Config {
         Ok(result)
     }
 
-    /// tests to run: CLI `--test` overrides `commands.<command>.test`,
-    /// which overrides the command's built-in `default`
-    ///
-    /// An empty `commands.<command>.test` list selects no tests.
+    /// determines the tests to run using the given --test CLI flag,
+    /// the given command section in the config file,
+    /// and the given default tests for the command
     pub fn tests_for(
         &self,
         cli: &[String],
