@@ -1803,7 +1803,6 @@ mod tests {
         #[test]
         fn empty_config_array_selects_none() {
             let (config, _, _) = {
-                let pitstop = Some(vec![]);
                 let (unit_test, cuke_test) = (
                     ToolDefinition {
                         name: Some(S("unit")),
@@ -1816,8 +1815,8 @@ mod tests {
                 );
                 let config = Config {
                     tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                    commands: pitstop.map(|names| CommandsSection {
-                        pitstop: Some(CommandConfig { test: Some(names) }),
+                    commands: Some(CommandsSection {
+                        pitstop: Some(CommandConfig { test: Some(vec![]) }),
                         ..Default::default()
                     }),
                     ..Default::default()
