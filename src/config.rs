@@ -912,14 +912,14 @@ mod tests {
 
         #[test]
         fn unknown_command() {
-            let give = r#"{ "commands": { "lint": { "test": ["unit"] } } }"#;
+            let give = r#"{ "commands": { "zonk": { "test": ["unit"] } } }"#;
             let have = Config::parse(give, "test.json").unwrap_err();
             let UserError::ConfigCannotParse { filename, err } = have else {
                 panic!("expected ConfigCannotParse, got {have:?}");
             };
             assert_eq!(filename, "test.json");
             assert!(
-                err.contains("unknown field `lint`"),
+                err.contains("unknown field `zonk`"),
                 "error should mention the unknown field, got: {err}"
             );
         }
