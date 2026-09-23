@@ -1802,8 +1802,8 @@ mod tests {
 
         #[test]
         fn empty_config_array_selects_none() {
-            let (config, _, _) = {
-                let (unit_test, cuke_test) = (
+            let config = Config {
+                tests: Some(vec![
                     ToolDefinition {
                         name: Some(S("unit")),
                         command: S("echo unit"),
@@ -1812,16 +1812,12 @@ mod tests {
                         name: Some(S("cuke")),
                         command: S("echo cuke"),
                     },
-                );
-                let config = Config {
-                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                    commands: Some(CommandsSection {
-                        pitstop: Some(CommandConfig { test: Some(vec![]) }),
-                        ..Default::default()
-                    }),
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig { test: Some(vec![]) }),
                     ..Default::default()
-                };
-                (config, unit_test, cuke_test)
+                }),
+                ..Default::default()
             };
             let have = config
                 .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
