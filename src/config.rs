@@ -240,9 +240,9 @@ impl ToolDefinition {
 /// the tests a command runs by default
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DefaultTests {
-    /// every test defined in the config
+    /// run all tests defined in the config file
     All,
-    /// no tests
+    /// run no tests
     None,
 }
 
