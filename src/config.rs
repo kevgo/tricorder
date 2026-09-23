@@ -174,8 +174,8 @@ impl Config {
     }
 
     /// determines the tests to run using the given --test CLI flag,
-    /// the given command section in the config file,
-    /// and the given default tests for the command
+    /// the config file settings,
+    /// and default tests for the command
     pub fn tests_for(
         &self,
         cli: &[String],
