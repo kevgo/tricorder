@@ -68,7 +68,6 @@ By default, it reviews the smallest scope you currently work on:
 To process a different set of files, use `--scope`.
 
 To always run some tests as well, list them under `commands.pitstop.test`.
-`trident pitstop --test` overrides that list.
 
 ```jsonc
 {
