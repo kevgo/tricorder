@@ -13,7 +13,7 @@ build-release:	# builds the project in release mode
 	cargo build --release
 
 ci: build ${TRIDENT}  # run the full CI pipeline
-	$(TRIDENT) ci --test=unit+E2Eslow
+	$(TRIDENT) ci
 
 contest: ${RTA}
 	$(CONTEST)
@@ -64,7 +64,7 @@ setup-ci:  # installs the necessary tools for the CI pipeline
 	rustup toolchain add nightly
 	rustup component add rustfmt --toolchain nightly
 
-ps: build unit $(TRIDENT)  # pitstop, quick checkup during active development
+ps: build $(TRIDENT)  # pitstop, quick checkup during active development
 	$(TRIDENT) pitstop
 
 full: build ${TRIDENT}  # run all lints, fixes, and tests on all files

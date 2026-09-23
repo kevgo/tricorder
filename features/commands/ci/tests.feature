@@ -112,6 +112,42 @@ Feature: CI runs all fixes, formatters, lints, and tests
       """
     And the exit code is 0
 
+  Scenario: commands.ci.test runs those tests by default
+    Given a file "trident.json" with content
+      """
+      {
+        "applications": {
+          "dprint": { "enabled": false },
+          "prettier": { "enabled": false }
+        },
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ],
+        "commands": {
+          "ci": {
+            "test": ["unit"]
+          }
+        }
+      }
+      """
+    When executing "trident ci --show=output"
+    Then it prints the lines to STDERR
+      """
+      1 JSON, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it does not print
+      """
+      cuke
+      """
+    And the exit code is 0
+
   Scenario: unknown test name
     Given a file "trident.json" with content
       """

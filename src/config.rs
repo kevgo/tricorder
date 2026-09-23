@@ -51,6 +51,9 @@ pub struct Config {
 
     /// define the functional tests
     pub tests: Option<Vec<ToolDefinition>>,
+
+    /// configure the default behavior of the Trident commands
+    pub commands: Option<CommandsSection>,
 }
 
 impl Config {
@@ -169,6 +172,33 @@ impl Config {
         }
         Ok(result)
     }
+
+    /// determines the tests to run using the given --test CLI flag,
+    /// the config file settings,
+    /// and default tests for the command
+    pub fn tests_for(
+        &self,
+        cli: &[String],
+        command: impl FnOnce(&CommandsSection) -> Option<&CommandConfig>,
+        default: DefaultTests,
+    ) -> Result<Vec<&ToolDefinition>> {
+        let requested = if cli.is_empty() {
+            self.commands
+                .as_ref()
+                .and_then(command)
+                .and_then(|config| config.test.as_deref())
+        } else {
+            Some(cli)
+        };
+        match requested {
+            None => match default {
+                DefaultTests::All => self.select_tests(&[]),
+                DefaultTests::None => Ok(Vec::new()),
+            },
+            Some([]) => Ok(Vec::new()),
+            Some(names) => self.select_tests(names),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
@@ -205,6 +235,40 @@ impl ToolDefinition {
             command: conc::shell_command(&self.command),
         })
     }
+}
+
+/// the tests a command runs by default
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DefaultTests {
+    /// run all tests defined in the config file
+    All,
+    /// run no tests
+    None,
+}
+
+/// settings for individual Trident commands
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CommandsSection {
+    /// default tests for `trident ci`
+    pub ci: Option<CommandConfig>,
+
+    /// default tests for `trident full`
+    pub full: Option<CommandConfig>,
+
+    /// default tests for `trident pitstop`
+    pub pitstop: Option<CommandConfig>,
+
+    /// default tests for `trident test`
+    pub test: Option<CommandConfig>,
+}
+
+/// default tests and other settings for a Trident command
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CommandConfig {
+    /// names of tests this command runs by default
+    pub test: Option<Vec<String>>,
 }
 
 /// provides the configured tests with the given names as parallel `conc::Sequences`
@@ -455,7 +519,7 @@ mod tests {
 
     mod parse {
         use crate::config::StackTools;
-        use crate::config::{Config, StackConfig, ToolDefinition};
+        use crate::config::{CommandConfig, CommandsSection, Config, StackConfig, ToolDefinition};
         use crate::domain::{StackType, UserError};
         use ahash::AHashMap;
         use big_s::S;
@@ -510,6 +574,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -526,6 +591,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             assert_eq!(have, want);
         }
@@ -541,6 +607,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             assert_eq!(have, want);
         }
@@ -557,6 +624,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -578,6 +646,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -598,6 +667,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -645,6 +715,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -683,6 +754,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -721,6 +793,7 @@ mod tests {
                     },
                 )),
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -752,6 +825,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -768,6 +842,7 @@ mod tests {
                 applications: None,
                 stacks: None,
                 tests: None,
+                commands: None,
             };
             pretty::assert_eq!(have, want);
         }
@@ -800,8 +875,53 @@ mod tests {
                         command: S("make cuke"),
                     },
                 ]),
+                commands: None,
             };
             pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn commands() {
+            let give = r#"
+{
+  "commands": {
+    "pitstop": {
+      "test": ["unit"],
+    }
+  }
+}
+"#;
+            let have = Config::parse(give, "test.json").unwrap();
+            let want = Config {
+                schema: None,
+                global_fixes: None,
+                global_lints: None,
+                ignore_files: None,
+                applications: None,
+                stacks: None,
+                tests: None,
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
+                    }),
+                    ..Default::default()
+                }),
+            };
+            pretty::assert_eq!(have, want);
+        }
+
+        #[test]
+        fn unknown_command() {
+            let give = r#"{ "commands": { "zonk": { "test": ["unit"] } } }"#;
+            let have = Config::parse(give, "test.json").unwrap_err();
+            let UserError::ConfigCannotParse { filename, err } = have else {
+                panic!("expected ConfigCannotParse, got {have:?}");
+            };
+            assert_eq!(filename, "test.json");
+            assert!(
+                err.contains("unknown field `zonk`"),
+                "error should mention the unknown field, got: {err}"
+            );
         }
 
         #[test]
@@ -1535,6 +1655,174 @@ mod tests {
                 available: vec![],
             };
             pretty::assert_eq!(have, want);
+        }
+    }
+
+    mod tests_for {
+        use crate::config::{CommandConfig, CommandsSection, Config, DefaultTests, ToolDefinition};
+        use big_s::S;
+
+        #[test]
+        fn cli_overrides_config() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let cli = &[S("cuke")];
+            let have = config
+                .tests_for(
+                    cli,
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
+            pretty::assert_eq!(
+                have,
+                vec![&ToolDefinition {
+                    name: Some(S("cuke")),
+                    command: S("echo cuke"),
+                }]
+            );
+        }
+
+        #[test]
+        fn empty_cli_uses_config() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
+                    }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let cli = &[];
+            let have = config
+                .tests_for(
+                    cli,
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
+            pretty::assert_eq!(
+                have,
+                vec![&ToolDefinition {
+                    name: Some(S("unit")),
+                    command: S("echo unit"),
+                }]
+            );
+        }
+
+        #[test]
+        fn missing_config_uses_default_all() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: None,
+                ..Default::default()
+            };
+            let cli = &[];
+            let have = config
+                .tests_for(cli, |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .unwrap();
+            pretty::assert_eq!(
+                have,
+                vec![
+                    &ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    &ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]
+            );
+        }
+
+        #[test]
+        fn missing_config_uses_default_none() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: None,
+                ..Default::default()
+            };
+            let cli = &[];
+            let have = config
+                .tests_for(
+                    cli,
+                    |commands| commands.pitstop.as_ref(),
+                    DefaultTests::None,
+                )
+                .unwrap();
+            pretty::assert_eq!(have, Vec::<&ToolDefinition>::new());
+        }
+
+        #[test]
+        fn empty_command_tests_configured() {
+            let config = Config {
+                tests: Some(vec![
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                    ToolDefinition {
+                        name: Some(S("cuke")),
+                        command: S("echo cuke"),
+                    },
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig { test: Some(vec![]) }),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let have = config
+                .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .unwrap();
+            assert!(have.is_empty());
         }
     }
 }

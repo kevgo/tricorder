@@ -37,6 +37,78 @@ Feature: pitstop --test runs selected tests
       """
     And the exit code is 0
 
+  Scenario: commands.pitstop.test runs those tests by default
+    Given a file "trident.json" with content
+      """
+      {
+        "applications": {
+          "dprint": { "enabled": false },
+          "prettier": { "enabled": false }
+        },
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ],
+        "commands": {
+          "pitstop": {
+            "test": ["unit"]
+          }
+        }
+      }
+      """
+    When executing "trident pitstop --show=output"
+    Then it prints the lines to STDERR
+      """
+      1 JSON, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it does not print
+      """
+      cuke
+      """
+    And the exit code is 0
+
+  Scenario: --test overrides commands.pitstop.test
+    Given a file "trident.json" with content
+      """
+      {
+        "applications": {
+          "dprint": { "enabled": false },
+          "prettier": { "enabled": false }
+        },
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ],
+        "commands": {
+          "pitstop": {
+            "test": ["unit"]
+          }
+        }
+      }
+      """
+    When executing "trident pitstop --test=cuke --show=output"
+    Then it prints the lines to STDERR
+      """
+      1 JSON, 1 other
+      running 2 tools
+      """
+    And it prints the block
+      """
+      cuke
+      cuke
+      """
+    And it does not print
+      """
+      unit
+      """
+    And the exit code is 0
+
   Scenario: --test selects named tests
     Given a file "trident.json" with content
       """
@@ -100,6 +172,28 @@ Feature: pitstop --test runs selected tests
       custom test failed
       """
     And the exit code is 4
+
+  Scenario: unknown test name in commands.pitstop.test
+    Given a file "trident.json" with content
+      """
+      {
+        "tests": [
+          { "name": "unit", "command": "echo unit" }
+        ],
+        "commands": {
+          "pitstop": {
+            "test": ["missing"]
+          }
+        }
+      }
+      """
+    When executing "trident pitstop"
+    Then it prints
+      """
+      unknown test: missing
+      available tests: unit
+      """
+    And the exit code is 1
 
   Scenario: unknown test name
     Given a file "trident.json" with content
