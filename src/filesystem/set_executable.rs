@@ -1,10 +1,13 @@
-use crate::domain::{Result, UserError};
-use std::fs;
-use std::os::unix::fs::PermissionsExt;
+use crate::domain::Result;
 use std::path::Path;
 
 /// makes the given file executable
+#[cfg(unix)]
 pub fn set_executable(path: &Path) -> Result<()> {
+    use crate::domain::UserError;
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
     let metadata = fs::metadata(path).map_err(|err| UserError::CannotReadFileMetadata {
         path: path.into(),
         err: err.to_string(),
@@ -15,4 +18,10 @@ pub fn set_executable(path: &Path) -> Result<()> {
         path: path.into(),
         err: err.to_string(),
     })
+}
+
+/// Windows has no Unix execute bits; Git hooks and shell scripts still work without them.
+#[cfg(not(unix))]
+pub fn set_executable(_path: &Path) -> Result<()> {
+    Ok(())
 }
