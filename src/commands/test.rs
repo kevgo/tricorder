@@ -6,18 +6,18 @@ use std::process::ExitCode;
 pub fn test(args: &RunArgsWithTest) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.run.show.unwrap_or(conc::Show::Names);
-    let tests_to_use = config.tests_for(
+    let tests = config.tests_for(
         &args.test,
         |commands| commands.test.as_ref(),
         DefaultTests::All,
     )?;
     if show.display_metadata() {
-        eprintln!("running {} tools", tests_to_use.len());
+        eprintln!("running {} tools", tests.len());
     }
-    if tests_to_use.is_empty() {
+    if tests.is_empty() {
         return Ok(ExitCode::SUCCESS);
     }
-    let test_sequences = to_sequences(tests_to_use);
+    let test_sequences = to_sequences(tests);
     let exit_code = conc::run(conc::RunArgs {
         sequences: test_sequences,
         error_on_output: false,
