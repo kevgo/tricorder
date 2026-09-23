@@ -135,7 +135,9 @@ mod tests {
         repo.create_and_switch_to_branch("feature").unwrap();
         repo.create_and_commit_file("on-branch.md").unwrap();
         repo.create_unstaged_file("untracked.md");
-        pretty::assert_eq!(infer_scope(Some(&repo)), Scope::Uncommitted);
+        let have = infer_scope(Some(&repo));
+        let want = Scope::Uncommitted;
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
@@ -145,7 +147,9 @@ mod tests {
         repo.create_and_commit_file("on-main.md").unwrap();
         repo.create_and_switch_to_branch("feature").unwrap();
         repo.create_and_commit_file("on-branch.md").unwrap();
-        pretty::assert_eq!(infer_scope(Some(&repo)), Scope::Branch);
+        let have = infer_scope(Some(&repo));
+        let want = Scope::Branch;
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
@@ -153,7 +157,9 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let repo = Repo::init(dir.path()).unwrap();
         repo.create_and_commit_file("on-main.md").unwrap();
-        pretty::assert_eq!(infer_scope(Some(&repo)), Scope::All);
+        let have = infer_scope(Some(&repo));
+        let want = Scope::All;
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
@@ -162,7 +168,9 @@ mod tests {
         let repo = Repo::init(dir.path()).unwrap();
         repo.create_and_commit_file("on-main.md").unwrap();
         repo.create_and_switch_to_branch("feature").unwrap();
-        pretty::assert_eq!(infer_scope(Some(&repo)), Scope::All);
+        let have = infer_scope(Some(&repo));
+        let want = Scope::All;
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
@@ -173,7 +181,9 @@ mod tests {
         let explicit = ScopeArg {
             scope: Some(Scope::All),
         };
-        pretty::assert_eq!(resolve_scope(&explicit, Some(&repo)), Scope::All);
+        let have = resolve_scope(&explicit, Some(&repo));
+        let want = Scope::All;
+        pretty::assert_eq!(have, want);
     }
 
     #[test]
@@ -182,6 +192,8 @@ mod tests {
         let repo = Repo::init(dir.path()).unwrap();
         repo.create_unstaged_file("untracked.md");
         let omitted = ScopeArg { scope: None };
-        pretty::assert_eq!(resolve_scope(&omitted, Some(&repo)), Scope::Uncommitted);
+        let have = resolve_scope(&omitted, Some(&repo));
+        let want = Scope::Uncommitted;
+        pretty::assert_eq!(have, want);
     }
 }
