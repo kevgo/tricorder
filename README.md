@@ -55,11 +55,17 @@ for specific phases of the software development workflow:
 ### `trident pitstop`
 
 This command provides efficient support for interactive development.
-It first applies all safe automatic fixes to all files changed on the current
-branch, then reports any remaining code problems that require manual or AI
-attention.
+It first applies all safe automatic fixes to your current work,
+then reports any remaining code problems that require manual or AI attention.
 
-To process a different set of files, pass `--scope`.
+By default, it reviews the smallest scope you currently work on:
+
+- uncommitted changes exist: reviews only those
+- no uncommitted changes but you are on a feature branch with changes:
+  reviews all changes made on that branch
+- otherwise: reviews the entire repo
+
+To process a different set of files, use `--scope`.
 
 ### `trident full`
 
@@ -142,18 +148,18 @@ that Trident uses to the latest available versions.
 
 ### `trident fix`
 
-This command applies all safe automated fixes to the codebase.
+This command applies all safe automated fixes to your current work.
 Fixes for different file types are processed concurrently,
 multiple fixes for the same file type run sequentially.
 
 ### `trident fix-unsafe`
 
-This command applies more aggressive automatic fixes
-that might change program behavior and should be verified.
+This command applies more aggressive automatic fixes to your current work.
+These might change program behavior and should be verified.
 
 ### `trident lint`
 
-This command runs all linters that apply to files changed on the current branch.
+This command runs all linters that apply to your current work.
 All linters run in parallel.
 
 ### `trident test`
@@ -175,8 +181,11 @@ and `pitstop` accept `--scope` to choose which files they process:
 - `branch`: only files changed on the current branch
 - `all`: all files in the current directory
 
-`ci` and `fix-unsafe` default to `all`.
-`fix`, `lint`, and `pitstop` default to `branch`.
+`ci` defaults to `all`.
+`fix`, `fix-unsafe`, `lint`,
+and `pitstop` choose a default from the Git workspace:
+uncommitted changes if present, otherwise files changed on the current branch,
+otherwise all files.
 
 ## Supported stacks
 

@@ -30,7 +30,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Fix and lint files changed on the current branch
+        pitstop       Fix and lint the current work
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         test          Run all tests in parallel
@@ -60,7 +60,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Fix and lint files changed on the current branch
+        pitstop       Fix and lint the current work
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         test          Run all tests in parallel
@@ -90,7 +90,7 @@ Feature: Displaying help
         fix-unsafe    Apply advanced fixes that might change behavior
         full          Run all lints, fixes, and tests on all files
         lint          Find code quality issues [alias: postgenerate]
-        pitstop       Fix and lint files changed on the current branch
+        pitstop       Fix and lint the current work
         postedit      Lint uncommitted changes
         precommit     Fix staged files before committing, never fails
         test          Run all tests in parallel
@@ -198,7 +198,7 @@ Feature: Displaying help
     When executing "trident help pitstop"
     Then it prints
       """
-      Fix and lint files changed on the current branch
+      Fix and lint the current work
 
       Usage: trident pitstop [OPTIONS]
 

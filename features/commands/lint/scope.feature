@@ -47,28 +47,6 @@ Feature: "trident lint --scope" selects which files to lint
     And all files are unchanged
     And the exit code is 1
 
-  Scenario: defaults to --scope=branch
-    When executing "trident lint --show=output"
-    Then it prints to STDERR
-      """
-      2 Markdown
-      running 2 tools
-      """
-    And it prints the block
-      """
-      committed-on-branch.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
-      """
-    And it prints the block
-      """
-      untracked.md:1:2: [MD019] Multiple spaces (5) after # in heading [*]
-      """
-    And it does not print
-      """
-      on-main.md
-      """
-    And all files are unchanged
-    And the exit code is 1
-
   Scenario: --scope=branch lints files changed on the current branch
     When executing "trident lint --scope=branch --show=output"
     Then it prints to STDERR
