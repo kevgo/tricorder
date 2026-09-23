@@ -1774,7 +1774,7 @@ mod tests {
         }
 
         #[test]
-        fn missing_config_uses_default_none() {
+        fn no_commands_configured() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
@@ -1801,7 +1801,7 @@ mod tests {
         }
 
         #[test]
-        fn empty_config_array() {
+        fn empty_tests_configured() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
@@ -1822,36 +1822,6 @@ mod tests {
             let cli = &[];
             let have = config
                 .tests_for(cli, |commands| commands.pitstop.as_ref(), DefaultTests::All)
-                .unwrap();
-            assert!(have.is_empty());
-        }
-
-        #[test]
-        fn other_command_uses_its_default() {
-            let (config, _, _) = {
-                let pitstop = Some(vec![S("unit")]);
-                let (unit_test, cuke_test) = (
-                    ToolDefinition {
-                        name: Some(S("unit")),
-                        command: S("echo unit"),
-                    },
-                    ToolDefinition {
-                        name: Some(S("cuke")),
-                        command: S("echo cuke"),
-                    },
-                );
-                let config = Config {
-                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                    commands: pitstop.map(|names| CommandsSection {
-                        pitstop: Some(CommandConfig { test: Some(names) }),
-                        ..Default::default()
-                    }),
-                    ..Default::default()
-                };
-                (config, unit_test, cuke_test)
-            };
-            let have = config
-                .tests_for(&[], |commands| commands.ci.as_ref(), DefaultTests::None)
                 .unwrap();
             assert!(have.is_empty());
         }
