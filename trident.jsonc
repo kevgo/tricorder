@@ -69,21 +69,21 @@
   },
   "tests": [
     {
-      "name": "unit",
+      "name": "unit tests",
       "command": "make unit"
     },
     {
-      "name": "E2E",
+      "name": "E2E tests",
       "command": "make cuke"
     },
     {
-      "name": "E2Eslow",
+      "name": "slow E2E tests",
       "command": "make cuke-slow"
     }
   ],
   "commands": {
     "pitstop": {
-      "test": ["unit"]
+      "test": ["unit tests"]
     }
   }
 }
