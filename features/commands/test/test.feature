@@ -112,6 +112,37 @@ Feature: custom tests
       """
     And the exit code is 0
 
+  Scenario: commands.test.test runs those tests by default
+    Given a file "trident.json" with content
+      """
+      {
+        "tests": [
+          { "name": "unit", "command": "echo unit" },
+          { "name": "cuke", "command": "echo cuke" }
+        ],
+        "commands": {
+          "test": {
+            "test": ["unit"]
+          }
+        }
+      }
+      """
+    When executing "trident test --show=output"
+    Then it prints to STDERR
+      """
+      running 1 tools
+      """
+    And it prints the block
+      """
+      unit
+      unit
+      """
+    And it does not print
+      """
+      cuke
+      """
+    And the exit code is 0
+
   Scenario: unknown test name
     Given a file "trident.json" with content
       """

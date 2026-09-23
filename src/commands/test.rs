@@ -1,13 +1,16 @@
 use crate::cli::input::{RunArgsWithTest, ShowExt};
-use crate::config::Config;
-use crate::config::to_sequences;
+use crate::config::{Config, DefaultTests, to_sequences};
 use crate::domain::Result;
 use std::process::ExitCode;
 
 pub fn test(args: &RunArgsWithTest) -> Result<ExitCode> {
     let config = Config::load()?;
     let show = args.run.show.unwrap_or(conc::Show::Names);
-    let tests = config.select_tests(&args.test)?;
+    let tests = config.tests_for(
+        &args.test,
+        |commands| commands.test.as_ref(),
+        DefaultTests::All,
+    )?;
     if show.display_metadata() {
         eprintln!("running {} tools", tests.len());
     }

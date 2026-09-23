@@ -257,6 +257,7 @@ mod tests {
                         command: S("tools/test_2.sh"),
                     },
                 ]),
+                commands: None,
                 applications: Some(ApplicationSection {
                     actionlint: Some(ApplicationNoFile {
                         enabled: Some(true),
