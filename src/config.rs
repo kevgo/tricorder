@@ -1702,36 +1702,40 @@ mod tests {
 
         #[test]
         fn empty_cli_uses_config() {
-            let (config, unit_test, _) = {
-                let pitstop = Some(vec![S("unit")]);
-                let (unit_test, cuke_test) = (
-                    ToolDefinition {
-                        name: Some(S("unit")),
-                        command: S("echo unit"),
-                    },
+            let config = Config {
+                tests: Some(vec![
                     ToolDefinition {
                         name: Some(S("cuke")),
                         command: S("echo cuke"),
                     },
-                );
-                let config = Config {
-                    tests: Some(vec![unit_test.clone(), cuke_test.clone()]),
-                    commands: pitstop.map(|names| CommandsSection {
-                        pitstop: Some(CommandConfig { test: Some(names) }),
-                        ..Default::default()
+                    ToolDefinition {
+                        name: Some(S("unit")),
+                        command: S("echo unit"),
+                    },
+                ]),
+                commands: Some(CommandsSection {
+                    pitstop: Some(CommandConfig {
+                        test: Some(vec![S("unit")]),
                     }),
                     ..Default::default()
-                };
-                (config, unit_test, cuke_test)
+                }),
+                ..Default::default()
             };
+            let cli = &[];
             let have = config
                 .tests_for(
-                    &[],
+                    cli,
                     |commands| commands.pitstop.as_ref(),
                     DefaultTests::None,
                 )
                 .unwrap();
-            pretty::assert_eq!(have, vec![&unit_test]);
+            pretty::assert_eq!(
+                have,
+                vec![&ToolDefinition {
+                    name: Some(S("unit")),
+                    command: S("echo unit"),
+                }]
+            );
         }
 
         #[test]
