@@ -1774,7 +1774,7 @@ mod tests {
         }
 
         #[test]
-        fn no_commands_configured() {
+        fn missing_config_uses_default_none() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
