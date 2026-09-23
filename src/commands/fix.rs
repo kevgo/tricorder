@@ -1,8 +1,8 @@
-use super::discover_stacks;
+use super::{discover_stacks, resolve_scope};
 use crate::apps::delete_empty_folders;
 use crate::apps::delete_empty_folders::DeleteEmptyFolders;
 use crate::apps::keep_sorted;
-use crate::cli::input::{RunArgsWithScope, Scope, ShowExt};
+use crate::cli::input::{RunArgsWithScope, ShowExt};
 use crate::cli::output::print_metadata;
 use crate::config::{Application, Config, Operation, ToolDefinition};
 use crate::domain::{DetectedStacks, Result, Runnables, StackType};
@@ -20,7 +20,7 @@ pub fn fix(args: &RunArgsWithScope) -> Result<ExitCode> {
 
     // step 2: discover the stacks
     let repo = Repo::load();
-    let scope = args.scope.unwrap_or(Scope::Branch);
+    let scope = resolve_scope(&args.scope, repo.as_ref());
     let stacks = discover_stacks(scope, repo.as_ref(), &ignores)?;
     if show.display_metadata() {
         print_metadata(&stacks);
