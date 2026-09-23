@@ -1801,7 +1801,7 @@ mod tests {
         }
 
         #[test]
-        fn empty_tests_configured() {
+        fn empty_command_tests_configured() {
             let config = Config {
                 tests: Some(vec![
                     ToolDefinition {
@@ -1819,9 +1819,8 @@ mod tests {
                 }),
                 ..Default::default()
             };
-            let cli = &[];
             let have = config
-                .tests_for(cli, |commands| commands.pitstop.as_ref(), DefaultTests::All)
+                .tests_for(&[], |commands| commands.pitstop.as_ref(), DefaultTests::All)
                 .unwrap();
             assert!(have.is_empty());
         }
