@@ -106,11 +106,11 @@ async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: Str
 
 #[then(expr = "file {string} is executable")]
 async fn file_is_executable(world: &mut TridentWorld, filename: String) {
-    let filepath = world.dir.join(&filename);
-    let metadata = fs::metadata(&filepath).await.unwrap();
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
+        let filepath = world.dir.join(&filename);
+        let metadata = fs::metadata(&filepath).await.unwrap();
         let is_executable = metadata.permissions().mode() & 0o111 != 0;
         assert!(is_executable, "file '{filename}' is not executable");
     }
