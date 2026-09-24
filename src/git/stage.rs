@@ -60,6 +60,7 @@ mod tests {
             Ok(())
         }
 
+        #[cfg(not(windows))]
         #[test]
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
@@ -184,6 +185,7 @@ mod tests {
             Ok(())
         }
 
+        #[cfg(not(windows))]
         #[test]
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();

@@ -47,9 +47,7 @@ impl Display for File {
 
 impl From<&Path> for File {
     fn from(path: &Path) -> Self {
-        let path = path.to_string_lossy();
-        let stripped = path.strip_prefix("./").unwrap_or(path.as_ref());
-        Self(stripped.to_string())
+        Self::from(path.to_string_lossy().as_ref())
     }
 }
 
@@ -62,13 +60,18 @@ impl From<PathBuf> for File {
 
 impl From<&String> for File {
     fn from(path: &String) -> Self {
-        let stripped = path.strip_prefix("./").unwrap_or(path);
-        Self(stripped.to_string())
+        Self::from(path.as_str())
     }
 }
 
 impl From<&str> for File {
     fn from(path: &str) -> Self {
+        // Ripgrep and walkdir emit the OS separator. The rest of Trident
+        // compares paths as slash-separated strings, including on Windows.
+        #[cfg(windows)]
+        let path = path.replace('\\', "/");
+        #[cfg(windows)]
+        let path = path.as_str();
         let stripped = path.strip_prefix("./").unwrap_or(path);
         Self(stripped.to_string())
     }
@@ -99,6 +102,14 @@ mod tests {
             "//test.txt" => "//test.txt",
             "test.txt/" => "test.txt/",
             "foo/bar.txt" => "foo/bar.txt",
+            "./nested/hit.txt" => "nested/hit.txt",
+        };
+        #[cfg(windows)]
+        let tests = {
+            let mut tests = tests;
+            tests.insert(r"nested\hit.txt", "nested/hit.txt");
+            tests.insert(r".\nested\hit.txt", "nested/hit.txt");
+            tests
         };
         for (give, want) in tests {
             let have = File::from(give);

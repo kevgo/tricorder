@@ -93,6 +93,7 @@ mod tests {
             Ok(())
         }
 
+        #[cfg(not(windows))]
         #[test]
         fn includes_fully_staged_file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();

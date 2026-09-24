@@ -50,6 +50,7 @@ mod tests {
         Ok(())
     }
 
+    #[cfg(not(windows))]
     #[test]
     fn includes_untracked_file_with_quotes() -> Result<()> {
         let dir = TempDir::new().unwrap();
