@@ -106,14 +106,22 @@ async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: Str
 
 #[then(expr = "file {string} is executable")]
 async fn file_is_executable(world: &mut TridentWorld, filename: String) {
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        let filepath = world.dir.join(&filename);
-        let metadata = fs::metadata(&filepath).await.unwrap();
-        let is_executable = metadata.permissions().mode() & 0o111 != 0;
-        assert!(is_executable, "file '{filename}' is not executable");
-    }
+    let filepath = world.dir.join(&filename);
+    let metadata = fs::metadata(&filepath).await.unwrap();
+    assert_executable(&metadata, &filename);
+}
+
+#[cfg(unix)]
+fn assert_executable(metadata: &std::fs::Metadata, filename: &str) {
+    use std::os::unix::fs::PermissionsExt;
+    let is_executable = metadata.permissions().mode() & 0o111 != 0;
+    assert!(is_executable, "file '{filename}' is not executable");
+}
+
+/// Windows has no Unix execute bits; Git hooks and shell scripts still work without them.
+#[cfg(not(unix))]
+fn assert_executable(metadata: &std::fs::Metadata, filename: &str) {
+    assert!(metadata.is_file(), "file '{filename}' is not a file");
 }
 
 #[then("it does not print")]
