@@ -43,7 +43,7 @@ Feature: lint Go
       """
       lint Go (golangci-lint)
       """
-    And it prints the block matching
+    And it prints the block
       """
       string literal not terminated
       """
