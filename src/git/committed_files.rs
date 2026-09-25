@@ -65,6 +65,16 @@ mod tests {
             Ok(())
         }
 
+        #[cfg(windows)]
+        #[test]
+        fn file_with_quotes() -> Result<()> {
+            let dir = TempDir::new().unwrap();
+            let repo = Repo::init(dir.path())?;
+            repo.create_and_commit_file("file\"quote.txt")?;
+            pretty::assert_eq!(repo.committed_files()?, vec![S("file\"quote.txt")]);
+            Ok(())
+        }
+
         #[cfg(not(windows))]
         #[test]
         fn file_with_newline() -> Result<()> {
