@@ -353,4 +353,3 @@ fn normalize_output(text: &[u8]) -> String {
         .join("\n");
     text
 }
-
