@@ -39,7 +39,11 @@ Feature: "trident init:claude" installs Claude-compatible agent hooks
       # Safe to edit.
       # Re-run "trident init:claude --force" to reset.
 
+      <<<<<<< HEAD
       TRIDENT=".*/trident(\.exe)?"
+      =======
+      TRIDENT=".*\btrident(\.exe)?"
+      >>>>>>> main
       [ -x "$TRIDENT" ] || exit 0
       "$TRIDENT" postedit
       """
@@ -128,7 +132,7 @@ Feature: "trident init:claude" installs Claude-compatible agent hooks
       # Safe to edit.
       # Re-run "trident init:claude --force" to reset.
 
-      TRIDENT=".*/trident(\.exe)?"
+      TRIDENT=".*\btrident(\.exe)?"
       [ -x "$TRIDENT" ] || exit 0
       "$TRIDENT" postedit
       """

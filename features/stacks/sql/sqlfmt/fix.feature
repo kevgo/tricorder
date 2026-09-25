@@ -64,7 +64,7 @@ Feature: fix SQL
       SELECT FROM "
       """
     When executing "trident fix --show=output"
-    Then it prints the block
+    Then it prints the lines
       """
       fix SQL (sqlfmt)
       2 files had errors while formatting.
