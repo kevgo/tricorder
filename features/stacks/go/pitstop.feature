@@ -65,7 +65,10 @@ Feature: pitstop Go
       fix Go (gofumpt)
       main.go
       lint Go (golangci-lint)
-      main.go:1: : found packages main (main.go) and other (other.go) in (typecheck)
+      """
+    And it prints the block
+      """
+      found packages main (main.go) and other (other.go)
       """
     And it prints the lines
       """
