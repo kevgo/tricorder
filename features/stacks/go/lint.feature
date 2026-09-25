@@ -29,6 +29,7 @@ Feature: lint Go
     And the exit code is 0
     And file "main.go" is unchanged
 
+  @this
   Scenario: invalid Go
     Given a file "main.go" with content
       """
@@ -41,7 +42,7 @@ Feature: lint Go
     When executing "trident lint --show=output"
     Then it prints the block matching
       """
-      lint Go \(golangci-lint\)\n(3 issues:|0 issues\.)
+      string literal not terminated
       """
     And the exit code is 1
     And file "main.go" is unchanged
