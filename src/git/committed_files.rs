@@ -56,6 +56,7 @@ mod tests {
         }
 
         #[test]
+        #[cfg(not(windows))] // Windows doesn't seem to support quotes in file names
         fn file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
@@ -65,6 +66,7 @@ mod tests {
         }
 
         #[test]
+        #[cfg(not(windows))] // Windows doesn't seem to support newlines in file names
         fn file_with_newline() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
