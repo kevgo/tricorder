@@ -49,7 +49,7 @@ impl Lint for GolangciLint {
         let executable = get_rta_command(&GetRTACmdArgs {
             name: format!("lint {} ({self})", stack.stack),
             app: &rta::applications::GolangCiLint {},
-            args: vec![S("run")],
+            args: vec![S("run"), S("--allow-parallel-runners")],
             version: None,
         })?;
         Ok(executable)
