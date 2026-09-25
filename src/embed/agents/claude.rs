@@ -25,7 +25,7 @@ pub fn claude(args: &InitArgs) -> Result<ExitCode> {
     {
         trident_path = rel_path.to_path_buf();
     }
-    let trident_shell_path = &shellscripts::escape(&trident_path.to_string_lossy());
+    let trident_shell_path = &shellscripts::shell_path(&trident_path.to_string_lossy());
     let content = POST_WRITE_SH.replace(TRIDENT_PLACEHOLDER, trident_shell_path);
     create_file(POST_WRITE_PATH, &content, FileMode::Executable)?;
     print_next_steps();

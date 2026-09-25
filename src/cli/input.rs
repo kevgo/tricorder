@@ -4,7 +4,7 @@ use clap::error::ErrorKind;
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
-#[command(name = env!("CARGO_PKG_NAME"))]
+#[command(name = env!("CARGO_PKG_NAME"), bin_name = env!("CARGO_PKG_NAME"))]
 #[command(about = env!("CARGO_PKG_DESCRIPTION"))]
 #[command(version = env!("CARGO_PKG_VERSION"))]
 #[command(subcommand_required = true)]

@@ -25,7 +25,7 @@ pub fn pre_commit(args: &InitArgs) -> Result<ExitCode> {
         return Ok(ExitCode::FAILURE);
     }
     let trident_path = absolute_path_to_trident_executable()?;
-    let trident_shell_path = &shellscripts::escape(&trident_path.to_string_lossy());
+    let trident_shell_path = &shellscripts::shell_path(&trident_path.to_string_lossy());
     let content = PRE_COMMIT_SH.replace(TRIDENT_PLACEHOLDER, trident_shell_path);
     create_file(GIT_PRE_COMMIT_PATH, &content, FileMode::Executable)?;
     print_next_steps();

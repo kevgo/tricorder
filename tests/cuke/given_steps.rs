@@ -32,7 +32,7 @@ async fn a_committed_file_with_content(world: &mut TridentWorld, step: &Step, fi
 async fn a_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let content = step.docstring.as_ref().unwrap();
     let content = content.replace("\\t", "\t");
-    let content = content[1..].to_string();
+    let content = docstring_body(&content).replace('\r', "");
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
@@ -85,7 +85,7 @@ async fn a_git_repository(world: &mut TridentWorld) {
 
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    let content = step.docstring.as_ref().unwrap()[1..].to_string();
+    let content = docstring_body(step.docstring.as_ref().unwrap()).replace('\r', "");
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
@@ -118,9 +118,7 @@ async fn i_ran(world: &mut TridentWorld, command: String) {
     } else {
         which::which(executable).unwrap()
     };
-    if std::env::consts::OS == "windows" {
-        absolute_path.set_extension("exe");
-    }
+    absolute_path = with_windows_exe(absolute_path);
     let mut cmd = Command::new(absolute_path);
     if executable == "git" {
         cmd.arg("-c")
@@ -141,4 +139,20 @@ async fn i_ran(world: &mut TridentWorld, command: String) {
         str::from_utf8(&output.stdout).expect("non-UTF-8 output"),
         str::from_utf8(&output.stderr).expect("non-UTF-8 output"),
     );
+}
+
+/// Docstrings start with the newline that follows the opening quotes.
+fn docstring_body(content: &str) -> &str {
+    let content = content.strip_prefix('\r').unwrap_or(content);
+    content.strip_prefix('\n').unwrap_or(content)
+}
+
+/// `tools/rta` has no `.exe` suffix; `trident` and other tools do.
+fn with_windows_exe(path: std::path::PathBuf) -> std::path::PathBuf {
+    let exe_path = path.with_extension("exe");
+    if cfg!(windows) && exe_path.exists() {
+        exe_path
+    } else {
+        path
+    }
 }

@@ -30,7 +30,7 @@ impl Runnables {
 mod tests {
 
     fn executable() -> conc::Executable {
-        conc::shell_executable("true")
+        crate::shellscripts::shell_executable("true")
     }
 
     mod len {

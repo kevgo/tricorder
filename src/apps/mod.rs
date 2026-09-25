@@ -43,11 +43,25 @@ pub(crate) fn get_rta_command(args: &GetRTACmdArgs<'_>) -> Result<Option<conc::E
             verbose: false,
         });
         match cmd_result {
-            Ok(cmd) => {
-                return Ok(cmd.map(|command| conc::Executable {
+            Ok(Some(command)) => {
+                return Ok(Some(conc::Executable {
                     name: args.name.clone(),
                     command: (&command).into(),
                 }));
+            }
+            Ok(None) => {
+                // run-that-app looks for Windows archives in a subfolder, but some
+                // zips (ruff) put the .exe at the archive root and are then marked
+                // not installable even though the binary is on disk.
+                if let Some(executable) = find_installed_executable(args.app.name().as_str()) {
+                    let mut command = std::process::Command::new(executable);
+                    command.args(&args.args);
+                    return Ok(Some(conc::Executable {
+                        name: args.name.clone(),
+                        command,
+                    }));
+                }
+                return Ok(None);
             }
             Err(err) => match &err {
                 rta::error::UserError::RunRequestMissingVersion { app }
@@ -71,6 +85,50 @@ pub(crate) fn get_rta_command(args: &GetRTACmdArgs<'_>) -> Result<Option<conc::E
             },
         }
     }
+}
+
+/// Searches the run-that-app yard for an already downloaded binary.
+fn find_installed_executable(app_name: &str) -> Option<std::path::PathBuf> {
+    let home = std::env::var_os("USERPROFILE").or_else(|| std::env::var_os("HOME"))?;
+    let apps = std::path::PathBuf::from(home)
+        .join(".run-that-app")
+        .join("apps");
+    let prefix = format!("{app_name}@");
+    let mut matches = Vec::new();
+    for entry in std::fs::read_dir(apps).ok()?.flatten() {
+        let folder_name = entry.file_name();
+        let folder_name = folder_name.to_string_lossy();
+        if !folder_name.starts_with(&prefix) {
+            continue;
+        }
+        if let Some(path) = find_named_file(&entry.path(), app_name) {
+            matches.push(path);
+        }
+    }
+    matches.sort();
+    matches.pop()
+}
+
+fn find_named_file(dir: &std::path::Path, app_name: &str) -> Option<std::path::PathBuf> {
+    let candidates = [
+        dir.join(format!("{app_name}.exe")),
+        dir.join(format!("{app_name}.cmd")),
+        dir.join(app_name),
+    ];
+    for candidate in candidates {
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+    for entry in std::fs::read_dir(dir).ok()?.flatten() {
+        let path = entry.path();
+        if path.is_dir()
+            && let Some(found) = find_named_file(&path, app_name)
+        {
+            return Some(found);
+        }
+    }
+    None
 }
 
 pub struct GetRTACmdArgs<'a> {

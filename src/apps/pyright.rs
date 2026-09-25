@@ -37,8 +37,8 @@ impl Lint for Pyright {
             return Ok(None);
         }
         let mut args = Vec::with_capacity(files.len() + 3);
+        args.push(S("tool"));
         args.push(S("run"));
-        args.push(S("--"));
         args.push(S("pyright"));
         args.extend(files.into_strings());
         let executable = get_rta_command(&GetRTACmdArgs {
