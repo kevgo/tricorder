@@ -1,10 +1,16 @@
-RUN_THAT_APP_VERSION = 0.42.1  # run-that-app version to use
+RUN_THAT_APP_VERSION = 0.42.1
 
-RTA          = tools/rta@$(RUN_THAT_APP_VERSION)
+ifeq ($(OS),Windows_NT)
+  EXE = .exe
+else
+  EXE =
+endif
+
+RTA          = tools/rta@$(RUN_THAT_APP_VERSION)$(EXE)
 CONTEST      = $(RTA) contest
 GHOKIN       = $(RTA) ghokin
 RIPGREP      = $(RTA) ripgrep
-TRIDENT      = target/debug/trident
+TRIDENT      = target/debug/trident$(EXE)
 
 build:  # builds the project in debug mode
 	cargo build
@@ -90,9 +96,9 @@ update: ${RTA}  # updates all dependencies
 # --- HELPER TARGETS --------------------------------------------------------------------------------------------------------------------------------
 
 ${RTA}:
-	rm -f tools/rta*
+	rm -f tools/rta* || true
 	(cd tools && curl https://raw.githubusercontent.com/kevgo/run-that-app/main/download.sh | sh -s -- --version ${RUN_THAT_APP_VERSION} --name rta@${RUN_THAT_APP_VERSION})
-	ln -s rta@$(RUN_THAT_APP_VERSION) tools/rta
+	ln -s rta@$(RUN_THAT_APP_VERSION)$(EXE) tools/rta$(EXE)
 
 .DEFAULT_GOAL := help
 .SILENT:
