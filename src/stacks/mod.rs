@@ -238,12 +238,16 @@ mod tests {
         #[test]
         fn nested_directories() {
             let dir = TempDir::new().unwrap();
-            make_files(&dir, &["src/nested/deep/main.go"]);
+            #[cfg(not(windows))]
+            let path = "src/nested/deep/main.go";
+            #[cfg(windows)]
+            let path = "src\\nested\\deep\\main.go";
+            make_files(&dir, &[path]);
             let have = discover_all_in(dir.path(), &Ignores::empty());
             let root = dir.path();
             let want = DetectedStacks::new(vec![DetectedStack {
                 stack: Box::new(Go {}),
-                files: Files::from(vec![root.join("src/nested/deep/main.go")]),
+                files: Files::from(vec![root.join(path)]),
             }]);
             pretty::assert_eq!(have, want);
         }
