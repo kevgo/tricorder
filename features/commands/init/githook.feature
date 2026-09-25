@@ -19,7 +19,7 @@ Feature: "trident init:githook" installs the Git pre-commit hook
       # Safe to edit.
       # Run "trident init:githook --force" to reset.
 
-      TRIDENT=".*/trident"
+      TRIDENT=".*\btrident(\.exe)?"
       [ -x "$TRIDENT" ] || exit 0
       "$TRIDENT" precommit
       """
@@ -86,7 +86,7 @@ Feature: "trident init:githook" installs the Git pre-commit hook
       # Safe to edit.
       # Run "trident init:githook --force" to reset.
 
-      TRIDENT=".*/trident"
+      TRIDENT=".*\btrident(\.exe)?"
       [ -x "$TRIDENT" ] || exit 0
       "$TRIDENT" precommit
       """
