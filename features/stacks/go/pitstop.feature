@@ -66,9 +66,9 @@ Feature: pitstop Go
       main.go
       lint Go (golangci-lint)
       """
-    And it prints the block matching
+    And it prints the block
       """
-      found packages main \(main.go\) and other \(other.go\)
+      found packages main (main.go) and other (other.go)
       """
     And it prints the lines
       """
