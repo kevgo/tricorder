@@ -110,9 +110,15 @@ mod tests {
         fn finds_nested_matching_files() {
             let dir = TempDir::new().unwrap();
             fs::create_dir_all(dir.path().join("nested")).unwrap();
+            #[cfg(not(windows))]
             fs::write(dir.path().join("nested/hit.txt"), "needle").unwrap();
+            #[cfg(windows)]
+            fs::write(dir.path().join("nested\\hit.txt"), "needle").unwrap();
             let have = files_with_matches_in("needle", Some(dir.path()), &[]).unwrap();
+            #[cfg(not(windows))]
             assert_eq!(have, vec!["nested/hit.txt".into()]);
+            #[cfg(windows)]
+            assert_eq!(have, vec!["nested\\hit.txt".into()]);
         }
 
         #[test]
