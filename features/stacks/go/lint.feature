@@ -39,10 +39,9 @@ Feature: lint Go
       }
       """
     When executing "trident lint --show=output"
-    Then it prints the lines
+    Then it prints the block matching
       """
-      lint Go (golangci-lint)
-      3 issues:
+      string literal not terminated
       """
     And the exit code is 1
     And file "main.go" is unchanged
