@@ -47,9 +47,7 @@ impl Display for File {
 
 impl From<&Path> for File {
     fn from(path: &Path) -> Self {
-        let path = path.to_string_lossy();
-        let stripped = path.strip_prefix("./").unwrap_or(path.as_ref());
-        Self(stripped.to_string())
+        Self::from(path.to_string_lossy().as_ref())
     }
 }
 
@@ -62,8 +60,7 @@ impl From<PathBuf> for File {
 
 impl From<&String> for File {
     fn from(path: &String) -> Self {
-        let stripped = path.strip_prefix("./").unwrap_or(path);
-        Self(stripped.to_string())
+        Self::from(path.as_str())
     }
 }
 
