@@ -29,7 +29,6 @@ Feature: lint Go
     And the exit code is 0
     And file "main.go" is unchanged
 
-  @this
   Scenario: invalid Go
     Given a file "main.go" with content
       """
