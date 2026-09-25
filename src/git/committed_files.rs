@@ -55,7 +55,6 @@ mod tests {
             Ok(())
         }
 
-        #[cfg(not(windows))]
         #[test]
         #[cfg(not(windows))] // Windows doesn't seem to support quotes in file names
         fn file_with_quotes() -> Result<()> {
@@ -66,7 +65,6 @@ mod tests {
             Ok(())
         }
 
-        #[cfg(not(windows))]
         #[test]
         #[cfg(not(windows))] // Windows doesn't seem to support newlines in file names
         fn file_with_newline() -> Result<()> {

@@ -93,7 +93,6 @@ mod tests {
             Ok(())
         }
 
-        #[cfg(not(windows))]
         #[test]
         #[cfg(not(windows))] // Windows doesn't seem to support quotes in file names
         fn includes_fully_staged_file_with_quotes() -> Result<()> {
