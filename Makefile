@@ -1,7 +1,5 @@
-# run-that-app version to use
 RUN_THAT_APP_VERSION = 0.42.1
 
-# Git Bash on Windows still produces .exe binaries (cargo, rta).
 ifeq ($(OS),Windows_NT)
   EXE = .exe
 else
