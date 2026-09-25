@@ -94,6 +94,7 @@ mod tests {
         }
 
         #[test]
+        #[cfg(not(windows))] // Windows doesn't seem to support quotes in file names
         fn includes_fully_staged_file_with_quotes() -> Result<()> {
             let dir = TempDir::new().unwrap();
             let repo = Repo::init(dir.path())?;
