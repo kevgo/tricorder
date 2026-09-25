@@ -84,7 +84,6 @@ Feature: lint Python with Pyright
     And file "main.py" is unchanged
     And file "other.py" is unchanged
 
-  @this
   Scenario: invalid Python
     Given a file "main.py" with content
       """
@@ -104,7 +103,6 @@ Feature: lint Python with Pyright
       """
       type-check Python (Pyright)
       5 errors, 0 warnings, 0 informations
-      xxx
       """
     And the exit code is 1
     And file "main.py" is unchanged
