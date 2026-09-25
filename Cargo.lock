@@ -1278,12 +1278,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "path-slash"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e91099d4268b0e11973f036e885d652fb0b21fedcf69738c627f94db6a44f42"
-
-[[package]]
 name = "pbkdf2"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1509,11 +1503,10 @@ dependencies = [
 
 [[package]]
 name = "run-that-app"
-version = "0.42.3"
+version = "0.42.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "225613436191ae35967ec842af961f83b2a1ff01290a5a55d36113bda2aa385b"
+checksum = "fbd4e6b4d210fa78485085038caecc93117cbd1f856dd70591a52962dfef4893"
 dependencies = [
- "ahash",
  "big_s",
  "colored 2.2.0",
  "const_format",
@@ -1523,7 +1516,6 @@ dependencies = [
  "flate2",
  "human-sort",
  "minreq",
- "path-slash",
  "regex",
  "semver",
  "serde_json",
