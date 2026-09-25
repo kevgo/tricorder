@@ -39,7 +39,11 @@ Feature: lint Go
       }
       """
     When executing "trident lint --show=output"
-    Then it prints the block matching
+    Then it prints the block
+      """
+      lint Go (golangci-lint)
+      """
+    And it prints the block
       """
       string literal not terminated
       """
