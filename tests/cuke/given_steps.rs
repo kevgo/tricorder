@@ -84,10 +84,11 @@ async fn a_git_repository(world: &mut TridentWorld) {
 
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    a_file_with_content(world, step, filename).await;
+    a_file_with_content(world, step, filename.clone()).await;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
+        let filepath = world.dir.join(&filename);
         let mut perms = fs::metadata(&filepath).await.unwrap().permissions();
         perms.set_mode(0o755);
         fs::set_permissions(&filepath, perms).await.unwrap();
