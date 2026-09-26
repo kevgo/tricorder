@@ -2,6 +2,7 @@ use crate::jitter::jitter;
 use crate::world::{ExistingFile, TridentWorld};
 use cucumber::gherkin::Step;
 use cucumber::given;
+use test_helpers::docstring_body;
 use tokio::fs;
 use tokio::process::Command;
 
@@ -30,9 +31,7 @@ async fn a_committed_file_with_content(world: &mut TridentWorld, step: &Step, fi
 
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    let content = step.docstring.as_ref().unwrap();
-    let content = content.replace("\\t", "\t");
-    let content = docstring_body(&content).replace('\r', "");
+    let content = docstring_body(step.docstring.as_ref().unwrap());
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
@@ -85,7 +84,8 @@ async fn a_git_repository(world: &mut TridentWorld) {
 
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    let content = docstring_body(step.docstring.as_ref().unwrap()).replace('\r', "");
+    // TODO: call a_file_with_content here
+    let content = docstring_body(step.docstring.as_ref().unwrap());
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
