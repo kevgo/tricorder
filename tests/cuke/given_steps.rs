@@ -2,6 +2,7 @@ use crate::jitter::jitter;
 use crate::world::{ExistingFile, TridentWorld};
 use cucumber::gherkin::Step;
 use cucumber::given;
+use test_helpers::docstring_body;
 use tokio::fs;
 use tokio::process::Command;
 
@@ -31,7 +32,6 @@ async fn a_committed_file_with_content(world: &mut TridentWorld, step: &Step, fi
 #[given(expr = "a file {string} with content")]
 async fn a_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let content = docstring_body(step.docstring.as_ref().unwrap());
-    let content = content.replace("\\t", "\t");
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
@@ -140,10 +140,4 @@ async fn i_ran(world: &mut TridentWorld, command: String) {
         str::from_utf8(&output.stdout).expect("non-UTF-8 output"),
         str::from_utf8(&output.stderr).expect("non-UTF-8 output"),
     );
-}
-
-/// Docstrings start with the newline that follows the opening quotes.
-fn docstring_body(content: &str) -> &str {
-    let content = content.strip_prefix('\r').unwrap_or(content);
-    content.strip_prefix('\n').unwrap_or(content)
 }
