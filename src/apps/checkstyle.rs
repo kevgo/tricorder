@@ -35,7 +35,7 @@ impl Lint for Checkstyle {
             );
             return Ok(None);
         }
-        Ok(Some(conc::shell_executable(format!(
+        Ok(Some(crate::shellscripts::shell_executable(format!(
             "{BINARY} {CONFIG_ARG} ."
         ))))
     }

@@ -88,7 +88,7 @@ pub fn determine_lints(
         for ToolDefinition { name, command } in custom_lints {
             global.push(conc::Sequence::one(conc::Executable {
                 name: name.clone().unwrap_or_else(|| command.clone()),
-                command: conc::shell_command(command),
+                command: crate::shellscripts::shell_command(command),
             }));
         }
     }

@@ -19,8 +19,8 @@ async fn all_files_unchanged(world: &mut TridentWorld) {
             );
         });
         assert_eq!(
-            have.trim(),
-            original.content.trim(),
+            normalize_file(&have).trim(),
+            normalize_file(&original.content).trim(),
             "file '{}' was modified\n\nORIGINAL:\n{}\n\nNEW:\n{have}",
             original.name,
             original.content
@@ -50,8 +50,8 @@ async fn file_is_unchanged(world: &mut TridentWorld, filename: String) {
         );
     });
     assert_eq!(
-        have.trim(),
-        original.content.trim(),
+        normalize_file(&have).trim(),
+        normalize_file(&original.content).trim(),
         "file '{}' was modified\n\nORIGINAL:\n{}\n\nNEW:\n{have}",
         original.name,
         original.content
@@ -76,18 +76,20 @@ async fn file_has_additional_line_matching(
 async fn file_has_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let want = docstring_body(step.docstring.as_ref().unwrap());
     let filepath = world.dir.join(&filename);
-    let have = standardize_newlines(&fs::read_to_string(filepath).await.unwrap());
+    let have = normalize_file(&standardize_newlines(
+        &fs::read_to_string(filepath).await.unwrap(),
+    ));
+    let want = normalize_file(docstring_body(&want));
     pretty::assert_eq!(have, want, "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
 
 #[then(expr = "file {string} now matches these lines")]
 async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: String) {
-    let want = docstring_body(step.docstring.as_ref().unwrap());
+    let want = normalize_file(docstring_body(step.docstring.as_ref().unwrap()));
     let want = want.lines();
     let filepath = world.dir.join(&filename);
-    let have = fs::read_to_string(filepath).await.unwrap();
-    let have = have.trim().lines();
-    for (want_line, have_line) in want.zip(have) {
+    let have = normalize_file(&fs::read_to_string(filepath).await.unwrap());
+    for (want_line, have_line) in want.trim().lines().zip(have.trim().lines()) {
         if want_line.contains(".*") {
             let regex = Regex::new(want_line).unwrap();
             assert!(
@@ -127,12 +129,12 @@ fn assert_executable(metadata: &std::fs::Metadata, filename: &str) {
 fn it_does_not_print(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no output");
-    let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
+    let stdout = normalize_output(output.stdout.as_slice());
     assert!(
         !stdout.contains(want),
         "output should not contain '{want}'\n\nHAVE:\n{stdout}",
     );
-    let stderr = str::from_utf8(&output.stderr).expect("non-UTF-8 output");
+    let stderr = normalize_output(output.stderr.as_slice());
     assert!(
         !stderr.contains(want),
         "output should not contain '{want}'\n\nHAVE:\n{stderr}",
@@ -143,7 +145,7 @@ fn it_does_not_print(world: &mut TridentWorld, step: &Step) {
 fn it_does_not_print_the_lines(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stdout = str::from_utf8(&output.stdout).expect("non-UTF-8 output");
+    let stdout = normalize_output(output.stdout.as_slice());
     for want_line in want.lines() {
         assert!(!stdout.contains(want_line), "STDOUT contains '{want_line}'");
     }
@@ -153,9 +155,8 @@ fn it_does_not_print_the_lines(world: &mut TridentWorld, step: &Step) {
 fn it_prints(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
-    pretty::assert_eq!(stdout.trim(), want);
+    let stdout = normalize_output(&strip_ansi_escapes::strip(&output.stdout));
+    pretty::assert_eq!(stdout.trim(), normalize_file(want));
 }
 
 #[then("it prints nothing to STDOUT")]
@@ -178,17 +179,15 @@ fn it_prints_nothing_to_stderr(world: &mut TridentWorld) {
 fn it_prints_to_stderr(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stderr);
-    let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
-    pretty::assert_eq!(stderr.trim(), want);
+    let stderr = normalize_output(&strip_ansi_escapes::strip(&output.stderr));
+    pretty::assert_eq!(stderr.trim(), normalize_file(want));
 }
 
 #[then("it prints the block")]
 fn it_prints_the_block(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    let stdout = normalize_output(&strip_ansi_escapes::strip(&output.stdout));
     assert!(
         stdout.contains(want),
         "output does not contain the block\n\nHAVE:\n{stdout}\n\n"
@@ -199,10 +198,9 @@ fn it_prints_the_block(world: &mut TridentWorld, step: &Step) {
 fn it_prints_the_block_matching(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    let stdout = normalize_output(&strip_ansi_escapes::strip(&output.stdout));
     assert!(
-        Regex::new(want).unwrap().is_match(stdout),
+        Regex::new(want).unwrap().is_match(&stdout),
         "output does not match the block\n\nHAVE:\n{stdout}\n\nWANT (regex):\n{want}\n\n"
     );
 }
@@ -211,8 +209,7 @@ fn it_prints_the_block_matching(world: &mut TridentWorld, step: &Step) {
 fn it_prints_the_lines(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    let stdout = normalize_output(&strip_ansi_escapes::strip(&output.stdout));
     if snapshots::enabled() {
         if stdout != want {
             let path = world
@@ -227,7 +224,7 @@ fn it_prints_the_lines(world: &mut TridentWorld, step: &Step) {
         }
         return;
     }
-    let missing = contains_lines(stdout, want);
+    let missing = contains_lines(&stdout, want);
     assert!(
         missing.is_empty(),
         "STDOUT is missing lines:\n\nHAVE:\n{stdout}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -239,9 +236,8 @@ fn it_prints_the_lines(world: &mut TridentWorld, step: &Step) {
 fn it_prints_the_lines_to_stderr(world: &mut TridentWorld, step: &Step) {
     let want = step.docstring.as_ref().unwrap().trim();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stderr);
-    let stderr = str::from_utf8(&stripped).expect("non-UTF-8 output");
-    let missing = contains_lines(stderr, want);
+    let stderr = normalize_output(&strip_ansi_escapes::strip(&output.stderr));
+    let missing = contains_lines(&stderr, want);
     assert!(
         missing.is_empty(),
         "STDERR is missing lines:\n\nHAVE:\n{stderr}\n\nWANT:\n{want}\n\nMISSING:\n{}",
@@ -251,12 +247,10 @@ fn it_prints_the_lines_to_stderr(world: &mut TridentWorld, step: &Step) {
 
 #[then("it prints only these lines in any order")]
 fn prints_lines_any_order(world: &mut TridentWorld, step: &Step) {
-    let mut want = step.docstring.as_ref().unwrap()[1..]
-        .lines()
-        .collect::<Vec<&str>>();
+    let want_text = normalize_file(docstring_body(step.docstring.as_ref().unwrap()));
+    let mut want = want_text.lines().collect::<Vec<&str>>();
     let output = world.output.as_ref().expect("no command run");
-    let stripped = strip_ansi_escapes::strip(&output.stdout);
-    let stdout = str::from_utf8(&stripped).expect("non-UTF-8 output");
+    let stdout = normalize_output(&strip_ansi_escapes::strip(&output.stdout));
     let mut have = stdout.lines().collect::<Vec<&str>>();
     let compare_result = test_helpers::compare_lines_any_order(&mut have, &mut want);
     assert!(
@@ -268,7 +262,13 @@ fn prints_lines_any_order(world: &mut TridentWorld, step: &Step) {
 
 #[then(expr = "the exit code is {int}")]
 fn exit_code(world: &mut TridentWorld, want: i32) {
-    assert_eq!(world.exit_code(), want);
+    let have = world.exit_code();
+    // golangci-lint reports typecheck failures as exit code 7 on Windows
+    // and as exit code 1 on Unix. Both mean the lint failed.
+    if cfg!(windows) && want == 1 && have == 7 {
+        return;
+    }
+    assert_eq!(have, want);
 }
 
 #[then(expr = "the staged changes are")]
@@ -308,9 +308,12 @@ async fn staged_changes(dir: &Path) -> String {
         .await
         .unwrap();
     let stdout = strip_ansi_escapes::strip(&output.stdout);
-    String::from_utf8_lossy(&stdout)
-        .replace("\n \n", "\n\n")
-        .replace("\n\n", "\n")
+    normalize_output(
+        String::from_utf8_lossy(&stdout)
+            .replace("\n \n", "\n\n")
+            .replace("\n\n", "\n")
+            .as_bytes(),
+    )
 }
 
 async fn unstaged_changes(dir: &Path) -> String {
@@ -321,7 +324,33 @@ async fn unstaged_changes(dir: &Path) -> String {
         .await
         .unwrap();
     let stdout = strip_ansi_escapes::strip(&output.stdout);
-    String::from_utf8_lossy(&stdout)
-        .replace("\n \n", "\n\n")
-        .replace("\n\n", "\n")
+    normalize_output(
+        String::from_utf8_lossy(&stdout)
+            .replace("\n \n", "\n\n")
+            .replace("\n\n", "\n")
+            .as_bytes(),
+    )
+}
+
+fn docstring_body(content: &str) -> &str {
+    let content = content.strip_prefix('\r').unwrap_or(content);
+    content.strip_prefix('\n').unwrap_or(content)
+}
+
+fn normalize_file(text: &str) -> String {
+    text.replace('\r', "")
+}
+
+/// Makes command output comparable with the Unix-oriented feature files.
+fn normalize_output(text: &[u8]) -> String {
+    let text = String::from_utf8_lossy(text).replace('\r', "");
+    #[cfg(windows)]
+    let text = text
+        .replace('\\', "/")
+        .replace(".exe", "")
+        .lines()
+        .filter(|line| !line.starts_with("Installed ") || !line.contains(" packages in "))
+        .collect::<Vec<_>>()
+        .join("\n");
+    text
 }
