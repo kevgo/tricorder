@@ -1954,6 +1954,7 @@ version = "0.0.0"
 dependencies = [
  "big_s",
  "itertools",
+ "maplit",
  "pretty_assertions",
  "regex",
 ]
