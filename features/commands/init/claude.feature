@@ -1,5 +1,6 @@
 Feature: "trident init:claude" installs Claude-compatible agent hooks
 
+@this
   Scenario: install hooks into an empty project
     When executing "trident init:claude"
     Then it prints
