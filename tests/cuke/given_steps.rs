@@ -85,7 +85,7 @@ async fn a_git_repository(world: &mut TridentWorld) {
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     // TODO: call a_file_with_content here
-    let content = docstring_body(step.docstring.as_ref().unwrap()).to_string();
+    let content = docstring_body(step.docstring.as_ref().unwrap());
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
