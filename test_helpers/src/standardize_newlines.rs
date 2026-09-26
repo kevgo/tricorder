@@ -1,4 +1,4 @@
-pub fn standardize_newlines(content: &str) -> String {
+pub(crate) fn standardize_newlines(content: &str) -> String {
     content.replace("\r\n", "\n").replace("\r", "\n")
 }
 
