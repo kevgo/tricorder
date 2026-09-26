@@ -85,7 +85,8 @@ async fn file_has_content(world: &mut TridentWorld, step: &Step, filename: Strin
 
 #[then(expr = "file {string} now matches these lines")]
 async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: String) {
-    let want = normalize_file(step.docstring.as_ref().unwrap().as_str().trim());
+    let want = normalize_file(docstring_body(step.docstring.as_ref().unwrap()));
+    let want = want.lines();
     let filepath = world.dir.join(&filename);
     let have = normalize_file(&fs::read_to_string(filepath).await.unwrap());
     for (want_line, have_line) in want.trim().lines().zip(have.trim().lines()) {
