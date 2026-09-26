@@ -32,7 +32,6 @@ async fn a_committed_file_with_content(world: &mut TridentWorld, step: &Step, fi
 async fn a_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
     let content = docstring_body(step.docstring.as_ref().unwrap());
     let content = content.replace("\\t", "\t");
-    let content = content.to_string();
     let filepath = world.dir.join(&filename);
     let parent = filepath.parent().unwrap();
     if parent != world.dir {
