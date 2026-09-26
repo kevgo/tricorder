@@ -224,7 +224,7 @@ impl ToolDefinition {
         let tool_name = self.name.as_deref().unwrap_or(&self.command);
         conc::Executable {
             name: format!("{operation} {stack} ({tool_name})"),
-            command: conc::shell_command(&self.command),
+            command: crate::shellscripts::shell_command(&self.command),
         }
     }
 
@@ -232,7 +232,7 @@ impl ToolDefinition {
     pub fn to_sequence(&self) -> conc::Sequence {
         conc::Sequence::one(conc::Executable {
             name: self.name_or_command().to_string(),
-            command: conc::shell_command(&self.command),
+            command: crate::shellscripts::shell_command(&self.command),
         })
     }
 }
