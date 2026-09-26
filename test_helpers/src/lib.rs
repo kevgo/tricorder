@@ -13,4 +13,4 @@ pub use docstring_body::docstring_body;
 pub use has_additional_lines::has_additional_lines;
 use remove_line_matching::remove_line_matching;
 use remove_lines::remove_lines;
-use standardize_newlines::standardize_newlines;
+pub use standardize_newlines::standardize_newlines;
