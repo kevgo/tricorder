@@ -84,18 +84,9 @@ async fn a_git_repository(world: &mut TridentWorld) {
 
 #[given(expr = "an executable file {string} with content")]
 async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    // TODO: call a_file_with_content here
-    let content = docstring_body(step.docstring.as_ref().unwrap());
+    #[cfg(unix)]
     let filepath = world.dir.join(&filename);
-    let parent = filepath.parent().unwrap();
-    if parent != world.dir {
-        fs::create_dir_all(parent)
-            .await
-            .unwrap_or_else(|_| panic!("cannot create parent '{}'", parent.display()));
-    }
-    fs::write(&filepath, content.as_bytes())
-        .await
-        .unwrap_or_else(|_| panic!("cannot write to file '{}'", filepath.display()));
+    a_file_with_content(world, step, filename).await;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
@@ -103,10 +94,6 @@ async fn an_executable_file_with_content(world: &mut TridentWorld, step: &Step, 
         perms.set_mode(0o755);
         fs::set_permissions(&filepath, perms).await.unwrap();
     }
-    world.original_files.push(ExistingFile {
-        name: filename,
-        content,
-    });
 }
 
 #[given(expr = "I ran {string}")]
