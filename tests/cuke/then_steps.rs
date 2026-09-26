@@ -5,6 +5,7 @@ use contains_lines::contains_lines;
 use cucumber::gherkin::Step;
 use cucumber::then;
 use regex::Regex;
+use test_helpers::docstring_body;
 use test_helpers::snapshots;
 use tokio::fs;
 use tokio::process::Command;
@@ -65,26 +66,26 @@ async fn file_has_additional_line_matching(
     step: &Step,
     filename: String,
 ) {
-    let want = step.docstring.as_ref().unwrap();
+    let want = docstring_body(step.docstring.as_ref().unwrap());
     let have_old = world.original_file_content(&filename).unwrap_or_default();
     let have_new = world.current_file_content(&filename).await.unwrap();
-    if let Err(problem) = test_helpers::has_additional_lines(have_old, &have_new, want) {
+    if let Err(problem) = test_helpers::has_additional_lines(have_old, &have_new, &want) {
         panic!("file '{filename}' {problem}\n\nHAVE:\n{have_new}\n\n");
     }
 }
 
 #[then(expr = "file {string} now has content")]
 async fn file_has_content(world: &mut TridentWorld, step: &Step, filename: String) {
-    let want = step.docstring.as_ref().unwrap().as_str();
-    let want = want.replace("\\t", "\t");
+    let want = docstring_body(step.docstring.as_ref().unwrap());
     let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
-    pretty::assert_eq!(have, want[1..], "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
+    pretty::assert_eq!(have, want, "\n\nHAVE:\n{have}\n\nWANT:\n{want}\n\n");
 }
 
 #[then(expr = "file {string} now matches these lines")]
 async fn file_matches_lines(world: &mut TridentWorld, step: &Step, filename: String) {
-    let want = step.docstring.as_ref().unwrap().as_str().trim().lines();
+    let want = docstring_body(step.docstring.as_ref().unwrap());
+    let want = want.lines();
     let filepath = world.dir.join(&filename);
     let have = fs::read_to_string(filepath).await.unwrap();
     let have = have.trim().lines();
